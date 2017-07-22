@@ -1,0 +1,7 @@
+h1 Today Display
+- if current_user
+  = link_to "Sign Out", destroy_user_session_path, method: :delete
+  
+  h2 = current_user.email
+- else
+  = link_to "Sign In", new_user_session_path
