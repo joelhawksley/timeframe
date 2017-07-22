@@ -1,7 +1,10 @@
 h1 Today Display
 - if current_user
   = link_to "Sign Out", destroy_user_session_path, method: :delete
-  
+  = link_to "View Display", display_path
   h2 = current_user.email
+  = form_for(current_user) do |f|
+    = f.text_field :location
+    = f.submit "Update"
 - else
   = link_to "Sign In", new_user_session_path
