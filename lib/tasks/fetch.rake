@@ -1,8 +1,8 @@
 namespace :fetch do
   task all: :environment do
     User.all.each do |user|
-      response = Weather.lookup_by_location(user.location, Weather::Units::FAHRENHEIT)
-      user.update(weather: response.as_json)
+      weather = HTTParty.get("http://api.wunderground.com/api/f79789b09f774c40/forecast/astronomy/conditions/q/#{user.location.delete(" ")}.json").as_json
+      user.update(weather: weather)
     end
   end
 end
