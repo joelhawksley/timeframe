@@ -92,6 +92,7 @@ html {
 .display {
 	background-color: black;
 	color: white;
+	font-weight: 300;
 	height: 100%;
 }
 
@@ -119,6 +120,12 @@ body {
 	text-align: right;
 
 	h2 {
+		margin-bottom: .5rem;
+	}
+}
+
+.calendar-events {
+	.event {
 		margin-bottom: .5rem;
 	}
 }

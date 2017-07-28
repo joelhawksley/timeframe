@@ -1,18 +1,25 @@
 .display
-  .header-left
-    h1 
-      = current_user.weather["current_observation"]["temp_f"].round
-      | &deg;
-  .header-right
-    h2
-      = current_user.weather["forecast"]["simpleforecast"]["forecastday"].first["high"]["fahrenheit"]
-      ' &deg; /
-      = current_user.weather["forecast"]["simpleforecast"]["forecastday"].first["low"]["fahrenheit"]
-      | &deg;
-    h2
-      i.fa.fa-fw.fa-sun-o
-      = current_user.weather["sun_phase"]["sunrise"]["hour"]
-      |:
-      = current_user.weather["sun_phase"]["sunrise"]["minute"]
-      |am
-    h2 = current_user.weather["forecast"]["simpleforecast"]["forecastday"].first["conditions"]
+  .header
+    .header-left
+      h1 
+        = current_user.weather["current_observation"]["temp_f"].round
+        | &deg;
+    .header-right
+      h2
+        = current_user.weather["forecast"]["simpleforecast"]["forecastday"].first["high"]["fahrenheit"]
+        ' &deg; /
+        = current_user.weather["forecast"]["simpleforecast"]["forecastday"].first["low"]["fahrenheit"]
+        | &deg;
+      h2
+        i.fa.fa-fw.fa-sun-o
+        = current_user.weather["sun_phase"]["sunrise"]["hour"]
+        |:
+        = current_user.weather["sun_phase"]["sunrise"]["minute"]
+        |am
+      h2 = current_user.weather["forecast"]["simpleforecast"]["forecastday"].first["conditions"]
+  ul.calendar-events
+    - events = User.first.calendar_events_for(Date.today)
+    - events.select { |event| event["all_day"] }.each do |event| 
+      li.event = event["summary"]
+    - events.select { |event| !event["all_day"] }.each do |event| 
+      li.event = event["summary"]
