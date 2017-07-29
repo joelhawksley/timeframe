@@ -16,10 +16,15 @@
         |:
         = current_user.weather["sun_phase"]["sunrise"]["minute"]
         |am
-      h2 = current_user.weather["forecast"]["simpleforecast"]["forecastday"].first["conditions"]
   ul.calendar-events
-    - events = User.first.calendar_events_for(Date.today)
+    - events = current_user.calendar_events_for(Date.today)
     - events.select { |event| event["all_day"] }.each do |event| 
-      li.event = event["summary"]
+      li.event 
+        i.fa.fa-fw class="fa-#{event["icon"]}"
+        span = event["summary"]
     - events.select { |event| !event["all_day"] }.each do |event| 
-      li.event = event["summary"]
+      li.event 
+        i.fa.fa-fw class="fa-#{event["icon"]}"
+        span = event["summary"]
+  .timestamp
+    = current_user.updated_at.in_time_zone("America/Denver").strftime("%A at %l:%M %p")

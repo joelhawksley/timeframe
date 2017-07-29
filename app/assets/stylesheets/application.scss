@@ -89,11 +89,16 @@ html {
 	font-size: 4vw;
 }
 
+body {
+ 	font-family: 'Roboto', sans-serif;
+}
+
 .display {
 	background-color: black;
-	color: white;
+	color: #ddd;
 	font-weight: 300;
 	height: 100%;
+	padding: .5rem;
 }
 
 .header-left,
@@ -103,29 +108,44 @@ html {
 	vertical-align: top;
 }
 
-body {
- font-family: 'Roboto', sans-serif;
-}
-
 .header-left {
 	font-weight: 100;
 	margin-top: -.8rem;
-	font-size: 9rem;
+	font-size: 7.25rem;
 }
 
 .header-right {
 	font-weight: 300;
-	font-size: 2rem;
+	font-size: 2.6rem;
 	margin-bottom: 1rem;
 	text-align: right;
 
 	h2 {
-		margin-bottom: .5rem;
+		margin-bottom: .4rem;
 	}
 }
 
 .calendar-events {
 	.event {
-		margin-bottom: .5rem;
+		font-size: 1.5rem;
+		margin-bottom: .75rem;
+		line-height: 1.2;
+		position: relative;
+
+		i {
+			position: absolute;
+			margin-top: .05rem;
+		}
+
+		span {
+			display: block;
+			margin-left: 2.5rem;
+		}
 	}
+}
+
+.timestamp {
+	position: fixed;
+  bottom: .5rem;
+  left: .5rem;
 }
