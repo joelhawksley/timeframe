@@ -28,3 +28,23 @@
         span = event["summary"]
   .timestamp
     = current_user.updated_at.in_time_zone("America/Denver").strftime("%A at %l:%M %p")
+  .fullscreen
+    a onclick="launchIntoFullscreen(document.documentElement);"
+      i.fa.fa-fw.fa-expand
+javascript:
+  setInterval(function() {
+    window.location.reload();
+  }, 300000); 
+  
+  // Find the right method, call on correct element
+  function launchIntoFullscreen(element) {
+    if(element.requestFullscreen) {
+      element.requestFullscreen();
+    } else if(element.mozRequestFullScreen) {
+      element.mozRequestFullScreen();
+    } else if(element.webkitRequestFullscreen) {
+      element.webkitRequestFullscreen();
+    } else if(element.msRequestFullscreen) {
+      element.msRequestFullscreen();
+    }
+  }
