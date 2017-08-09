@@ -23,21 +23,22 @@ def calendar_events(user)
     events = []
 
     service.list_calendar_lists.items.each_with_index do |calendar, index|
-      service.list_events(calendar.id, max_results: 10, single_events: true, order_by: 'startTime', time_min: DateTime.now.beginning_of_day.iso8601).items.each do |event|
+      service.list_events(calendar.id, max_results: 100, single_events: true, order_by: 'startTime', time_min: (DateTime.now - 2.weeks).iso8601).items.each_with_index do |event, index_2|
         event_json = event.as_json
 
         start_i =
           if event_json["start"].key?("date")
-            DateTime.parse(event_json["start"]["date"]).in_time_zone("America/Denver").to_i
+            ActiveSupport::TimeZone["America/Denver"].parse(event_json["start"]["date"]).utc.to_i
           else
-            DateTime.parse(event_json["start"]["date_time"]).to_i
+            DateTime.parse(event_json["start"]["date_time"]).utc.to_i
           end
 
         end_i =
           if event_json["end"].key?("date")
-            DateTime.parse(event_json["end"]["date"]).in_time_zone("America/Denver").to_i
+            # Subtract 1 second, as Google gives us the end date as the following day, not the end of the current day
+            ActiveSupport::TimeZone["America/Denver"].parse(event_json["end"]["date"]).utc.to_i - 1
           else
-            DateTime.parse(event_json["end"]["date_time"]).to_i
+            DateTime.parse(event_json["end"]["date_time"]).utc.to_i
           end
 
         events << event_json.slice(
