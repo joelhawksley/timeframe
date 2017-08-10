@@ -127,7 +127,7 @@ body {
 
 .calendar-events {
 	.event {
-		font-size: 1.5rem;
+		font-size: 1rem;
 		margin-bottom: .75rem;
 		line-height: 1.2;
 		position: relative;
@@ -139,7 +139,11 @@ body {
 
 		span {
 			display: block;
-			margin-left: 2.5rem;
+			margin-left: 1.5rem;
+		}
+
+		.time {
+			opacity: .5;
 		}
 	}
 }

@@ -30,7 +30,7 @@ def calendar_events(user)
           if event_json["start"].key?("date")
             ActiveSupport::TimeZone["America/Denver"].parse(event_json["start"]["date"]).utc.to_i
           else
-            DateTime.parse(event_json["start"]["date_time"]).utc.to_i
+            ActiveSupport::TimeZone["America/Denver"].parse(event_json["start"]["date_time"]).utc.to_i
           end
 
         end_i =
@@ -38,7 +38,7 @@ def calendar_events(user)
             # Subtract 1 second, as Google gives us the end date as the following day, not the end of the current day
             ActiveSupport::TimeZone["America/Denver"].parse(event_json["end"]["date"]).utc.to_i - 1
           else
-            DateTime.parse(event_json["end"]["date_time"]).utc.to_i
+            ActiveSupport::TimeZone["America/Denver"].parse(event_json["end"]["date_time"]).utc.to_i
           end
 
         events << event_json.slice(
