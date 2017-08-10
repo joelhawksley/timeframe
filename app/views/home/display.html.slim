@@ -26,7 +26,7 @@
       li.event 
         i.fa.fa-fw class="fa-#{event["icon"]}"
         span = event["summary"]
-        span.time #{Time.at(event["start_i"]).strftime('%-l:%M%P')} - #{Time.at(event["end_i"]).strftime('%-l:%M%P')}
+        span.time #{Time.at(event["start_i"]).in_time_zone("America/Denver").strftime('%-l:%M%P')} - #{Time.at(event["end_i"]).in_time_zone("America/Denver").strftime('%-l:%M%P')}
   .timestamp
     = current_user.updated_at.in_time_zone("America/Denver").strftime("%A at %l:%M %p")
   .fullscreen
