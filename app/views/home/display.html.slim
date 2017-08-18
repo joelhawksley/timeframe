@@ -12,11 +12,20 @@
         = current_user.weather["forecast"]["simpleforecast"]["forecastday"].first["low"]["fahrenheit"]
         | &deg;
       h2
-        i.fa.fa-fw.fa-sun-o
-        = current_user.weather["sun_phase"]["sunrise"]["hour"]
-        |:
-        = current_user.weather["sun_phase"]["sunrise"]["minute"]
-        |am
+        - time = DateTime.now.utc.in_time_zone(tz)
+        - sun_phase = current_user.weather["sun_phase"]
+        - if (time.strftime("%-H%M").to_i > (sun_phase["sunrise"]["hour"] + sun_phase["sunrise"]["minute"]).to_i) && (time.strftime("%-H%M").to_i < (sun_phase["sunset"]["hour"] + sun_phase["sunset"]["minute"]).to_i)
+          i.fa.fa-fw.fa-moon-o
+          = sun_phase["sunset"]["hour"].to_i - 12
+          |:
+          = sun_phase["sunset"]["minute"]
+          |pm
+        - else
+          i.fa.fa-fw.fa-sun-o
+          = sun_phase["sunrise"]["hour"]
+          |:
+          = sun_phase["sunrise"]["minute"]
+          |am
     .weather-summary 
       = current_user.weather["forecast"]["txt_forecast"]["forecastday"].first["fcttext"]
   ul.calendar-events
