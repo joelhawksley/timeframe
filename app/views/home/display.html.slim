@@ -16,6 +16,8 @@
         |:
         = current_user.weather["sun_phase"]["sunrise"]["minute"]
         |am
+    .weather-summary 
+      = current_user.weather["forecast"]["txt_forecast"]["forecastday"].first["fcttext"]
   ul.calendar-events
     - events = current_user.calendar_events_for(DateTime.now.in_time_zone.in_time_zone("America/Denver").utc.to_i, Date.today.in_time_zone("America/Denver").end_of_day.utc.to_i)
     - events.select { |event| event["all_day"] }.each do |event| 
