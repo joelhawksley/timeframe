@@ -29,7 +29,7 @@
     .weather-summary 
       = current_user.weather["forecast"]["txt_forecast"]["forecastday"].first["fcttext"]
   ul.calendar-events
-    - events = current_user.calendar_events_for(DateTime.now.in_time_zone.in_time_zone(tz).utc.to_i, Date.today.in_time_zone(tz).end_of_day.utc.to_i)
+    - events = current_user.calendar_events_for(Time.now.in_time_zone(tz).to_i, Time.now.in_time_zone(tz).end_of_day.utc.to_i)
     - events.select { |event| event["all_day"] }.each do |event| 
       li.event 
         i.fa.fa-fw class="fa-#{event["icon"]}"
