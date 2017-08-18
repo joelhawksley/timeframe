@@ -1,3 +1,4 @@
+- tz = "America/Denver"
 .display
   .header
     .header-left
@@ -19,7 +20,7 @@
     .weather-summary 
       = current_user.weather["forecast"]["txt_forecast"]["forecastday"].first["fcttext"]
   ul.calendar-events
-    - events = current_user.calendar_events_for(DateTime.now.in_time_zone.in_time_zone("America/Denver").utc.to_i, Date.today.in_time_zone("America/Denver").end_of_day.utc.to_i)
+    - events = current_user.calendar_events_for(DateTime.now.in_time_zone.in_time_zone(tz).utc.to_i, Date.today.in_time_zone(tz).end_of_day.utc.to_i)
     - events.select { |event| event["all_day"] }.each do |event| 
       li.event 
         i.fa.fa-fw class="fa-#{event["icon"]}"
@@ -28,9 +29,9 @@
       li.event 
         i.fa.fa-fw class="fa-#{event["icon"]}"
         span = event["summary"]
-        span.time #{Time.at(event["start_i"]).in_time_zone("America/Denver").strftime('%-l:%M%P')} - #{Time.at(event["end_i"]).in_time_zone("America/Denver").strftime('%-l:%M%P')}
+        span.time #{Time.at(event["start_i"]).in_time_zone(tz).strftime('%-l:%M%P')} - #{Time.at(event["end_i"]).in_time_zone(tz).strftime('%-l:%M%P')}
   .timestamp
-    = current_user.updated_at.in_time_zone("America/Denver").strftime("%A at %l:%M %p")
+    = current_user.updated_at.in_time_zone(tz).strftime("%A at %l:%M %p")
   .fullscreen
     a onclick="launchIntoFullscreen(document.documentElement);"
       i.fa.fa-fw.fa-expand
