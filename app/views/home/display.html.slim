@@ -1,46 +1,24 @@
-- tz = "America/Denver"
 .display
   .header
     .header-left
-      h1 
-        = current_user.weather["current_observation"]["temp_f"].round
-        | &deg;
+      h1 = payload[:weather][:current_temperature]
     .header-right
+      h2 = payload[:weather][:temperature_range]
       h2
-        = current_user.weather["forecast"]["simpleforecast"]["forecastday"].first["high"]["fahrenheit"]
-        ' &deg; /
-        = current_user.weather["forecast"]["simpleforecast"]["forecastday"].first["low"]["fahrenheit"]
-        | &deg;
-      h2
-        - time = DateTime.now.utc.in_time_zone(tz)
-        - sun_phase = current_user.weather["sun_phase"]
-        - if (time.strftime("%-H%M").to_i > (sun_phase["sunrise"]["hour"] + sun_phase["sunrise"]["minute"]).to_i) && (time.strftime("%-H%M").to_i < (sun_phase["sunset"]["hour"] + sun_phase["sunset"]["minute"]).to_i)
-          i.fa.fa-fw.fa-moon-o
-          = sun_phase["sunset"]["hour"].to_i - 12
-          |:
-          = sun_phase["sunset"]["minute"]
-          |pm
-        - else
-          i.fa.fa-fw.fa-sun-o
-          = sun_phase["sunrise"]["hour"]
-          |:
-          = sun_phase["sunrise"]["minute"]
-          |am
-    .weather-summary 
-      = current_user.weather["forecast"]["txt_forecast"]["forecastday"].first["fcttext"]
+        i.fa.fa-fw class="#{payload[:weather][:sun_phase_icon_class]}"
+        = payload[:weather][:sun_phase_label]
+    .weather-summary = payload[:weather][:summary]
   ul.calendar-events
-    - events = current_user.calendar_events_for(Time.now.in_time_zone(tz).to_i, Time.now.in_time_zone(tz).end_of_day.utc.to_i)
-    - events.select { |event| event["all_day"] }.each do |event| 
+    - payload[:events][:all_day].each do |event| 
       li.event 
         i.fa.fa-fw class="fa-#{event["icon"]}"
         span = event["summary"]
-    - events.select { |event| !event["all_day"] }.each do |event| 
+    - payload[:events][:periodic].each do |event| 
       li.event 
         i.fa.fa-fw class="fa-#{event["icon"]}"
         span = event["summary"]
-        span.time #{Time.at(event["start_i"]).in_time_zone(tz).strftime('%-l:%M%P')} - #{Time.at(event["end_i"]).in_time_zone(tz).strftime('%-l:%M%P')}
-  .timestamp
-    = current_user.updated_at.in_time_zone(tz).strftime("%A at %l:%M %p")
+        span.time = event["time"]
+  .timestamp = payload[:timestamp]
   .fullscreen
     a onclick="launchIntoFullscreen(document.documentElement);"
       i.fa.fa-fw.fa-expand
