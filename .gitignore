@@ -13,3 +13,5 @@
 
 .byebug_history
 .DS_Store
+/public/packs
+/node_modules
