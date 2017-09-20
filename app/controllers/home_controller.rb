@@ -25,24 +25,27 @@
         event
       end
 
-    render locals: {
-      payload: {
-        events: {
-          all_day: events.select { |event| event["all_day"] },
-          periodic: events.select { |event| !event["all_day"] }
-        },
-        time: time,
-        timestamp: current_user.updated_at.in_time_zone(tz).strftime("%A at %l:%M %p"),
-        tz: tz,
-        weather: {
-          current_temperature: current_user.weather["current_observation"]["temp_f"].round.to_s + "°",
-          summary: current_user.weather["forecast"]["txt_forecast"]["forecastday"].first["fcttext"],
-          sun_phase_icon_class: icon_class,
-          sun_phase_label: label,
-          temperature_range: "#{current_user.weather["forecast"]["simpleforecast"]["forecastday"].first["high"]["fahrenheit"]}° / #{current_user.weather["forecast"]["simpleforecast"]["forecastday"].first["low"]["fahrenheit"]}°",
-        }
+    payload = {
+      events: {
+        all_day: events.select { |event| event["all_day"] },
+        periodic: events.select { |event| !event["all_day"] }
+      },
+      time: time,
+      timestamp: current_user.updated_at.in_time_zone(tz).strftime("%A at %l:%M %p"),
+      tz: tz,
+      weather: {
+        current_temperature: current_user.weather["current_observation"]["temp_f"].round.to_s + "°",
+        summary: current_user.weather["forecast"]["txt_forecast"]["forecastday"].first["fcttext"],
+        sun_phase_icon_class: icon_class,
+        sun_phase_label: label,
+        temperature_range: "#{current_user.weather["forecast"]["simpleforecast"]["forecastday"].first["high"]["fahrenheit"]}° / #{current_user.weather["forecast"]["simpleforecast"]["forecastday"].first["low"]["fahrenheit"]}°",
       }
     }
+
+    respond_to do |format|
+      format.html { render(locals: { payload: payload }) }
+      format.json { render(json: payload) }
+    end
   end
 
   def redirect

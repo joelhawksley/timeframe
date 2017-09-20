@@ -1,0 +1,100 @@
+import React from 'react'
+import ReactDOM from 'react-dom'
+import PropTypes from 'prop-types'
+import axios from 'axios'
+
+class Display extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      loaded: false,
+      payload: {}
+    };
+  }
+
+  componentDidMount() {
+    this.startPolling();
+  }
+
+  startPolling() {
+    var self = this;
+
+    setTimeout(function() {
+      self.fetch();
+      self._timer = setInterval(self.fetch.bind(self), 300000);
+    }, 1000);
+  }
+
+  fetch() {
+    axios.get('/display.json').then(res => {
+      this.setState({ payload: res.data, loaded: true });
+    });
+  }
+
+  launchIntoFullscreen() {
+    if(document.requestFullscreen) {
+      document.requestFullscreen();
+    } else if(document.mozRequestFullScreen) {
+      document.mozRequestFullScreen();
+    } else if(document.webkitRequestFullscreen) {
+      document.webkitRequestFullscreen();
+    } else if(document.msRequestFullscreen) {
+      document.msRequestFullscreen();
+    }
+  }
+
+  render() {
+    if(this.state.loaded == true) {
+      return (
+        <div className="display">
+          <div className="header">
+            <div className="header-left">
+              <h1>{ this.state.payload.weather.current_temperature }</h1>
+            </div>
+
+            <div className="header-right">
+              <h2>{ this.state.payload.weather.temperature_range }</h2>
+              <h2>
+                <i className={`i fa fa-fw ${ this.state.payload.weather.sun_phase_icon_class }`} />
+                <span>{ this.state.payload.weather.sun_phase_label }</span>
+              </h2>
+            </div>
+
+            <div className="weather-summary">{ this.state.payload.weather.summary }</div>
+          </div>
+          <ul className="calendar-events">
+            {this.state.payload.events.all_day.map(event =>
+              <li className="event" key={ event.summary }>
+                <i className={ "fa fa-fw fa-" + event.icon } />
+                <span>{ event.summary }</span>
+              </li>
+            )}
+            {this.state.payload.events.periodic.map(event =>
+              <li className="event" key={ event.summary }>
+                <i className={ "fa fa-fw fa-" + event.icon } />
+                <span>{ event.summary }</span>
+                <span className="time">{ event.time }</span>
+              </li>
+            )}
+          </ul>
+          <div className="fullscreen"><a onClick={ this.launchIntoFullscreen }><i className="fa fa-fw fa-expand" /></a></div>
+          <div className="timestamp">{ this.state.payload.timestamp }</div>
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <h1>Loading</h1>
+        </div>
+      );
+    }
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  ReactDOM.render(
+    <Display />,
+    document.getElementById('root'),
+  )
+})

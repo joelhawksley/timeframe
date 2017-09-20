@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "autoprefixer": "^7.1.4",
+    "axios": "^0.16.2",
     "babel-core": "^6.26.0",
     "babel-loader": "7.x",
     "babel-preset-env": "^1.6.0",
