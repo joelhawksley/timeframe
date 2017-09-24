@@ -55,7 +55,8 @@
             summary: current_user.weather["forecast"]["txt_forecast"]["forecastday"].first["fcttext"],
             sun_phase_icon_class: icon_class,
             sun_phase_label: label,
-            temperature_range: "#{current_user.weather["forecast"]["simpleforecast"]["forecastday"].first["high"]["fahrenheit"]}° / #{current_user.weather["forecast"]["simpleforecast"]["forecastday"].first["low"]["fahrenheit"]}°",
+            today_temperature_range: "#{current_user.weather["forecast"]["simpleforecast"]["forecastday"].first["high"]["fahrenheit"]}° / #{current_user.weather["forecast"]["simpleforecast"]["forecastday"].first["low"]["fahrenheit"]}°",
+            tomorrow_temperature_range: "#{current_user.weather["forecast"]["simpleforecast"]["forecastday"][1]["high"]["fahrenheit"]}° / #{current_user.weather["forecast"]["simpleforecast"]["forecastday"][1]["low"]["fahrenheit"]}°",
           }
         })
       end

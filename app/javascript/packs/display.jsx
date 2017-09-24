@@ -57,7 +57,7 @@ class Display extends React.Component {
             </div>
 
             <div className="header-right">
-              <h2>{ this.state.payload.weather.temperature_range }</h2>
+              <h2>{ this.state.payload.weather.today_temperature_range }</h2>
               <h2>
                 <i className={`i fa fa-fw ${ this.state.payload.weather.sun_phase_icon_class }`} />
                 <span>{ this.state.payload.weather.sun_phase_label }</span>
@@ -83,6 +83,11 @@ class Display extends React.Component {
           </ul>
           <hr />
           <ul className="calendar-events">
+            <li className="event">
+              <i className="fa fa-fw fa-thermometer-three-quarters" />
+              <span>{this.state.payload.weather.tomorrow_temperature_range}</span>
+            </li>
+
             {this.state.payload.tomorrow_events.all_day.map(event =>
               <li className="event" key={ event.summary }>
                 <i className={ "fa fa-fw fa-" + event.icon } />
