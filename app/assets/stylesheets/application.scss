@@ -144,18 +144,23 @@ body {
 
 		i {
 			position: absolute;
-			margin-top: .05rem;
+			margin-top: .1rem;
 		}
 
 		span {
 			display: block;
-			margin-left: 1.8rem;
+			margin-left: 2rem;
 		}
 
 		.time {
 			opacity: .5;
 		}
 	}
+}
+
+hr {
+	margin: 25px 25%;
+	opacity: 0.5;
 }
 
 .timestamp {

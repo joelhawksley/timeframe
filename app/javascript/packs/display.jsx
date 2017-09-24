@@ -28,6 +28,9 @@ class Display extends React.Component {
 
   fetch() {
     axios.get('/display.json').then(res => {
+      if(this.state.payload.api_version && this.state.payload.api_version != res.data.api_version) {
+        location.reload();
+      }
       this.setState({ payload: res.data, loaded: true });
     });
   }
@@ -64,13 +67,29 @@ class Display extends React.Component {
             <div className="weather-summary">{ this.state.payload.weather.summary }</div>
           </div>
           <ul className="calendar-events">
-            {this.state.payload.events.all_day.map(event =>
+            {this.state.payload.today_events.all_day.map(event =>
               <li className="event" key={ event.summary }>
                 <i className={ "fa fa-fw fa-" + event.icon } />
                 <span>{ event.summary }</span>
               </li>
             )}
-            {this.state.payload.events.periodic.map(event =>
+            {this.state.payload.today_events.periodic.map(event =>
+              <li className="event" key={ event.summary }>
+                <i className={ "fa fa-fw fa-" + event.icon } />
+                <span>{ event.summary }</span>
+                <span className="time">{ event.time }</span>
+              </li>
+            )}
+          </ul>
+          <hr />
+          <ul className="calendar-events">
+            {this.state.payload.tomorrow_events.all_day.map(event =>
+              <li className="event" key={ event.summary }>
+                <i className={ "fa fa-fw fa-" + event.icon } />
+                <span>{ event.summary }</span>
+              </li>
+            )}
+            {this.state.payload.tomorrow_events.periodic.map(event =>
               <li className="event" key={ event.summary }>
                 <i className={ "fa fa-fw fa-" + event.icon } />
                 <span>{ event.summary }</span>

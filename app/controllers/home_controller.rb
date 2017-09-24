@@ -5,46 +5,60 @@
   def display
     authenticate_user!
 
-    tz = "America/Denver"
-    time = DateTime.now.utc.in_time_zone(tz)
-
-    sun_phase = current_user.weather["sun_phase"]
-    icon_class, label =
-      if (time.strftime("%-H%M").to_i > (sun_phase["sunrise"]["hour"] + sun_phase["sunrise"]["minute"]).to_i) && (time.strftime("%-H%M").to_i < (sun_phase["sunset"]["hour"] + sun_phase["sunset"]["minute"]).to_i)
-        ["fa-moon-o", "#{sun_phase["sunset"]["hour"].to_i - 12}:#{sun_phase["sunset"]["minute"]}pm"]
-      else
-        ["fa-sun-o", "#{sun_phase["sunrise"]["hour"]}:#{sun_phase["sunrise"]["minute"]}am"]
-      end
-
-    events =
-      current_user.calendar_events_for(Time.now.in_time_zone(tz).to_i, Time.now.in_time_zone(tz).end_of_day.utc.to_i).map do |event|
-        unless event["all_day"]
-          event["time"] = "#{Time.at(event["start_i"]).in_time_zone(tz).strftime('%-l:%M%P')} - #{Time.at(event["end_i"]).in_time_zone(tz).strftime('%-l:%M%P')}"
-        end
-
-        event
-      end
-
-    payload = {
-      events: {
-        all_day: events.select { |event| event["all_day"] },
-        periodic: events.select { |event| !event["all_day"] }
-      },
-      time: time,
-      timestamp: current_user.updated_at.in_time_zone(tz).strftime("%A at %l:%M %p"),
-      tz: tz,
-      weather: {
-        current_temperature: current_user.weather["current_observation"]["temp_f"].round.to_s + "°",
-        summary: current_user.weather["forecast"]["txt_forecast"]["forecastday"].first["fcttext"],
-        sun_phase_icon_class: icon_class,
-        sun_phase_label: label,
-        temperature_range: "#{current_user.weather["forecast"]["simpleforecast"]["forecastday"].first["high"]["fahrenheit"]}° / #{current_user.weather["forecast"]["simpleforecast"]["forecastday"].first["low"]["fahrenheit"]}°",
-      }
-    }
-
     respond_to do |format|
-      format.html { render(locals: { payload: payload }) }
-      format.json { render(json: payload) }
+      format.html
+      format.json do
+        tz = "America/Denver"
+        time = DateTime.now.utc.in_time_zone(tz)
+
+        sun_phase = current_user.weather["sun_phase"]
+        icon_class, label =
+          if (time.strftime("%-H%M").to_i > (sun_phase["sunrise"]["hour"] + sun_phase["sunrise"]["minute"]).to_i) && (time.strftime("%-H%M").to_i < (sun_phase["sunset"]["hour"] + sun_phase["sunset"]["minute"]).to_i)
+            ["fa-moon-o", "#{sun_phase["sunset"]["hour"].to_i - 12}:#{sun_phase["sunset"]["minute"]}pm"]
+          else
+            ["fa-sun-o", "#{sun_phase["sunrise"]["hour"]}:#{sun_phase["sunrise"]["minute"]}am"]
+          end
+
+        today_events =
+          current_user.calendar_events_for(Time.now.in_time_zone(tz).to_i, Time.now.in_time_zone(tz).end_of_day.utc.to_i).map do |event|
+            unless event["all_day"]
+              event["time"] = "#{Time.at(event["start_i"]).in_time_zone(tz).strftime('%-l:%M%P')} - #{Time.at(event["end_i"]).in_time_zone(tz).strftime('%-l:%M%P')}"
+            end
+
+            event
+          end
+
+        tomorrow_events =
+          current_user.calendar_events_for(Time.now.in_time_zone(tz).tomorrow.beginning_of_day.to_i, Time.now.in_time_zone(tz).tomorrow.end_of_day.utc.to_i).map do |event|
+            unless event["all_day"]
+              event["time"] = "#{Time.at(event["start_i"]).in_time_zone(tz).strftime('%-l:%M%P')} - #{Time.at(event["end_i"]).in_time_zone(tz).strftime('%-l:%M%P')}"
+            end
+
+            event
+          end
+
+        render(json: {
+          api_version: 1,
+          today_events: {
+            all_day: today_events.select { |event| event["all_day"] },
+            periodic: today_events.select { |event| !event["all_day"] }
+          },
+          tomorrow_events: {
+            all_day: tomorrow_events.select { |event| event["all_day"] },
+            periodic: tomorrow_events.select { |event| !event["all_day"] }
+          },
+          time: time,
+          timestamp: current_user.updated_at.in_time_zone(tz).strftime("%A at %l:%M %p"),
+          tz: tz,
+          weather: {
+            current_temperature: current_user.weather["current_observation"]["temp_f"].round.to_s + "°",
+            summary: current_user.weather["forecast"]["txt_forecast"]["forecastday"].first["fcttext"],
+            sun_phase_icon_class: icon_class,
+            sun_phase_label: label,
+            temperature_range: "#{current_user.weather["forecast"]["simpleforecast"]["forecastday"].first["high"]["fahrenheit"]}° / #{current_user.weather["forecast"]["simpleforecast"]["forecastday"].first["low"]["fahrenheit"]}°",
+          }
+        })
+      end
     end
   end
 
