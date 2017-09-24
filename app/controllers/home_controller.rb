@@ -21,19 +21,13 @@
 
         today_events =
           current_user.calendar_events_for(Time.now.in_time_zone(tz).to_i, Time.now.in_time_zone(tz).end_of_day.utc.to_i).map do |event|
-            unless event["all_day"]
-              event["time"] = "#{Time.at(event["start_i"]).in_time_zone(tz).strftime('%-l:%M%P')} - #{Time.at(event["end_i"]).in_time_zone(tz).strftime('%-l:%M%P')}"
-            end
-
+            event["time"] = time_for_event(event, tz)
             event
           end
 
         tomorrow_events =
           current_user.calendar_events_for(Time.now.in_time_zone(tz).tomorrow.beginning_of_day.to_i, Time.now.in_time_zone(tz).tomorrow.end_of_day.utc.to_i).map do |event|
-            unless event["all_day"]
-              event["time"] = "#{Time.at(event["start_i"]).in_time_zone(tz).strftime('%-l:%M%P')} - #{Time.at(event["end_i"]).in_time_zone(tz).strftime('%-l:%M%P')}"
-            end
-
+            event["time"] = time_for_event(event, tz)
             event
           end
 
@@ -95,5 +89,11 @@
     current_user.update(google_authorization: response)
 
     redirect_to(root_path, flash: { notice: 'Google Account connected' })
+  end
+
+  private
+
+  def time_for_event(event, tz)
+    "#{Time.at(event["start_i"]).in_time_zone(tz).strftime('%-l:%M%P')} - #{Time.at(event["end_i"]).in_time_zone(tz).strftime('%-l:%M%P')}"
   end
 end
