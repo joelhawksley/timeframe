@@ -94,6 +94,13 @@
   private
 
   def time_for_event(event, tz)
-    "#{Time.at(event["start_i"]).in_time_zone(tz).strftime('%-l:%M%P')} - #{Time.at(event["end_i"]).in_time_zone(tz).strftime('%-l:%M%P')}"
+    start = Time.at(event["start_i"]).in_time_zone(tz)
+    endtime = Time.at(event["end_i"]).in_time_zone(tz)
+
+    start_label = start.min > 0 ? start.strftime('%-l:%M') : start.strftime('%-l')
+    end_label = endtime.min > 0 ? endtime.strftime('%-l:%M%P') : endtime.strftime('%-l%P')
+    start_suffix = start.strftime('%P') == endtime.strftime('%P') ? '' : start.strftime('%P')
+
+    "#{start_label}#{start_suffix} - #{end_label}"
   end
 end
