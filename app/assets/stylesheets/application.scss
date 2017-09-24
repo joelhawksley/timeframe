@@ -165,8 +165,11 @@ hr {
 
 .timestamp {
 	position: fixed;
-  bottom: .5rem;
-  left: .5rem;
+  bottom: 0;
+  left: 0;
+	font-size: .5rem;
+	transform: rotate(-90deg);
+	transform-origin: left top;
 }
 
 .fullscreen {
