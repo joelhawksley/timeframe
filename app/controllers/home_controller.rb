@@ -78,7 +78,7 @@
       end
 
     render(json: {
-      api_version: 1,
+      api_version: 2,
       today_events: {
         all_day: today_events.select { |event| event["all_day"] },
         periodic: today_events.select { |event| !event["all_day"] }

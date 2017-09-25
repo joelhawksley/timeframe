@@ -166,6 +166,7 @@ hr {
 
 .timestamp {
 	position: fixed;
+	display: none;
   bottom: 0;
   left: 0;
 	font-size: .5rem;
@@ -174,6 +175,7 @@ hr {
 }
 
 .fullscreen {
+	display: none;
 	position: fixed;
 	bottom: .5rem;
 	right: .5rem;
