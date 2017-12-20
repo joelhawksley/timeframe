@@ -1,0 +1,15 @@
+.abs = view_object[:timestamp]
+.wrapper.weather
+  .current-temp = view_object[:weather][:current_temperature]
+  - if DateTime.now.hour > 19
+    .tomorrow-label Tomorrow
+    h2
+      = view_object[:weather][:tomorrow_temperature_range]
+      i.fa.fa-fw class="#{view_object[:weather][:sun_phase_icon_class]}"
+      = view_object[:weather][:sun_phase_label]
+  - else
+    h2
+      = view_object[:weather][:today_temperature_range]
+      i.fa.fa-fw class="#{view_object[:weather][:sun_phase_icon_class]}"
+      = view_object[:weather][:sun_phase_label]
+  .summary-item = view_object[:weather][:summary]

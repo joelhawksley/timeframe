@@ -10,10 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170924150316) do
+ActiveRecord::Schema.define(version: 20171220202726) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "devices", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "uuid", null: false
+    t.string "template", null: false
+    t.integer "width", null: false
+    t.integer "height", null: false
+    t.binary "current_image"
+    t.index ["user_id"], name: "index_devices_on_user_id"
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
