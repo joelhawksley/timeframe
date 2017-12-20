@@ -1,0 +1,2 @@
+- if current_device.current_image
+  img.preview src="data:image/png;base64,#{Base64.encode64(current_device.current_image)}" width="#{current_device.width / 2}" height="#{current_device.height / 2}"

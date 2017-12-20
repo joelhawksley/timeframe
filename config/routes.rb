@@ -6,4 +6,5 @@ Rails.application.routes.draw do
   get :redirect, to: 'home#redirect'
   get :callback, to: 'home#callback'
   resources :users, only: [:update]
+  resources :devices, only: [:show]
 end
