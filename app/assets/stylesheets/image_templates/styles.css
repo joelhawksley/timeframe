@@ -60,15 +60,6 @@ li {
   text-transform: uppercase;
 }
 
-.calendar-day-label {
-  font-size: 30px;
-  font-weight: 300;
-  line-height: 0.6;
-  margin-bottom: 1.5rem;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-}
-
 .calendar-event {
   padding: 1rem 0 .5rem;
   position: relative;
@@ -77,10 +68,6 @@ li {
 .calendar-event:first-child {
   border-top: 0;
   margin-top: -1rem;
-}
-
-.calendar {
-  padding: 40px;
 }
 
 .calendar i {
@@ -109,4 +96,40 @@ li {
 
 .calendar-event span {
   padding-right: 1rem;
+}
+
+.clearfix::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+.calendar-weather {
+  padding: 40px 40px 40px 40px;
+}
+
+.calendar-weather .top {
+  clear: both;
+}
+
+.calendar-weather .current-temp {
+  float: left;
+  font-size: 210px;
+  line-height: 180px;
+  margin-bottom: 40px;
+}
+
+.calendar-weather .right {
+  float: right;
+  font-size: 70px;
+  text-align: right;
+}
+
+.calendar-weather .right .temperature-range {
+  padding-bottom: 10px;
+  padding-top: 5px;
+}
+
+.calendar-weather .weather-summary {
+  margin-bottom: 40px;
 }
