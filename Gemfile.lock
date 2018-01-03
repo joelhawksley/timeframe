@@ -220,6 +220,7 @@ DEPENDENCIES
   httparty
   imgkit
   jbuilder (~> 2.5)
+  multipart-post
   pg (~> 0.18)
   pry-rails
   puma (~> 3.7)
