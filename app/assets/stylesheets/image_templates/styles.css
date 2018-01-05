@@ -23,9 +23,9 @@ body {
 }
 
 h2 {
-  font-size: 55px;
+  font-size: 70px;
   font-weight: normal;
-  line-height: 60px;
+  line-height: 70px;
   padding-bottom: 40px;
 }
 
@@ -38,8 +38,8 @@ li {
 }
 
 .weather .current-temp {
-  font-size: 300px;
-  line-height: 250px;
+  font-size: 370px;
+  line-height: 320px;
   margin-bottom: 40px;
 }
 
