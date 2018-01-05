@@ -14,6 +14,10 @@
         hr
       li.calendar-day
         ul
+          - if index == 1
+            li.calendar-event
+              i.fa.fa-fw.fa-thermometer-three-quarters
+              p #{view_object[:weather][:tomorrow_temperature_range]}
           - [event_day[:all_day], event_day[:periodic]].flatten.each do |event|
             li.calendar-event
               i.fa.fa-fw class="fa-#{event['icon']}"
