@@ -76,7 +76,15 @@ li {
   width: 40px;
   height: 40px;
   text-algn: center;
+}
+
+.calendar i.fa {
   top: 1.35rem;
+}
+
+.calendar i.wi {
+  top: 1.5rem;
+  left: -5px;
 }
 
 .calendar hr {

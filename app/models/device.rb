@@ -15,6 +15,7 @@ class Device < ApplicationRecord
 
     image = IMGKit.new(html, imgkit_params)
     image.stylesheets << Rails.root.join("app", "assets", "stylesheets", "image_templates", "font-awesome.css")
+    image.stylesheets << Rails.root.join("app", "assets", "stylesheets", "image_templates", "weathericons.css")
     image.stylesheets << Rails.root.join("app", "assets", "stylesheets", "image_templates", "fonts.css")
     image.stylesheets << Rails.root.join("app", "assets", "stylesheets", "image_templates", "styles.css")
 
