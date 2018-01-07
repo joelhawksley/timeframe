@@ -1,19 +1,16 @@
 .abs = view_object[:timestamp]
 .calendar-weather
+  .current.clearfix
+    .temp => view_object[:weather][:current_temperature]
+    .range
+      i.wi.wi-fw class="wi-wu-#{view_object[:weather][:today_icon]}"
+      =<> view_object[:weather][:today_temperature_range]
   ul.calendar
     - [view_object[:today_events], view_object[:tomorrow_events]].each_with_index do |event_day, index|
       - if index == 1
         hr
       li.calendar-day
         ul
-          - if index == 0
-            li.calendar-event-weather
-              i.wi.wi-fw.wi-thermometer
-              =<> view_object[:weather][:current_temperature]
-              i.wi.wi-fw class="wi-wu-#{view_object[:weather][:today_icon]}"
-              =<> view_object[:weather][:today_temperature_range]
-              i.fa.fa-fw class="#{view_object[:weather][:sun_phase_icon_class]}"
-              = view_object[:weather][:sun_phase_label]
           - if index == 1
             li.calendar-event-weather
               i.wi.wi-fw class="wi-wu-#{view_object[:weather][:tomorrow_icon]}"

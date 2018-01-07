@@ -63,7 +63,26 @@ li {
 }
 
 .calendar-weather {
-  font-size: 48px;
+  font-size: 40px;
+  padding: 40px 40px 40px 40px;
+}
+
+.calendar-weather .current {
+  padding-bottom: 60px;
+}
+
+.calendar-weather .current .temp {
+  float: left;
+  font-size: 165px;
+  line-height: 120px;
+  vertical-align: middle;
+}
+
+.calendar-weather .current .range {
+  font-size: 80px;
+  line-height: 120px;
+  float: right;
+  vertical-align: middle;
 }
 
 .calendar-event, .calendar-event-weather {
@@ -125,17 +144,6 @@ li {
   content: "";
   clear: both;
   display: table;
-}
-
-.calendar-weather {
-  padding: 40px 40px 40px 40px;
-}
-
-.calendar-weather .current-temp {
-  float: left;
-  font-size: 210px;
-  line-height: 180px;
-  padding-right: 40px;
 }
 
 .calendar-weather .top {
