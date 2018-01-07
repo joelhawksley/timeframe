@@ -62,7 +62,11 @@ li {
   text-transform: uppercase;
 }
 
-.calendar-event {
+.calendar-weather {
+  font-size: 48px;
+}
+
+.calendar-event, .calendar-event-weather {
   padding: 1rem 0 .5rem;
   position: relative;
 }
@@ -72,11 +76,11 @@ li {
   margin-top: -1rem;
 }
 
-.calendar i {
+.calendar .calendar-event i {
   display: block;
   position: absolute;
-  width: 40px;
-  height: 40px;
+  width: 50px;
+  height: 50px;
   text-algn: center;
 }
 
@@ -95,12 +99,12 @@ li {
 }
 
 .calendar-event p {
-  margin-left: 55px;
+  margin-left: 75px;
 }
 
-.lighter {
+.time {
   color: #666;
-  font-size: 32px;
+  font-size: 34px;
   font-weight: 300;
 }
 
@@ -118,28 +122,19 @@ li {
   padding: 40px 40px 40px 40px;
 }
 
-.calendar-weather .top {
-  clear: both;
-}
-
 .calendar-weather .current-temp {
   float: left;
   font-size: 210px;
   line-height: 180px;
-  margin-bottom: 40px;
+  padding-right: 40px;
 }
 
-.calendar-weather .right {
-  float: right;
-  font-size: 70px;
-  text-align: right;
+.calendar-weather .top {
+  margin-top: -10px;
+  margin-bottom: 20px;
 }
 
-.calendar-weather .right .temperature-range {
-  padding-bottom: 10px;
-  padding-top: 5px;
-}
-
-.calendar-weather .weather-summary {
-  margin-bottom: 40px;
+.calendar-weather .top .summary {
+  font-size: 26px;
+  padding-top: 15px;
 }
