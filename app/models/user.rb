@@ -57,6 +57,7 @@ class User < ApplicationRecord
         sun_phase_icon_class: icon_class,
         sun_phase_label: label,
         today_temperature_range: "#{weather["forecast"]["simpleforecast"]["forecastday"].first["high"]["fahrenheit"]}° / #{weather["forecast"]["simpleforecast"]["forecastday"].first["low"]["fahrenheit"]}°",
+        today_icon: weather["forecast"]["simpleforecast"]["forecastday"][1]["icon"],
         tomorrow_temperature_range: "#{weather["forecast"]["simpleforecast"]["forecastday"][1]["high"]["fahrenheit"]}° / #{weather["forecast"]["simpleforecast"]["forecastday"][1]["low"]["fahrenheit"]}°",
         tomorrow_icon: weather["forecast"]["simpleforecast"]["forecastday"][1]["icon"]
       }
