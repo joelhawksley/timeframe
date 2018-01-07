@@ -71,6 +71,15 @@ li {
   position: relative;
 }
 
+.calendar-event-weather i:not(:first-child) {
+  margin-left: 20px;
+}
+
+.calendar-event-weather i.wi {
+  line-height: .8;
+  vertical-align: baseline;
+}
+
 .calendar-event:first-child {
   border-top: 0;
   margin-top: -1rem;
@@ -84,11 +93,11 @@ li {
   text-algn: center;
 }
 
-.calendar i.fa {
+.calendar .calendar-event i.fa {
   top: 1.35rem;
 }
 
-.calendar i.wi {
+.calendar .calendar-event i.wi {
   top: 1.5rem;
   left: -5px;
 }

@@ -1,8 +1,5 @@
 .abs = view_object[:timestamp]
 .calendar-weather
-  / .top.clearfix
-  /   .current-temp = view_object[:weather][:current_temperature]
-  /   .summary = view_object[:weather][:summary]
   ul.calendar
     - [view_object[:today_events], view_object[:tomorrow_events]].each_with_index do |event_day, index|
       - if index == 1

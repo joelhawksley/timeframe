@@ -6,14 +6,8 @@
     h2
       i.wi.wi-fw class="wi-wu-#{view_object[:weather][:tomorrow_icon]}"
       = view_object[:weather][:tomorrow_temperature_range]
-    / h2
-    /   i.fa.fa-fw class="#{view_object[:weather][:sun_phase_icon_class]}"
-    /   = view_object[:weather][:sun_phase_label]
   - else
     h2
       i.wi.wi-fw class="wi-wu-#{view_object[:weather][:today_icon]}"
       = view_object[:weather][:today_temperature_range]
-    / h2
-    /   i.fa.fa-fw class="#{view_object[:weather][:sun_phase_icon_class]}"
-    /   = view_object[:weather][:sun_phase_label]
   .summary-item = view_object[:weather][:summary]
