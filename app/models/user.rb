@@ -5,7 +5,8 @@ class User < ApplicationRecord
   has_many :devices
 
   def fetch
-    update(weather: WeatherService.call(self), calendar_events: CalendarService.call(self))
+    WeatherService.call(self)
+    CalendarService.call(self)
   end
 
   def calendar_events_for(beginning_i, ending_i)

@@ -1,6 +1,6 @@
 class CalendarService
   def self.call(user)
-    new.fetch_calendar_events(user)
+    user.update(calendar_events: new.fetch_calendar_events(user))
   end
 
   def fetch_calendar_events(user)
