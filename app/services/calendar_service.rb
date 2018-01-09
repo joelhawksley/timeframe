@@ -15,6 +15,7 @@ class CalendarService
       client_secret: Rails.application.secrets.google_client_secret,
       token_credential_uri: 'https://accounts.google.com/o/oauth2/token'
     })
+    client.expires_in = Time.now + 1_000_000
 
     client.update!(user.google_authorization)
 
