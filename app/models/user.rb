@@ -5,6 +5,7 @@ class User < ApplicationRecord
   has_many :devices
 
   def fetch
+    update(error_messages: [])
     WeatherService.call(self)
     CalendarService.call(self)
   end

@@ -1,6 +1,8 @@
 class CalendarService
   def self.call(user)
     user.update(calendar_events: new.fetch_calendar_events(user))
+  rescue => e
+    user.update(error_messages: user.error_messages << e.message)
   end
 
   def fetch_calendar_events(user)
