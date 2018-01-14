@@ -5,6 +5,19 @@ class CalendarService
     user.update(error_messages: user.error_messages << e.message)
   end
 
+  def self.client_options
+    {
+      client_id: Rails.application.secrets.google_client_id,
+      client_secret: Rails.application.secrets.google_client_secret,
+      authorization_uri: 'https://accounts.google.com/o/oauth2/auth',
+      token_credential_uri: 'https://accounts.google.com/o/oauth2/token',
+      scope: Google::Apis::CalendarV3::AUTH_CALENDAR_READONLY,
+      redirect_uri: Rails.application.routes.url_helpers.callback_url(host: ActionMailer::Base.default_url_options[:host], port: ActionMailer::Base.default_url_options[:port]),
+      access_type: 'offline',
+      grant_type: 'authorization_code'
+    }
+  end
+
   def fetch_calendar_events(user)
     calendar_events(user)
   end
@@ -12,11 +25,7 @@ class CalendarService
   private
 
   def calendar_events(user)
-    client = Signet::OAuth2::Client.new({
-      client_id: Rails.application.secrets.google_client_id,
-      client_secret: Rails.application.secrets.google_client_secret,
-      token_credential_uri: 'https://accounts.google.com/o/oauth2/token'
-    })
+    client = Signet::OAuth2::Client.new(self.class.client_options)
     client.expires_in = Time.now + 1_000_000
 
     client.update!(user.google_authorization)

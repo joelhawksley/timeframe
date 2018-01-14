@@ -20,15 +20,7 @@
   def redirect
     authenticate_user!
 
-    client = Signet::OAuth2::Client.new({
-      client_id: Rails.application.secrets.google_client_id,
-      client_secret: Rails.application.secrets.google_client_secret,
-      authorization_uri: 'https://accounts.google.com/o/oauth2/auth',
-      scope: Google::Apis::CalendarV3::AUTH_CALENDAR_READONLY,
-      access_type: 'offline',
-      grant_type: 'authorization_code',
-      redirect_uri: callback_url
-    })
+    client = Signet::OAuth2::Client.new(CalendarService.client_options)
 
     redirect_to(client.authorization_uri.to_s)
   end
@@ -36,14 +28,8 @@
   def callback
     authenticate_user!
 
-    client = Signet::OAuth2::Client.new({
-      client_id: Rails.application.secrets.google_client_id,
-      client_secret: Rails.application.secrets.google_client_secret,
-      token_credential_uri: 'https://accounts.google.com/o/oauth2/token',
-      access_type: 'offline',
-      redirect_uri: callback_url,
-      code: params[:code]
-    })
+    client = Signet::OAuth2::Client.new(CalendarService.client_options)
+    client.code = params[:code]
 
     response = client.fetch_access_token!
 
