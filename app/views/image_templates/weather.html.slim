@@ -1,7 +1,7 @@
 .abs = view_object[:timestamp]
 .wrapper.weather
   .current-temp = view_object[:weather][:current_temperature]
-  - if DateTime.now.hour > 19
+  - if DateTime.now.utc.in_time_zone("America/Denver") > 19
     .tomorrow-label Tomorrow
     h2
       i.wi.wi-fw class="wi-wu-#{view_object[:weather][:tomorrow_icon]}"
