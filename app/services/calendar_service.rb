@@ -12,7 +12,7 @@ class CalendarService
       authorization_uri: 'https://accounts.google.com/o/oauth2/auth',
       token_credential_uri: 'https://accounts.google.com/o/oauth2/token',
       scope: Google::Apis::CalendarV3::AUTH_CALENDAR_READONLY,
-      redirect_uri: Rails.application.routes.url_helpers.callback_url(host: ActionMailer::Base.default_url_options[:host], port: ActionMailer::Base.default_url_options[:port]),
+      redirect_uri: Rails.application.secrets.redirect_uri,
       access_type: 'offline',
       grant_type: 'authorization_code'
     }
