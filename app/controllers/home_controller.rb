@@ -26,6 +26,7 @@
       authorization_uri: 'https://accounts.google.com/o/oauth2/auth',
       scope: Google::Apis::CalendarV3::AUTH_CALENDAR_READONLY,
       access_type: 'offline',
+      grant_type: 'authorization_code',
       redirect_uri: callback_url
     })
 
