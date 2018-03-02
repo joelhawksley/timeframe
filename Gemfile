@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 gem 'rails', '~> 5.1.2'
 gem 'devise'
+gem 'dotenv-rails'
 gem 'imgkit'
 gem 'google-api-client', '~> 0.11', require: 'google/apis/calendar_v3'
 gem 'multipart-post'
@@ -12,6 +13,7 @@ gem 'sass-rails', '~> 5.0'
 gem 'uglifier', '>= 1.3.0'
 gem "font-awesome-rails"
 gem 'jbuilder', '~> 2.5'
+gem 'visionect', git: 'https://github.com/joelhawksley/visionect.git'
 gem 'webpacker'
 gem 'weather-api'
 

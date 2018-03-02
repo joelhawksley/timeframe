@@ -15,3 +15,4 @@
 .DS_Store
 /public/packs
 /node_modules
+.env
