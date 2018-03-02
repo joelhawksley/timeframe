@@ -2,7 +2,6 @@ source 'https://rubygems.org'
 
 gem 'rails', '~> 5.1.2'
 gem 'devise'
-gem 'httparty'
 gem 'imgkit'
 gem 'google-api-client', '~> 0.11', require: 'google/apis/calendar_v3'
 gem 'multipart-post'
