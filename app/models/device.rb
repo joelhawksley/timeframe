@@ -1,4 +1,4 @@
-require 'net/http/post/multipart'
+require 'visionect'
 
 class Device < ApplicationRecord
   belongs_to :user
