@@ -13,7 +13,7 @@ gem 'sass-rails', '~> 5.0'
 gem 'uglifier', '>= 1.3.0'
 gem "font-awesome-rails"
 gem 'jbuilder', '~> 2.5'
-gem 'visionect', git: 'https://github.com/joelhawksley/visionect.git'
+gem 'visionect-ruby', git: 'https://github.com/joelhawksley/visionect-ruby.git'
 gem 'webpacker'
 gem 'weather-api'
 
