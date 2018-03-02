@@ -89,6 +89,8 @@ GEM
       multi_json (~> 1.11)
       os (~> 0.9)
       signet (~> 0.7)
+    httparty (0.16.0)
+      multi_xml (>= 0.5.2)
     httpclient (2.8.3)
     i18n (0.8.6)
     imgkit (1.6.1)
@@ -114,6 +116,7 @@ GEM
     mini_portile2 (2.2.0)
     minitest (5.10.3)
     multi_json (1.12.1)
+    multi_xml (0.6.0)
     multipart-post (2.0.0)
     nio4r (2.1.0)
     nokogiri (1.8.0)
@@ -226,6 +229,7 @@ DEPENDENCIES
   dotenv-rails
   font-awesome-rails
   google-api-client (~> 0.11)
+  httparty
   imgkit
   jbuilder (~> 2.5)
   multipart-post
