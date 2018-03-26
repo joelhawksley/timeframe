@@ -5,6 +5,7 @@ namespace :fetch do
       user.devices.each do |device|
         device.render_image
         device.push
+        device.fetch
       end
     end
   end

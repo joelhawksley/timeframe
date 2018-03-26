@@ -25,4 +25,8 @@ class Device < ApplicationRecord
   def push
     Visionect::Client.new.update_backend(uuids: [uuid], binary_png: current_image)
   end
+
+  def fetch
+    update(status: JSON.parse(Visionect::Client.new.get_device(uuid: uuid).body))
+  end
 end

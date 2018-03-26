@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/joelhawksley/visionect-ruby.git
-  revision: f5045afb8a2a4242630a4a289ff593198c2c248b
+  revision: c476158f294d07ca50cfca34f01c413414b2d0a4
   specs:
     visionect-ruby (0.1.0)
       multipart-post
