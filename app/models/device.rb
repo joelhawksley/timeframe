@@ -6,7 +6,7 @@ class Device < ApplicationRecord
   def error_messages
     out = user.error_messages
 
-    if status.dig("Status", "Battery").to_i < 25
+    if status.dig("Status", "Battery").to_i < 10
       out << "Battery level low. Please plug me in overnight!"
     end
 
