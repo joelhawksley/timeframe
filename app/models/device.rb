@@ -3,10 +3,14 @@ require 'visionect'
 class Device < ApplicationRecord
   belongs_to :user
 
+  def battery_level
+    status.dig("Status", "Battery")&.to_i || 100
+  end
+
   def error_messages
     out = user.error_messages
 
-    if status.dig("Status", "Battery").to_i < 10
+    if battery_level < 10
       out << "Battery level low. Please plug me in overnight!"
     end
 
@@ -23,6 +27,7 @@ class Device < ApplicationRecord
 
     view_object = user.render_json_payload
     view_object[:error_messages] = error_messages
+    view_object[:battery_level] = battery_level
 
     html =
       Slim::Template.new(

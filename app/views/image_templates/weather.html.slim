@@ -1,4 +1,4 @@
-.abs = view_object[:timestamp]
+.abs "#{view_object[:timestamp]} - #{view_object[:battery_level]}
 - if view_object[:error_messages].any?
   .error-messages
     - view_object[:error_messages].each do |error_message|
