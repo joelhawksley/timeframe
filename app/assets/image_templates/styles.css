@@ -26,6 +26,12 @@ li {
   list-style-type: none;
 }
 
+.error-messages {
+  color: #fff;
+  background-color: #000;
+  padding: 40px;
+}
+
 .weather {
   padding: 40px 20px 20px 40px;
 }

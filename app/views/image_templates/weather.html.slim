@@ -1,4 +1,8 @@
 .abs = view_object[:timestamp]
+- if view_object[:error_messages].any?
+  .error-messages
+    - view_object[:error_messages].each do |error_message|
+      .error-message = error_message
 .wrapper.weather
   .current-temp = view_object[:weather][:current_temperature]
   - if DateTime.now.utc.in_time_zone("America/Denver").hour > 19
