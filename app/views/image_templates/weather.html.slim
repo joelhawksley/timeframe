@@ -14,4 +14,4 @@
     h2
       i.wi.wi-fw class="wi-wu-#{view_object[:weather][:today_icon]}"
       = view_object[:weather][:today_temperature_range]
-  .summary-item = view_object[:weather][:summary]
+  .summary-item style="#{"font-size: 40px" if view_object[:weather][:summary].length > 90 }"= view_object[:weather][:summary]

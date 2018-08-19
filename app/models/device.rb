@@ -4,6 +4,8 @@ class Device < ApplicationRecord
   belongs_to :user
 
   def battery_level
+    return 100 unless status.is_a?(Hash)
+
     status.dig("Status", "Battery")&.to_i || 100
   end
 
