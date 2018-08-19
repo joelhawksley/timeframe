@@ -16,6 +16,8 @@ class Device < ApplicationRecord
       out << "Battery level low. Please plug me in overnight!"
     end
 
+    out.concat(user.weather["alerts"].map { |a| a["message"] })
+
     out
   end
 
