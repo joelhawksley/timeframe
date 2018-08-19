@@ -10,13 +10,11 @@ class Device < ApplicationRecord
   end
 
   def error_messages
-    out = user.error_messages
+    out = user.alerts
 
     if battery_level < 10
       out << "Battery level low. Please plug me in overnight!"
     end
-
-    out.concat(user.weather["alerts"].map { |a| a["message"] })
 
     out
   end

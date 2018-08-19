@@ -66,6 +66,13 @@ class User < ApplicationRecord
     }
   end
 
+  def alerts
+    out = error_messages
+    out.concat(weather["alerts"].map { |a| a["message"] })
+    out << air if air.present?
+    out
+  end
+
   def time_for_event(event, tz)
     start = Time.at(event["start_i"]).in_time_zone(tz)
     endtime = Time.at(event["end_i"]).in_time_zone(tz)
