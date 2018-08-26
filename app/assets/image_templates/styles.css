@@ -65,11 +65,13 @@ li {
   font-size: 420px;
   line-height: 320px;
   margin-bottom: 40px;
+  margin-left: -15px;
 }
 
 .weather h2 {
   font-size: 120px;
   font-weight: normal;
+  margin-left: -15px;
   padding-bottom: 10px;
   padding-top: 40px;
 }
