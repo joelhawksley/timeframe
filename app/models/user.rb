@@ -71,7 +71,7 @@ class User < ApplicationRecord
     out = error_messages
     out.concat(weather["alerts"].map { |a| a["description"] })
     out << air if air.present?
-    out
+    out.uniq
   end
 
   def time_for_event(event, tz)

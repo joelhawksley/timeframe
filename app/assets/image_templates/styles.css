@@ -29,7 +29,21 @@ li {
 .error-messages {
   color: #fff;
   background-color: #000;
-  padding: 40px;
+  padding: 25px 40px;
+}
+
+.error-messages i {
+  display: block;
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  text-algn: center;
+  line-height: 50px;
+}
+
+.error-messages .error-message {
+  margin-left: 60px;
+  line-height: 50px;
 }
 
 .weather {
