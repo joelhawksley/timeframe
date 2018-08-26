@@ -69,7 +69,7 @@ class User < ApplicationRecord
 
   def alerts
     out = error_messages
-    out.concat(weather["alerts"].map { |a| a["message"] })
+    out.concat(weather["alerts"].map { |a| a["description"] })
     out << air if air.present?
     out
   end
