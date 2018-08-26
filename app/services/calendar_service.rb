@@ -101,6 +101,7 @@ class CalendarService
     "heartbeat" => "/(gym|heartbeat)/",
     "plane" => "/(flight)/",
     "truck" => "/(UPS)/",
+    "bus" => "/(RTD|FF)/",
     "book" => "/(library)/",
     "sun-o" => "/(wunder)/",
     "paw" => "/(captain|dog|dog park)/",
