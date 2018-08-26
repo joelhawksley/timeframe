@@ -74,7 +74,7 @@ li {
 }
 
 .calendar-weather .current {
-  padding-bottom: 60px;
+  padding-bottom: 25px;
 }
 
 .calendar-weather .current .temp {
@@ -103,6 +103,11 @@ li {
 .calendar-event-weather i.wi {
   line-height: .8;
   vertical-align: baseline;
+  margin-right: 12px;
+}
+
+.calendar-day {
+  margin-top: 25px;
 }
 
 .calendar-event:first-child {
@@ -129,7 +134,7 @@ li {
 
 .calendar hr {
   border: 1px dashed #666;
-  margin: 25px 25%;
+  margin: 25px 25% 0;
 }
 
 .calendar-event p {
