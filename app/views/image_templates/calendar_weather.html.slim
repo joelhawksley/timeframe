@@ -1,4 +1,5 @@
-.abs "#{view_object[:timestamp]} - #{view_object[:battery_level]}"
+.abs #{view_object[:timestamp]} - #{view_object[:battery_level]}
+.fade-bottom
 - if view_object[:error_messages].any?
   .error-messages
     i.fa.fa-fw.fa-warning

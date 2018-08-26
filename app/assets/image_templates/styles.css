@@ -4,6 +4,7 @@
   bottom: 5px;
   left: 10px;
   font-size: 10px;
+  z-index: 10;
 }
 
 * {
@@ -20,6 +21,16 @@ body {
   position: absolute;
   right: 0;
   top: 0;
+}
+
+.fade-bottom {
+  background:-webkit-gradient(linear,left top,left bottom,color-stop(0%, rgba(255,255,255,0)),color-stop(100%,rgba(255,255,255,1)));
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 75px;
+  z-index: 5;
 }
 
 li {
@@ -121,7 +132,7 @@ li {
 }
 
 .calendar-day {
-  margin-top: 25px;
+  margin-top: 15px;
 }
 
 .calendar-event:first-child {
@@ -169,14 +180,4 @@ li {
   content: "";
   clear: both;
   display: table;
-}
-
-.calendar-weather .top {
-  margin-top: -10px;
-  margin-bottom: 20px;
-}
-
-.calendar-weather .top .summary {
-  font-size: 26px;
-  padding-top: 15px;
 }
