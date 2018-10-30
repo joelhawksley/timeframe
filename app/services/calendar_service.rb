@@ -57,7 +57,8 @@ class CalendarService
           events << event_json.slice(
               "start",
               "end",
-              "summary"
+              "summary",
+              "location"
             ).merge(
               calendar: calendar.summary,
               icon: icon_for_title("#{calendar.summary} #{event_json["summary"]}"),

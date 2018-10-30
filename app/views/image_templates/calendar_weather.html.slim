@@ -25,5 +25,11 @@
             li.calendar-event
               i.fa.fa-fw class="fa-#{event['icon']}"
               p #{event["summary"]}
-              - unless event["all_day"]
-                p.time = event["time"]
+              - if !event["all_day"] || event["location"].present?
+                p.time
+                  - unless event["all_day"]
+                    = event["time"]
+                  - if !event["all_day"] && event["location"].present?
+                    ' ,
+                  - unless event["location"].nil?
+                    = event["location"].to_s.split(",")[0]
