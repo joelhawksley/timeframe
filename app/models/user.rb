@@ -80,8 +80,20 @@ class User < ApplicationRecord
 
     start_label = start.min > 0 ? start.strftime('%-l:%M') : start.strftime('%-l')
     end_label = endtime.min > 0 ? endtime.strftime('%-l:%M%P') : endtime.strftime('%-l%P')
-    start_suffix = start.strftime('%P') == endtime.strftime('%P') ? '' : start.strftime('%P')
+    start_suffix =
+      if start.strftime('%P') == endtime.strftime('%P') && start.to_date == endtime.to_date
+        ''
+      else
+        start.strftime('%P')
+      end
+    start_date = ""
+    end_date = ""
 
-    "#{start_label}#{start_suffix} - #{end_label}"
+    if start.to_date != endtime.to_date
+      start_date = "#{start.strftime("%-m/%e")} "
+      end_date = "#{endtime.strftime("%-m/%e")} "
+    end
+
+    "#{start_date}#{start_label}#{start_suffix} - #{end_date}#{end_label}"
   end
 end
