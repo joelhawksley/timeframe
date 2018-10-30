@@ -21,7 +21,7 @@ class SkiService
           runs: runs,
           snow_24: "#{r["pastSnow"]["snow0day"]}\"",
           snow_72: "#{r["pastSnow"]["sum3"]}\"",
-          snow_base: (r["snowcone"]["base_depth_cm"] / 2.54).round
+          snow_base: "#{(r["snowcone"]["base_depth_cm"] / 2.54).round}\""
         }
       end
 
