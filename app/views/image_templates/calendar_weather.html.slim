@@ -17,6 +17,15 @@
         hr
       li.calendar-day
         ul
+          - if view_object[:ski_reports].any? && index == 0
+            li.calendar-event
+              i.fa.fa-fw.fa-snowflake-o
+              - view_object[:ski_reports].each do |report|
+                p
+                  = report["name"]
+                  '  -
+                  = report["snow"]
+                  = report["runs"]
           - if index == 1
             li.calendar-event-weather
               i.wi.wi-fw class="wi-wu-#{view_object[:weather][:tomorrow_icon]}"

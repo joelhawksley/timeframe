@@ -9,6 +9,7 @@ class User < ApplicationRecord
     WeatherService.call(self)
     CalendarService.call(self)
     AirService.call(self)
+    SkiService.call(self)
   end
 
   def calendar_events_for(beginning_i, ending_i)
@@ -43,6 +44,7 @@ class User < ApplicationRecord
 
     {
       api_version: 2,
+      ski_reports: ski_reports,
       today_events: {
         all_day: today_events.select { |event| event["all_day"] },
         periodic: today_events.select { |event| !event["all_day"] }
