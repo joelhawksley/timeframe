@@ -13,13 +13,15 @@ class SkiService
           if r["snowcone"]["num_trails_slopes_open"] == r["resortProfile"]["number_runs"]
             ""
           else
-            "/ #{((r["snowcone"]["num_trails_slopes_open"]/r["resortProfile"]["number_runs"].to_f).ceil)}%"
+            "#{((r["snowcone"]["num_trails_slopes_open"]/r["resortProfile"]["number_runs"].to_f).ceil)}%"
           end
 
         {
           name: r["resort_name_short"],
           runs: runs,
-          snow: "#{r["pastSnow"]["snow0day"]}\" / #{r["pastSnow"]["sum3"]}\" / #{(r["snowcone"]["base_depth_cm"] / 2.54).round}\""
+          snow_24: "#{r["pastSnow"]["snow0day"]}\"",
+          snow_72: "#{r["pastSnow"]["sum3"]}\"",
+          snow_base: (r["snowcone"]["base_depth_cm"] / 2.54).round
         }
       end
 

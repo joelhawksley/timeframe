@@ -164,8 +164,17 @@ li {
   margin: 25px 25% 0;
 }
 
-.calendar-event p {
+.calendar-event p, .calendar-event .ski-reports {
   margin-left: 75px;
+}
+
+.calendar-event .ski-reports {
+  font-size: 40px;
+  width: 670px;
+}
+
+.calendar-event .ski-reports .report {
+  text-align: right;
 }
 
 .time {
