@@ -6,7 +6,7 @@ class SkiService
       resorts_i_care_about =
         response["rows"].
           select { |r| [20, 36, 77, 197, 482].include?(r["_id"]) }.
-          sort { |r| r["resort_name_short"] }
+          sort { |x,y| y["resort_name_short"] <=> x["resort_name_short"] }
 
       reports = resorts_i_care_about.map do |r|
         runs =
