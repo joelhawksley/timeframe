@@ -77,7 +77,7 @@ class Display extends React.Component {
               <li className="event" key={ event.summary }>
                 <i className={ "fa fa-fw fa-" + event.icon } />
                 <span>{ event.summary }</span>
-                <span className="time">{ event.time }</span>
+                <span className="time">{ event.time }{ (event.location)  ? ", " + event.location.split(", ")[0] : "" }</span>
               </li>
             )}
           </ul>
