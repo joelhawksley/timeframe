@@ -32,6 +32,10 @@
             li.calendar-event-weather
               i.wi.wi-fw class="wi-wu-#{view_object[:weather][:tomorrow_icon]}"
               =< view_object[:weather][:tomorrow_temperature_range]
+              i.fa.fa-fw class="#{view_object[:weather][:sunrise_icon_class]}"
+              => view_object[:weather][:sunrise_label]
+              i.fa.fa-fw class="#{view_object[:weather][:sunset_icon_class]}"
+              => view_object[:weather][:sunset_label]
           - [event_day[:all_day], event_day[:periodic]].flatten.each do |event|
             li.calendar-event
               i.fa.fa-fw class="fa-#{event['icon']}"

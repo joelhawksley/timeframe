@@ -30,6 +30,10 @@ class User < ApplicationRecord
         ["fa-sun-o", "#{sun_phase["sunrise"]["hour"]}:#{sun_phase["sunrise"]["minute"]}am"]
       end
 
+    sunrise_icon_class, sunrise_label = ["fa-sun-o", "#{sun_phase["sunrise"]["hour"]}:#{sun_phase["sunrise"]["minute"]}am"]
+
+    sunset_icon_class, sunset_label = ["fa-moon-o", "#{sun_phase["sunset"]["hour"].to_i - 12}:#{sun_phase["sunset"]["minute"]}pm"]
+
     today_events =
       calendar_events_for(Time.now.in_time_zone(tz).to_i, Time.now.in_time_zone(tz).end_of_day.utc.to_i).map do |event|
         event["time"] = time_for_event(event, tz)
@@ -61,6 +65,10 @@ class User < ApplicationRecord
         summary: weather["forecast"]["txt_forecast"]["forecastday"].first["fcttext"],
         sun_phase_icon_class: icon_class,
         sun_phase_label: label,
+        sunrise_icon_class: sunrise_icon_class,
+        sunrise_label: sunrise_label,
+        sunset_icon_class: sunset_icon_class,
+        sunset_label: sunset_label,
         today_temperature_range: "#{weather["forecast"]["simpleforecast"]["forecastday"].first["high"]["fahrenheit"]}° / #{weather["forecast"]["simpleforecast"]["forecastday"].first["low"]["fahrenheit"]}°",
         today_icon: weather["forecast"]["simpleforecast"]["forecastday"][1]["icon"],
         tomorrow_temperature_range: "#{weather["forecast"]["simpleforecast"]["forecastday"][1]["high"]["fahrenheit"]}° / #{weather["forecast"]["simpleforecast"]["forecastday"][1]["low"]["fahrenheit"]}°",
