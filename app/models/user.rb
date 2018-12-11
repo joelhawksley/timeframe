@@ -47,7 +47,7 @@ class User < ApplicationRecord
       end
 
     {
-      api_version: 2,
+      api_version: 3,
       ski_reports: ski_reports,
       today_events: {
         all_day: today_events.select { |event| event["all_day"] },
