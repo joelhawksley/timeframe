@@ -103,6 +103,7 @@ class CalendarService
     "plane" => "/(flight)/",
     "truck" => "/(UPS)/",
     "bus" => "/(RTD|FF)/",
+    "github" => "/(On Call)/",
     "book" => "/(library)/",
     "sun-o" => "/(wunder)/",
     "paw" => "/(captain|dog|dog park)/",
