@@ -17,17 +17,6 @@
         hr
       li.calendar-day
         ul
-          - if view_object[:ski_reports].any? && index == 0 && false
-            li.calendar-event
-              i.fa.fa-fw.fa-snowflake-o
-              table.ski-reports
-                - view_object[:ski_reports].each do |report|
-                  tr
-                    td.name = report["name"]
-                    td = report["snow_24"]
-                    td = report["snow_72"]
-                    td = report["snow_base"]
-                    td = report["runs"]
           - if index == 1
             li.calendar-event-weather
               i.wi.wi-fw class="wi-wu-#{view_object[:weather][:tomorrow_icon]}"
