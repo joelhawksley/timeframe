@@ -76,7 +76,7 @@ li {
   padding-top: 40px;
 }
 
-.weather i {
+.weather h2 i {
   margin-right: 30px;
 }
 
@@ -91,8 +91,20 @@ li {
   font-size: 30px;
   font-weight: 300;
   mergin-bottom: 20px;
+  margin-top: 20px;
   letter-spacing: 1px;
   text-transform: uppercase;
+  text-align: left;
+}
+
+.weather h3 {
+  font-weight: normal;
+  font-size: 60px;
+  margin-top: 15px;
+}
+
+.weather h3 i {
+  margin-right: 15px;
 }
 
 .calendar-weather {

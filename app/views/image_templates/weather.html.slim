@@ -13,6 +13,6 @@
   .summary-item style="#{"font-size: 40px" if view_object[:weather][:summary].length > 90 }"= view_object[:weather][:summary]
   - if DateTime.now.utc.in_time_zone("America/Denver").hour > 19
     .tomorrow-label Tomorrow
-    h2
+    h3
       i.wi.wi-fw class="wi-wu-#{view_object[:weather][:tomorrow_icon]}"
       = view_object[:weather][:tomorrow_temperature_range]
