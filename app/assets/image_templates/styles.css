@@ -123,11 +123,30 @@ li {
   vertical-align: middle;
 }
 
-.calendar-weather .current .range {
-  font-size: 70px;
-  line-height: 120px;
+.calendar-weather .current .temp-graph {
   float: right;
-  vertical-align: middle;
+  margin-top: -20px;
+}
+
+.calendar-weather .current td {
+  font-size: 20px;
+  width: 12px;
+}
+
+.calendar-weather .current .graph {
+  vertical-align: bottom;
+}
+
+.calendar-weather .current .icons td {
+  padding-top: 10px;
+}
+
+.calendar-weather .current .point {
+  border-radius: 100%;
+  background-color: black;
+  display: inline-block;
+  width: 5px;
+  height: 5px;
 }
 
 .calendar-event, .calendar-event-weather {

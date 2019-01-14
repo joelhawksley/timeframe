@@ -8,9 +8,34 @@
 .calendar-weather
   .current.clearfix
     .temp => view_object[:weather][:current_temperature]
-    .range
-      i.wi.wi-fw class="wi-wu-#{view_object[:weather][:today_icon]}"
-      =<> view_object[:weather][:today_temperature_range]
+    .temp-graph
+      table
+        - min = view_object[:weather][:hour_temps].min { |a, b| a[1].to_f <=> b[1].to_f }
+        tr.graph
+          - view_object[:weather][:hour_temps].each do |label, temp|
+            td
+              .point style="margin-bottom: #{((temp.to_f - min[1].to_f) * 2.5).round}px"
+        tr.icons
+          - i = 0
+          - view_object[:weather][:hour_temps].each do |label, temp, icon|
+            - if i % 4 == 0
+              td colspan="4"
+                i.wi.wi-fw class="wi-wu-#{icon}"
+            - i +=1
+        tr
+          - i = 0
+          - view_object[:weather][:hour_temps].each do |label, temp|
+            - if i % 4 == 0
+              td colspan="4"
+                = temp.to_f.round
+                | °
+            - i +=1
+        tr
+          - i = 0
+          - view_object[:weather][:hour_temps].each do |label, temp|
+            - if i % 4 == 0
+              td colspan="4" = label.gsub(":00 ", "").downcase.gsub("m", "")
+            - i +=1
   ul.calendar
     - [view_object[:today_events], view_object[:tomorrow_events]].each_with_index do |event_day, index|
       - if index == 1
