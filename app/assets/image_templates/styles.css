@@ -123,25 +123,42 @@ li {
   vertical-align: middle;
 }
 
-.calendar-weather .current .temp-graph {
-  float: right;
-  margin-top: -20px;
+.calendar-weather .temp-graph {
+  margin-bottom: 25px;
 }
 
-.calendar-weather .current td {
-  font-size: 20px;
-  width: 12px;
+.calendar-weather .temp-graph table {
+  table-layout: fixed;
 }
 
-.calendar-weather .current .graph {
+.calendar-weather .temp-graph td {
+  font-size: 30px;
+  text-align: center;
+  width: 25px;
+  background-color: grey;
+}
+
+.calendar-weather .temp-graph .temp td:first-child {
+  font-size: 60px;
+}
+
+.calendar-weather .temp-graph .graph {
   vertical-align: bottom;
+  text-align: center;
 }
 
-.calendar-weather .current .icons td {
-  padding-top: 10px;
+.calendar-weather .temp-graph .icons td {
+  padding-top: 20px;
+  font-size: 40px;
 }
 
-.calendar-weather .current .point {
+.calendar-weather .temp-graph .time td {
+  color: #666;
+  font-weight: 300;
+  font-size: 30px;
+}
+
+.calendar-weather .temp-graph .point {
   border-radius: 100%;
   background-color: black;
   display: inline-block;
@@ -208,7 +225,7 @@ li {
   text-align: right;
 }
 
-.time {
+.calendar-event .time {
   color: #666;
   font-size: 32px;
   font-weight: 300;
