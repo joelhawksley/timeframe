@@ -124,7 +124,8 @@ li {
 }
 
 .calendar-weather .temp-graph {
-  margin-bottom: 25px;
+  margin-bottom: 120px;
+  padding: 40px 15px 0 30px;
 }
 
 .calendar-weather .temp-graph table {
@@ -134,11 +135,7 @@ li {
 .calendar-weather .temp-graph td {
   font-size: 30px;
   text-align: center;
-  width: 25px;
-}
-
-.calendar-weather .temp-graph .temp td:first-child {
-  font-size: 60px;
+  width: 30px;
 }
 
 .calendar-weather .temp-graph .graph {
@@ -151,18 +148,63 @@ li {
   font-size: 40px;
 }
 
-.calendar-weather .temp-graph .time td {
-  color: #666;
-  font-weight: 300;
-  font-size: 30px;
+.calendar-weather .temp-graph .relative {
+  position: relative;
 }
 
 .calendar-weather .temp-graph .point {
   border-radius: 100%;
-  background-color: black;
+  background-color: #666;
   display: inline-block;
   width: 5px;
   height: 5px;
+  position: relative;
+}
+
+.calendar-weather .temp-graph .point.bigger {
+  border-radius: 100%;
+  background-color: #666;
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  position: relative;
+}
+
+.calendar-weather .temp-graph .point .temp {
+  position: absolute;
+  bottom: 10px;
+  width: 150px;
+  left: -62px;
+  text-align: center;
+  text-shadow:
+		-1px -1px 0 #fff,
+		1px -1px 0 #fff,
+		-1px 1px 0 #fff,
+		1px 1px 0 #fff;
+}
+
+.calendar-weather .temp-graph td:first-child .point .temp {
+  font-size: 80px;
+  left: -55px;
+}
+
+.calendar-weather .temp-graph .icon {
+  position: absolute;
+  width: 50px;
+  left: -10px;
+  text-align: center;
+  top: 20px;
+}
+
+.calendar-weather .temp-graph .time {
+  color: #666;
+  font-weight: 300;
+  font-size: 24px;
+  position: absolute;
+  top: 50px;
+  width: 50px;
+  left: -10px;
+  text-align: center;
 }
 
 .calendar-event, .calendar-event-weather {

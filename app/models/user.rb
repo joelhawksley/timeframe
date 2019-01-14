@@ -71,7 +71,7 @@ class User < ApplicationRecord
         today_icon: weather["forecast"]["simpleforecast"]["forecastday"][1]["icon"],
         tomorrow_temperature_range: "#{weather["forecast"]["simpleforecast"]["forecastday"][1]["high"]["fahrenheit"]}° / #{weather["forecast"]["simpleforecast"]["forecastday"][1]["low"]["fahrenheit"]}°",
         tomorrow_icon: weather["forecast"]["simpleforecast"]["forecastday"][1]["icon"],
-        hour_temps: weather["hourly_forecast"].first(32).map { |e| [e["FCTTIME"]["civil"], e["temp"]["english"], e["icon"]] }
+        hour_temps: weather["hourly_forecast"].first(25).map { |e| [e["FCTTIME"]["civil"], e["temp"]["english"], e["icon"]] }
       }
     }
   end
