@@ -117,7 +117,7 @@ li {
 }
 
 .calendar-weather .temp-graph {
-  margin: 75px 10px 130px 50px;
+  margin: 75px 10px 140px 50px;
 }
 
 .calendar-weather .temp-graph table {
@@ -168,16 +168,17 @@ li {
   width: 150px;
   left: -62px;
   text-align: center;
-  text-shadow:
-		-1px -1px 0 #fff,
-		1px -1px 0 #fff,
-		-1px 1px 0 #fff,
-		1px 1px 0 #fff;
 }
 
 .calendar-weather .temp-graph td:first-child .point .temp {
   font-size: 100px;
   left: -55px;
+  z-index: 100;
+  text-shadow:
+		-4px -4px 0 #fff,
+		4px -4px 0 #fff,
+		-4px 4px 0 #fff,
+		4px 4px 0 #fff;
 }
 
 .calendar-weather .temp-graph .icon {
@@ -194,7 +195,7 @@ li {
   font-weight: 300;
   font-size: 28px;
   position: absolute;
-  top: 65px;
+  top: 60px;
   width: 100px;
   left: -38px;
   text-align: center;
