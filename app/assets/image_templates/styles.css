@@ -116,16 +116,8 @@ li {
   padding-bottom: 25px;
 }
 
-.calendar-weather .current .temp {
-  float: left;
-  font-size: 165px;
-  line-height: 120px;
-  vertical-align: middle;
-}
-
 .calendar-weather .temp-graph {
-  margin-bottom: 120px;
-  padding: 40px 15px 0 30px;
+  margin: 75px 10px 130px 50px;
 }
 
 .calendar-weather .temp-graph table {
@@ -133,7 +125,6 @@ li {
 }
 
 .calendar-weather .temp-graph td {
-  font-size: 30px;
   text-align: center;
   width: 30px;
 }
@@ -154,7 +145,7 @@ li {
 
 .calendar-weather .temp-graph .point {
   border-radius: 100%;
-  background-color: #666;
+  background-color: #999;
   display: inline-block;
   width: 5px;
   height: 5px;
@@ -163,7 +154,7 @@ li {
 
 .calendar-weather .temp-graph .point.bigger {
   border-radius: 100%;
-  background-color: #666;
+  background-color: black;
   display: inline-block;
   width: 10px;
   height: 10px;
@@ -172,7 +163,8 @@ li {
 
 .calendar-weather .temp-graph .point .temp {
   position: absolute;
-  bottom: 10px;
+  font-size: 40px;
+  bottom: 15px;
   width: 150px;
   left: -62px;
   text-align: center;
@@ -184,14 +176,15 @@ li {
 }
 
 .calendar-weather .temp-graph td:first-child .point .temp {
-  font-size: 80px;
+  font-size: 100px;
   left: -55px;
 }
 
 .calendar-weather .temp-graph .icon {
   position: absolute;
+  font-size: 40px;
   width: 50px;
-  left: -10px;
+  left: -15px;
   text-align: center;
   top: 20px;
 }
@@ -199,11 +192,11 @@ li {
 .calendar-weather .temp-graph .time {
   color: #666;
   font-weight: 300;
-  font-size: 24px;
+  font-size: 28px;
   position: absolute;
-  top: 50px;
-  width: 50px;
-  left: -10px;
+  top: 65px;
+  width: 100px;
+  left: -38px;
   text-align: center;
 }
 
@@ -236,7 +229,7 @@ li {
   position: absolute;
   width: 50px;
   height: 50px;
-  text-algn: center;
+  text-align: center;
 }
 
 .calendar .calendar-event i.fa {
@@ -253,22 +246,13 @@ li {
   margin: 25px 25% 0;
 }
 
-.calendar-event p, .calendar-event .ski-reports {
+.calendar-event p {
   margin-left: 75px;
-}
-
-.calendar-event .ski-reports {
-  font-size: 40px;
-  width: 670px;
-}
-
-.calendar-event .ski-reports .report {
-  text-align: right;
 }
 
 .calendar-event .time {
   color: #666;
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 300;
 }
 

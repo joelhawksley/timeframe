@@ -88,12 +88,12 @@ class User < ApplicationRecord
     endtime = Time.at(event["end_i"]).in_time_zone(tz)
 
     start_label = start.min > 0 ? start.strftime('%-l:%M') : start.strftime('%-l')
-    end_label = endtime.min > 0 ? endtime.strftime('%-l:%M%P') : endtime.strftime('%-l%P')
+    end_label = endtime.min > 0 ? endtime.strftime('%-l:%M%p') : endtime.strftime('%-l%p')
     start_suffix =
-      if start.strftime('%P') == endtime.strftime('%P') && start.to_date == endtime.to_date
+      if start.strftime('%p') == endtime.strftime('%p') && start.to_date == endtime.to_date
         ''
       else
-        start.strftime('%P')
+        start.strftime('%p').gsub("AM", "a").gsub("PM", "p")
       end
     start_date = ""
     end_date = ""
@@ -103,6 +103,6 @@ class User < ApplicationRecord
       end_date = "#{endtime.strftime("%-m/%e")} "
     end
 
-    "#{start_date}#{start_label}#{start_suffix} - #{end_date}#{end_label}"
+    "#{start_date}#{start_label}#{start_suffix} - #{end_date}#{end_label.gsub("AM", "a").gsub("PM", "p")}"
   end
 end
