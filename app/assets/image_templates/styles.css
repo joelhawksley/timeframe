@@ -117,7 +117,7 @@ li {
 }
 
 .calendar-weather .temp-graph {
-  margin: 75px 10px 140px 50px;
+  margin: 75px 10px 160px 50px;
 }
 
 .calendar-weather .temp-graph table {
@@ -146,6 +146,7 @@ li {
 .calendar-weather .temp-graph .point {
   border-radius: 100%;
   background-color: #999;
+  border: 2px solid white;
   display: inline-block;
   width: 5px;
   height: 5px;
@@ -155,9 +156,10 @@ li {
 .calendar-weather .temp-graph .point.bigger {
   border-radius: 100%;
   background-color: black;
+  border: 2px solid black;
   display: inline-block;
-  width: 10px;
-  height: 10px;
+  width: 5px;
+  height: 5px;
   position: relative;
 }
 
