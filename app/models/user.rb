@@ -19,19 +19,21 @@ class User < ApplicationRecord
 
   def render_json_payload
     tz = "America/Denver"
-    time = DateTime.now.utc.in_time_zone(tz)
+    current_time = DateTime.now.utc.in_time_zone(tz)
 
-    sun_phase = weather["sun_phase"]
+    sunrise_datetime = Time.at(weather["daily"]["data"][0]["sunriseTime"]).to_datetime.in_time_zone(tz)
+    sunset_datetime = Time.at(weather["daily"]["data"][0]["sunsetTime"]).to_datetime.in_time_zone(tz)
+
     icon_class, label =
-      if (time.strftime("%-H%M").to_i > (sun_phase["sunrise"]["hour"] + sun_phase["sunrise"]["minute"]).to_i) && (time.strftime("%-H%M").to_i < (sun_phase["sunset"]["hour"] + sun_phase["sunset"]["minute"]).to_i)
-        ["fa-moon-o", "#{sun_phase["sunset"]["hour"].to_i - 12}:#{sun_phase["sunset"]["minute"]}pm"]
+      if (current_time.strftime("%-H%M").to_i > (sunrise_datetime.hour + sunrise_datetime.min).to_i) && (current_time.strftime("%-H%M").to_i < (sunset_datetime.hour + sunset_datetime.min).to_i)
+        ["fa-moon-o", "#{sunset_datetime.hour - 12}:#{sunset_datetime.min}pm"]
       else
-        ["fa-sun-o", "#{sun_phase["sunrise"]["hour"]}:#{sun_phase["sunrise"]["minute"]}am"]
+        ["fa-sun-o", "#{sunrise_datetime.hour}:#{sunrise_datetime.min}am"]
       end
 
-    sunrise_icon_class, sunrise_label = ["fa-sun-o", "#{sun_phase["sunrise"]["hour"]}:#{sun_phase["sunrise"]["minute"]}am"]
+    sunrise_icon_class, sunrise_label = ["fa-sun-o", "#{sunrise_datetime.hour}:#{sunrise_datetime.min}am"]
 
-    sunset_icon_class, sunset_label = ["fa-moon-o", "#{sun_phase["sunset"]["hour"].to_i - 12}:#{sun_phase["sunset"]["minute"]}pm"]
+    sunset_icon_class, sunset_label = ["fa-moon-o", "#{sunset_datetime.hour.to_i - 12}:#{sunset_datetime.min}pm"]
 
     today_events =
       calendar_events_for(Time.now.in_time_zone(tz).to_i, Time.now.in_time_zone(tz).end_of_day.utc.to_i).map do |event|
@@ -55,30 +57,30 @@ class User < ApplicationRecord
         all_day: tomorrow_events.select { |event| event["all_day"] },
         periodic: tomorrow_events.select { |event| !event["all_day"] }
       },
-      time: time,
+      time: current_time,
       timestamp: updated_at.in_time_zone(tz).strftime("%A at %l:%M %p"),
       tz: tz,
       weather: {
-        current_temperature: weather["current_observation"]["temp_f"].round.to_s + "°",
-        summary: weather["forecast"]["txt_forecast"]["forecastday"].first["fcttext"],
+        current_temperature: weather["currently"]["temperature"].round.to_s + "°",
+        summary: weather["daily"]["data"].first["summary"],
         sun_phase_icon_class: icon_class,
         sun_phase_label: label,
         sunrise_icon_class: sunrise_icon_class,
         sunrise_label: sunrise_label,
         sunset_icon_class: sunset_icon_class,
         sunset_label: sunset_label,
-        today_temperature_range: "#{weather["forecast"]["simpleforecast"]["forecastday"].first["high"]["fahrenheit"]}° / #{weather["forecast"]["simpleforecast"]["forecastday"].first["low"]["fahrenheit"]}°",
-        today_icon: weather["forecast"]["simpleforecast"]["forecastday"][1]["icon"],
-        tomorrow_temperature_range: "#{weather["forecast"]["simpleforecast"]["forecastday"][1]["high"]["fahrenheit"]}° / #{weather["forecast"]["simpleforecast"]["forecastday"][1]["low"]["fahrenheit"]}°",
-        tomorrow_icon: weather["forecast"]["simpleforecast"]["forecastday"][1]["icon"],
-        hour_temps: weather["hourly_forecast"].first(25).map { |e| [e["FCTTIME"]["civil"], e["temp"]["english"].to_f.round, e["icon"]] }
+        today_temperature_range: "#{weather["daily"]["data"].first["temperatureHigh"]}° / #{weather["daily"]["data"].first["temperatureLow"]}°",
+        today_icon: weather["daily"]["data"].first["icon"],
+        tomorrow_temperature_range: "#{weather["daily"]["data"][1]["temperatureHigh"]}° / #{weather["daily"]["data"][1]["temperatureLow"]}°",
+        tomorrow_icon: weather["daily"]["data"][1]["icon"],
+        hour_temps: weather["hourly"]["data"].first(25).map { |e| [Time.at(e["time"]).to_datetime.in_time_zone(tz).strftime("%-l:%M%P"), e["temperature"].to_f.round, e["icon"]] }
       }
     }
   end
 
   def alerts
     out = error_messages
-    out.concat(weather["alerts"].map { |a| a["description"] })
+    out.concat(weather["alerts"].map { |a| a["title"] })
     out << air if air.present?
     out.uniq
   end

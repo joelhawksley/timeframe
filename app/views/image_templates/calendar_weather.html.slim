@@ -23,7 +23,7 @@
               .relative
                 .icon
                   i.wi.wi-fw class="wi-wu-#{icon}"
-                .time = label.gsub(":00 ", "").downcase.gsub("m", "")
+                .time = label.gsub(":00", "").downcase.gsub("m", "")
           - i +=1
   ul.calendar
     - [view_object[:today_events], view_object[:tomorrow_events]].each_with_index do |event_day, index|
