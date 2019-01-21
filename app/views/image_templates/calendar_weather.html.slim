@@ -21,8 +21,7 @@
                   | °
             - if i % 3 == 0
               .relative
-                .icon
-                  i.wi.wi-fw class="wi-wu-#{icon}"
+                .icon = device.embedded_svg(icon).to_s.html_safe
                 .time = label.gsub(":00", "").downcase.gsub("m", "")
           - i +=1
   ul.calendar
@@ -33,7 +32,7 @@
         ul
           - if index == 1
             li.calendar-event-weather
-              i.wi.wi-fw class="wi-wu-#{view_object[:weather][:tomorrow_icon]}"
+              .svg = device.embedded_svg(view_object[:weather][:tomorrow_icon]).to_s.html_safe
               =< view_object[:weather][:tomorrow_temperature_range]
               i.fa.fa-fw class="#{view_object[:weather][:sunrise_icon_class]}"
               => view_object[:weather][:sunrise_label]

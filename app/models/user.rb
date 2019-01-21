@@ -26,14 +26,14 @@ class User < ApplicationRecord
 
     icon_class, label =
       if (current_time.strftime("%-H%M").to_i > (sunrise_datetime.hour + sunrise_datetime.min).to_i) && (current_time.strftime("%-H%M").to_i < (sunset_datetime.hour + sunset_datetime.min).to_i)
-        ["fa-moon-o", "#{sunset_datetime.hour - 12}:#{sunset_datetime.min}pm"]
+        ["fa-moon-o", sunset_datetime.strftime("%-l:%M%P")]
       else
-        ["fa-sun-o", "#{sunrise_datetime.hour}:#{sunrise_datetime.min}am"]
+        ["fa-sun-o", sunrise_datetime.strftime("%-l:%M%P")]
       end
 
-    sunrise_icon_class, sunrise_label = ["fa-sun-o", "#{sunrise_datetime.hour}:#{sunrise_datetime.min}am"]
+    sunrise_icon_class, sunrise_label = ["fa-sun-o", sunrise_datetime.strftime("%-l:%M%P")]
 
-    sunset_icon_class, sunset_label = ["fa-moon-o", "#{sunset_datetime.hour.to_i - 12}:#{sunset_datetime.min}pm"]
+    sunset_icon_class, sunset_label = ["fa-moon-o", sunset_datetime.strftime("%-l:%M%P")]
 
     today_events =
       calendar_events_for(Time.now.in_time_zone(tz).to_i, Time.now.in_time_zone(tz).end_of_day.utc.to_i).map do |event|
@@ -69,11 +69,11 @@ class User < ApplicationRecord
         sunrise_label: sunrise_label,
         sunset_icon_class: sunset_icon_class,
         sunset_label: sunset_label,
-        today_temperature_range: "#{weather["daily"]["data"].first["temperatureHigh"]}° / #{weather["daily"]["data"].first["temperatureLow"]}°",
-        today_icon: weather["daily"]["data"].first["icon"],
-        tomorrow_temperature_range: "#{weather["daily"]["data"][1]["temperatureHigh"]}° / #{weather["daily"]["data"][1]["temperatureLow"]}°",
-        tomorrow_icon: weather["daily"]["data"][1]["icon"],
-        hour_temps: weather["hourly"]["data"].first(25).map { |e| [Time.at(e["time"]).to_datetime.in_time_zone(tz).strftime("%-l:%M%P"), e["temperature"].to_f.round, e["icon"]] }
+        today_temperature_range: "#{weather["daily"]["data"].first["temperatureHigh"].round}° / #{weather["daily"]["data"].first["temperatureLow"].round}°",
+        today_icon: climacon_for_icon(weather["daily"]["data"].first["icon"]),
+        tomorrow_temperature_range: "#{weather["daily"]["data"][1]["temperatureHigh"].round}° / #{weather["daily"]["data"][1]["temperatureLow"].round}°",
+        tomorrow_icon: climacon_for_icon(weather["daily"]["data"][1]["icon"]),
+        hour_temps: weather["hourly"]["data"].first(25).map { |e| [Time.at(e["time"]).to_datetime.in_time_zone(tz).strftime("%-l:%M%P"), e["temperature"].to_f.round, climacon_for_icon(e["icon"])] }
       }
     }
   end
@@ -83,6 +83,23 @@ class User < ApplicationRecord
     out.concat(weather["alerts"].map { |a| a["title"] })
     out << air if air.present?
     out.uniq
+  end
+
+  def climacon_for_icon(icon)
+    mappings = {
+      "clear-day" => "Sun",
+      "clear-night" => "Moon",
+      "rain" => "Cloud-Rain",
+      "snow" => "Cloud-Snow",
+      "sleet" => "Cloud-Snow",
+      "wind" => "Cloud-Wind",
+      "fog" => "Cloud-Fog",
+      "cloudy" => "Cloud",
+      "partly-cloudy-day" => "Cloud-Sun",
+      "partly-cloudy-night" => "Cloud-Moon"
+    }
+
+    "climacons/#{mappings[icon]}.svg"
   end
 
   def time_for_event(event, tz)
