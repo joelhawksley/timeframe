@@ -5,7 +5,8 @@ h1 Today Display
   = link_to "Connect Google Account", redirect_path
   h2 = current_user.email
   = form_for(current_user) do |f|
-    = f.text_field :location
+    = f.number_field :latitude, step: :any, placeholder: "Latitude"
+    = f.number_field :longitude, step: :any, placeholder: "Longitude"
     = f.submit "Update"
 - else
   = link_to "Sign In", new_user_session_path
