@@ -94,6 +94,7 @@ class CalendarService
 
   ICON_MATCHES = {
     "run" => "/((\d{1,2}mi)|Crosstrain|Marathon)/",
+    "github" => "/(github|On call)/",
     "cutlery" => "/(dinner|restaurant|supper|cake|cutlery)/",
     "calendar" => "/(holiday|calendar)/",
     "tree" => "/(hike|boulder valley ranch)/",
@@ -103,7 +104,6 @@ class CalendarService
     "plane" => "/(flight)/",
     "truck" => "/(UPS)/",
     "bus" => "/(RTD|FF)/",
-    "github" => "/(On Call)/",
     "book" => "/(library)/",
     "sun-o" => "/(wunder)/",
     "paw" => "/(captain|dog|dog park)/",
@@ -305,9 +305,6 @@ class CalendarService
     "get-pocket" => "/(get-pocket)/",
     "gg-circle" => "/(gg-circle)/",
     "git-square" => "/(git-square)/",
-    "github" => "/(github)/",
-    "github-alt" => "/(github-alt)/",
-    "github-square" => "/(github-square)/",
     "gitlab" => "/(gitlab)/",
     "gittip" => "/(gittip)/",
     "glide-g" => "/(glide-g)/",
