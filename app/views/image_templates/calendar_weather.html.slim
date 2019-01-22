@@ -21,7 +21,7 @@
                   | °
             - if i % 3 == 0
               .relative
-                .icon = device.embedded_svg(icon).to_s.html_safe
+                .icon = File.read(File.join(Rails.root, "app", "assets", "images", icon)).to_s.html_safe
                 .time = label.gsub(":00", "").downcase.gsub("m", "")
           - i +=1
   ul.calendar
@@ -32,7 +32,7 @@
         ul
           - if index == 1
             li.calendar-event-weather
-              .svg = device.embedded_svg(view_object[:weather][:tomorrow_icon]).to_s.html_safe
+              .svg = File.read(File.join(Rails.root, "app", "assets", "images", view_object[:weather][:tomorrow_icon])).to_s.html_safe
               =< view_object[:weather][:tomorrow_temperature_range]
               i.fa.fa-fw class="#{view_object[:weather][:sunrise_icon_class]}"
               => view_object[:weather][:sunrise_label]

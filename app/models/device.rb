@@ -3,12 +3,6 @@ require 'visionect'
 class Device < ApplicationRecord
   belongs_to :user
 
-  def embedded_svg(filename, options = {})
-    assets = Rails.application.assets
-    file = assets.find_asset(filename).source.force_encoding("UTF-8")
-    Nokogiri::HTML::DocumentFragment.parse file
-  end
-
   def battery_level
     return 100 unless status.is_a?(Hash)
 
@@ -42,8 +36,7 @@ class Device < ApplicationRecord
         Rails.root.join("app", "views", "image_templates", "#{template}.html.slim")
       ).render(
         Object.new,
-        view_object: view_object,
-        device: self
+        view_object: view_object
       )
 
     image = IMGKit.new(html, imgkit_params)
