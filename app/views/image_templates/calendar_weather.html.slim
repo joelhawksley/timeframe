@@ -24,21 +24,15 @@
                 .icon = File.read(File.join(Rails.root, "app", "assets", "images", icon)).to_s.html_safe
                 .time = label.gsub(":00", "").downcase.gsub("m", "")
           - i +=1
-  .weather-summary = view_object[:weather][:summary]
   ul.calendar
     - [view_object[:today_events], view_object[:tomorrow_events]].each_with_index do |event_day, index|
+      - if index == 0
+        li.date-divider Today
+        li.weather-summary = view_object[:weather][:summary]
       - if index == 1
-        hr
+        li.date-divider Tomorrow
       li.calendar-day
         ul
-          - if index == 1
-            li.calendar-event-weather
-              .svg = File.read(File.join(Rails.root, "app", "assets", "images", view_object[:weather][:tomorrow_icon])).to_s.html_safe
-              =< view_object[:weather][:tomorrow_temperature_range]
-              i.fa.fa-fw class="#{view_object[:weather][:sunrise_icon_class]}"
-              => view_object[:weather][:sunrise_label]
-              i.fa.fa-fw class="#{view_object[:weather][:sunset_icon_class]}"
-              => view_object[:weather][:sunset_label]
           - [event_day[:all_day], event_day[:periodic]].flatten.each do |event|
             li.calendar-event
               i.fa.fa-fw class="fa-#{event['icon']}"

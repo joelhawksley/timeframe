@@ -117,7 +117,7 @@ li {
 }
 
 .calendar-weather .temp-graph {
-  margin: 95px 10px 120px 50px;
+  margin: 95px 10px 150px 50px;
 }
 
 .calendar-weather .temp-graph table {
@@ -197,15 +197,20 @@ li {
   font-weight: 300;
   font-size: 28px;
   position: absolute;
-  top: 65px;
+  top: 70px;
   width: 100px;
   left: -38px;
   text-align: center;
 }
 
 .calendar-weather .weather-summary {
-  margin-left: 40px;
-  margin-bottom: 50px;
+  /* margin-left: 40px; */
+  margin-bottom: 20px;
+}
+
+.calendar-weather hr {
+  border: 1px dashed #000;
+  margin: 25px 25% 0;
 }
 
 .calendar-event-weather {
@@ -216,9 +221,9 @@ li {
 .calendar-event-weather .svg {
   display: inline-block;
   vertical-align: bottom;
-  margin-right: -8px;
-  margin-left: -25px;
-  margin-top: -25px;
+  margin-right: -15px;
+  margin-left: 10px;
+  margin-top: -35px;
   padding-bottom: 10px;
   margin-bottom: -30px;
   height: 100px;
@@ -233,6 +238,11 @@ li {
   margin-left: 20px;
 }
 
+.calendar-event-weather i:first-child {
+  margin-left: 0;
+  margin-right: 20px;
+}
+
 .calendar-event {
   padding: 1rem 0 .5rem;
   position: relative;
@@ -240,6 +250,19 @@ li {
 
 .calendar-day {
   margin-top: 15px;
+}
+
+.calendar .date-divider {
+  font-weight: 300;
+  text-transform: uppercase;
+  border-bottom: 1px solid black;
+  font-size: 25px;
+  letter-spacing: 2px;
+  margin: 40px 0 20px;
+  text-align: left;
+  width: 100%;
+  font-weight: 900;
+  padding-bottom: 5px;
 }
 
 .calendar-event:first-child {
@@ -262,11 +285,6 @@ li {
 .calendar .calendar-event i.wi {
   top: 1.5rem;
   left: -5px;
-}
-
-.calendar hr {
-  border: 1px dashed #000;
-  margin: 25px 25% 0;
 }
 
 .calendar-event p {
