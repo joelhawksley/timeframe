@@ -24,6 +24,7 @@
                 .icon = File.read(File.join(Rails.root, "app", "assets", "images", icon)).to_s.html_safe
                 .time = label.gsub(":00", "").downcase.gsub("m", "")
           - i +=1
+  .weather-summary = view_object[:weather][:summary]
   ul.calendar
     - [view_object[:today_events], view_object[:tomorrow_events]].each_with_index do |event_day, index|
       - if index == 1

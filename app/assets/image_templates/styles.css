@@ -117,7 +117,7 @@ li {
 }
 
 .calendar-weather .temp-graph {
-  margin: 95px 10px 160px 50px;
+  margin: 95px 10px 120px 50px;
 }
 
 .calendar-weather .temp-graph table {
@@ -201,6 +201,11 @@ li {
   width: 100px;
   left: -38px;
   text-align: center;
+}
+
+.calendar-weather .weather-summary {
+  margin-left: 40px;
+  margin-bottom: 50px;
 }
 
 .calendar-event-weather {
