@@ -76,8 +76,16 @@ li {
   padding-top: 40px;
 }
 
-.weather h2 i {
+.weather h2 .icon {
+  display: inline-block;
   margin-right: 30px;
+  vertical-align: bottom;
+}
+
+.weather h2 .icon svg {
+  width: 300px;
+  height: 300px;
+  margin: -70px;
 }
 
 .weather .summary-item {
@@ -103,8 +111,16 @@ li {
   margin-top: 15px;
 }
 
-.weather h3 i {
-  margin-right: 15px;
+.weather h3 .icon {
+  display: inline-block;
+  margin-right: 20px;
+  vertical-align: bottom;
+}
+
+.weather h3 .icon svg {
+  width: 150px;
+  height: 150px;
+  margin: -40px;
 }
 
 .calendar-weather {
