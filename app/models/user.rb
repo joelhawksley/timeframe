@@ -62,7 +62,7 @@ class User < ApplicationRecord
       tz: tz,
       weather: {
         current_temperature: weather["currently"]["temperature"].round.to_s + "°",
-        summary: weather["daily"]["data"].first["summary"],
+        summary: weather["hourly"]["summary"],
         sun_phase_icon_class: icon_class,
         sun_phase_label: label,
         sunrise_icon_class: sunrise_icon_class,
