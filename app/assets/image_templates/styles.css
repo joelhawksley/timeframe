@@ -128,7 +128,7 @@ li {
 }
 
 .calendar-weather .temp-graph {
-  margin: 95px 10px 150px 50px;
+  margin: 0 10px 150px 50px;
 }
 
 .calendar-weather .temp-graph table {
@@ -154,17 +154,18 @@ li {
   position: relative;
 }
 
-.calendar-weather .temp-graph .point {
+.calendar-weather .temp-graph .temperature-point {
   border-radius: 100%;
   background-color: #999;
   border: 2px solid white;
   display: inline-block;
+  margin-top: 50px;
   width: 5px;
   height: 5px;
   position: relative;
 }
 
-.calendar-weather .temp-graph .point.bigger {
+.calendar-weather .temp-graph .temperature-point.bigger {
   border-radius: 100%;
   background-color: black;
   border: 2px solid black;
@@ -174,7 +175,7 @@ li {
   position: relative;
 }
 
-.calendar-weather .temp-graph .point .temp {
+.calendar-weather .temp-graph .temperature-point .temp {
   position: absolute;
   font-size: 40px;
   bottom: 15px;
@@ -183,7 +184,11 @@ li {
   text-align: center;
 }
 
-.calendar-weather .temp-graph td:first-child .point .temp {
+.calendar-weather .temp-graph td:first-child .temperature-point {
+  margin-top: 100px;
+}
+
+.calendar-weather .temp-graph td:first-child .temperature-point .temp {
   font-size: 100px;
   left: -55px;
   z-index: 100;

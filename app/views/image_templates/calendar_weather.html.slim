@@ -8,21 +8,23 @@
 .calendar-weather
   .temp-graph
     table
-      - min = view_object[:weather][:hour_temps].min { |a, b| a[1] <=> b[1] }
+      - min = view_object[:weather][:hours].min { |a, b| a[:temperature] <=> b[:temperature] }
       tr.graph
         - i = 0
-        - view_object[:weather][:hour_temps].each do |label, temp, icon|
+        - view_object[:weather][:hours].each do |hour|
           td
             - klass = i % 3 == 0 ? "bigger" : ""
-            .point class="#{klass}" style="margin-bottom: #{((temp - min[1]) * 3).round}px"
+            .temperature-point class="#{klass}" style="margin-bottom: #{((hour[:temperature] - min[:temperature]) * 3).round}px"
               - if i % 3 == 0
                 .temp
-                  = temp
+                  = hour[:temperature]
                   | °
+            / .wind-graph
+            /   .wind-point style="margin-bottom: #{hour[:wind_max] * 3}px"
             - if i % 3 == 0
               .relative
-                .icon = File.read(File.join(Rails.root, "app", "assets", "images", icon)).to_s.html_safe
-                .time = label.gsub(":00", "").downcase.gsub("m", "")
+                .icon = File.read(File.join(Rails.root, "app", "assets", "images", hour[:icon])).to_s.html_safe
+                .time = hour[:time].gsub(":00", "").downcase.gsub("m", "")
           - i +=1
   ul.calendar
     - [view_object[:today_events], view_object[:tomorrow_events]].each_with_index do |event_day, index|

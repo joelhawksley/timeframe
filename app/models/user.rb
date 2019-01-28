@@ -73,7 +73,15 @@ class User < ApplicationRecord
         today_icon: climacon_for_icon(weather["daily"]["data"].first["icon"]),
         tomorrow_temperature_range: "#{weather["daily"]["data"][1]["temperatureHigh"].round}° / #{weather["daily"]["data"][1]["temperatureLow"].round}°",
         tomorrow_icon: climacon_for_icon(weather["daily"]["data"][1]["icon"]),
-        hour_temps: weather["hourly"]["data"].first(25).map { |e| [Time.at(e["time"]).to_datetime.in_time_zone(tz).strftime("%-l:%M%P"), e["temperature"].to_f.round, climacon_for_icon(e["icon"])] }
+        hours: weather["hourly"]["data"].first(25).map do |e|
+          {
+            time: Time.at(e["time"]).to_datetime.in_time_zone(tz).strftime("%-l:%M%P"),
+            temperature: e["temperature"].to_f.round,
+            icon: climacon_for_icon(e["icon"]),
+            wind_max: e["windGust"].round,
+            wind_bearing: e["windBearing"]
+          }
+        end
       }
     }
   end
