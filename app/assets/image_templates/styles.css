@@ -15,7 +15,7 @@
 body {
   bottom: 0;
   font-family: 'lato';
-  font-size: 36px;
+  font-size: 40px;
   left: 0;
   overflow: hidden;
   position: absolute;
@@ -124,12 +124,7 @@ li {
 }
 
 .calendar-weather {
-  font-size: 40px;
   padding: 40px 40px 40px 40px;
-}
-
-.calendar-weather .current {
-  padding-bottom: 25px;
 }
 
 .calendar-weather .temp-graph {
@@ -219,106 +214,30 @@ li {
   text-align: center;
 }
 
-.calendar-weather .weather-summary {
-  /* margin-left: 40px; */
-  margin-bottom: 20px;
-}
-
-.calendar-weather hr {
-  border: 1px dashed #000;
-  margin: 25px 25% 0;
-}
-
-.calendar-event-weather {
-  padding: 0 0 .5rem;
-  position: relative;
-}
-
-.calendar-event-weather .svg {
-  display: inline-block;
-  vertical-align: bottom;
-  margin-right: -15px;
-  margin-left: 10px;
-  margin-top: -35px;
-  padding-bottom: 10px;
-  margin-bottom: -30px;
-  height: 100px;
-  width: 100px;
-}
-
-.calendar-event-weather .svg svg {
-  width: 100%;
-}
-
-.calendar-event-weather i {
-  margin-left: 20px;
-}
-
-.calendar-event-weather i:first-child {
-  margin-left: 0;
-  margin-right: 20px;
+.calendar-weather .weather-summary, .calendar-event {
+  padding: .6rem 0;
+  font-size: 40px;
 }
 
 .calendar-event {
-  padding: 1rem 0 .5rem;
+  width: 100%;
   position: relative;
 }
 
-.calendar-day {
-  margin-top: 15px;
+.calendar-event .subtitle {
+  opacity: .7;
+  font-size: 28px;
 }
 
 .calendar .date-divider {
-  font-weight: 300;
+  font-weight: 100;
   text-transform: uppercase;
   border-bottom: 1px solid black;
   font-size: 25px;
   letter-spacing: 2px;
-  margin: 40px 0 20px;
+  margin: 40px 0 .6rem;
   text-align: left;
   width: 100%;
   font-weight: 900;
   padding-bottom: 5px;
-}
-
-.calendar-event:first-child {
-  border-top: 0;
-  margin-top: -1rem;
-}
-
-.calendar .calendar-event i {
-  display: block;
-  position: absolute;
-  width: 50px;
-  height: 50px;
-  text-align: center;
-}
-
-.calendar .calendar-event i.fa {
-  top: 1.35rem;
-}
-
-.calendar .calendar-event i.wi {
-  top: 1.5rem;
-  left: -5px;
-}
-
-.calendar-event p {
-  margin-left: 75px;
-}
-
-.calendar-event .time {
-  color: #666;
-  font-size: 28px;
-  font-weight: 300;
-}
-
-.calendar-event span {
-  padding-right: 1rem;
-}
-
-.clearfix::after {
-  content: "";
-  clear: both;
-  display: table;
 }

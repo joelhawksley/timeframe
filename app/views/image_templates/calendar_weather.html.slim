@@ -31,17 +31,19 @@
         li.weather-summary = view_object[:weather][:summary]
       - if index == 1
         li.date-divider Tomorrow
-      li.calendar-day
-        ul
+      li
+        table.calendar-day
           - [event_day[:all_day], event_day[:periodic]].flatten.each do |event|
-            li.calendar-event
-              i.fa.fa-fw class="fa-#{event['icon']}"
-              p #{event["summary"]}
-              - if !event["all_day"] || event["location"].present?
-                p.time
-                  - unless event["all_day"]
-                    = event["time"]
-                  - if !event["all_day"] && event["location"].present?
-                    ' ,
-                  - unless event["location"].nil?
-                    = event["location"].to_s.split(",")[0]
+            tr
+              table.calendar-event
+                tr
+                  td width="60" rowspan="2"
+                    i.fa.fa-fw class="fa-#{event['icon']}"
+                  td = event["summary"]
+                - if event["location"] || !event["all_day"]
+                  tr
+                    td.subtitle
+                      - out = []
+                      - out << event["time"] if !event["all_day"]
+                      - out << event["location"].to_s.split(",")[0]
+                      = out.join(", ")
