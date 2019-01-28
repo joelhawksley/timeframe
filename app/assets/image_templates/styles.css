@@ -127,34 +127,25 @@ li {
   padding: 40px 40px 40px 40px;
 }
 
-.calendar-weather .temp-graph {
-  margin: 0 10px 150px 50px;
+.calendar-weather .weather-graph {
+  margin-left: 40px;
 }
 
-.calendar-weather .temp-graph table {
+.calendar-weather .weather-graph table {
   table-layout: fixed;
 }
 
-.calendar-weather .temp-graph td {
+.calendar-weather .weather-graph td {
   text-align: center;
-  width: 30px;
+  width: 90px;
 }
 
-.calendar-weather .temp-graph .graph {
+.calendar-weather .weather-graph .temperature-graph {
   vertical-align: bottom;
   text-align: center;
 }
 
-.calendar-weather .temp-graph .icons td {
-  padding-top: 20px;
-  font-size: 40px;
-}
-
-.calendar-weather .temp-graph .relative {
-  position: relative;
-}
-
-.calendar-weather .temp-graph .temperature-point {
+.calendar-weather .weather-graph .temperature-point {
   border-radius: 100%;
   background-color: #999;
   border: 2px solid white;
@@ -165,7 +156,7 @@ li {
   position: relative;
 }
 
-.calendar-weather .temp-graph .temperature-point.bigger {
+.calendar-weather .weather-graph .temperature-point.bigger {
   border-radius: 100%;
   background-color: black;
   border: 2px solid black;
@@ -175,7 +166,7 @@ li {
   position: relative;
 }
 
-.calendar-weather .temp-graph .temperature-point .temp {
+.calendar-weather .weather-graph .temperature-point .temp {
   position: absolute;
   font-size: 40px;
   bottom: 15px;
@@ -184,11 +175,11 @@ li {
   text-align: center;
 }
 
-.calendar-weather .temp-graph td:first-child .temperature-point {
+.calendar-weather .weather-graph .temperature-point.current {
   margin-top: 100px;
 }
 
-.calendar-weather .temp-graph td:first-child .temperature-point .temp {
+.calendar-weather .weather-graph .temperature-point.current .temp {
   font-size: 100px;
   left: -55px;
   z-index: 100;
@@ -199,23 +190,61 @@ li {
 		4px 4px 0 #fff;
 }
 
-.calendar-weather .temp-graph .icon {
-  position: absolute;
-  font-size: 40px;
-  width: 150px;
-  left: -65px;
+.calendar-weather .weather-graph .wind-graph {
+  vertical-align: bottom;
   text-align: center;
-  top: -10px;
 }
 
-.calendar-weather .temp-graph .time {
+.calendar-weather .weather-graph .wind-point {
+  color: #999;
+  display: inline-block;
+  margin-top: 10px;
+  position: relative;
+}
+
+.calendar-weather .weather-graph .wind-point i {
+  line-height: 25px;
+}
+
+.calendar-weather .weather-graph .wind-point.bigger {
+  color: black;
+  display: inline-block;
+  position: relative;
+}
+
+.calendar-weather .weather-graph .wind-point.bigger i {
+  font-size: 25px;
+}
+
+.calendar-weather .weather-graph .wind-point .speed {
+  position: absolute;
+  font-size: 30px;
+  bottom: 20px;
+  width: 150px;
+  left: -60px;
+  text-align: center;
+}
+
+.calendar-weather .weather-graph .icons td {
+  position: relative;
+  height: 100px;
+}
+
+.calendar-weather .weather-graph .icons .wrapper {
+  position: absolute;
+  top: 0;
+  left: -18px;
+}
+
+.calendar-weather .weather-graph .icon {
+  margin: -20px;
+  text-align: center;
+}
+
+.calendar-weather .weather-graph .time {
   color: #666;
   font-weight: 300;
   font-size: 28px;
-  position: absolute;
-  top: 70px;
-  width: 100px;
-  left: -38px;
   text-align: center;
 }
 
