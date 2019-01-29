@@ -21,17 +21,18 @@
                   = hour[:temperature]
                   | °
           - i +=1
-      tr.wind-graph
-        - i = 0
-        - view_object[:weather][:hours].each do |hour|
-          td
-            - klass = i % 3 == 0 ? "bigger" : ""
-            .wind-point class="#{klass}" style="margin-bottom: #{hour[:wind_max] * 3}px"
-              i.fa.fa-fw.fa-arrow-up style="-webkit-transform: rotate(#{hour[:wind_bearing]}deg)"
-              - if i % 3 == 0
-                .speed
-                  = hour[:wind_max]
-          - i +=1
+      - if view_object[:weather][:hours].map { |h| h[:wind_max] }.max > 10
+        tr.wind-graph
+          - i = 0
+          - view_object[:weather][:hours].each do |hour|
+            td
+              - klass = i % 3 == 0 ? "bigger" : ""
+              .wind-point class="#{klass}" style="margin-bottom: #{hour[:wind_max] * 3}px"
+                i.fa.fa-fw.fa-arrow-up style="-webkit-transform: rotate(#{hour[:wind_bearing]}deg)"
+                - if i % 3 == 0
+                  .speed
+                    = hour[:wind_max]
+            - i +=1
       tr.icons
         - i = 0
         - view_object[:weather][:hours].each do |hour|
