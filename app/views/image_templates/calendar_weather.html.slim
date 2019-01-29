@@ -21,7 +21,7 @@
                   = hour[:temperature]
                   | °
           - i +=1
-      - if view_object[:weather][:hours].map { |h| h[:wind_max] }.max > 10
+      - if view_object[:weather][:hours].map { |h| h[:wind_max] }.max > 11
         tr.wind-graph
           - i = 0
           - view_object[:weather][:hours].each do |hour|
