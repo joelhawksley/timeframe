@@ -65,5 +65,5 @@
                     td.subtitle
                       - out = []
                       - out << event["time"] if !event["all_day"]
-                      - out << event["location"].to_s.split(",")[0]
+                      - out << event["location"].to_s.split(",")[0] if event["location"].present?
                       = out.join(", ")
