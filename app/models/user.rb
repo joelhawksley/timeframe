@@ -78,7 +78,7 @@ class User < ApplicationRecord
             time: Time.at(e["time"]).to_datetime.in_time_zone(tz).strftime("%-l:%M%P"),
             temperature: e["temperature"].to_f.round,
             icon: climacon_for_icon(e["icon"]),
-            wind_max: e["windGust"].round,
+            wind_speed: e["windSpeed"].round,
             wind_bearing: e["windBearing"]
           }
         end
