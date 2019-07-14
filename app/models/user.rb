@@ -8,7 +8,7 @@ class User < ApplicationRecord
     update(error_messages: [])
     WeatherService.call(self)
     CalendarService.call(self)
-    AirService.call(self)
+    # AirService.call(self)
   end
 
   def calendar_events_for(beginning_i, ending_i)
