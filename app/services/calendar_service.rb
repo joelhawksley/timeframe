@@ -54,12 +54,20 @@ class CalendarService
               ActiveSupport::TimeZone["America/Denver"].parse(event_json["end"]["date_time"]).utc.to_i
             end
 
+          summary =
+            if (1900..2100).cover?(event_json["description"].to_s.to_i)
+              "#{event_json["summary"]} (#{Date.today.year - event_json["description"].to_s.to_i})"
+            else
+              event_json["summary"]
+            end
+
           events << event_json.slice(
               "start",
               "end",
-              "summary",
               "location"
             ).merge(
+              summary: summary,
+              description: event_json["description"],
               calendar: calendar.summary,
               icon: icon_for_title("#{calendar.summary} #{event_json["summary"]}"),
               start_i: start_i,
