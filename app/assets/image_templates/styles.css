@@ -124,6 +124,7 @@ li {
 }
 
 .calendar-weather {
+  clear: both;
   padding: 40px 40px 40px 40px;
 }
 
@@ -251,6 +252,16 @@ li {
 .calendar-weather .weather-summary, .calendar-event {
   padding: .6rem 0;
   font-size: 40px;
+}
+
+.calendar-weather .day {
+  margin-right: 55px;
+  float: left;
+  width: 780px;
+}
+
+.calendar-weather .day:last-child {
+  margin-right: 0;
 }
 
 .calendar-event {

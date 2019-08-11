@@ -47,6 +47,12 @@ class User < ApplicationRecord
         event
       end
 
+    third_day_events =
+      calendar_events_for((Time.now.in_time_zone(tz) + 1.day).tomorrow.beginning_of_day.to_i, (Time.now.in_time_zone(tz) + 1.day).tomorrow.end_of_day.utc.to_i).map do |event|
+        event["time"] = time_for_event(event, tz)
+        event
+      end
+
     {
       api_version: 3,
       today_events: {
@@ -57,12 +63,20 @@ class User < ApplicationRecord
         all_day: tomorrow_events.select { |event| event["all_day"] },
         periodic: tomorrow_events.select { |event| !event["all_day"] }
       },
+      tomorrow_day_name: Time.now.in_time_zone(tz).tomorrow.strftime("%A"),
+      third_day_events: {
+        all_day: third_day_events.select { |event| event["all_day"] },
+        periodic: third_day_events.select { |event| !event["all_day"] }
+      },
+      third_day_name: (Time.now.in_time_zone(tz) + 1.day).tomorrow.strftime("%A"),
       time: current_time,
       timestamp: updated_at.in_time_zone(tz).strftime("%A at %l:%M %p"),
       tz: tz,
       weather: {
         current_temperature: weather["currently"]["temperature"].round.to_s + "°",
         summary: weather["hourly"]["summary"],
+        tomorrow_summary: weather["daily"]["data"][1]["summary"],
+        third_day_summary: weather["daily"]["data"][2]["summary"],
         sun_phase_icon_class: icon_class,
         sun_phase_label: label,
         sunrise_icon_class: sunrise_icon_class,

@@ -1,0 +1,70 @@
+.abs #{view_object[:timestamp]} - #{view_object[:battery_level]}
+- if view_object[:error_messages].any?
+  .error-messages
+    i.fa.fa-fw.fa-warning
+    - view_object[:error_messages].each do |error_message|
+      .error-message = error_message
+.calendar-weather
+  .day
+    ul.calendar
+      - [view_object[:today_events]].each_with_index do |event_day, index|
+        li.date-divider Today
+        li.weather-summary = view_object[:weather][:summary]
+        li
+          table.calendar-day
+            - [event_day[:all_day], event_day[:periodic]].flatten.each do |event|
+              tr
+                table.calendar-event
+                  tr
+                    td width="60" rowspan="2"
+                      i.fa.fa-fw class="fa-#{event['icon']}"
+                    td = event["summary"]
+                  - if event["location"] || !event["all_day"]
+                    tr
+                      td.subtitle
+                        - out = []
+                        - out << event["time"] if !event["all_day"]
+                        - out << event["location"].to_s.split(",")[0] if event["location"].present?
+                        = out.join(", ")
+  .day
+    ul.calendar
+      - [view_object[:tomorrow_events]].each_with_index do |event_day, index|
+        li.date-divider = view_object[:tomorrow_day_name]
+        li.weather-summary = view_object[:weather][:tomorrow_summary]
+        li
+          table.calendar-day
+            - [event_day[:all_day], event_day[:periodic]].flatten.each do |event|
+              tr
+                table.calendar-event
+                  tr
+                    td width="60" rowspan="2"
+                      i.fa.fa-fw class="fa-#{event['icon']}"
+                    td = event["summary"]
+                  - if event["location"] || !event["all_day"]
+                    tr
+                      td.subtitle
+                        - out = []
+                        - out << event["time"] if !event["all_day"]
+                        - out << event["location"].to_s.split(",")[0] if event["location"].present?
+                        = out.join(", ")
+  .day
+    ul.calendar
+      - [view_object[:third_day_events]].each_with_index do |event_day, index|
+        li.date-divider = view_object[:third_day_name]
+        li.weather-summary = view_object[:weather][:third_day_summary]
+        li
+          table.calendar-day
+            - [event_day[:all_day], event_day[:periodic]].flatten.each do |event|
+              tr
+                table.calendar-event
+                  tr
+                    td width="60" rowspan="2"
+                      i.fa.fa-fw class="fa-#{event['icon']}"
+                    td = event["summary"]
+                  - if event["location"] || !event["all_day"]
+                    tr
+                      td.subtitle
+                        - out = []
+                        - out << event["time"] if !event["all_day"]
+                        - out << event["location"].to_s.split(",")[0] if event["location"].present?
+                        = out.join(", ")
