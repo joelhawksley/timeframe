@@ -73,7 +73,7 @@ class User < ApplicationRecord
         today_icon: climacon_for_icon(weather["daily"]["data"].first["icon"]),
         tomorrow_temperature_range: "#{weather["daily"]["data"][1]["temperatureHigh"].round}° / #{weather["daily"]["data"][1]["temperatureLow"].round}°",
         tomorrow_icon: climacon_for_icon(weather["daily"]["data"][1]["icon"]),
-        hours: weather["hourly"]["data"].first(25).map do |e|
+        hours: weather["hourly"]["data"].map do |e|
           {
             time: Time.at(e["time"]).to_datetime.in_time_zone(tz).strftime("%-l:%M%P"),
             temperature: e["temperature"].to_f.round,
