@@ -19,6 +19,14 @@ class Device < ApplicationRecord
     out
   end
 
+  def view_object
+    out = user.render_json_payload
+    out[:error_messages] = error_messages
+    out[:battery_level] = battery_level
+
+    out
+  end
+
   def render_image
     imgkit_params = {
       encoding: 'UTF-8',
@@ -26,10 +34,6 @@ class Device < ApplicationRecord
       width: width,
       height: height
     }
-
-    view_object = user.render_json_payload
-    view_object[:error_messages] = error_messages
-    view_object[:battery_level] = battery_level
 
     html =
       Slim::Template.new(

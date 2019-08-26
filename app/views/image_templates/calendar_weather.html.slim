@@ -5,13 +5,14 @@
     i.fa.fa-fw.fa-warning
     - view_object[:error_messages].each do |error_message|
       .error-message = error_message
+- weather_hours = view_object[:weather][:hours].first(25)
 .calendar-weather
   .weather-graph
     table
-      - min = view_object[:weather][:hours].min { |a, b| a[:temperature] <=> b[:temperature] }
+      - min = weather_hours.min { |a, b| a[:temperature] <=> b[:temperature] }
       tr.temperature-graph
         - i = 0
-        - view_object[:weather][:hours].each do |hour|
+        - weather_hours.each do |hour|
           td
             - klass = i % 3 == 0 ? "bigger" : ""
             - klass << " current" if i == 0
@@ -21,10 +22,10 @@
                   = hour[:temperature]
                   | °
           - i +=1
-      - if view_object[:weather][:hours].map { |h| h[:wind_speed] }.max > 10
+      - if weather_hours.map { |h| h[:wind_speed] }.max > 10
         tr.wind-graph
           - i = 0
-          - view_object[:weather][:hours].each do |hour|
+          - weather_hours.each do |hour|
             td
               - klass = i % 3 == 0 ? "bigger" : ""
               .wind-point class="#{klass}" style="margin-bottom: #{hour[:wind_speed] * 3}px"
@@ -35,7 +36,7 @@
             - i +=1
       tr.icons
         - i = 0
-        - view_object[:weather][:hours].each do |hour|
+        - weather_hours.each do |hour|
           - if i % 3 == 0
             td
               .wrapper

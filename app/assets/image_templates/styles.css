@@ -124,6 +124,7 @@ li {
 }
 
 .calendar-weather {
+  clear: both;
   padding: 40px 40px 40px 40px;
 }
 
@@ -253,6 +254,16 @@ li {
   font-size: 40px;
 }
 
+.calendar-weather.thirty-two .day {
+  margin-right: 55px;
+  float: left;
+  width: 780px;
+}
+
+.calendar-weather.thirty-two .day:last-child {
+  margin-right: 0;
+}
+
 .calendar-event {
   width: 100%;
   position: relative;
@@ -269,9 +280,199 @@ li {
   border-bottom: 1px solid black;
   font-size: 25px;
   letter-spacing: 2px;
-  margin: 40px 0 .6rem;
+  margin: 0 0 .6rem;
   text-align: left;
   width: 100%;
   font-weight: 900;
   padding-bottom: 5px;
+}
+
+.thirteen-vert {
+  clear: both;
+}
+
+.thirteen-vert .fade-bottom {
+  left: 440px;
+}
+
+.thirteen-vert .left {
+  background-color: #eee;
+  width: 340px;
+  float: left;
+  padding: 30px 50px;
+  min-height: 100%;
+}
+
+.thirteen-vert .left .current-temp {
+  line-height: .8;
+  font-size: 14rem;
+  margin-bottom: 2rem;
+}
+
+.thirteen-vert .left .subhead {
+  margin-bottom: 1rem;
+}
+
+.thirteen-vert .left .subhead .high-low {
+  font-size: 3.5rem;
+}
+
+.thirteen-vert .left .icon {
+  display: inline-block;
+  margin-right: 30px;
+  vertical-align: middle;
+}
+
+.thirteen-vert .left .icon svg {
+  width: 150px;
+  height: 150px;
+  margin: -40px;
+}
+
+.thirteen-vert .summary {
+  line-height: 1.2;
+  font-size: 2rem;
+}
+
+.thirteen-vert .left .yearly-events-table {
+  position: absolute;
+  bottom: 0;
+  background-color: #ddd;
+  left: 0;
+  width: 360px;
+  padding: 35px 40px 40px;
+}
+
+.thirteen-vert .yearly-events-month {
+  font-weight: 900;
+  border-bottom: 1px solid black;
+  font-size: 25px;
+  text-align: left;
+  width: 100%;
+  padding-bottom: 5px;
+  margin-top: 5px;
+}
+
+.thirteen-vert .left .yearly-events-table h3 {
+  margin-bottom: 1rem;
+  line-height: 1;
+}
+
+.thirteen-vert .left .yearly-events-table table {
+  font-size: 24px;
+  width: 100%;
+}
+
+.thirteen-vert .left .yearly-events-table table td {
+  padding: 3px 0;
+}
+
+.thirteen-vert .left .yearly-events-table .date {
+  padding-right: 1rem;
+}
+
+.thirteen-vert .calendar {
+  float: left;
+  width: 660px;
+  padding: 30px 50px;
+}
+
+.thirteen-vert .calendar .date {
+  font-size: 4rem;
+  text-align: left;
+  width: 100%;
+  font-weight: 900;
+  padding-bottom: 5px;
+}
+
+.calendar-day {
+  margin-bottom: 2rem;
+}
+
+.calendar-weather.thirteen .float {
+  clear: both;
+}
+
+.calendar-weather.thirteen .weather-graph {
+  float: left;
+  width: 900px;
+}
+
+.calendar-weather .yearly-events-table {
+  background-color: #eee;
+  font-size: 2rem;
+  padding: 20px;
+  float: right;
+  width: 450px;
+}
+
+.calendar-weather .yearly-events-table td.date {
+  padding-right: 10px;
+}
+
+.calendar-weather .yearly-events-table td {
+  font-size: 2rem;
+  padding-top: 5px;
+}
+
+.calendar-weather.thirteen .day {
+  margin-right: 100px;
+  float: left;
+  width: 690px;
+}
+
+.calendar-weather.thirteen .day:last-child {
+  margin-right: 0;
+}
+
+.calendar-weather.vert .left {
+  background-color: #eee;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 460px;
+  padding: 40px;
+}
+
+.calendar-weather.vert .calendar {
+  position: absolute;
+  top: 40px;
+  right: 40px;
+  left: 600px;
+  bottom: 0;
+}
+
+.calendar-weather.vert .current-temp {
+  font-size: 300px;
+}
+
+.calendar-weather.vert .date-divider {
+  /* border-top: 1px solid black; */
+  font-weight: bold;
+  text-transform: none;
+  border-bottom: none;
+  font-size: 80px;
+  margin: 20px 0 .6rem;
+  padding-top: 20px;
+  margin-bottom: 0;
+  text-align: left;
+  width: 100%;
+  padding-bottom: 5px;
+}
+
+.calendar-weather.vert .date-divider:first-child {
+  border-top: none;
+  margin-top: 0;
+  padding-top: 0;
+}
+
+.calendar-weather .yearly-events {
+  /* background-color: #eee; */
+  font-size: 2rem;
+  padding: 20px;
+}
+
+.calendar-weather .yearly-event {
+  margin-top: 10px;
 }
