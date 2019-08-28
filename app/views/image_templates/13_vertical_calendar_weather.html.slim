@@ -14,9 +14,9 @@ style
   .left
     .current-temp = view_object[:weather][:current_temperature]
     .subhead
-      span.icon = File.read(File.join(Rails.root, "app", "assets", "images", view_object[:weather][:today_icon])).to_s.html_safe
-      span.high-low = view_object[:weather][:today_temperature_range]
-    .summary = view_object[:weather][:summary]
+      span.icon = File.read(File.join(Rails.root, "app", "assets", "images", view_object[:day_groups][0][:weather_icon])).to_s.html_safe
+      span.high-low = view_object[:day_groups][0][:temperature_range]
+    .summary = view_object[:day_groups][0][:weather_summary]
     .yearly-events-table
       h3 Coming Up
       - view_object[:yearly_events].each do |month_int, events|

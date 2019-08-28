@@ -72,7 +72,10 @@ class User < ApplicationRecord
           events: {
             all_day: events.select { |event| event["all_day"] },
             periodic: events.select { |event| !event["all_day"] }
-          }
+          },
+          temperature_range: "#{weather["daily"]["data"][day_index]["temperatureHigh"].round}° / #{weather["daily"]["data"][day_index]["temperatureLow"].round}°",
+          weather_icon: climacon_for_icon(weather["daily"]["data"][day_index]["icon"]),
+          weather_summary: weather["daily"]["data"][day_index]["summary"]
         }
 
         memo
@@ -93,14 +96,6 @@ class User < ApplicationRecord
       tz: tz,
       weather: {
         current_temperature: weather["currently"]["temperature"].round.to_s + "°",
-        summary: weather["hourly"]["summary"],
-        tomorrow_summary: weather["daily"]["data"][1]["summary"],
-        third_day_summary: weather["daily"]["data"][2]["summary"],
-        fourth_day_summary: weather["daily"]["data"][3]["summary"],
-        today_temperature_range: "#{weather["daily"]["data"].first["temperatureHigh"].round}° / #{weather["daily"]["data"].first["temperatureLow"].round}°",
-        today_icon: climacon_for_icon(weather["daily"]["data"].first["icon"]),
-        tomorrow_temperature_range: "#{weather["daily"]["data"][1]["temperatureHigh"].round}° / #{weather["daily"]["data"][1]["temperatureLow"].round}°",
-        tomorrow_icon: climacon_for_icon(weather["daily"]["data"][1]["icon"]),
         hours: weather["hourly"]["data"].map do |e|
           {
             time: Time.at(e["time"]).to_datetime.in_time_zone(tz).strftime("%-l:%M%P"),

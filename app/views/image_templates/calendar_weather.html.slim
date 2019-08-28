@@ -49,7 +49,7 @@
     - view_object[:day_groups].first(2).each_with_index do |event_day, index|
       li.date-divider = event_day[:day_name]
       - if index == 0
-        li.weather-summary = view_object[:weather][:summary]
+        li.weather-summary = event_day[:weather_summary]
       li
         table.calendar-day
           - [event_day[:events][:all_day], event_day[:events][:periodic]].flatten.each do |event|
