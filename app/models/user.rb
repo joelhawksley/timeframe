@@ -37,10 +37,6 @@ class User < ApplicationRecord
         ["fa-sun-o", sunrise_datetime.strftime("%-l:%M%P")]
       end
 
-    sunrise_icon_class, sunrise_label = ["fa-sun-o", sunrise_datetime.strftime("%-l:%M%P")]
-
-    sunset_icon_class, sunset_label = ["fa-moon-o", sunset_datetime.strftime("%-l:%M%P")]
-
     day_groups =
       (0..6).reduce([]) do |memo, day_index|
         start_i =
@@ -101,12 +97,6 @@ class User < ApplicationRecord
         tomorrow_summary: weather["daily"]["data"][1]["summary"],
         third_day_summary: weather["daily"]["data"][2]["summary"],
         fourth_day_summary: weather["daily"]["data"][3]["summary"],
-        sun_phase_icon_class: icon_class,
-        sun_phase_label: label,
-        sunrise_icon_class: sunrise_icon_class,
-        sunrise_label: sunrise_label,
-        sunset_icon_class: sunset_icon_class,
-        sunset_label: sunset_label,
         today_temperature_range: "#{weather["daily"]["data"].first["temperatureHigh"].round}° / #{weather["daily"]["data"].first["temperatureLow"].round}°",
         today_icon: climacon_for_icon(weather["daily"]["data"].first["icon"]),
         tomorrow_temperature_range: "#{weather["daily"]["data"][1]["temperatureHigh"].round}° / #{weather["daily"]["data"][1]["temperatureLow"].round}°",

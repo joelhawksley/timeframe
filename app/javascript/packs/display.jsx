@@ -58,10 +58,6 @@ class Display extends React.Component {
 
             <div className="header-right">
               <h2>{ this.state.payload.weather.today_temperature_range }</h2>
-              <h2>
-                <i className={`i fa fa-fw ${ this.state.payload.weather.sun_phase_icon_class }`} />
-                <span>{ this.state.payload.weather.sun_phase_label }</span>
-              </h2>
             </div>
 
             <div className="weather-summary">{ this.state.payload.weather.summary }</div>
