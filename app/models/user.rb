@@ -42,31 +42,31 @@ class User < ApplicationRecord
     sunset_icon_class, sunset_label = ["fa-moon-o", sunset_datetime.strftime("%-l:%M%P")]
 
     day_groups =
-      (1..7).reduce([]) do |memo, day_int|
+      (0..6).reduce([]) do |memo, day_index|
         start_i =
-          case day_int
-          when 1
+          case day_index
+          when 0
             Time.now.in_time_zone(tz).utc.to_i
           else
-            (Time.now.in_time_zone(tz) + (day_int - 1).day).beginning_of_day.utc.to_i
+            (Time.now.in_time_zone(tz) + day_index.day).beginning_of_day.utc.to_i
           end
 
         end_i =
-          case day_int
-          when 1
+          case day_index
+          when 0
             Time.now.in_time_zone(tz).end_of_day.utc.to_i
           else
-            (Time.now.in_time_zone(tz) + (day_int - 1).day).end_of_day.utc.to_i
+            (Time.now.in_time_zone(tz) + day_index.day).end_of_day.utc.to_i
           end
 
         day_name =
-          case day_int
-          when 1
+          case day_index
+          when 0
             "Today"
-          when 2
+          when 1
             "Tomorrow"
           else
-            (Time.now.in_time_zone(tz) + (day_int - 1).day).strftime("%A")
+            (Time.now.in_time_zone(tz) + day_index.day).strftime("%A")
           end
 
         events = calendar_events_for(start_i, end_i)
