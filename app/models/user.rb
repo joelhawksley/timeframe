@@ -20,6 +20,7 @@ class User < ApplicationRecord
       (event["start_i"]..event["end_i"]).overlaps?(beginning_i...ending_i)
     end.map do |event|
       event["time"] = time_for_event(event, tz)
+      event["start_time"] = start_time_for_event(event, tz)
       event
     end
   end
@@ -38,21 +39,23 @@ class User < ApplicationRecord
       end
 
     day_groups =
-      (0..6).reduce([]) do |memo, day_index|
+      (0..28).reduce([]) do |memo, day_index|
+        date = Time.now.in_time_zone(tz) + day_index.day
+
         start_i =
           case day_index
           when 0
             Time.now.in_time_zone(tz).utc.to_i
           else
-            (Time.now.in_time_zone(tz) + day_index.day).beginning_of_day.utc.to_i
+            date.beginning_of_day.utc.to_i
           end
 
         end_i =
           case day_index
           when 0
-            Time.now.in_time_zone(tz).end_of_day.utc.to_i
+            date.end_of_day.utc.to_i
           else
-            (Time.now.in_time_zone(tz) + day_index.day).end_of_day.utc.to_i
+            date.end_of_day.utc.to_i
           end
 
         day_name =
@@ -62,21 +65,32 @@ class User < ApplicationRecord
           when 1
             "Tomorrow"
           else
-            (Time.now.in_time_zone(tz) + day_index.day).strftime("%A")
+            date.strftime("%A")
           end
 
         events = calendar_events_for(start_i, end_i)
 
-        memo << {
+        out = {
+          day_of_week_index: date.to_date.strftime("%w").to_i,
+          day_of_month: date.day,
           day_name: day_name,
           events: {
             all_day: events.select { |event| event["all_day"] },
             periodic: events.select { |event| !event["all_day"] }
-          },
-          temperature_range: "#{weather["daily"]["data"][day_index]["temperatureHigh"].round}° / #{weather["daily"]["data"][day_index]["temperatureLow"].round}°",
-          weather_icon: climacon_for_icon(weather["daily"]["data"][day_index]["icon"]),
-          weather_summary: weather["daily"]["data"][day_index]["summary"]
+          }
         }
+
+        if day_index < 8
+          out[:temperature_range] = "#{weather["daily"]["data"][day_index]["temperatureHigh"].round}° / #{weather["daily"]["data"][day_index]["temperatureLow"].round}°"
+          out[:weather_icon] = climacon_for_icon(weather["daily"]["data"][day_index]["icon"])
+          out[:weather_summary] = weather["daily"]["data"][day_index]["summary"]
+        else
+          out[:temperature_range] = ""
+          out[:weather_icon] = ""
+          out[:weather_summary] = ""
+        end
+
+        memo << out
 
         memo
       end
@@ -131,6 +145,15 @@ class User < ApplicationRecord
     }
 
     "climacons/#{mappings[icon]}.svg"
+  end
+
+  def start_time_for_event(event, tz)
+    start = Time.at(event["start_i"]).in_time_zone(tz)
+
+    start_label = start.min > 0 ? start.strftime('%-l:%M') : start.strftime('%-l')
+    start_suffix = start.strftime('%p').gsub("AM", "a").gsub("PM", "p")
+
+    "#{start_label}#{start_suffix}"
   end
 
   def time_for_event(event, tz)

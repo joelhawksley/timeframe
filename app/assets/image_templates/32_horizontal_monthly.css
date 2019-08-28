@@ -1,0 +1,66 @@
+body {
+  font-size: 20px;
+  margin: 0;
+  padding: 0;
+}
+
+.monthly {
+  border-collapse: collapse;
+  width: 100%;
+  height: 100%;
+}
+
+.monthly th, .monthly td.day-cell {
+  width: 366px;
+}
+
+.monthly th {
+  height: 80px;
+  font-size: 40px;
+}
+
+.monthly td.day-cell {
+  height: 338px;
+  vertical-align: top;
+  padding: 20px;
+  position: relative;
+}
+
+.monthly td.day-cell .day-of-month {
+  font-size: 80px;
+  opacity: .1;
+  position: absolute;
+  left: 20px;
+  right: 0;
+  bottom: 11px;
+  font-weight: bold;
+}
+
+.monthly td.day-cell.weekend {
+  background-color: #efefef;
+}
+
+table.monthly, .monthly th, .monthly td.day-cell {
+  border: 1px solid black;
+}
+
+table.day-events {
+  width: 100%;
+}
+
+table.day-events .start-time {
+  opacity: .5;
+}
+
+table.day-events .day-event td {
+  font-weight: 100;
+  padding: 2px 0;
+}
+
+table.day-events .day-event td.summary {
+  font-weight: 100;
+}
+
+table.day-events .day-event .icon {
+  width: 20px;
+}
