@@ -1,0 +1,30 @@
+body {
+  font-size: 20px;
+}
+
+.calendar-day {
+  width: 305px;
+  float: left;
+  padding: 30px;
+  height: 100%;
+}
+
+.calendar-day .date {
+  font-size: 3rem;
+  text-align: left;
+  width: 100%;
+  font-weight: 900;
+  padding-bottom: 5px;
+}
+
+.calendar-weather .weather-summary,
+.calendar-event {
+  padding: .3rem 0;
+  font-size: 20px;
+}
+
+
+.calendar-event .subtitle {
+  opacity: .7;
+  font-size: 14px;
+}

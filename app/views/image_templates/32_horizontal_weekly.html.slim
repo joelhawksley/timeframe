@@ -1,0 +1,29 @@
+.abs #{view_object[:timestamp]} - #{view_object[:battery_level]}
+style
+  = File.read(Rails.root.join("app", "assets", "image_templates", "font-awesome.css")).html_safe
+  = File.read(Rails.root.join("app", "assets", "image_templates", "weathericons.css")).html_safe
+  = File.read(Rails.root.join("app", "assets", "image_templates", "fonts.css")).html_safe
+  = File.read(Rails.root.join("app", "assets", "image_templates", "styles.css")).html_safe
+  = File.read(Rails.root.join("app", "assets", "image_templates", "32_weekly.css")).html_safe
+- if view_object[:error_messages].any?
+  .error-messages
+    i.fa.fa-fw.fa-warning
+    - view_object[:error_messages].each do |error_message|
+      .error-message = error_message
+ul.calendar
+  - view_object[:day_groups].first(7).each do |event_day|
+    li.calendar-day
+      .date = event_day[:day_name]
+      - [event_day[:events][:all_day], event_day[:events][:periodic]].flatten.each do |event|
+        table.calendar-event
+          tr
+            td width="20" rowspan="2"
+              i.fa.fa-fw class="fa-#{event['icon']}"
+            td = event["summary"]
+          - if event["location"] || !event["all_day"]
+            tr
+              td.subtitle
+                - out = []
+                - out << event["time"] if !event["all_day"]
+                - out << event["location"].to_s.split(",")[0] if event["location"].present?
+                = out.join(", ")
