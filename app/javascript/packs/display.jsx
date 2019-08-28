@@ -58,22 +58,18 @@ class Display extends React.Component {
 
             <div className="header-right">
               <h2>{ this.state.payload.weather.today_temperature_range }</h2>
-              <h2>
-                <i className={`i fa fa-fw ${ this.state.payload.weather.sun_phase_icon_class }`} />
-                <span>{ this.state.payload.weather.sun_phase_label }</span>
-              </h2>
             </div>
 
             <div className="weather-summary">{ this.state.payload.weather.summary }</div>
           </div>
           <ul className="calendar-events">
-            {this.state.payload.today_events.all_day.map(event =>
+            {this.state.payload.day_groups[0].events.all_day.map(event =>
               <li className="event" key={ event.summary }>
                 <i className={ "fa fa-fw fa-" + event.icon } />
                 <span>{ event.summary }</span>
               </li>
             )}
-            {this.state.payload.today_events.periodic.map(event =>
+            {this.state.payload.day_groups[0].events.periodic.map(event =>
               <li className="event" key={ event.summary }>
                 <i className={ "fa fa-fw fa-" + event.icon } />
                 <span>{ event.summary }</span>
@@ -88,13 +84,13 @@ class Display extends React.Component {
               <span>{this.state.payload.weather.tomorrow_temperature_range}</span>
             </li>
 
-            {this.state.payload.tomorrow_events.all_day.map(event =>
+            {this.state.payload.day_groupsp[1].events.all_day.map(event =>
               <li className="event" key={ event.summary }>
                 <i className={ "fa fa-fw fa-" + event.icon } />
                 <span>{ event.summary }</span>
               </li>
             )}
-            {this.state.payload.tomorrow_events.periodic.map(event =>
+            {this.state.payload.day_groupsp[1].events.periodic.map(event =>
               <li className="event" key={ event.summary }>
                 <i className={ "fa fa-fw fa-" + event.icon } />
                 <span>{ event.summary }</span>

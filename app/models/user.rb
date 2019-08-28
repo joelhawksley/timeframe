@@ -11,14 +11,21 @@ class User < ApplicationRecord
     # AirService.call(self)
   end
 
+  def tz
+    "America/Denver"
+  end
+
   def calendar_events_for(beginning_i, ending_i)
     calendar_events.select do |event|
       (event["start_i"]..event["end_i"]).overlaps?(beginning_i...ending_i)
+    end.map do |event|
+      event["time"] = time_for_event(event, tz)
+      event["start_time"] = start_time_for_event(event, tz)
+      event
     end
   end
 
   def render_json_payload
-    tz = "America/Denver"
     current_time = DateTime.now.utc.in_time_zone(tz)
 
     sunrise_datetime = Time.at(weather["daily"]["data"][0]["sunriseTime"]).to_datetime.in_time_zone(tz)
@@ -31,81 +38,78 @@ class User < ApplicationRecord
         ["fa-sun-o", sunrise_datetime.strftime("%-l:%M%P")]
       end
 
-    sunrise_icon_class, sunrise_label = ["fa-sun-o", sunrise_datetime.strftime("%-l:%M%P")]
+    day_groups =
+      (0..28).reduce([]) do |memo, day_index|
+        date = Time.now.in_time_zone(tz) + day_index.day
 
-    sunset_icon_class, sunset_label = ["fa-moon-o", sunset_datetime.strftime("%-l:%M%P")]
+        start_i =
+          case day_index
+          when 0
+            Time.now.in_time_zone(tz).utc.to_i
+          else
+            date.beginning_of_day.utc.to_i
+          end
 
-    today_events =
-      calendar_events_for(Time.now.in_time_zone(tz).to_i, Time.now.in_time_zone(tz).end_of_day.utc.to_i).map do |event|
-        event["time"] = time_for_event(event, tz)
-        event
-      end
+        end_i =
+          case day_index
+          when 0
+            date.end_of_day.utc.to_i
+          else
+            date.end_of_day.utc.to_i
+          end
 
-    tomorrow_events =
-      calendar_events_for(Time.now.in_time_zone(tz).tomorrow.beginning_of_day.to_i, Time.now.in_time_zone(tz).tomorrow.end_of_day.utc.to_i).map do |event|
-        event["time"] = time_for_event(event, tz)
-        event
-      end
+        day_name =
+          case day_index
+          when 0
+            "Today"
+          when 1
+            "Tomorrow"
+          else
+            date.strftime("%A")
+          end
 
-    third_day_events =
-      calendar_events_for((Time.now.in_time_zone(tz) + 1.day).tomorrow.beginning_of_day.to_i, (Time.now.in_time_zone(tz) + 1.day).tomorrow.end_of_day.utc.to_i).map do |event|
-        event["time"] = time_for_event(event, tz)
-        event
-      end
+        events = calendar_events_for(start_i, end_i)
 
-    fourth_day_events =
-      calendar_events_for((Time.now.in_time_zone(tz) + 2.day).tomorrow.beginning_of_day.to_i, (Time.now.in_time_zone(tz) + 2.day).tomorrow.end_of_day.utc.to_i).map do |event|
-        event["time"] = time_for_event(event, tz)
-        event
+        out = {
+          day_of_week_index: date.to_date.strftime("%w").to_i,
+          day_of_month: date.day,
+          day_name: day_name,
+          events: {
+            all_day: events.select { |event| event["all_day"] },
+            periodic: events.select { |event| !event["all_day"] }
+          }
+        }
+
+        if day_index < 8
+          out[:temperature_range] = "#{weather["daily"]["data"][day_index]["temperatureHigh"].round}° / #{weather["daily"]["data"][day_index]["temperatureLow"].round}°"
+          out[:weather_icon] = climacon_for_icon(weather["daily"]["data"][day_index]["icon"])
+          out[:weather_summary] = weather["daily"]["data"][day_index]["summary"]
+        else
+          out[:temperature_range] = ""
+          out[:weather_icon] = ""
+          out[:weather_summary] = ""
+        end
+
+        memo << out
+
+        memo
       end
 
     yearly_events =
-      calendar_events_for(Time.now.in_time_zone(tz).beginning_of_day.to_i, (Time.now.in_time_zone(tz) + 1.year).end_of_day.utc.to_i).map do |event|
-        event["time"] = time_for_event(event, tz)
-        event
-      end.select { |event| event["calendar"] == "Birthdays" }.first(8).group_by { |e| Date.parse(e["start"]["date"]).month }
+      calendar_events_for(Time.now.in_time_zone(tz).beginning_of_day.to_i, (Time.now.in_time_zone(tz) + 1.year).end_of_day.utc.to_i).
+        select { |event| event["calendar"] == "Birthdays" }.
+        first(8).
+        group_by { |e| Date.parse(e["start"]["date"]).month }
 
     {
       api_version: 3,
       yearly_events: yearly_events,
-      today_events: {
-        all_day: today_events.select { |event| event["all_day"] },
-        periodic: today_events.select { |event| !event["all_day"] }
-      },
-      tomorrow_events: {
-        all_day: tomorrow_events.select { |event| event["all_day"] },
-        periodic: tomorrow_events.select { |event| !event["all_day"] }
-      },
-      tomorrow_day_name: Time.now.in_time_zone(tz).tomorrow.strftime("%A"),
-      third_day_events: {
-        all_day: third_day_events.select { |event| event["all_day"] },
-        periodic: third_day_events.select { |event| !event["all_day"] }
-      },
-      third_day_name: (Time.now.in_time_zone(tz) + 1.day).tomorrow.strftime("%A"),
-      fourth_day_events: {
-        all_day: fourth_day_events.select { |event| event["all_day"] },
-        periodic: fourth_day_events.select { |event| !event["all_day"] }
-      },
-      fourth_day_name: (Time.now.in_time_zone(tz) + 2.day).tomorrow.strftime("%A"),
+      day_groups: day_groups,
       time: current_time,
       timestamp: updated_at.in_time_zone(tz).strftime("%A at %l:%M %p"),
       tz: tz,
       weather: {
         current_temperature: weather["currently"]["temperature"].round.to_s + "°",
-        summary: weather["hourly"]["summary"],
-        tomorrow_summary: weather["daily"]["data"][1]["summary"],
-        third_day_summary: weather["daily"]["data"][2]["summary"],
-        fourth_day_summary: weather["daily"]["data"][3]["summary"],
-        sun_phase_icon_class: icon_class,
-        sun_phase_label: label,
-        sunrise_icon_class: sunrise_icon_class,
-        sunrise_label: sunrise_label,
-        sunset_icon_class: sunset_icon_class,
-        sunset_label: sunset_label,
-        today_temperature_range: "#{weather["daily"]["data"].first["temperatureHigh"].round}° / #{weather["daily"]["data"].first["temperatureLow"].round}°",
-        today_icon: climacon_for_icon(weather["daily"]["data"].first["icon"]),
-        tomorrow_temperature_range: "#{weather["daily"]["data"][1]["temperatureHigh"].round}° / #{weather["daily"]["data"][1]["temperatureLow"].round}°",
-        tomorrow_icon: climacon_for_icon(weather["daily"]["data"][1]["icon"]),
         hours: weather["hourly"]["data"].map do |e|
           {
             time: Time.at(e["time"]).to_datetime.in_time_zone(tz).strftime("%-l:%M%P"),
@@ -141,6 +145,15 @@ class User < ApplicationRecord
     }
 
     "climacons/#{mappings[icon]}.svg"
+  end
+
+  def start_time_for_event(event, tz)
+    start = Time.at(event["start_i"]).in_time_zone(tz)
+
+    start_label = start.min > 0 ? start.strftime('%-l:%M') : start.strftime('%-l')
+    start_suffix = start.strftime('%p').gsub("AM", "a").gsub("PM", "p")
+
+    "#{start_label}#{start_suffix}"
   end
 
   def time_for_event(event, tz)

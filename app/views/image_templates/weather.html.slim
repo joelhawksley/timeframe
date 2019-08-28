@@ -8,11 +8,11 @@
 .wrapper.weather
   .current-temp = view_object[:weather][:current_temperature]
   h2
-    .icon = File.read(File.join(Rails.root, "app", "assets", "images", view_object[:weather][:today_icon])).to_s.html_safe
-    = view_object[:weather][:today_temperature_range]
-  .summary-item style="#{"font-size: 40px" if view_object[:weather][:summary].length > 90 }"= view_object[:weather][:summary]
+    .icon = File.read(File.join(Rails.root, "app", "assets", "images", view_object[:day_groups][0][:weather_icon])).to_s.html_safe
+    = view_object[:day_groups][0][:temperature_range]
+  .summary-item style="#{"font-size: 40px" if view_object[:day_groups][0][:weather_summary].length > 90 }"= view_object[:day_groups][0][:weather_summary]
   - if DateTime.now.utc.in_time_zone("America/Denver").hour > 19
     .tomorrow-label Tomorrow
     h3
-      .icon = File.read(File.join(Rails.root, "app", "assets", "images", view_object[:weather][:tomorrow_icon])).to_s.html_safe
-      = view_object[:weather][:tomorrow_temperature_range]
+      .icon = File.read(File.join(Rails.root, "app", "assets", "images", view_object[:day_groups][1][:weather_icon])).to_s.html_safe
+      = view_object[:day_groups][1][:temperature_range]
