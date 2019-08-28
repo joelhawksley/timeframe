@@ -41,20 +41,24 @@ class User < ApplicationRecord
 
     sunset_icon_class, sunset_label = ["fa-moon-o", sunset_datetime.strftime("%-l:%M%P")]
 
-    today_events =
-      calendar_events_for(Time.now.in_time_zone(tz).to_i, Time.now.in_time_zone(tz).end_of_day.utc.to_i)
-
-    tomorrow_events =
-      calendar_events_for(Time.now.in_time_zone(tz).tomorrow.beginning_of_day.to_i, Time.now.in_time_zone(tz).tomorrow.end_of_day.utc.to_i)
-
-    third_day_events =
-      calendar_events_for((Time.now.in_time_zone(tz) + 1.day).tomorrow.beginning_of_day.to_i, (Time.now.in_time_zone(tz) + 1.day).tomorrow.end_of_day.utc.to_i)
-
-    fourth_day_events =
-      calendar_events_for((Time.now.in_time_zone(tz) + 2.day).tomorrow.beginning_of_day.to_i, (Time.now.in_time_zone(tz) + 2.day).tomorrow.end_of_day.utc.to_i)
-
     day_groups =
       (1..7).reduce([]) do |memo, day_int|
+        start_i =
+          case day_int
+          when 1
+            Time.now.in_time_zone(tz).utc.to_i
+          else
+            (Time.now.in_time_zone(tz) + (day_int - 1).day).beginning_of_day.utc.to_i
+          end
+
+        end_i =
+          case day_int
+          when 1
+            Time.now.in_time_zone(tz).end_of_day.utc.to_i
+          else
+            (Time.now.in_time_zone(tz) + (day_int - 1).day).end_of_day.utc.to_i
+          end
+
         day_name =
           case day_int
           when 1
@@ -65,9 +69,14 @@ class User < ApplicationRecord
             (Time.now.in_time_zone(tz) + (day_int - 1).day).strftime("%A")
           end
 
+        events = calendar_events_for(start_i, end_i)
+
         memo << {
           day_name: day_name,
-          events: []
+          events: {
+            all_day: events.select { |event| event["all_day"] },
+            periodic: events.select { |event| !event["all_day"] }
+          }
         }
 
         memo
@@ -82,25 +91,6 @@ class User < ApplicationRecord
     {
       api_version: 3,
       yearly_events: yearly_events,
-      today_events: {
-        all_day: today_events.select { |event| event["all_day"] },
-        periodic: today_events.select { |event| !event["all_day"] }
-      },
-      tomorrow_events: {
-        all_day: tomorrow_events.select { |event| event["all_day"] },
-        periodic: tomorrow_events.select { |event| !event["all_day"] }
-      },
-      tomorrow_day_name: Time.now.in_time_zone(tz).tomorrow.strftime("%A"),
-      third_day_events: {
-        all_day: third_day_events.select { |event| event["all_day"] },
-        periodic: third_day_events.select { |event| !event["all_day"] }
-      },
-      third_day_name: (Time.now.in_time_zone(tz) + 1.day).tomorrow.strftime("%A"),
-      fourth_day_events: {
-        all_day: fourth_day_events.select { |event| event["all_day"] },
-        periodic: fourth_day_events.select { |event| !event["all_day"] }
-      },
-      fourth_day_name: (Time.now.in_time_zone(tz) + 2.day).tomorrow.strftime("%A"),
       day_groups: day_groups,
       time: current_time,
       timestamp: updated_at.in_time_zone(tz).strftime("%A at %l:%M %p"),

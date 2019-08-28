@@ -254,16 +254,6 @@ li {
   font-size: 40px;
 }
 
-.calendar-weather.thirty-two .day {
-  margin-right: 55px;
-  float: left;
-  width: 780px;
-}
-
-.calendar-weather.thirty-two .day:last-child {
-  margin-right: 0;
-}
-
 .calendar-event {
   width: 100%;
   position: relative;

@@ -46,15 +46,13 @@
             td
           - i +=1
   ul.calendar
-    - [view_object[:today_events], view_object[:tomorrow_events]].each_with_index do |event_day, index|
+    - view_object[:day_groups].first(2).each_with_index do |event_day, index|
+      li.date-divider = event_day[:day_name]
       - if index == 0
-        li.date-divider Today
         li.weather-summary = view_object[:weather][:summary]
-      - if index == 1
-        li.date-divider Tomorrow
       li
         table.calendar-day
-          - [event_day[:all_day], event_day[:periodic]].flatten.each do |event|
+          - [event_day[:events][:all_day], event_day[:events][:periodic]].flatten.each do |event|
             tr
               table.calendar-event
                 tr
