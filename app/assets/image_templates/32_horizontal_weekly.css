@@ -25,8 +25,10 @@
 }
 
 .weekly {
-  font-size: 25px;
+  font-size: 30px;
   border-collapse: collapse;
+  height: 100%;
+  table-layout: fixed;
 }
 
 .weekly, .weekly th, .weekly td {
@@ -34,19 +36,27 @@
   vertical-align: top;
 }
 
-.weekly td {
-  padding: 15px;
+.weekly h1 {
+  padding-top: 30px;
 }
 
-.weekly td.calendar-label {
-  width: 200px;
+.weekly td {
+  padding: 10px 40px 10px 75px;
+}
+
+.weekly td:not(:first-child) {
+  border-left: 1px solid black;
+}
+
+.weekly td.day-cell-wide {
+  padding: 10px 30px;
 }
 
 .weekly th, .weekly td.day-cell {
-  width: 326px;
+  width: 415px;
 }
 
-.weekly tr.odd td {
+.weekly td.odd {
   background-color: #eee;
 }
 
@@ -54,12 +64,18 @@
   display: table-row;
 }
 
-.weekly .event .summary, .weekly .event .time {
-  display: table-cell;
-  padding-bottom: 10px;
+.weekly .event .icon {
+  padding-right: 3px;
+  width: 42px;
+  vertical-align: middle;
 }
 
-.weekly .event .time {
-  text-align: right;
-  padding-left: 10px;
+.weekly .event .icon, .weekly .event .summary {
+  display: table-cell;
+  padding-bottom: 20px;
+}
+
+.weekly .event .subtitle {
+  color: gray;
+  font-size: 22px;
 }
