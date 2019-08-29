@@ -1,7 +1,3 @@
-body {
-  font-size: 20px;
-}
-
 .calendar-day {
   width: 305px;
   float: left;
@@ -23,8 +19,47 @@ body {
   font-size: 20px;
 }
 
-
 .calendar-event .subtitle {
   opacity: .7;
   font-size: 14px;
+}
+
+.weekly {
+  font-size: 25px;
+  border-collapse: collapse;
+}
+
+.weekly, .weekly th, .weekly td {
+  /* border: 1px solid black; */
+  vertical-align: top;
+}
+
+.weekly td {
+  padding: 15px;
+}
+
+.weekly td.calendar-label {
+  width: 200px;
+}
+
+.weekly th, .weekly td.day-cell {
+  width: 326px;
+}
+
+.weekly tr.odd td {
+  background-color: #eee;
+}
+
+.weekly .event {
+  display: table-row;
+}
+
+.weekly .event .summary, .weekly .event .time {
+  display: table-cell;
+  padding-bottom: 10px;
+}
+
+.weekly .event .time {
+  text-align: right;
+  padding-left: 10px;
 }

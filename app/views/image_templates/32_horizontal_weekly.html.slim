@@ -10,20 +10,31 @@ style
     i.fa.fa-fw.fa-warning
     - view_object[:error_messages].each do |error_message|
       .error-message = error_message
-ul.calendar
-  - view_object[:day_groups].first(7).each do |event_day|
-    li.calendar-day
-      .date = event_day[:day_name]
-      - [event_day[:events][:all_day], event_day[:events][:periodic]].flatten.each do |event|
-        table.calendar-event
-          tr
-            td width="20" rowspan="2"
-              i.fa.fa-fw class="fa-#{event['icon']}"
-            td = event["summary"]
-          - if event["location"] || !event["all_day"]
-            tr
-              td.subtitle
-                - out = []
-                - out << event["time"] if !event["all_day"]
-                - out << event["location"].to_s.split(",")[0] if event["location"].present?
-                = out.join(", ")
+- day_groups = view_object[:day_groups].first(7)
+- calendars = day_groups.map { |day_group| [day_group[:events][:all_day].map { |e| e["calendar"] }, day_group[:events][:periodic].map { |e| e["calendar"] }] }.flatten.uniq.sort
+table.weekly
+  tr
+    td
+    - (0..6).each do |day_index|
+      td
+        h1 = day_groups[day_index][:day_name]
+  tr.odd
+    td
+      h1 Weather
+    - (0..6).each do |day_index|
+      td
+        h3 = day_groups[day_index][:temperature_range]
+        p = day_groups[day_index][:weather_summary]
+  - calendars.each_with_index do |calendar, index|
+    tr class="#{"odd" if index % 2 != 0}"
+      td
+        h1 = calendar.capitalize
+      - (0..6).each do |day_index|
+        td.day-cell
+          - event_day = day_groups[day_index]
+          - [event_day[:events][:all_day], event_day[:events][:periodic]].flatten.select { |event| event["calendar"] == calendar }.each do |event|
+            .event
+              .summary
+                = event["summary"]
+              - if !event["all_day"]
+                .time = event["start_time"]
