@@ -1,7 +1,3 @@
-body {
-  font-size: 20px;
-}
-
 .calendar-day {
   width: 305px;
   float: left;
@@ -23,8 +19,63 @@ body {
   font-size: 20px;
 }
 
-
 .calendar-event .subtitle {
   opacity: .7;
   font-size: 14px;
+}
+
+.weekly {
+  font-size: 30px;
+  border-collapse: collapse;
+  height: 100%;
+  table-layout: fixed;
+}
+
+.weekly, .weekly th, .weekly td {
+  /* border: 1px solid black; */
+  vertical-align: top;
+}
+
+.weekly h1 {
+  padding-top: 30px;
+}
+
+.weekly td {
+  padding: 10px 40px 10px 75px;
+}
+
+.weekly td:not(:first-child) {
+  border-left: 1px solid black;
+}
+
+.weekly td.day-cell-wide {
+  padding: 10px 30px;
+}
+
+.weekly th, .weekly td.day-cell {
+  width: 415px;
+}
+
+.weekly td.odd {
+  background-color: #eee;
+}
+
+.weekly .event {
+  display: table-row;
+}
+
+.weekly .event .icon {
+  padding-right: 3px;
+  width: 42px;
+  vertical-align: middle;
+}
+
+.weekly .event .icon, .weekly .event .summary {
+  display: table-cell;
+  padding-bottom: 20px;
+}
+
+.weekly .event .subtitle {
+  color: gray;
+  font-size: 22px;
 }

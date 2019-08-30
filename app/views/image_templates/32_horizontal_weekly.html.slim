@@ -10,20 +10,30 @@ style
     i.fa.fa-fw.fa-warning
     - view_object[:error_messages].each do |error_message|
       .error-message = error_message
-ul.calendar
-  - view_object[:day_groups].first(7).each do |event_day|
-    li.calendar-day
-      .date = event_day[:day_name]
-      - [event_day[:events][:all_day], event_day[:events][:periodic]].flatten.each do |event|
-        table.calendar-event
-          tr
-            td width="20" rowspan="2"
+- day_groups = view_object[:day_groups].first(5)
+table.weekly
+  tr height="20"
+    - (0..4).each do |day_index|
+      td.day-cell class="#{'odd' if day_index % 2 == 0}"
+        h1 = day_groups[day_index][:day_name]
+  tr height="20"
+    - (0..4).each do |day_index|
+      td.day-cell class="#{'odd' if day_index % 2 == 0}"
+        h3 = day_groups[day_index][:temperature_range]
+        p = day_groups[day_index][:weather_summary]
+  tr
+    - (0..4).each do |day_index|
+      td.day-cell.day-cell-wide class="#{'odd' if day_index % 2 == 0}"
+        - event_day = day_groups[day_index]
+        - [event_day[:events][:all_day], event_day[:events][:periodic]].flatten.each do |event|
+          .event
+            .icon
               i.fa.fa-fw class="fa-#{event['icon']}"
-            td = event["summary"]
-          - if event["location"] || !event["all_day"]
-            tr
-              td.subtitle
-                - out = []
-                - out << event["time"] if !event["all_day"]
-                - out << event["location"].to_s.split(",")[0] if event["location"].present?
-                = out.join(", ")
+            .summary
+              = event["summary"]
+              - if event["location"] || !event["all_day"]
+                .subtitle
+                  - out = []
+                  - out << event["time"] if !event["all_day"]
+                  - out << event["location"].to_s.split(",")[0] if event["location"].present?
+                  = out.join(", ")

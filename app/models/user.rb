@@ -62,8 +62,6 @@ class User < ApplicationRecord
           case day_index
           when 0
             "Today"
-          when 1
-            "Tomorrow"
           else
             date.strftime("%A")
           end
