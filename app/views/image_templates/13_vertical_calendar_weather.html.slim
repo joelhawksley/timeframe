@@ -1,9 +1,10 @@
-.abs #{view_object[:timestamp]} - #{view_object[:battery_level]}
 style
   = File.read(Rails.root.join("app", "assets", "image_templates", "font-awesome.css")).html_safe
   = File.read(Rails.root.join("app", "assets", "image_templates", "weathericons.css")).html_safe
   = File.read(Rails.root.join("app", "assets", "image_templates", "fonts.css")).html_safe
   = File.read(Rails.root.join("app", "assets", "image_templates", "styles.css")).html_safe
+  = File.read(Rails.root.join("app", "assets", "image_templates", "13_vertical_calendar_weather.css")).html_safe
+.abs #{view_object[:timestamp]} - #{view_object[:battery_level]}
 - if view_object[:error_messages].any?
   .error-messages
     i.fa.fa-fw.fa-warning
@@ -16,6 +17,13 @@ style
     .subhead
       span.icon = File.read(File.join(Rails.root, "app", "assets", "images", view_object[:day_groups][0][:weather_icon])).to_s.html_safe
       span.high-low = view_object[:day_groups][0][:temperature_range]
+    .pairs
+      span.pair
+        span.icon = File.read(File.join(Rails.root, "app", "assets", "images", view_object[:weather][:precip_icon])).to_s.html_safe
+        = "#{(view_object[:weather][:precip_probability] * 100).to_i}%"
+      span.pair
+        i.fa class="#{view_object[:sun_phase_icon_class]}"
+        =< view_object[:sun_phase_label]
     .summary = view_object[:day_groups][0][:weather_summary]
     .yearly-events-table
       h3 Coming Up

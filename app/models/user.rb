@@ -103,11 +103,16 @@ class User < ApplicationRecord
       api_version: 3,
       yearly_events: yearly_events,
       day_groups: day_groups,
+      sun_phase_icon_class: icon_class,
+      sun_phase_label: label,
+      sunset_datetime: sunset_datetime,
       time: current_time,
       timestamp: updated_at.in_time_zone(tz).strftime("%A at %l:%M %p"),
       tz: tz,
       weather: {
         current_temperature: weather["currently"]["temperature"].round.to_s + "°",
+        precip_probability: weather["daily"]["data"][0]["precipProbability"],
+        precip_icon: climacon_for_icon(weather["daily"]["data"][0]["precipType"]),
         hours: weather["hourly"]["data"].map do |e|
           {
             time: Time.at(e["time"]).to_datetime.in_time_zone(tz).strftime("%-l:%M%P"),

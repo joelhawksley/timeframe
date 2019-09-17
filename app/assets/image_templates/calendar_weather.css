@@ -1,0 +1,36 @@
+.calendar-weather {
+  clear: both;
+  padding: 20px 40px 40px 40px;
+}
+
+.current-temp {
+  font-size: 100px;
+  vertical-align: middle;
+  margin-right: 30px;
+}
+
+.pair {
+  margin-top: 10px;
+  display: inline-block;
+  margin-right: 30px;
+  line-height: 100px;
+  vertical-align: middle;
+}
+
+.pair .icon svg {
+  vertical-align: middle;
+  margin: -20px -20px 0;
+}
+
+.calendar .date-divider {
+  font-weight: 100;
+  text-transform: uppercase;
+  border-bottom: 1px solid black;
+  font-size: 25px;
+  letter-spacing: 2px;
+  margin: 2rem 0 .6rem;
+  text-align: left;
+  width: 100%;
+  font-weight: 900;
+  padding-bottom: 5px;
+}
