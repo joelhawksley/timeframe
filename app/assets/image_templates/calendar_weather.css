@@ -10,11 +10,16 @@
 }
 
 .pair {
+  font-size: 35px;
   margin-top: 10px;
   display: inline-block;
   margin-right: 30px;
   line-height: 100px;
   vertical-align: middle;
+}
+
+.pair:last-child {
+  margin-right: 0;
 }
 
 .pair .icon svg {
