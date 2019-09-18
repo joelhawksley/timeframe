@@ -45,7 +45,7 @@
 }
 
 .weekly td:not(:first-child) {
-  border-left: 1px solid black;
+  /* border-left: 1px solid black; */
 }
 
 .weekly td.day-cell-wide {
@@ -57,7 +57,7 @@
 }
 
 .weekly td.odd {
-  background-color: #eee;
+  /* background-color: #eee; */
 }
 
 .weekly .event {
@@ -76,6 +76,9 @@
 }
 
 .weekly .event .subtitle {
-  color: gray;
   font-size: 22px;
+}
+
+.light {
+  font-weight: 100;
 }

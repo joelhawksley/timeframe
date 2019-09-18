@@ -19,8 +19,8 @@ table.weekly
   tr height="20"
     - (0..4).each do |day_index|
       td.day-cell class="#{'odd' if day_index % 2 == 0}"
-        h3 = day_groups[day_index][:temperature_range]
-        p = day_groups[day_index][:weather_summary]
+        p = day_groups[day_index][:temperature_range]
+        p.light = day_groups[day_index][:weather_summary]
   tr
     - (0..4).each do |day_index|
       td.day-cell.day-cell-wide class="#{'odd' if day_index % 2 == 0}"
@@ -32,7 +32,7 @@ table.weekly
             .summary
               = event["summary"]
               - if event["location"] || !event["all_day"]
-                .subtitle
+                .subtitle.light
                   - out = []
                   - out << event["time"] if !event["all_day"]
                   - out << event["location"].to_s.split(",")[0] if event["location"].present?
