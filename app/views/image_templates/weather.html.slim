@@ -3,6 +3,7 @@ style
   = File.read(Rails.root.join("app", "assets", "image_templates", "weathericons.css")).html_safe
   = File.read(Rails.root.join("app", "assets", "image_templates", "fonts.css")).html_safe
   = File.read(Rails.root.join("app", "assets", "image_templates", "styles.css")).html_safe
+  = File.read(Rails.root.join("app", "assets", "image_templates", "weather.css")).html_safe
 .abs #{view_object[:timestamp]} - #{view_object[:battery_level]}
 .fade-bottom
 - if view_object[:error_messages].any?
@@ -13,7 +14,7 @@ style
 .wrapper.weather
   .current-temp = view_object[:weather][:current_temperature]
   h2
-    .icon = File.read(File.join(Rails.root, "app", "assets", "images", view_object[:day_groups][0][:weather_icon])).to_s.html_safe
+    i.climacon class="#{view_object[:day_groups][0][:weather_icon]}"
     = view_object[:day_groups][0][:temperature_range]
   .summary-item style="#{"font-size: 40px" if view_object[:day_groups][0][:weather_summary].length > 90 }"= view_object[:day_groups][0][:weather_summary]
   - if DateTime.now.utc.in_time_zone("America/Denver").hour > 19

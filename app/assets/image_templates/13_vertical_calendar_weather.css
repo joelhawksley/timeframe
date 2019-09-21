@@ -92,15 +92,15 @@
   padding-bottom: 5px;
 }
 
-.pair:first-child {
-  margin-right: 20px;
+.icon-cell {
+  text-align: center;
 }
 
-.pair {
-  font-size: 30px;
+.climacon {
+  font-size: 4rem;
+  vertical-align: sub;
 }
 
-.pair .icon svg {
-  vertical-align: middle;
-  margin: -20px -20px 0;
+span.pair {
+  margin-left: 30px;
 }

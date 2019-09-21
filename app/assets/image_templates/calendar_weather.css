@@ -9,23 +9,12 @@
   margin-right: 30px;
 }
 
-.pair {
-  font-size: 35px;
-  margin-top: 10px;
-  display: inline-block;
-  margin-right: 30px;
-  line-height: 100px;
-  vertical-align: middle;
-}
-
 .pair:last-child {
   margin-right: 0;
 }
 
-.pair .icon svg {
+.top span {
   vertical-align: middle;
-  height: 80px;
-  margin: -16px -30px 0;
 }
 
 .calendar .date-divider {
@@ -34,9 +23,22 @@
   border-bottom: 1px solid black;
   font-size: 25px;
   letter-spacing: 2px;
-  margin: 2rem 0 .6rem;
+  margin: 2rem 0 0;
   text-align: left;
   width: 100%;
   font-weight: 900;
   padding-bottom: 5px;
+}
+
+.icon-cell {
+  text-align: center;
+}
+
+.climacon {
+  font-size: 4rem;
+  vertical-align: sub;
+}
+
+span.pair {
+  margin-left: 30px;
 }

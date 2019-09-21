@@ -80,12 +80,16 @@ class User < ApplicationRecord
 
         if day_index < 8
           out[:temperature_range] = "#{weather["daily"]["data"][day_index]["temperatureHigh"].round}° / #{weather["daily"]["data"][day_index]["temperatureLow"].round}°"
-          out[:weather_icon] = climacon_for_icon(weather["daily"]["data"][day_index]["icon"])
+          out[:weather_icon] = weather["daily"]["data"][day_index]["icon"]
           out[:weather_summary] = weather["daily"]["data"][day_index]["summary"]
+          out[:precip_probability] = weather["daily"]["data"][day_index]["precipProbability"]
+          out[:precip_icon] = weather["daily"]["data"][day_index]["precipType"]
         else
           out[:temperature_range] = ""
           out[:weather_icon] = ""
           out[:weather_summary] = ""
+          out[:precip_probability] = ""
+          out[:precip_icon] = ""
         end
 
         memo << out
@@ -112,12 +116,10 @@ class User < ApplicationRecord
       weather: {
         current_temperature: weather["currently"]["temperature"].round.to_s + "°",
         precip_probability: weather["daily"]["data"][0]["precipProbability"],
-        precip_icon: climacon_for_icon(weather["daily"]["data"][0]["precipType"]),
         hours: weather["hourly"]["data"].map do |e|
           {
             time: Time.at(e["time"]).to_datetime.in_time_zone(tz).strftime("%-l:%M%P"),
             temperature: e["temperature"].to_f.round,
-            icon: climacon_for_icon(e["icon"]),
             wind_speed: e["windSpeed"].round,
             wind_bearing: e["windBearing"]
           }
@@ -131,23 +133,6 @@ class User < ApplicationRecord
     out.concat(weather["alerts"].map { |a| a["title"] }) if weather.key?("alerts")
     out << air if air.present?
     out.uniq
-  end
-
-  def climacon_for_icon(icon)
-    mappings = {
-      "clear-day" => "Sun",
-      "clear-night" => "Moon",
-      "rain" => "Cloud-Rain",
-      "snow" => "Cloud-Snow",
-      "sleet" => "Cloud-Snow",
-      "wind" => "Cloud-Wind",
-      "fog" => "Cloud-Fog",
-      "cloudy" => "Cloud",
-      "partly-cloudy-day" => "Cloud-Sun",
-      "partly-cloudy-night" => "Cloud-Moon"
-    }
-
-    "climacons/#{mappings[icon]}.svg"
   end
 
   def start_time_for_event(event, tz)

@@ -15,30 +15,37 @@ style
 .calendar-weather
   .top
     span.current-temp = view_object[:weather][:current_temperature]
-    span.pair
-      = view_object[:day_groups][0][:temperature_range]
-    span.pair
-      span.icon = File.read(File.join(Rails.root, "app", "assets", "images", view_object[:weather][:precip_icon])).to_s.html_safe
-      = "#{(view_object[:weather][:precip_probability] * 100).to_i}%"
-    span.pair
-      i.fa class="#{view_object[:sun_phase_icon_class]}"
-      =< view_object[:sun_phase_label]
   ul.calendar
     - view_object[:day_groups].first(7).each_with_index do |event_day, index|
       li.date-divider = event_day[:day_name]
-      - if index == 0
-        li.weather-summary = event_day[:weather_summary]
       li
+        table.calendar-event
+          tr
+            td colspan="2" = event_day[:weather_summary]
+        table.calendar-event
+          tr
+            td.icon-cell width="60" rowspan="2"
+              i.climacon class="#{event_day[:weather_icon]}"
+            td
+              => event_day[:temperature_range]
+              - if event_day[:precip_probability] > 0.1
+                span.pair
+                  i.climacon class="#{event_day[:precip_icon]}"
+                  =< "#{(event_day[:precip_probability] * 100).to_i}%"
+              - if index == 0
+                span.pair
+                  i.fa class="#{view_object[:sun_phase_icon_class]}"
+                  =< view_object[:sun_phase_label]
         - [event_day[:events][:all_day], event_day[:events][:periodic]].flatten.each do |event|
-            table.calendar-event
+          table.calendar-event
+            tr
+              td width="60" rowspan="2"
+                i.fa.fa-fw class="fa-#{event['icon']}"
+              td = event["summary"]
+            - if event["location"] || !event["all_day"]
               tr
-                td width="60" rowspan="2"
-                  i.fa.fa-fw class="fa-#{event['icon']}"
-                td = event["summary"]
-              - if event["location"] || !event["all_day"]
-                tr
-                  td.subtitle
-                    - out = []
-                    - out << event["time"] if !event["all_day"]
-                    - out << event["location"].to_s.split(",")[0] if event["location"].present?
-                    = out.join(", ")
+                td.subtitle
+                  - out = []
+                  - out << event["time"] if !event["all_day"]
+                  - out << event["location"].to_s.split(",")[0] if event["location"].present?
+                  = out.join(", ")
