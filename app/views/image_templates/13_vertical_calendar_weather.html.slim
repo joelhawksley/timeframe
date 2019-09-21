@@ -17,9 +17,10 @@ style
     .summary = view_object[:day_groups][0][:weather_summary]
     .yearly-events-table
       h3 Coming Up
-      - view_object[:yearly_events].each do |month_int, events|
-        .yearly-events-month = Date::MONTHNAMES[month_int]
-        table
+      table
+        - view_object[:yearly_events].each do |month_int, events|
+          tr
+            td.yearly-events-month colspan="2" = Date::MONTHNAMES[month_int]
           - events.each do |event|
             tr.yearly-table-event
               td.date
