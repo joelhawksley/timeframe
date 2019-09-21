@@ -32,7 +32,7 @@ class User < ApplicationRecord
     sunset_datetime = Time.at(weather["daily"]["data"][0]["sunsetTime"]).to_datetime.in_time_zone(tz)
 
     icon_class, label =
-      if (current_time.strftime("%-H%M").to_i > (sunrise_datetime.hour + sunrise_datetime.min).to_i) && (current_time.strftime("%-H%M").to_i < (sunset_datetime.hour + sunset_datetime.min).to_i)
+      if (current_time.strftime("%-H%M").to_i > sunrise_datetime.strftime("%-H%M").to_i) && (current_time.strftime("%-H%M").to_i < sunset_datetime.strftime("%-H%M").to_i)
         ["fa-moon-o", sunset_datetime.strftime("%-l:%M%P")]
       else
         ["fa-sun-o", sunrise_datetime.strftime("%-l:%M%P")]
