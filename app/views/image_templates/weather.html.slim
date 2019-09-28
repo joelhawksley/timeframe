@@ -20,5 +20,5 @@ style
   - if DateTime.now.utc.in_time_zone("America/Denver").hour > 19
     .tomorrow-label Tomorrow
     h3
-      .icon = File.read(File.join(Rails.root, "app", "assets", "images", view_object[:day_groups][1][:weather_icon])).to_s.html_safe
+      i.climacon class="#{view_object[:day_groups][1][:weather_icon]}"
       = view_object[:day_groups][1][:temperature_range]
