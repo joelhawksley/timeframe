@@ -5,29 +5,22 @@
 .current-temp {
   font-size: 420px;
   line-height: 320px;
-  margin-bottom: 40px;
+  margin-bottom: 80px;
   margin-left: -20px;
   /* font-weight: 700; */
 }
 
 h2 {
-  font-size: 120px;
+  font-size: 60px;
   font-weight: 500;
   margin-left: -15px;
   padding-bottom: 10px;
-  padding-top: 40px;
 }
 
-h2 .icon {
-  display: inline-block;
-  margin-right: 30px;
-  vertical-align: bottom;
-}
-
-h2 .icon svg {
-  width: 300px;
-  height: 300px;
-  margin: -70px;
+h2 .climacon {
+  font-size: 5.5rem;
+  vertical-align: sub;
+  margin-right: 1rem;
 }
 
 .summary-item {
@@ -35,39 +28,12 @@ h2 .icon svg {
   font-size: 60px;
   padding-bottom: 15px;
   position: relative;
-  font-weight: 100;
+  font-weight: 500;
 }
 
 .tomorrow-label {
-  font-size: 30px;
-  font-weight: 300;
-  mergin-bottom: 20px;
-  margin-top: 20px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
+  font-size: 4rem;
   text-align: left;
-}
-
-h3 {
-  font-weight: normal;
-  font-size: 60px;
-  margin-top: 15px;
-}
-
-h3 .icon {
-  display: inline-block;
-  margin-right: 20px;
-  vertical-align: bottom;
-}
-
-h3 .icon svg {
-  width: 150px;
-  height: 150px;
-  margin: -40px;
-}
-
-.climacon {
-  font-size: 11rem;
-  vertical-align: sub;
-  margin: 0 1rem;
+  width: 100%;
+  font-weight: 900;
 }

@@ -13,12 +13,15 @@ style
       .error-message = error_message
 .wrapper.weather
   .current-temp = view_object[:weather][:current_temperature]
-  h2
-    i.climacon class="#{view_object[:day_groups][0][:weather_icon]}"
-    = view_object[:day_groups][0][:temperature_range]
-  .summary-item style="#{"font-size: 40px" if view_object[:day_groups][0][:weather_summary].length > 90 }"= view_object[:day_groups][0][:weather_summary]
   - if DateTime.now.utc.in_time_zone("America/Denver").hour > 19
     .tomorrow-label Tomorrow
-    h3
+    h2
       i.climacon class="#{view_object[:day_groups][1][:weather_icon]}"
       = view_object[:day_groups][1][:temperature_range]
+    .summary-item style="#{"font-size: 40px" if view_object[:day_groups][1][:weather_summary].length > 90 || view_object[:error_messages].any?}"= view_object[:day_groups][1][:weather_summary]
+  - else
+    .tomorrow-label Today
+    h2
+      i.climacon class="#{view_object[:day_groups][0][:weather_icon]}"
+      = view_object[:day_groups][0][:temperature_range]
+    .summary-item style="#{"font-size: 40px" if view_object[:day_groups][0][:weather_summary].length > 90 || view_object[:error_messages].any?}"= view_object[:day_groups][0][:weather_summary]
