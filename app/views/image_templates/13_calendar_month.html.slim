@@ -25,10 +25,39 @@ table
       - day_of_week_index.times do
         td.cell
       - view_object[:day_groups].first(7 - day_of_week_index).each do |day_group|
-        = render partial: "image_templates/13_calendar_month_day", locals: { day_group: day_group }
+        td.cell
+          .day-of-month => day_group[:day_of_month]
+          .temp-range =< day_group[:temperature_range]
+          .clear
+          table.events
+            - [day_group[:events][:all_day], day_group[:events][:periodic]].flatten.each do |event|
+              tr
+                td.summary class="#{'all-day' if event["all_day"]}" colspan="#{event["all_day"] ? 2 : 1}"
+                  i.fa.fa-fw class="fa-#{event['icon']}"
+                  =< event["summary"]
+                - if !event["all_day"]
+                  td.time width="55"
+                    - out = []
+                    - out << event["start_time"] if !event["all_day"]
+                    = out.join(", ")
     - day_group_index = 7 - day_of_week_index
     - 3.times do
       tr
         - 7.times do
-          = render partial: "image_templates/13_calendar_month_day", locals: { day_group: view_object[:day_groups][day_group_index] }
+          - day_group = view_object[:day_groups][day_group_index]
+          td.cell
+            .day-of-month => day_group[:day_of_month]
+            .temp-range =< day_group[:temperature_range]
+            .clear
+            table.events
+              - [day_group[:events][:all_day], day_group[:events][:periodic]].flatten.each do |event|
+                tr
+                  td.summary class="#{'all-day' if event["all_day"]}" colspan="#{event["all_day"] ? 2 : 1}"
+                    i.fa.fa-fw class="fa-#{event['icon']}"
+                    =< event["summary"]
+                  - if !event["all_day"]
+                    td.time width="55"
+                      - out = []
+                      - out << event["start_time"] if !event["all_day"]
+                      = out.join(", ")
           - day_group_index +=1
