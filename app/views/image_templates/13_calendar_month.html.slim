@@ -1,0 +1,34 @@
+style
+  = File.read(Rails.root.join("app", "assets", "image_templates", "font-awesome.css")).html_safe
+  = File.read(Rails.root.join("app", "assets", "image_templates", "weathericons.css")).html_safe
+  = File.read(Rails.root.join("app", "assets", "image_templates", "fonts.css")).html_safe
+  = File.read(Rails.root.join("app", "assets", "image_templates", "styles.css")).html_safe
+  = File.read(Rails.root.join("app", "assets", "image_templates", "13_calendar_month.css")).html_safe
+.abs #{view_object[:timestamp]} - #{view_object[:battery_level]}
+- if view_object[:error_messages].any?
+  .error-messages
+    i.fa.fa-fw.fa-warning
+    - view_object[:error_messages].each do |error_message|
+      .error-message = error_message
+table
+  tbody
+    tr.header
+      td Sunday
+      td Monday
+      td Tuesday
+      td Wednesday
+      td Thursday
+      td Friday
+      td Saturday
+    tr
+      - day_of_week_index = view_object[:day_groups][0][:day_of_week_index]
+      - day_of_week_index.times do
+        td.cell
+      - view_object[:day_groups].first(7 - day_of_week_index).each do |day_group|
+        = render partial: "image_templates/13_calendar_month_day", locals: { day_group: day_group }
+    - day_group_index = 7 - day_of_week_index
+    - 3.times do
+      tr
+        - 7.times do
+          = render partial: "image_templates/13_calendar_month_day", locals: { day_group: view_object[:day_groups][day_group_index] }
+          - day_group_index +=1

@@ -1,0 +1,56 @@
+.header td {
+  border-bottom: 1px solid black;
+  text-align: center;
+  padding: 10px;
+}
+
+.time {
+  text-align: right;
+}
+
+td.cell {
+  width: 228px;
+  height: 228px;
+  border-bottom: 1px solid black;
+  vertical-align: top;
+  padding: 8px 10px 15px;
+}
+
+td.cell:not(:last-child) {
+  border-right: 1px solid black;
+}
+
+.day-of-month {
+  font-weight: bold;
+  float: left;
+  font-size: 30px;
+  padding: 0 5px 5px;
+}
+
+.temp-range {
+  float: right;
+  line-height: 34px;
+}
+
+.clear {
+  clear: both;
+}
+
+.clear:after {
+  content: " ";
+}
+
+.summary {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
+}
+
+.summary.all-day {
+  max-width: 160px;
+}
+
+.events {
+  width: 100%;
+}
