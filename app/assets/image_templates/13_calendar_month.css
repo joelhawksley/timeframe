@@ -1,35 +1,48 @@
+table {
+  border-collapse: collapse;
+}
+
 .header td {
-  border-bottom: 1px solid black;
   text-align: center;
   padding: 10px;
+  background-color: black;
+  color: white;
+  border: none;
+  font-size: 24px;
 }
 
 .time {
   text-align: right;
+  font-weight: 100;
 }
 
 td.cell {
   width: 228px;
   height: 228px;
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid lightgrey;
   vertical-align: top;
-  padding: 8px 10px 15px;
+  padding: 5px 10px 15px;
+}
+
+td.cell.empty {
+  background-color: lightgrey;
 }
 
 td.cell:not(:last-child) {
-  border-right: 1px solid black;
+  border-right: 1px solid lightgrey;
 }
 
 .day-of-month {
   font-weight: bold;
   float: left;
-  font-size: 30px;
-  padding: 0 5px 5px;
+  font-size: 34px;
+  padding: 0 0px 5px;
 }
 
 .temp-range {
   float: right;
-  line-height: 34px;
+  line-height: 40px;
+  font-size: 18px;
 }
 
 .clear {
@@ -53,4 +66,9 @@ td.cell:not(:last-child) {
 
 .events {
   width: 100%;
+}
+
+.climacon {
+  vertical-align: bottom;
+  font-size: 2rem;
 }

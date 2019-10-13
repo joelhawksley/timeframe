@@ -10,7 +10,7 @@ style
     i.fa.fa-fw.fa-warning
     - view_object[:error_messages].each do |error_message|
       .error-message = error_message
-table
+table border="0"
   tbody
     tr.header
       td Sunday
@@ -23,18 +23,21 @@ table
     tr
       - day_of_week_index = view_object[:day_groups][0][:day_of_week_index]
       - day_of_week_index.times do
-        td.cell
+        td.cell.empty
       - view_object[:day_groups].first(7 - day_of_week_index).each do |day_group|
         td.cell
           .day-of-month => day_group[:day_of_month]
-          .temp-range =< day_group[:temperature_range]
+          .temp-range
+            i.climacon class="#{day_group[:weather_icon]}"
+            =< day_group[:temperature_range]
           .clear
           table.events
             - [day_group[:events][:all_day], day_group[:events][:periodic]].flatten.each do |event|
               tr
-                td.summary class="#{'all-day' if event["all_day"]}" colspan="#{event["all_day"] ? 2 : 1}"
+                td
                   i.fa.fa-fw class="fa-#{event['icon']}"
-                  =< event["summary"]
+                td.summary class="#{'all-day' if event["all_day"]}" colspan="#{event["all_day"] ? 2 : 1}"
+                  =< event["summary"].gsub("with", "w/").gsub("and", "&").gsub("at", "@")
                 - if !event["all_day"]
                   td.time width="55"
                     - out = []
@@ -47,14 +50,17 @@ table
           - day_group = view_object[:day_groups][day_group_index]
           td.cell
             .day-of-month => day_group[:day_of_month]
-            .temp-range =< day_group[:temperature_range]
+            .temp-range
+              i.climacon class="#{day_group[:weather_icon]}"
+              =< day_group[:temperature_range]
             .clear
             table.events
               - [day_group[:events][:all_day], day_group[:events][:periodic]].flatten.each do |event|
                 tr
-                  td.summary class="#{'all-day' if event["all_day"]}" colspan="#{event["all_day"] ? 2 : 1}"
+                  td
                     i.fa.fa-fw class="fa-#{event['icon']}"
-                    =< event["summary"]
+                  td.summary class="#{'all-day' if event["all_day"]}" colspan="#{event["all_day"] ? 2 : 1}"
+                    =< event["summary"].gsub("with", "w/").gsub("and", "&").gsub("at", "@")
                   - if !event["all_day"]
                     td.time width="55"
                       - out = []
