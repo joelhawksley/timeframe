@@ -60,7 +60,7 @@ table border="0"
                   td
                     i.fa.fa-fw class="fa-#{event['icon']}"
                   td.summary class="#{'all-day' if event["all_day"]}" colspan="#{event["all_day"] ? 2 : 1}"
-                    =< event["summary"].gsub("with", "w/").gsub("and", "&").gsub("at", "@")
+                    =< event["summary"].gsub(" with ", " w/ ").gsub(" and ", " & ").gsub(" at ", " @ ")
                   - if !event["all_day"]
                     td.time width="55"
                       - out = []
