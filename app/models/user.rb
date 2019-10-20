@@ -116,6 +116,10 @@ class User < ApplicationRecord
       weather: {
         current_temperature: weather["currently"]["temperature"].round.to_s + "°",
         precip_probability: weather["daily"]["data"][0]["precipProbability"],
+        humidity: "#{(weather["daily"]["data"][0]["humidity"] * 100).to_i}%",
+        wind: weather["daily"]["data"][0]["windGust"].to_i,
+        wind_bearing: weather["daily"]["data"][0]["windBearing"].to_i,
+        visibility: "#{weather["daily"]["data"][0]["visibility"].to_i} mi",
         hours: weather["hourly"]["data"].map do |e|
           {
             time: Time.at(e["time"]).to_datetime.in_time_zone(tz).strftime("%-l:%M%P"),

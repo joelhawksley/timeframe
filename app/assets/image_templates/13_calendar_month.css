@@ -1,3 +1,20 @@
+.banner {
+  background-color: black;
+  color: white;
+  padding: 25px 40px;
+}
+
+.banner .current-temp {
+  font-size: 50px;
+}
+
+.banner span {
+  margin-right: 40px;
+  font-size: 30px;
+  line-height: 50px;
+  vertical-align: middle;
+}
+
 table {
   border-collapse: collapse;
 }
@@ -5,8 +22,7 @@ table {
 .header td {
   text-align: center;
   padding: 10px;
-  background-color: black;
-  color: white;
+  background-color: darkgrey;
   border: none;
   font-size: 24px;
 }

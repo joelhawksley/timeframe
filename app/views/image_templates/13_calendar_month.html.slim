@@ -10,6 +10,23 @@ style
     i.fa.fa-fw.fa-warning
     - view_object[:error_messages].each do |error_message|
       .error-message = error_message
+.banner
+  span.current-temp = view_object[:weather][:current_temperature]
+  span = view_object[:day_groups][0][:temperature_range]
+  span
+    i.fa.fa-fw class="#{view_object[:sun_phase_icon_class]}"
+    =< view_object[:sun_phase_label]
+  - if view_object[:weather][:wind] > 0
+    span
+      strong Wind:
+      |  #{view_object[:weather][:wind]} mph
+      i.fa.fa-fw.fa-arrow-up style="transform: rotate(#{view_object[:weather][:wind_bearing]}deg);"
+  span
+    strong Humidity:
+    =< view_object[:weather][:humidity]
+  span
+    strong Visibility:
+    =< view_object[:weather][:visibility]
 table border="0"
   tbody
     tr.header
