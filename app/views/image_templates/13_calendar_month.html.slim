@@ -51,7 +51,7 @@ table border="0"
           table.events
             - [day_group[:events][:all_day], day_group[:events][:periodic]].flatten.each do |event|
               tr
-                td
+                td width="23"
                   i.fa.fa-fw class="fa-#{event['icon']}"
                 td.summary class="#{'all-day' if event["all_day"]}" colspan="#{event["all_day"] ? 2 : 1}"
                   =< event["summary"].gsub(" with ", " w/ ").gsub(" and ", " & ").gsub(" at ", " @ ")
@@ -74,7 +74,7 @@ table border="0"
             table.events
               - [day_group[:events][:all_day], day_group[:events][:periodic]].flatten.each do |event|
                 tr
-                  td
+                  td width="23"
                     i.fa.fa-fw class="fa-#{event['icon']}"
                   td.summary class="#{'all-day' if event["all_day"]}" colspan="#{event["all_day"] ? 2 : 1}"
                     =< event["summary"].gsub(" with ", " w/ ").gsub(" and ", " & ").gsub(" at ", " @ ")

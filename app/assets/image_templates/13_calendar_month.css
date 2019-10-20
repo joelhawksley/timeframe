@@ -21,10 +21,14 @@ table {
 
 .header td {
   text-align: center;
+  background-color: lightgrey;
+  border-bottom: 1px solid lightgrey;
   padding: 10px;
-  background-color: darkgrey;
-  border: none;
   font-size: 24px;
+}
+
+.header td:not(:last-child) {
+  border-right: 1px solid darkgrey;
 }
 
 .time {
@@ -69,6 +73,10 @@ td.cell:not(:last-child) {
   content: " ";
 }
 
+.events tr {
+  height: 22px;
+}
+
 .summary {
   white-space: nowrap;
   overflow: hidden;
@@ -85,6 +93,6 @@ td.cell:not(:last-child) {
 }
 
 .climacon {
-  vertical-align: bottom;
+  vertical-align: middle;
   font-size: 2rem;
 }
