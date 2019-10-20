@@ -36,7 +36,7 @@ class CalendarService
       events = []
 
       service.list_calendar_lists.items.each_with_index do |calendar, index|
-        service.list_events(calendar.id, max_results: 100, single_events: true, order_by: 'startTime', time_min: (DateTime.now - 2.weeks).iso8601).items.each_with_index do |event, index_2|
+        service.list_events(calendar.id, max_results: 250, single_events: true, order_by: 'startTime', time_min: (DateTime.now - 2.weeks).iso8601).items.each_with_index do |event, index_2|
           event_json = event.as_json
 
           start_i =
