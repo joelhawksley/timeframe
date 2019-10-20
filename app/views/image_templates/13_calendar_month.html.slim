@@ -19,8 +19,8 @@ style
   - if view_object[:weather][:wind] > 0
     span
       strong Wind:
-      |  #{view_object[:weather][:wind]} mph
-      i.fa.fa-fw.fa-arrow-up style="transform: rotate(#{view_object[:weather][:wind_bearing]}deg);"
+      '  #{view_object[:weather][:wind]} mph
+      .arrow style="transform: rotate(#{view_object[:weather][:wind_bearing]}deg);" ↑
   span
     strong Humidity:
     =< view_object[:weather][:humidity]
