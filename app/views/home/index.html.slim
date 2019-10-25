@@ -1,12 +1,44 @@
-h1 Today Display
-- if current_user
-  = link_to "Sign Out", destroy_user_session_path, method: :delete
-  = link_to "View Display", display_path
-  = link_to "Connect Google Account", redirect_path
-  h2 = current_user.email
-  = form_for(current_user) do |f|
-    = f.number_field :latitude, step: :any, placeholder: "Latitude"
-    = f.number_field :longitude, step: :any, placeholder: "Longitude"
-    = f.submit "Update"
-- else
-  = link_to "Sign In", new_user_session_path
+nav.navbar.navbar-default
+  .container-fluid
+    .navbar-header
+      button.navbar-toggle.collapsed aria-expanded="false" data-target="#bs-example-navbar-collapse-1" data-toggle="collapse" type="button"
+        span.sr-only Toggle navigation
+        span.icon-bar
+        span.icon-bar
+        span.icon-bar
+      a.navbar-brand href="#" TodayDisplay
+    #bs-example-navbar-collapse-1.collapse.navbar-collapse
+      ul.nav.navbar-nav.navbar-right
+        li
+          - if current_user
+            = link_to "Sign Out (#{current_user.email})", destroy_user_session_path, method: :delete
+          - else
+            = link_to "Sign In", new_user_session_path
+.container
+  - if current_user
+    .col-md-6
+      .panel.panel-default
+        .panel-heading Screens
+        - if current_user.devices.any?
+          .list-group
+            - current_user.devices.each do |device|
+              .list-group-item
+                h4 = device.template
+                img.preview src="#{device_path(device, format: :png)}" width="#{device.width / 4}"
+        - else
+          .panel-body No devices yet. Contact Joel to add one for you!
+    .col-md-6
+      .panel.panel-default
+        .panel-heading Google Account
+        .panel-body = link_to "#{current_user.google_authorization.present? ? 'Reconnect' : 'Connect'}", redirect_path, class: "btn #{current_user.google_authorization.present? ? "btn-warning" : "btn-primary"}"
+      .panel.panel-default
+        .panel-heading Location
+        .panel-body
+          = form_for(current_user) do |f|
+            .form-group
+              = f.label :latitude
+              = f.number_field :latitude, step: :any, placeholder: "Latitude", class: "form-control"
+            .form-group
+              = f.label :longitude
+              = f.number_field :longitude, step: :any, placeholder: "Longitude", class: "form-control"
+            = f.submit "Update", class: "btn btn-primary"

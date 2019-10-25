@@ -11,8 +11,10 @@
   </head>
 
   <body>
-    <p class="notice"><%= notice %></p>
-    <p class="alert"><%= alert %></p>
+    <% if !flash.empty? %>
+      <p class="alert alert-info"><%= notice %></p>
+      <p class="alert alert-warning"><%= alert %></p>
+    <% end %>
     <%= yield %>
   </body>
 </html>

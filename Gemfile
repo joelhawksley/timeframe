@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 ruby "2.5.5"
 
 gem 'rails', '~> 5.1.2'
+gem 'bootstrap-sass'
 gem 'devise'
 gem 'dotenv-rails'
 gem 'exception_notification'
