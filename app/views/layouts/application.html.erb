@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>TodayDisplay</title>
+    <title>Timeframe</title>
     <%= csrf_meta_tags %>
     <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
     <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
@@ -11,9 +11,10 @@
   </head>
 
   <body>
-    <% if !flash.empty? %>
-      <p class="alert alert-info"><%= notice %></p>
-      <p class="alert alert-warning"><%= alert %></p>
+    <% flash.each do |key, value| %>
+      <div class="<%= flash_class(key) %>" data-flash="<%= key %>">
+        <%= value %>
+      </div>
     <% end %>
     <%= yield %>
   </body>

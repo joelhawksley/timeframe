@@ -20,6 +20,8 @@
    License: none (public domain)
 */
 
+$min-width:           1025px;
+
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
@@ -238,4 +240,20 @@ hr {
 
 .preview {
 	border: 1px solid lightgrey;
+}
+
+.panel-lonely {
+  margin: 0 auto;
+  padding-top: 0;
+  width: 320px;
+
+  @media screen and (min-width: $min-width) {
+    padding-top: 100px;
+  }
+}
+
+.lonely {
+  margin: 0 auto;
+  padding-top: 0;
+  width: 320px;
 }

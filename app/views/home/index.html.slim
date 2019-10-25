@@ -6,14 +6,15 @@ nav.navbar.navbar-default
         span.icon-bar
         span.icon-bar
         span.icon-bar
-      a.navbar-brand href="#" TodayDisplay
+      a.navbar-brand href="#" Timeframe
     #bs-example-navbar-collapse-1.collapse.navbar-collapse
       ul.nav.navbar-nav.navbar-right
-        li
-          - if current_user
-            = link_to "Sign Out (#{current_user.email})", destroy_user_session_path, method: :delete
-          - else
-            = link_to "Sign In", new_user_session_path
+        - if current_user
+          li = link_to "Sign Out (#{current_user.email})", destroy_user_session_path, method: :delete
+        - else
+          li = link_to "Sign In", new_user_session_path
+          li = link_to "Sign up", new_registration_path(:user)
+
 .container
   - if current_user
     .col-md-6

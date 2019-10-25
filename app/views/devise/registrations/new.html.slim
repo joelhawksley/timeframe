@@ -1,0 +1,9 @@
+-# frozen_string_literal: true
+.panel-lonely
+  = form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f|
+    = devise_error_messages!
+    .form-group
+      = f.email_field :email, autofocus: true, required: true, class: 'form-control', placeholder: 'Email address'
+    .form-group
+      = f.password_field :password, autocomplete: 'off', required: true, class: 'form-control', placeholder: 'Password'
+    .form-group = f.submit 'Sign Up', class: 'btn btn-primary btn-block'
