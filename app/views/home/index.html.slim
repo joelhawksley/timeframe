@@ -1,14 +1,8 @@
 nav.navbar.navbar-default
   .container-fluid
     .navbar-header
-      button.navbar-toggle.collapsed aria-expanded="false" data-target="#bs-example-navbar-collapse-1" data-toggle="collapse" type="button"
-        span.sr-only Toggle navigation
-        span.icon-bar
-        span.icon-bar
-        span.icon-bar
       a.navbar-brand href="#" Timeframe
-    #bs-example-navbar-collapse-1.collapse.navbar-collapse
-      ul.nav.navbar-nav.navbar-right
+    ul.nav.navbar-nav.navbar-right
         - if current_user
           li = link_to "Sign Out (#{current_user.email})", destroy_user_session_path, method: :delete
         - else
