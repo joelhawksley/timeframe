@@ -89,10 +89,6 @@ td.cell:not(:last-child) {
   content: " ";
 }
 
-.events tr {
-  height: 22px;
-}
-
 .summary.truncate {
   white-space: nowrap;
   overflow: hidden;
@@ -104,8 +100,15 @@ td.cell:not(:last-child) {
   max-width: 160px;
 }
 
-.events {
+.event {
+  table-layout: fixed;
   width: 100%;
+  margin: 4px 0;
+}
+
+.event tr {
+  height: 22px;
+  vertical-align: middle;
 }
 
 td .climacon {

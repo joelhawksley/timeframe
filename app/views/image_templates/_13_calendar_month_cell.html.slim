@@ -4,9 +4,9 @@ td.cell
     i.climacon class="#{day_group[:weather_icon]}"
     =< day_group[:temperature_range]
   .clear
-  table.events
-    - events = [day_group[:events][:all_day], day_group[:events][:periodic]].flatten
-    - events.each do |event|
+  - events = [day_group[:events][:all_day], day_group[:events][:periodic]].flatten
+  - events.each do |event|
+    table.event
       - if events.length > 3
         tr
           td width="23"
