@@ -7,7 +7,9 @@ style
 .abs #{view_object[:timestamp]} - #{view_object[:battery_level]}
 .banner
   span.current-temp = view_object[:weather][:current_temperature]
-  span = view_object[:day_groups][0][:temperature_range]
+  span
+    i.climacon class="#{view_object[:day_groups][0][:weather_icon]}"
+    =< view_object[:day_groups][0][:temperature_range]
   span
     i.fa.fa-fw class="#{view_object[:sun_phase_icon_class]}"
     =< view_object[:sun_phase_label]
