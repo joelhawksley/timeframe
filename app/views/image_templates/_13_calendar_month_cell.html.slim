@@ -1,0 +1,32 @@
+td.cell
+  .day-of-month => day_group[:day_of_month]
+  .temp-range
+    i.climacon class="#{day_group[:weather_icon]}"
+    =< day_group[:temperature_range]
+  .clear
+  table.events
+    - events = [day_group[:events][:all_day], day_group[:events][:periodic]].flatten
+    - events.each do |event|
+      - if events.length > 3
+        tr
+          td width="23"
+            i.fa.fa-fw class="fa-#{event['icon']}"
+          td.summary class="#{'all-day' if event["all_day"]} truncate" colspan="#{event["all_day"] ? 2 : 1}"
+            =< event["summary"].gsub(" with ", " w/ ").gsub(" and ", " & ").gsub(" at ", " @ ")
+          - if !event["all_day"]
+            td.time width="55"
+              - out = []
+              - out << event["start_time"] if !event["all_day"]
+              = out.join(", ")
+      - else
+        tr
+          td rowspan="#{event["all_day"] ? "1" : "2"}" width="23"
+            i.fa.fa-fw class="fa-#{event['icon']}"
+          td.summary
+            =< event["summary"].gsub(" with ", " w/ ").gsub(" and ", " & ").gsub(" at ", " @ ")
+        - if !event["all_day"]
+          tr
+            td.time.left width="55"
+              - out = []
+              - out << event["start_time"] if !event["all_day"]
+              = out.join(", ")

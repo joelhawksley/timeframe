@@ -48,6 +48,10 @@ table {
   font-weight: 100;
 }
 
+.time.left {
+  text-align: left;
+}
+
 td.cell {
   width: 228px;
   height: 228px;
@@ -93,10 +97,13 @@ td.cell:not(:last-child) {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.summary.truncate {
   max-width: 120px;
 }
 
-.summary.all-day {
+.summary.truncate.all-day {
   max-width: 160px;
 }
 
