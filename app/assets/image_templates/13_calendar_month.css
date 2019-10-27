@@ -2,6 +2,9 @@
   background-color: black;
   color: white;
   padding: 25px 40px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .banner .current-temp {

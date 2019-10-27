@@ -5,11 +5,6 @@ style
   = File.read(Rails.root.join("app", "assets", "image_templates", "styles.css")).html_safe
   = File.read(Rails.root.join("app", "assets", "image_templates", "13_calendar_month.css")).html_safe
 .abs #{view_object[:timestamp]} - #{view_object[:battery_level]}
-- if view_object[:error_messages].any?
-  .error-messages
-    i.fa.fa-fw.fa-warning
-    - view_object[:error_messages].each do |error_message|
-      .error-message = error_message
 .banner
   span.current-temp = view_object[:weather][:current_temperature]
   span = view_object[:day_groups][0][:temperature_range]
@@ -24,9 +19,11 @@ style
   span
     strong Humidity:
     =< view_object[:weather][:humidity]
-  span
-    strong Visibility:
-    =< view_object[:weather][:visibility]
+  - if view_object[:error_messages].any?
+    span
+      i.fa.fa-fw.fa-warning
+      - view_object[:error_messages].each do |error_message|
+        = error_message
 table border="0"
   tbody
     tr.header
