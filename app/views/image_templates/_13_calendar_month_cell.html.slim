@@ -8,7 +8,7 @@ td.cell
   - events.each do |event|
     table.event
       - if events.length > 3
-        tr
+        tr.condensed
           td width="23"
             i.fa.fa-fw class="fa-#{event['icon']}"
           td.summary class="#{'all-day' if event["all_day"]} truncate" colspan="#{event["all_day"] ? 2 : 1}"
@@ -19,7 +19,7 @@ td.cell
               - out << event["start_time"] if !event["all_day"]
               = out.join(", ")
       - else
-        tr
+        tr.expanded
           td rowspan="#{event["all_day"] ? "1" : "2"}" width="23"
             i.fa.fa-fw class="fa-#{event['icon']}"
           td.summary
