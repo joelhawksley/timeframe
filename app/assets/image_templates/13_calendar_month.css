@@ -29,7 +29,7 @@ table {
 .header td {
   text-align: center;
   background-color: lightgrey;
-  border-bottom: 1px solid lightgrey;
+  border-bottom: 1px solid darkgrey;
   padding: 10px;
   font-size: 24px;
 }
@@ -46,7 +46,7 @@ table {
 td.cell {
   width: 228px;
   height: 228px;
-  border-bottom: 1px solid lightgrey;
+  border-bottom: 1px solid darkgrey;
   vertical-align: top;
   padding: 5px 10px 15px;
 }
@@ -56,7 +56,7 @@ td.cell.empty {
 }
 
 td.cell:not(:last-child) {
-  border-right: 1px solid lightgrey;
+  border-right: 1px solid darkgrey;
 }
 
 .day-of-month {
