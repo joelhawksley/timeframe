@@ -103,10 +103,10 @@ class CalendarService
   ICON_MATCHES = {
     "calendar" => "/(holiday)/",
     "cutlery" => "/(dinner)/",
-    "paw" => "/(captain)/",
-    "male" => "/(joel)/",
-    "female" => "/(caitlin)/",
-    "heart" => "/(us)/",
+    "paw" => "/(captain|olive)/",
+    "male" => "/(joel|taylor)/",
+    "female" => "/(caitlin|danielle)/",
+    "heart" => "/(us|home)/",
     "github" => "/(on call)/",
     "birthday-cake" => "/(birthdays)/",
   }
