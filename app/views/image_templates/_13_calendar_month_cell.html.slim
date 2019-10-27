@@ -28,5 +28,5 @@ td.cell
           tr
             td.time.left width="55"
               - out = []
-              - out << event["start_time"] if !event["all_day"]
+              - out << event["time"] if !event["all_day"]
               = out.join(", ")

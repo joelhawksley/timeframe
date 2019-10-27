@@ -93,13 +93,10 @@ td.cell:not(:last-child) {
   height: 22px;
 }
 
-.summary {
+.summary.truncate {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-.summary.truncate {
   max-width: 120px;
 }
 
