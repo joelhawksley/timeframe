@@ -116,6 +116,8 @@ class User < ApplicationRecord
       weather: {
         current_temperature: weather["currently"]["temperature"].round.to_s + "°",
         precip_probability: weather["daily"]["data"][0]["precipProbability"],
+        precip_label: "#{(weather["daily"]["data"][0]["precipProbability"] * 100).to_i}% / #{weather["daily"]["data"][0]["precipAccumulation"].round(1)}\"",
+        precip_type: weather["daily"]["data"][0]["precipType"],
         humidity: "#{(weather["daily"]["data"][0]["humidity"] * 100).to_i}%",
         wind: weather["daily"]["data"][0]["windGust"].to_i,
         wind_bearing: weather["daily"]["data"][0]["windBearing"].to_i,

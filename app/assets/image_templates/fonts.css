@@ -108,7 +108,6 @@
 .climacon.flurries.cloud.moon:before {
 	content: "\e017";
 }
-.climacon.snow:before,
 .climacon.snow.cloud:before {
 	content: "\e018";
 }
@@ -230,6 +229,7 @@
 .climacon.moon.last-crescent:before {
 	content: "\e035";
 }
+.climacon.snow:before,
 .climacon.snowflake:before {
 	content: "\e036";
 }
