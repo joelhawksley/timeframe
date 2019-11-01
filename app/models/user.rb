@@ -103,6 +103,13 @@ class User < ApplicationRecord
         first(8).
         group_by { |e| Date.parse(e["start"]["date"]).month }
 
+    precip_label =
+      if weather["daily"]["data"][0]["precipAccumulation"].present?
+        "#{(weather["daily"]["data"][0]["precipProbability"] * 100).to_i}% / #{weather["daily"]["data"][0]["precipAccumulation"].round(1)}\""
+      else
+        "#{(weather["daily"]["data"][0]["precipProbability"] * 100).to_i}%"
+      end
+
     {
       api_version: 3,
       yearly_events: yearly_events,
@@ -116,7 +123,7 @@ class User < ApplicationRecord
       weather: {
         current_temperature: weather["currently"]["temperature"].round.to_s + "°",
         precip_probability: weather["daily"]["data"][0]["precipProbability"],
-        precip_label: "#{(weather["daily"]["data"][0]["precipProbability"] * 100).to_i}% / #{weather["daily"]["data"][0]["precipAccumulation"].round(1)}\"",
+        precip_label: precip_label,
         precip_type: weather["daily"]["data"][0]["precipType"],
         humidity: "#{(weather["daily"]["data"][0]["humidity"] * 100).to_i}%",
         wind: weather["daily"]["data"][0]["windGust"].to_i,
