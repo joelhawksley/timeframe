@@ -1,6 +1,45 @@
+.banner {
+  background-color: black;
+  color: white;
+  padding: 25px 40px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.banner .current-temp {
+  font-size: 40px;
+}
+
+.banner span {
+  margin-right: 30px;
+  font-size: 25px;
+  line-height: 40px;
+  vertical-align: middle;
+}
+
+.banner .arrow {
+  display: inline-block;
+}
+
+.banner .climacon {
+  vertical-align: middle;
+  font-size: 2.3rem;
+}
+
 .calendar-weather {
   clear: both;
   padding: 20px 40px 40px 40px;
+}
+
+.calendar-event {
+  font-size: 30px;
+  padding: .6rem 0 0;
+}
+
+.calendar-event .subtitle {
+  opacity: .7;
+  font-size: 20px;
 }
 
 .current-temp {
@@ -23,7 +62,7 @@
   border-bottom: 1px solid black;
   font-size: 25px;
   letter-spacing: 2px;
-  margin: 2rem 0 0;
+  margin: 1rem 0 0;
   text-align: left;
   width: 100%;
   font-weight: 900;

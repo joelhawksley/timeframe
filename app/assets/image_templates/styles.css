@@ -57,7 +57,7 @@ li {
   line-height: 50px;
 }
 
-.calendar-weather .weather-summary, .calendar-event {
+.calendar-event {
   padding: .6rem 0;
   font-size: 40px;
 }
@@ -65,11 +65,6 @@ li {
 .calendar-event {
   width: 100%;
   position: relative;
-}
-
-.calendar-event .subtitle {
-  opacity: .7;
-  font-size: 28px;
 }
 
 .calendar-day {
