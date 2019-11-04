@@ -197,15 +197,6 @@ li {
   margin-bottom: 2rem;
 }
 
-.calendar-weather.thirteen .float {
-  clear: both;
-}
-
-.calendar-weather.thirteen .weather-graph {
-  float: left;
-  width: 900px;
-}
-
 .calendar-weather .yearly-events-table {
   background-color: #eee;
   font-size: 2rem;
@@ -221,38 +212,6 @@ li {
 .calendar-weather .yearly-events-table td {
   font-size: 2rem;
   padding-top: 5px;
-}
-
-.calendar-weather.thirteen .day {
-  margin-right: 100px;
-  float: left;
-  width: 690px;
-}
-
-.calendar-weather.thirteen .day:last-child {
-  margin-right: 0;
-}
-
-.calendar-weather.vert .left {
-  background-color: #eee;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  width: 460px;
-  padding: 40px;
-}
-
-.calendar-weather.vert .calendar {
-  position: absolute;
-  top: 40px;
-  right: 40px;
-  left: 600px;
-  bottom: 0;
-}
-
-.calendar-weather.vert .current-temp {
-  font-size: 300px;
 }
 
 .calendar-weather .yearly-events {
