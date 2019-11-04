@@ -11,7 +11,6 @@ style
     i.fa.fa-fw.fa-warning
     - view_object[:error_messages].each do |error_message|
       .error-message = error_message
-- weather_hours = view_object[:weather][:hours].first(25)
 .calendar-weather
   .top
     span.current-temp = view_object[:weather][:current_temperature]
@@ -19,9 +18,6 @@ style
     - view_object[:day_groups].first(7).each_with_index do |event_day, index|
       li.date-divider = event_day[:day_name]
       li
-        table.calendar-event
-          tr
-            td colspan="2" = event_day[:weather_summary]
         table.calendar-event
           tr
             td.icon-cell width="60" rowspan="2"
