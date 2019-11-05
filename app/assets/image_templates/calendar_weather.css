@@ -8,13 +8,13 @@
 }
 
 .banner .current-temp {
-  font-size: 50px;
+  font-size: 60px;
 }
 
 .banner span {
   margin-right: 30px;
   font-size: 35px;
-  line-height: 50px;
+  line-height: 60px;
   vertical-align: middle;
 }
 
