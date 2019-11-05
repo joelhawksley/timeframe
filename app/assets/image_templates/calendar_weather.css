@@ -8,13 +8,13 @@
 }
 
 .banner .current-temp {
-  font-size: 40px;
+  font-size: 50px;
 }
 
 .banner span {
   margin-right: 30px;
-  font-size: 25px;
-  line-height: 40px;
+  font-size: 35px;
+  line-height: 50px;
   vertical-align: middle;
 }
 
@@ -24,7 +24,7 @@
 
 .banner .climacon {
   vertical-align: middle;
-  font-size: 2.3rem;
+  font-size: 2.6rem;
 }
 
 .calendar-weather {

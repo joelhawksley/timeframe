@@ -11,9 +11,6 @@ style
   span
     i.climacon class="#{view_object[:day_groups][0][:weather_icon]}"
     =< view_object[:day_groups][0][:temperature_range]
-  span
-    i.fa.fa-fw class="#{view_object[:sun_phase_icon_class]}"
-    =< view_object[:sun_phase_label]
   - if view_object[:weather][:wind] > 0
     span
       i.climacon.wind
