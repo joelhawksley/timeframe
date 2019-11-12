@@ -12,7 +12,7 @@
 	font-weight: normal;
 	-webkit-font-smoothing: antialiased;
 }
-.climacon.cloud:before {
+.climacon.cloud:before, .climacon.cloudy:before {
 	content: "\e000";
 }
 .climacon.cloud.sun:before {

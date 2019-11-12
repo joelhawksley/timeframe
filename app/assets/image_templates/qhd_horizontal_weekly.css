@@ -1,0 +1,69 @@
+body {
+  padding: 50px;
+}
+
+body.day {
+  background-color: #eee;
+  color: #333;
+}
+
+body.day .main td {
+  border: 1px solid #aaa;
+}
+
+body.night {
+  background-color: #000;
+  color: #aaa;
+}
+
+body.night .main td {
+  border: 1px solid #888;
+}
+
+.main {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  border-style: hidden;
+}
+
+.main td {
+  width: 150px;
+  vertical-align: top;
+  padding: 10px;
+}
+
+.weather {
+  font-size: 30px;
+}
+
+.weather.climacon {
+  vertical-align: middle;
+}
+
+.day-of-month {
+  font-size: 30px;
+  font-weight: 100;
+}
+
+.day-label {
+  font-weight: bold;
+  font-size: 50px;
+}
+
+.calendar-label {
+  font-size: 30px;
+  text-align: right;
+  line-height: 1;
+}
+
+.events li:not(:last-child) {
+  margin-bottom: 5px;
+  padding-bottom: 5px;
+  border-bottom: 1px dashed #888;
+}
+
+.events li .time {
+  float: right;
+  font-weight: 300;
+}

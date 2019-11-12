@@ -1,0 +1,33 @@
+html
+  head
+    style
+      = File.read(Rails.root.join("app", "assets", "image_templates", "font-awesome.css")).html_safe
+      = File.read(Rails.root.join("app", "assets", "image_templates", "weathericons.css")).html_safe
+      = File.read(Rails.root.join("app", "assets", "image_templates", "fonts.css")).html_safe
+      = File.read(Rails.root.join("app", "assets", "image_templates", "styles.css")).html_safe
+      = File.read(Rails.root.join("app", "assets", "image_templates", "qhd_horizontal_weekly.css")).html_safe
+
+    - uniq_calendar_names = view_object[:day_groups].map { |dg| dg[:events][:all_day].concat(dg[:events][:periodic]).flatten }.flatten.map { |event| event["calendar"] }.uniq
+  body class="#{view_object[:is_daytime] ? 'day' : 'night'}"
+    table.main
+      tbody
+        tr
+          td
+          - view_object[:day_groups].first(7).each do |day_group|
+            td
+              div.day-of-month = day_group[:day_of_month]
+              div.day-label = day_group[:day_name]
+              div.weather
+                i.climacon class="#{day_group[:weather_icon]}"
+                =< day_group[:temperature_range]
+        - uniq_calendar_names.each do |calendar_name|
+          tr
+            td.calendar-label = calendar_name
+            - view_object[:day_groups].first(7).each do |day_group|
+              td
+                ul.events
+                  - [day_group[:events][:all_day], day_group[:events][:periodic]].flatten.select { |e| e["calendar"] == calendar_name }.uniq.each do |event|
+                    li
+                      = event["summary"]
+                      - unless event["all_day"]
+                        .time = event["time"]
