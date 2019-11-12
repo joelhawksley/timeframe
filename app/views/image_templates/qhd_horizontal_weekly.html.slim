@@ -8,7 +8,7 @@ html
       = File.read(Rails.root.join("app", "assets", "image_templates", "styles.css")).html_safe
       = File.read(Rails.root.join("app", "assets", "image_templates", "qhd_horizontal_weekly.css")).html_safe
 
-    - uniq_calendar_names = view_object[:day_groups].map { |dg| dg[:events][:all_day].concat(dg[:events][:periodic]).flatten }.flatten.map { |event| event["calendar"] }.uniq
+    - uniq_calendar_names = view_object[:day_groups].first(7).map { |dg| dg[:events][:all_day].concat(dg[:events][:periodic]).flatten }.flatten.map { |event| event["calendar"] }.uniq
   body class="#{view_object[:is_daytime] ? 'day' : 'night'}"
     table.main
       tbody
