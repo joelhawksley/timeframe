@@ -54,5 +54,7 @@ class Device < ApplicationRecord
 
   def fetch
     update(status: JSON.parse(Visionect::Client.new.get_device(uuid: uuid).body))
+  rescue
+    puts "device not found"
   end
 end
