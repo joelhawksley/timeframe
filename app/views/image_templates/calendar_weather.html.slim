@@ -20,10 +20,6 @@ style
     span
       i.climacon class="#{view_object[:weather][:precip_type]}"
       =< view_object[:weather][:precip_label]
-  - else
-    span
-      strong Humidity:
-      =< view_object[:weather][:humidity]
   - if view_object[:error_messages].any?
     span
       i.fa.fa-fw.fa-warning
