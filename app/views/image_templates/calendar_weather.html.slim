@@ -15,7 +15,7 @@ style
     span
       i.climacon.wind
       '  #{view_object[:weather][:wind]} mph
-      .arrow style="transform: rotate(#{view_object[:weather][:wind_bearing]}deg);" ↑
+      .arrow style="-webkit-transform: rotate(#{view_object[:weather][:wind_bearing]}deg);" ↑
   - if view_object[:weather][:precip_probability] > 0.1
     span
       i.climacon class="#{view_object[:weather][:precip_type]}"
