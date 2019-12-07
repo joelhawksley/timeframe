@@ -1,20 +1,18 @@
 .banner {
-  background-color: black;
-  color: white;
-  padding: 25px 40px;
+  padding: 25px 40px 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .banner .current-temp {
-  font-size: 60px;
+  font-size: 100px;
 }
 
 .banner span {
-  margin-right: 30px;
-  font-size: 35px;
-  line-height: 60px;
+  margin-right: 50px;
+  font-size: 50px;
+  line-height: 100px;
   vertical-align: middle;
 }
 
@@ -24,16 +22,16 @@
 
 .banner .climacon {
   vertical-align: middle;
-  font-size: 2.6rem;
+  font-size: 4.5rem;
 }
 
 .calendar-weather {
   clear: both;
-  padding: 20px 40px 40px 40px;
+  padding: 10px 40px 40px 40px;
 }
 
 .calendar-event {
-  font-size: 30px;
+  font-size: 32px;
   padding: .6rem 0 0;
 }
 
