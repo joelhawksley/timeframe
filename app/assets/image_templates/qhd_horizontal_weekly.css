@@ -57,13 +57,16 @@ body.night .main td {
   line-height: 1;
 }
 
-.events li:not(:last-child) {
-  margin-bottom: 5px;
-  padding-bottom: 5px;
-  border-bottom: 1px dashed #888;
+.events li {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  padding: 8px 10px;
+  border-radius: 5px;
 }
 
 .events li .time {
-  float: right;
   font-weight: 300;
 }

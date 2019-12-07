@@ -66,7 +66,8 @@ class CalendarService
               "end",
               "location"
             ).merge(
-              color: calendar.background_color,
+              background_color: event_json["color"] || calendar.background_color,
+              foreround_color: event_json["color"] || calendar.foreground_color,
               summary: summary,
               description: event_json["description"],
               calendar: calendar.summary,
