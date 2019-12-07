@@ -69,4 +69,5 @@ body.night .main td {
 
 .events li .time {
   font-weight: 300;
+  flex-shrink: 0;
 }
