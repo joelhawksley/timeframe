@@ -24,12 +24,16 @@ html
               ul.events
                 - day_group[:events][:all_day].each do |event|
                   li style="background-color: #{event['background_color']}"
-                    = event["summary"]
+                    .first = event["summary"]
+                  .second = event["location"]&.split(",")&.first
         tr
           - view_object[:day_groups].first(7).each do |day_group|
             td
               ul.events
                 -day_group[:events][:periodic].each do |event|
                   li style="background-color: #{event['background_color']}"
-                    = event["summary"]
-                    .time = event["time"]
+                    .first
+                      = event["summary"]
+                      .time = event["time"]
+                    .second
+                      em = event["location"]&.split(",")&.first
