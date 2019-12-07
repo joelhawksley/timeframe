@@ -22,8 +22,14 @@ html
           - view_object[:day_groups].first(7).each do |day_group|
             td
               ul.events
-                - [day_group[:events][:all_day], day_group[:events][:periodic]].flatten.each do |event|
+                - day_group[:events][:all_day].each do |event|
                   li style="background-color: #{event['background_color']}"
                     = event["summary"]
-                    - unless event["all_day"]
-                      .time = event["time"]
+        tr
+          - view_object[:day_groups].first(7).each do |day_group|
+            td
+              ul.events
+                -day_group[:events][:periodic].each do |event|
+                  li style="background-color: #{event['background_color']}"
+                    = event["summary"]
+                    .time = event["time"]
