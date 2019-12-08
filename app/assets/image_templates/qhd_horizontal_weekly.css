@@ -1,5 +1,8 @@
 body {
   padding: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 body.day {
@@ -16,7 +19,6 @@ body.night {
 .main {
   border-collapse: collapse;
   border-style: hidden;
-  margin: 0 auto;
 }
 
 .main td {
@@ -27,6 +29,7 @@ body.night {
 
 .weather {
   font-size: 30px;
+  font-weight: 300;
 }
 
 .weather.climacon {
@@ -39,7 +42,6 @@ body.night {
 }
 
 .day-label {
-  font-weight: bold;
   font-size: 50px;
 }
 
