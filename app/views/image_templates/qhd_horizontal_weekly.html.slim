@@ -10,7 +10,6 @@ html
   body class="#{view_object[:is_daytime] ? 'day' : 'night'}"
     table.main
       tbody
-
         tr
           td.chart colspan="7" height="200"
             svg height="200" width="#{view_object[:hours_to_graph] * 14}px" style="margin-left: #{view_object[:hour_of_day] * 14}px"
@@ -29,15 +28,17 @@ html
             td
               ul.events
                 - day_group[:events][:all_day].each do |event|
-                  li style="background-color: #{event['background_color']}"
+                  - style = view_object[:is_daytime] ? "background-color: #{event['background_color']}" : "border: 3px solid #{event['background_color']}"
+                  li style="#{style}"
                     .first = event["summary"]
                   .second = event["location"]&.split(",")&.first
         tr
           - view_object[:day_groups].first(7).each do |day_group|
             td
               ul.events
-                -day_group[:events][:periodic].each do |event|
-                  li style="background-color: #{event['background_color']}"
+                - day_group[:events][:periodic].each do |event|
+                  - style = view_object[:is_daytime] ? "background-color: #{event['background_color']}" : "border: 3px solid #{event['background_color']}"
+                  li style="#{style}"
                     .first
                       = event["summary"]
                       .time = event["time"]

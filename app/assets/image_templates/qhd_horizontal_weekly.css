@@ -13,7 +13,6 @@ body.day {
 body.night {
   background-color: #000;
   color: #FFFFFF;
-  opacity: .8;
 }
 
 .main {
@@ -52,7 +51,6 @@ body.night {
 }
 
 .events li {
-  color: #000;
   margin-bottom: 10px;
   padding: 8px 10px;
   border-radius: 5px;
