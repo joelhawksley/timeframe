@@ -10,6 +10,12 @@ html
   body class="#{view_object[:is_daytime] ? 'day' : 'night'}"
     table.main
       tbody
+
+        tr
+          td.chart colspan="7" height="200"
+            svg height="200" width="#{view_object[:hours_to_graph] * 14}px" style="margin-left: #{view_object[:hour_of_day] * 14}px"
+              polyline points="#{view_object[:svg_temp_points]}" style="fill:none;stroke:red;stroke-width:3"
+              polyline points="#{view_object[:svg_precip_points]}" style="fill:none;stroke:blue;stroke-width:3"
         tr
           - view_object[:day_groups].first(7).each do |day_group|
             td

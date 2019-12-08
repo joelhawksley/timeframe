@@ -110,6 +110,28 @@ class User < ApplicationRecord
         "#{(weather["daily"]["data"][0]["precipProbability"] * 100).to_i}%"
       end
 
+    hour_of_day = DateTime.now.in_time_zone(tz).hour
+    hours_to_graph = 169 - hour_of_day
+
+    hours = weather["hourly"]["data"].first(hours_to_graph).map do |e|
+      {
+        temperature: e["temperature"].to_f.round,
+        wind_speed: e["windSpeed"].round,
+        wind_bearing: e["windBearing"],
+        precip_probability: (e["precipProbability"] * 100).to_i,
+      }
+    end
+
+    temps = hours.map { |e| e[:temperature] }
+
+    max_temp = temps.max
+    min_temp = temps.min
+
+    scale = 200 / (max_temp - min_temp).to_f
+
+    svg_temp_points = hours.each_with_index.map { |hour, index| "#{index * 14},#{200 - ((hour[:temperature] - min_temp) * scale)}" }.join(" ")
+    svg_precip_points = hours.each_with_index.map { |hour, index| "#{index * 14},#{200 - (hour[:precip_probability] * 2)}" }.join(" ")
+
     {
       api_version: 3,
       yearly_events: yearly_events,
@@ -120,6 +142,10 @@ class User < ApplicationRecord
       time: current_time,
       timestamp: updated_at.in_time_zone(tz).strftime("%A at %l:%M %p"),
       is_daytime: (current_time.strftime("%-H%M").to_i > sunrise_datetime.strftime("%-H%M").to_i) && (current_time.strftime("%-H%M").to_i < sunset_datetime.strftime("%-H%M").to_i),
+      hours_to_graph: hours_to_graph,
+      hour_of_day: hour_of_day,
+      svg_temp_points: svg_temp_points,
+      svg_precip_points: svg_precip_points,
       tz: tz,
       weather: {
         current_temperature: weather["currently"]["temperature"].round.to_s + "°",
@@ -130,14 +156,6 @@ class User < ApplicationRecord
         wind: weather["daily"]["data"][0]["windGust"].to_i,
         wind_bearing: weather["daily"]["data"][0]["windBearing"].to_i,
         visibility: "#{weather["daily"]["data"][0]["visibility"].to_i} mi",
-        hours: weather["hourly"]["data"].map do |e|
-          {
-            time: Time.at(e["time"]).to_datetime.in_time_zone(tz).strftime("%-l:%M%P"),
-            temperature: e["temperature"].to_f.round,
-            wind_speed: e["windSpeed"].round,
-            wind_bearing: e["windBearing"]
-          }
-        end
       }
     }
   end
