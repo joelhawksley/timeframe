@@ -7,29 +7,22 @@ body.day {
   color: #333;
 }
 
-body.day .main td {
-  border: 1px solid #aaa;
-}
-
 body.night {
   background-color: #000;
   color: #FFFFFF;
   opacity: .8;
 }
 
-body.night .main td {
-  border: 1px solid #FFF;
-}
-
 .main {
   border-collapse: collapse;
   border-style: hidden;
+  margin: 0 auto;
 }
 
 .main td {
   width: 150px;
   vertical-align: top;
-  padding: 10px;
+  padding: 10px 30px;
 }
 
 .weather {
@@ -77,5 +70,5 @@ body.night .main td {
 }
 
 td.chart {
-  padding: 0 0 10px;
+  padding: 0 20px 10px;
 }

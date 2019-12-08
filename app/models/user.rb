@@ -127,10 +127,10 @@ class User < ApplicationRecord
     max_temp = temps.max
     min_temp = temps.min
 
-    scale = 200 / (max_temp - min_temp).to_f
+    scale = 180 / (max_temp - min_temp).to_f
 
-    svg_temp_points = hours.each_with_index.map { |hour, index| "#{index * 14},#{200 - ((hour[:temperature] - min_temp) * scale)}" }.join(" ")
-    svg_precip_points = hours.each_with_index.map { |hour, index| "#{index * 14},#{200 - (hour[:precip_probability] * 2)}" }.join(" ")
+    svg_temp_points = hours.each_with_index.map { |hour, index| "#{index * 14},#{190 - ((hour[:temperature] - min_temp) * scale)}" }.join(" ")
+    svg_precip_points = hours.each_with_index.map { |hour, index| "#{index * 14},#{190 - (hour[:precip_probability] * 2)}" }.join(" ")
 
     {
       api_version: 3,
