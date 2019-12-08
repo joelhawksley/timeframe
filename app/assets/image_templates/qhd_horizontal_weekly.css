@@ -13,11 +13,12 @@ body.day .main td {
 
 body.night {
   background-color: #000;
-  color: #aaa;
+  color: #FFFFFF;
+  opacity: .8;
 }
 
 body.night .main td {
-  border: 1px solid #888;
+  border: 1px solid #FFF;
 }
 
 .main {
