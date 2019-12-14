@@ -11,7 +11,7 @@
 
 .banner span {
   margin-right: 50px;
-  font-size: 50px;
+  font-size: 40px;
   line-height: 100px;
   vertical-align: middle;
 }
@@ -22,7 +22,7 @@
 
 .banner .climacon {
   vertical-align: middle;
-  font-size: 4.5rem;
+  font-size: 4rem;
 }
 
 .calendar-weather {
