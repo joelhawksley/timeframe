@@ -1,0 +1,60 @@
+style
+  = File.read(Rails.root.join("app", "assets", "image_templates", "font-awesome.css")).html_safe
+  = File.read(Rails.root.join("app", "assets", "image_templates", "weathericons.css")).html_safe
+  = File.read(Rails.root.join("app", "assets", "image_templates", "fonts.css")).html_safe
+  = File.read(Rails.root.join("app", "assets", "image_templates", "styles.css")).html_safe
+  = File.read(Rails.root.join("app", "assets", "image_templates", "13_vertical_calendar_weather.css")).html_safe
+.abs #{view_object[:timestamp]} - #{view_object[:battery_level]}
+- if view_object[:error_messages].any?
+  .error-messages
+    i.fa.fa-fw.fa-warning
+    - view_object[:error_messages].each do |error_message|
+      .error-message = error_message
+.thirteen-vert
+  .fade-bottom
+  .left
+    .current-temp = view_object[:weather][:current_temperature]
+    .summary = view_object[:day_groups][0][:weather_summary]
+    .yearly-events-table
+      h3 Coming Up
+      table
+        - view_object[:yearly_events].each do |month_int, events|
+          tr
+            td.yearly-events-month colspan="2" = Date::MONTHNAMES[month_int]
+          - events.each do |event|
+            tr.yearly-table-event
+              td.date
+                - time = Time.at(event["start_i"]).in_time_zone("America/Denver")
+                strong = time.day.ordinalize
+              td =< event["summary"]
+  ul.calendar
+    - view_object[:day_groups].first(5).each_with_index do |event_day, index|
+      li.date = event_day[:day_name]
+      li.calendar-day
+        table.calendar-event
+          tr
+            td.icon-cell width="60" rowspan="2"
+              i.climacon class="#{event_day[:weather_icon]}"
+            td
+              => event_day[:temperature_range]
+              - if event_day[:precip_probability] > 0.1
+                span.pair
+                  i.climacon class="#{event_day[:precip_icon]}"
+                  =< "#{(event_day[:precip_probability] * 100).to_i}%"
+              - if index == 0
+                span.pair
+                  i.fa class="#{view_object[:sun_phase_icon_class]}"
+                  =< view_object[:sun_phase_label]
+        - [event_day[:events][:all_day], event_day[:events][:periodic]].flatten.each do |event|
+          table.calendar-event
+            tr
+              td width="60" rowspan="2"
+                i.fa.fa-fw class="fa-#{event['icon']}"
+              td = event["summary"]
+            - if event["location"] || !event["all_day"]
+              tr
+                td.subtitle
+                  - out = []
+                  - out << event["time"] if !event["all_day"]
+                  - out << event["location"].to_s.split(",")[0] if event["location"].present?
+                  = out.join(", ")
