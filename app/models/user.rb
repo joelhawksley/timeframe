@@ -78,7 +78,7 @@ class User < ApplicationRecord
           }
         }
 
-        if day_index < 8
+        if day_index < 7
           out[:temperature_range] = "#{weather["daily"]["data"][day_index]["temperatureHigh"].round}° / #{weather["daily"]["data"][day_index]["temperatureLow"].round}°"
           out[:weather_icon] = weather["daily"]["data"][day_index]["icon"]
           out[:weather_summary] = weather["daily"]["data"][day_index]["summary"]
