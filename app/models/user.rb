@@ -100,7 +100,7 @@ class User < ApplicationRecord
     yearly_events =
       calendar_events_for(Time.now.in_time_zone(tz).beginning_of_day.to_i, (Time.now.in_time_zone(tz) + 1.year).end_of_day.utc.to_i).
         select { |event| event["calendar"] == "Birthdays" }.
-        first(8).
+        first(16).
         group_by { |e| Date.parse(e["start"]["date"]).month }
 
     precip_label =

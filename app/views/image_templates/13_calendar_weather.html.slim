@@ -10,9 +10,9 @@ style
     i.fa.fa-fw.fa-warning
     - view_object[:error_messages].each do |error_message|
       .error-message = error_message
-.thirteen-vert
+.thirteen-horizontal
   .fade-bottom
-  .left
+  .sidebar
     .current-temp = view_object[:weather][:current_temperature]
     .summary = view_object[:day_groups][0][:weather_summary]
     .yearly-events-table
@@ -27,34 +27,34 @@ style
                 - time = Time.at(event["start_i"]).in_time_zone("America/Denver")
                 strong = time.day.ordinalize
               td =< event["summary"]
-  ul.calendar
+  table.calendar
     - view_object[:day_groups].first(5).each_with_index do |event_day, index|
-      li.date = event_day[:day_name]
-      li.calendar-day
-        table.calendar-event
-          tr
-            td.icon-cell width="60" rowspan="2"
-              i.climacon class="#{event_day[:weather_icon]}"
-            td
-              => event_day[:temperature_range]
-              - if event_day[:precip_probability] > 0.1
-                span.pair
-                  i.climacon class="#{event_day[:precip_icon]}"
-                  =< "#{(event_day[:precip_probability] * 100).to_i}%"
-              - if index == 0
-                span.pair
-                  i.fa class="#{view_object[:sun_phase_icon_class]}"
-                  =< view_object[:sun_phase_label]
-        - [event_day[:events][:all_day], event_day[:events][:periodic]].flatten.each do |event|
-          table.calendar-event
-            tr
-              td width="60" rowspan="2"
-                i.fa.fa-fw class="fa-#{event['icon']}"
-              td = event["summary"]
-            - if event["location"] || !event["all_day"]
-              tr
-                td.subtitle
-                  - out = []
-                  - out << event["time"] if !event["all_day"]
-                  - out << event["location"].to_s.split(",")[0] if event["location"].present?
-                  = out.join(", ")
+      tr.header
+        td colspan="3"
+          h2.date = event_day[:day_name]
+          span
+            i.climacon class="#{event_day[:weather_icon]}"
+            => event_day[:temperature_range]
+          - if event_day[:precip_probability] > 0.1
+            span
+              i.climacon class="#{event_day[:precip_icon]}"
+              =< "#{(event_day[:precip_probability] * 100).to_i}%"
+          - if index == 0
+            span
+              i.fa class="#{view_object[:sun_phase_icon_class]}"
+              =< view_object[:sun_phase_label]
+      - [event_day[:events][:all_day], event_day[:events][:periodic]].flatten.each do |event|
+        tr
+          td.icon width="30"
+            i.fa.fa-fw class="fa-#{event['icon']}"
+          td
+            = event["summary"]
+            p.subtitle
+              - if !event["all_day"]
+                = event["time"]
+              - if !event["all_day"] && event["location"].present?
+                ',
+              - if event["location"] =~ URI::regexp
+                = URI(event["location"]).host.gsub("www.", "")
+              - elsif event["location"]
+                = event["location"].to_s.split(",").first.truncate(32)

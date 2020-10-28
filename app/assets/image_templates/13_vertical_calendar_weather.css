@@ -1,12 +1,12 @@
-.thirteen-vert {
+.thirteen-horizontal {
   clear: both;
 }
 
-.thirteen-vert .fade-bottom {
+.thirteen-horizontal .fade-bottom {
   left: 440px;
 }
 
-.thirteen-vert .left {
+.thirteen-horizontal .sidebar {
   background-color: #eee;
   width: 340px;
   float: left;
@@ -14,34 +14,39 @@
   min-height: 100%;
 }
 
-.thirteen-vert .left .current-temp {
+.thirteen-horizontal .sidebar .current-temp {
   line-height: .8;
   font-size: 14rem;
   margin-bottom: 2rem;
 }
 
-.thirteen-vert .left .subhead .high-low {
+.thirteen-horizontal .sidebar .subhead .high-low {
   font-size: 3.5rem;
 }
 
-.thirteen-vert .left .subhead .icon {
+.thirteen-horizontal .sidebar .subhead .icon {
   display: inline-block;
   margin-right: 30px;
   vertical-align: middle;
 }
 
-.thirteen-vert .left .subhead .icon svg {
+.thirteen-horizontal .sidebar .subhead .icon svg {
   width: 150px;
   height: 150px;
   margin: -40px;
 }
 
-.thirteen-vert .summary {
+.thirteen-horizontal .summary {
   line-height: 1.2;
   font-size: 2rem;
 }
 
-.thirteen-vert .left .yearly-events-table {
+.thirteen-horizontal .subtitle {
+  opacity: .7;
+  font-size: 1.2rem;
+}
+
+.thirteen-horizontal .sidebar .yearly-events-table {
   position: absolute;
   bottom: 0;
   background-color: #ddd;
@@ -50,7 +55,7 @@
   padding: 35px 40px 40px;
 }
 
-.thirteen-vert .yearly-events-month {
+.thirteen-horizontal .yearly-events-month {
   font-weight: 900;
   border-bottom: 1px solid black;
   font-size: 25px;
@@ -60,35 +65,54 @@
   margin-top: 5px;
 }
 
-.thirteen-vert .left .yearly-events-table h3 {
+.thirteen-horizontal .sidebar .yearly-events-table h3 {
   margin-bottom: 1rem;
   line-height: 1;
 }
 
-.thirteen-vert .left .yearly-events-table table {
+.thirteen-horizontal .sidebar .yearly-events-table table {
   font-size: 24px;
   width: 100%;
 }
 
-.thirteen-vert .left .yearly-events-table table td {
+.thirteen-horizontal .sidebar .yearly-events-table table td {
   padding: 3px 0;
 }
 
-.thirteen-vert .left .yearly-events-table .date {
+.thirteen-horizontal .sidebar .yearly-events-table .date {
   padding-right: 1rem;
 }
 
-.thirteen-vert .calendar {
+.thirteen-horizontal .calendar {
   float: left;
-  width: 660px;
+  font-size: 26px;
+  width: 760px;
   padding: 30px 50px;
 }
 
-.thirteen-vert .calendar .date {
+.thirteen-horizontal .calendar .date {
   font-size: 4rem;
   text-align: left;
-  width: 100%;
   font-weight: 900;
+  display: inline-block;
+}
+
+.thirteen-horizontal .calendar .header span {
+  vertical-align: super;
+  margin-left: 30px;
+}
+
+.thirteen-horizontal .calendar td {
+  padding: 5px 0;
+}
+
+.thirteen-horizontal .calendar .header td {
+  padding-top: 50px;
+  padding-bottom: 0;
+}
+
+.thirteen-horizontal .calendar .header:first-child td {
+  padding-top: 0;
 }
 
 .icon-cell {
@@ -97,9 +121,6 @@
 
 .climacon {
   font-size: 4rem;
-  vertical-align: sub;
-}
-
-span.pair {
-  margin-left: 30px;
+  vertical-align: middle;
+  padding-right: 10px;
 }
