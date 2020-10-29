@@ -43,7 +43,7 @@
 
 .thirteen-horizontal .subtitle {
   opacity: .7;
-  font-size: 1.2rem;
+  font-size: 1.5rem;
 }
 
 .thirteen-horizontal .sidebar .yearly-events-table {
@@ -104,6 +104,7 @@
 
 .thirteen-horizontal .calendar td {
   padding: 5px 0;
+  font-size: 36px;
 }
 
 .thirteen-horizontal .calendar .header td {
