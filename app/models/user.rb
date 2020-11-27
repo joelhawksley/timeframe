@@ -3,6 +3,8 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :trackable, :validatable
 
   has_many :devices
+  has_many :google_accounts
+  has_many :google_calendars, through: :google_accounts
 
   def fetch
     update(error_messages: [])

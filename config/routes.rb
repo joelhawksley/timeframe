@@ -7,4 +7,5 @@ Rails.application.routes.draw do
   get :google_callback, to: 'home#callback'
   resources :users, only: [:update]
   resources :devices, only: [:show]
+  resources :google_calendars, only: [:update]
 end

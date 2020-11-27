@@ -33,7 +33,27 @@
 
     response = client.fetch_access_token!
 
-    current_user.update(google_authorization: response)
+    people_service = Google::Apis::PeopleV1::PeopleServiceService.new
+    people_service.authorization = client
+
+    person =
+      people_service.
+        get_person("people/me", person_fields: "emailAddresses")
+
+    email_address =
+      if person.email_addresses
+        email_addresses.find { |email_address| email_address.metadata.primary }.value
+      else
+        person.resource_name
+      end
+
+    existing_account = current_user.google_accounts.find_by(email: email_address)
+
+    if existing_account
+      existing_account.update(google_authorization: response)
+    else
+      current_user.google_accounts.create(email: email_address, google_authorization: response)
+    end
 
     redirect_to(root_path, flash: { notice: 'Google Account connected' })
   end

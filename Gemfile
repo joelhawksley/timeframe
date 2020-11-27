@@ -7,7 +7,7 @@ gem 'devise'
 gem 'dotenv-rails'
 gem 'exception_notification'
 gem 'imgkit'
-gem 'google-api-client', '~> 0.11', require: 'google/apis/calendar_v3'
+gem 'google-api-client', '~> 0.11', require: ['google/apis/calendar_v3', 'google/apis/people_v1']
 gem 'httparty'
 gem 'multipart-post'
 gem 'nokogiri', '1.8.5'

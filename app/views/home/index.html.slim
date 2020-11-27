@@ -24,8 +24,20 @@ nav.navbar.navbar-default
           .panel-body No devices yet. Contact Joel to add one for you!
     .col-md-6
       .panel.panel-default
-        .panel-heading Google Account
-        .panel-body = link_to "#{current_user.google_authorization.present? ? 'Reconnect' : 'Connect'}", redirect_path, class: "btn #{current_user.google_authorization.present? ? "btn-warning" : "btn-primary"}"
+        .panel-heading Google Accounts
+        ul.list-group
+          - current_user.google_accounts.each do |google_account|
+            .list-group-item
+              = google_account.email
+              ul
+                - google_account.google_calendars.each do |google_calendar|
+                  li
+                    = form_with(model: google_calendar, remote: false) do |f|
+                      span = google_calendar.summary
+                      = f.check_box :enabled
+                      = f.submit
+        .panel-footer
+          = link_to "Connect to Google", redirect_path, class: "btn btn-success"
       .panel.panel-default
         .panel-heading Location
         .panel-body

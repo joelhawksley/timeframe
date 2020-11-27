@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190121222623) do
+ActiveRecord::Schema.define(version: 20201127215303) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -24,6 +24,24 @@ ActiveRecord::Schema.define(version: 20190121222623) do
     t.binary "current_image"
     t.jsonb "status", default: "{}", null: false
     t.index ["user_id"], name: "index_devices_on_user_id"
+  end
+
+  create_table "google_accounts", force: :cascade do |t|
+    t.bigint "user_id"
+    t.jsonb "google_authorization", default: {}, null: false
+    t.string "email", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["email"], name: "index_google_accounts_on_email"
+    t.index ["user_id"], name: "index_google_accounts_on_user_id"
+  end
+
+  create_table "google_calendars", force: :cascade do |t|
+    t.bigint "google_account_id", null: false
+    t.string "uuid", null: false
+    t.string "summary", null: false
+    t.boolean "enabled", default: false, null: false
+    t.index ["google_account_id"], name: "index_google_calendars_on_google_account_id"
   end
 
   create_table "users", force: :cascade do |t|
