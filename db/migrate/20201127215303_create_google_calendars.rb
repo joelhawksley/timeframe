@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateGoogleCalendars < ActiveRecord::Migration[5.1]
   def change
     create_table :google_calendars do |t|

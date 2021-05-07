@@ -1,6 +1,7 @@
-  class HomeController < ApplicationController
-  def index
-  end
+# frozen_string_literal: true
+
+class HomeController < ApplicationController
+  def index; end
 
   def redirect
     authenticate_user!
@@ -22,8 +23,8 @@
     people_service.authorization = client
 
     person =
-      people_service.
-        get_person("people/me", person_fields: "emailAddresses")
+      people_service
+      .get_person('people/me', person_fields: 'emailAddresses')
 
     email_address =
       if person.email_addresses
@@ -36,16 +37,16 @@
 
     if existing_account
       existing_account.update(
-        access_token: response["access_token"],
-        refresh_token: response["refresh_token"].to_s,
-        expires_at: Time.now + response["expires_in"].to_i.seconds
+        access_token: response['access_token'],
+        refresh_token: response['refresh_token'].to_s,
+        expires_at: Time.now + response['expires_in'].to_i.seconds
       )
     else
       current_user.google_accounts.create(
         email: email_address,
-        access_token: response["access_token"],
-        refresh_token: response["refresh_token"].to_s,
-        expires_at: Time.now + response["expires_in"].to_i.seconds
+        access_token: response['access_token'],
+        refresh_token: response['refresh_token'].to_s,
+        expires_at: Time.now + response['expires_in'].to_i.seconds
       )
     end
 
