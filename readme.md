@@ -2,6 +2,10 @@
 
 A Rails application for displaying information from Google Calendar and Dark Sky on Visionect displays.
 
+## History
+
+I've been running this application in some form since 2015. I've open-sourced it mainly to provide a reference example for working with the Visionect ecosystem in Ruby and Rails.
+
 ## Getting started
 
 1) Ensure you have Postgres installed.
