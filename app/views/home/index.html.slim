@@ -1,0 +1,53 @@
+nav.navbar.navbar-default
+  .container-fluid
+    .navbar-header
+      a.navbar-brand href="#" Timeframe
+    ul.nav.navbar-nav.navbar-right
+        - if current_user
+          li = link_to "Sign Out (#{current_user.email})", destroy_user_session_path, method: :delete
+        - else
+          li = link_to "Sign In", new_user_session_path
+          li = link_to "Sign up", new_registration_path(:user)
+
+.container
+  - if current_user
+    .col-md-6
+      .panel.panel-default
+        .panel-heading Screens
+        - if current_user.devices.any?
+          .list-group
+            - current_user.devices.each do |device|
+              .list-group-item
+                h4 = device.template
+                img.preview src="#{device_path(device, format: :png)}" width="#{device.width / 4}"
+        - else
+          .panel-body No devices yet. Contact Joel to add one for you!
+    .col-md-6
+      .panel.panel-default
+        .panel-heading Google Accounts
+        ul.list-group
+          - current_user.google_accounts.each do |google_account|
+            .list-group-item
+              = google_account.email
+              ul
+                - google_account.google_calendars.each do |google_calendar|
+                  li
+                    = form_with(model: google_calendar, remote: false) do |f|
+                      span = google_calendar.summary
+                      = f.text_field :letter, placeholder: "letter"
+                      = f.text_field :icon, placeholder: "icon"
+                      = f.check_box :enabled
+                      = f.submit
+        .panel-footer
+          = link_to "Connect to Google", redirect_path, class: "btn btn-success"
+      .panel.panel-default
+        .panel-heading Location
+        .panel-body
+          = form_for(current_user) do |f|
+            .form-group
+              = f.label :latitude
+              = f.number_field :latitude, step: :any, placeholder: "Latitude", class: "form-control"
+            .form-group
+              = f.label :longitude
+              = f.number_field :longitude, step: :any, placeholder: "Longitude", class: "form-control"
+            = f.submit "Update", class: "btn btn-primary"

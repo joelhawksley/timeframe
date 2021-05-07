@@ -1,0 +1,259 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, or any plugin's
+ * vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any other CSS/SCSS
+ * files in this directory. Styles in this file should be added after the last require_* statement.
+ * It is generally better to create a new file per style scope.
+ *
+ *= require_tree .
+ *= require_self
+ *= require font-awesome
+ */
+
+ /* http://meyerweb.com/eric/tools/css/reset/
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+$min-width:           1025px;
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+.clearfix:before,
+.clearfix:after {
+  display: table;
+  content: " ";
+}
+.clearfix:after {
+  clear: both;
+}
+
+.pull-right {
+  float: right !important;
+}
+.pull-left {
+  float: left !important;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+html {
+	font-size: 4vw;
+}
+
+body {
+ 	font-family: 'Roboto', sans-serif;
+}
+
+#root {
+	height: 100%;
+}
+
+/*!
+ * Bootstrap v3.3.6 (http://getbootstrap.com)
+ * Copyright 2011-2015 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ */
+
+// Core variables and mixins
+@import "bootstrap/variables";
+@import "bootstrap/mixins";
+
+// Reset and dependencies
+@import "bootstrap/normalize";
+@import "bootstrap/print";
+@import "bootstrap/glyphicons";
+
+// Core CSS
+@import "bootstrap/scaffolding";
+@import "bootstrap/type";
+@import "bootstrap/grid";
+@import "bootstrap/tables";
+@import "bootstrap/forms";
+@import "bootstrap/buttons";
+
+// Components
+@import "bootstrap/component-animations";
+@import "bootstrap/dropdowns";
+@import "bootstrap/button-groups";
+@import "bootstrap/input-groups";
+@import "bootstrap/navs";
+@import "bootstrap/navbar";
+@import "bootstrap/breadcrumbs";
+@import "bootstrap/pagination";
+@import "bootstrap/pager";
+@import "bootstrap/labels";
+@import "bootstrap/badges";
+@import "bootstrap/jumbotron";
+@import "bootstrap/thumbnails";
+@import "bootstrap/alerts";
+@import "bootstrap/progress-bars";
+@import "bootstrap/media";
+@import "bootstrap/list-group";
+@import "bootstrap/panels";
+@import "bootstrap/wells";
+@import "bootstrap/close";
+
+// Components w/ JavaScript
+@import "bootstrap/modals";
+@import "bootstrap/tooltip";
+@import "bootstrap/popovers";
+@import "bootstrap/carousel";
+
+// Utility classes
+@import "bootstrap/utilities";
+@import "bootstrap/responsive-utilities";
+
+.display {
+	background-color: black;
+	color: #ddd;
+	font-weight: 300;
+	height: 100%;
+	padding: .5rem;
+}
+
+.header-left,
+.header-right {
+	width: 50%;
+	display: inline-block;
+	vertical-align: top;
+}
+
+.header-left {
+	font-weight: 400;
+	margin-top: -.8rem;
+	font-size: 7.25rem;
+}
+
+.header-right {
+	font-weight: 300;
+	font-size: 2.6rem;
+	margin-bottom: 1rem;
+	text-align: right;
+
+	h2 {
+		margin-bottom: .4rem;
+	}
+}
+
+.weather-summary {
+	font-size: 1.7rem;
+	margin-bottom: 1.3rem;
+	line-height: 1.3;
+}
+
+.calendar-events {
+	.event {
+		font-size: 1.3rem;
+		margin-bottom: .75rem;
+		line-height: 1.2;
+		position: relative;
+
+		i {
+			position: absolute;
+			margin-top: .1rem;
+		}
+
+		span {
+			display: block;
+			margin-left: 2rem;
+		}
+
+		.time {
+			font-size: 1rem;
+			opacity: .5;
+		}
+	}
+}
+
+hr {
+	margin: 25px 25%;
+	opacity: 0.5;
+}
+
+.timestamp {
+	position: fixed;
+	display: none;
+  bottom: 0;
+  left: 0;
+	font-size: .5rem;
+	transform: rotate(-90deg);
+	transform-origin: left top;
+}
+
+.fullscreen {
+	display: none;
+	position: fixed;
+	bottom: .5rem;
+	right: .5rem;
+}
+
+.preview {
+	border: 1px solid lightgrey;
+}
+
+.panel-lonely {
+  margin: 0 auto;
+  padding-top: 50px;
+  width: 320px;
+
+  @media screen and (min-width: $min-width) {
+    padding-top: 100px;
+  }
+}
+
+.lonely {
+  margin: 0 auto;
+  padding-top: 0;
+  width: 320px;
+}

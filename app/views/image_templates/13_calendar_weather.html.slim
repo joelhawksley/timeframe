@@ -1,0 +1,62 @@
+style
+  = File.read(Rails.root.join("app", "assets", "image_templates", "font-awesome.css")).html_safe
+  = File.read(Rails.root.join("app", "assets", "image_templates", "weathericons.css")).html_safe
+  = File.read(Rails.root.join("app", "assets", "image_templates", "fonts.css")).html_safe
+  = File.read(Rails.root.join("app", "assets", "image_templates", "styles.css")).html_safe
+  = File.read(Rails.root.join("app", "assets", "image_templates", "13_calendar_weather.css")).html_safe
+.abs #{view_object[:timestamp]} - #{view_object[:battery_level]}
+- if view_object[:error_messages].any?
+  .error-messages
+    i.fa.fa-fw.fa-warning
+    - view_object[:error_messages].each do |error_message|
+      .error-message = error_message
+.fade-bottom
+.sidebar
+  .yearly-events-table
+    table
+      - view_object[:yearly_events].each do |month_int, events|
+        tr
+          td.yearly-events-month colspan="2" = Date::MONTHNAMES[month_int]
+        - events.each do |event|
+          tr.yearly-table-event
+            td.date
+              - time = Time.at(event["start_i"]).in_time_zone("America/Denver")
+              strong = time.day.ordinalize
+            td =< event["summary"]
+table.calendar-events
+  tbody
+    - view_object[:day_groups].first(2).each_with_index do |event_day, index|
+      - next if !event_day[:show_all_day_events] && event_day[:events][:periodic].empty?
+      - if index > 0
+        tr.divider
+          td colspan="3"
+            hr
+      - if event_day[:show_all_day_events]
+        tr.calendar-event
+          td
+          td.icon
+            i.climacon class="#{event_day[:weather_icon]}"
+          td
+            span
+              => event_day[:temperature_range]
+            - if event_day[:precip_probability] > 0.1
+              span style="margin-left: 1.5rem"
+                i.climacon class="#{event_day[:precip_icon]}"
+                =< event_day[:precip_label]
+            - if event_day[:wind] > 10
+              span style="margin-left: 1.5rem"
+                i.climacon.wind
+                '  #{event_day[:wind]} mph
+                .arrow style="-webkit-transform: rotate(#{event_day[:wind_bearing]}deg);" ↑
+      - [event_day[:events][:all_day], event_day[:events][:periodic]].flatten.each do |event|
+        - if !event["all_day"] || event_day[:show_all_day_events]
+          tr.calendar-event
+            td.subtitle
+              - if !event["all_day"]
+                = event["time"]
+            td.icon
+              - if event["letter"].present?
+                span.letter = event["letter"]
+              - else
+                i.fa.fa-fw class="fa-#{event['icon']}"
+            td = event["summary"]

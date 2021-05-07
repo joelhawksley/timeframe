@@ -1,0 +1,131 @@
+.abs {
+  color: #777;
+  position: fixed;
+  bottom: 5px;
+  left: 10px;
+  font-size: 10px;
+  z-index: 10;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  bottom: 0;
+  font-family: 'lato';
+  font-size: 40px;
+  left: 0;
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.fade-bottom {
+  background:-webkit-gradient(linear,left top,left bottom,color-stop(0%, rgba(255,255,255,0)),color-stop(100%,rgba(255,255,255,1)));
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 75px;
+  z-index: 5;
+}
+
+li {
+  list-style-type: none;
+}
+
+.error-messages {
+  color: #fff;
+  background-color: #000;
+  padding: 25px 40px;
+}
+
+.error-messages i {
+  display: block;
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  text-algn: center;
+  line-height: 50px;
+}
+
+.error-messages .error-message {
+  margin-left: 60px;
+  line-height: 50px;
+}
+
+.calendar-event {
+  padding: .6rem 0;
+  font-size: 40px;
+}
+
+.calendar-event {
+  width: 100%;
+  position: relative;
+}
+
+.calendar-day {
+  margin-bottom: 2rem;
+}
+
+.arrow {
+  display: inline-block;
+}
+
+.fa-fw {
+  width: 100%;
+}
+
+.calendar-events {
+  border-collapse: collapse;
+  width: 100%;
+  margin-top: 5px;
+}
+
+.calendar-event {
+  font-size: 32px;
+}
+
+.calendar-event td {
+  padding: .9rem 0;
+}
+
+.calendar-event .subtitle {
+  opacity: .7;
+  font-size: 20px;
+  text-align: right;
+  white-space: nowrap;
+  padding-left: 1rem;
+}
+
+tr.divider td {
+  padding: 30px;
+}
+
+hr {
+  width: 50%;
+  margin: 0 auto;
+}
+
+td.icon {
+  padding: 0 .4rem;
+  text-align: center;
+  width: 40px;
+}
+
+.climacon {
+  font-size: 3.5rem;
+  line-height: 1rem;
+  vertical-align: middle;
+}
+
+.letter {
+  text-align: center;
+  width: 100%;
+  display: inline-block;
+  font-weight: bold;
+  font-size: 44px;
+}
