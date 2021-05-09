@@ -47,21 +47,23 @@ class GoogleService
         service = service = Google::Apis::GmailV1::GmailService.new
         service.authorization = client
 
-        message_ids =
+        messages =
           service
             .list_user_messages("me", q: "in:inbox is:unread")
-            .messages.map(&:id)
+            .messages
 
-        google_account.update(
-          emails: message_ids.map do |message_id|
-            message = service.get_user_message("me", message_id)
+        if messages.any?
+          google_account.update(
+            emails: messages.map(&:id).map do |message_id|
+              message = service.get_user_message("me", message_id)
 
-            {
-              from: message.payload.headers.find { |h| h.name == "From" }.value,
-              subject: message.payload.headers.find { |h| h.name == "Subject" }.value
-            }
-          end
-        )
+              {
+                from: message.payload.headers.find { |h| h.name == "From" }.value,
+                subject: message.payload.headers.find { |h| h.name == "Subject" }.value
+              }
+            end
+          )
+        end
       end
 
       service = Google::Apis::CalendarV3::CalendarService.new
