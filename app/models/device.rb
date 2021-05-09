@@ -9,17 +9,17 @@ class Device < ApplicationRecord
     "13_calendar_weather": {
       title: "13\" Place & Play",
       width: 1600,
-      height: 1200,
+      height: 1200
     },
-    "calendar_weather": {
+    calendar_weather: {
       title: "10\" EPD",
       width: 825,
-      height: 1200,
+      height: 1200
     },
-    "weather": {
+    weather: {
       title: "6\" EPD",
       width: 758,
-      height: 1024,
+      height: 1024
     }
   }
 

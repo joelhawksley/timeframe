@@ -48,13 +48,13 @@ class GoogleService
         service.authorization = client
 
         message_ids =
-          service.
-          list_user_messages('me', q: "in:inbox is:unread").
-          messages.map(&:id)
+          service
+            .list_user_messages("me", q: "in:inbox is:unread")
+            .messages.map(&:id)
 
         google_account.update(
           emails: message_ids.map do |message_id|
-            message = service.get_user_message('me', message_id)
+            message = service.get_user_message("me", message_id)
 
             {
               from: message.payload.headers.find { |h| h.name == "From" }.value,
