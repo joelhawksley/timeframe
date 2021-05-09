@@ -23,6 +23,9 @@ style
               - time = Time.at(event["start_i"]).in_time_zone("America/Denver")
               strong = time.day.ordinalize
             td =< event["summary"]
+  .emails
+    - view_object[:emails].each do |email|
+      span = email["from"].split("@")[0]
 table.calendar-events
   tbody
     - view_object[:day_groups].first(2).each_with_index do |event_day, index|

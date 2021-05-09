@@ -16,4 +16,16 @@ class DevicesController < ApplicationController
       end
     end
   end
+
+  def create
+    current_user.devices.create(device_params)
+
+    redirect_to(root_path, flash: {notice: "Device created."})
+  end
+
+  private
+
+  def device_params
+    params.require(:device).permit(:uuid, :template)
+  end
 end

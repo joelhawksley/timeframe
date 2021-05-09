@@ -1,8 +1,12 @@
 # frozen_string_literal: true
 
-class CalendarService
+class GoogleService
   def self.call(user)
-    user.update(calendar_events: new.fetch_calendar_events(user))
+    service = new(user)
+
+    user.update(
+      calendar_events: service.events
+    )
   rescue => e
     user.update(error_messages: user.error_messages << e.message)
   end
@@ -13,14 +17,16 @@ class CalendarService
       client_secret: ENV["GOOGLE_CLIENT_SECRET"],
       authorization_uri: "https://accounts.google.com/o/oauth2/auth",
       token_credential_uri: "https://accounts.google.com/o/oauth2/token",
-      scope: "#{Google::Apis::CalendarV3::AUTH_CALENDAR_READONLY} #{Google::Apis::PeopleV1::AUTH_CONTACTS_READONLY} #{Google::Apis::PeopleV1::AUTH_USERINFO_PROFILE} #{Google::Apis::PeopleV1::AUTH_CONTACTS_OTHER_READONLY}",
+      scope: "#{Google::Apis::CalendarV3::AUTH_CALENDAR_READONLY} #{Google::Apis::PeopleV1::AUTH_CONTACTS_READONLY} #{Google::Apis::PeopleV1::AUTH_USERINFO_PROFILE} #{Google::Apis::PeopleV1::AUTH_CONTACTS_OTHER_READONLY} #{Google::Apis::GmailV1::AUTH_GMAIL_READONLY}",
       redirect_uri: ENV["GOOGLE_REDIRECT_URI"],
       access_type: "offline"
     }
   end
 
-  def fetch_calendar_events(user)
-    calendar_events(user)
+  attr_reader :events
+
+  def initialize(user)
+    @events = calendar_events(user)
   end
 
   private
@@ -36,6 +42,27 @@ class CalendarService
         access_token: google_account.access_token,
         expires_in: 3600
       )
+
+      if google_account.email_enabled?
+        service = service = Google::Apis::GmailV1::GmailService.new
+        service.authorization = client
+
+        message_ids =
+          service
+            .list_user_messages("me", q: "in:inbox is:unread")
+            .messages.map(&:id)
+
+        google_account.update(
+          emails: message_ids.map do |message_id|
+            message = service.get_user_message("me", message_id)
+
+            {
+              from: message.payload.headers.find { |h| h.name == "From" }.value,
+              subject: message.payload.headers.find { |h| h.name == "Subject" }.value
+            }
+          end
+        )
+      end
 
       service = Google::Apis::CalendarV3::CalendarService.new
       service.authorization = client

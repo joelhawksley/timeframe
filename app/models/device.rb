@@ -5,6 +5,24 @@ require "visionect"
 class Device < ApplicationRecord
   belongs_to :user
 
+  TEMPLATES = {
+    "13_calendar_weather": {
+      title: "13\" Place & Play",
+      width: 1600,
+      height: 1200
+    },
+    calendar_weather: {
+      title: "10\" EPD",
+      width: 825,
+      height: 1200
+    },
+    weather: {
+      title: "6\" EPD",
+      width: 758,
+      height: 1024
+    }
+  }
+
   def battery_level
     return 100 unless status.is_a?(Hash)
 
@@ -25,6 +43,14 @@ class Device < ApplicationRecord
     out[:battery_level] = battery_level
 
     out
+  end
+
+  def width
+    TEMPLATES[template.to_sym][:width]
+  end
+
+  def height
+    TEMPLATES[template.to_sym][:height]
   end
 
   def render_image
@@ -49,10 +75,14 @@ class Device < ApplicationRecord
   end
 
   def push
+    return unless ENV["VISIONECT_HOST"].present?
+
     Visionect::Client.new.update_backend(uuids: [uuid], binary_png: current_image)
   end
 
   def fetch
+    return unless ENV["VISIONECT_HOST"].present?
+
     update(status: JSON.parse(Visionect::Client.new.get_device(uuid: uuid).body))
   rescue
     puts "device not found"

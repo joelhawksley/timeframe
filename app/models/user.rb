@@ -11,7 +11,7 @@ class User < ApplicationRecord
   def fetch
     update(error_messages: [])
     WeatherService.call(self)
-    CalendarService.call(self)
+    GoogleService.call(self)
   end
 
   def tz
@@ -155,14 +155,14 @@ class User < ApplicationRecord
       svg_temp_points: svg_temp_points,
       svg_precip_points: svg_precip_points,
       tz: tz,
-      current_temperature: "#{weather["currently"]["temperature"].round}°"
+      current_temperature: "#{weather["currently"]["temperature"].round}°",
+      emails: google_accounts.flat_map(&:emails)
     }
   end
 
   def alerts
     out = error_messages
     out.concat(weather["alerts"].map { |a| a["title"] }) if weather.key?("alerts")
-    out << air if air.present?
     out.uniq
   end
 
