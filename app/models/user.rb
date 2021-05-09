@@ -155,7 +155,8 @@ class User < ApplicationRecord
       svg_temp_points: svg_temp_points,
       svg_precip_points: svg_precip_points,
       tz: tz,
-      current_temperature: "#{weather["currently"]["temperature"].round}°"
+      current_temperature: "#{weather["currently"]["temperature"].round}°",
+      emails: google_accounts.flat_map(&:emails)
     }
   end
 

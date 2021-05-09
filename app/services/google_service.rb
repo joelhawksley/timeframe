@@ -43,6 +43,27 @@ class GoogleService
         expires_in: 3600
       )
 
+      if google_account.email_enabled?
+        service = service = Google::Apis::GmailV1::GmailService.new
+        service.authorization = client
+
+        message_ids =
+          service.
+          list_user_messages('me', q: "in:inbox is:unread").
+          messages.map(&:id)
+
+        google_account.update(
+          emails: message_ids.map do |message_id|
+            message = service.get_user_message('me', message_id)
+
+            {
+              from: message.payload.headers.find { |h| h.name == "From" }.value,
+              subject: message.payload.headers.find { |h| h.name == "Subject" }.value
+            }
+          end
+        )
+      end
+
       service = Google::Apis::CalendarV3::CalendarService.new
       service.authorization = client
 
