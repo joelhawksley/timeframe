@@ -13,7 +13,7 @@ I've been running this application in some form since 2015. I've open-sourced it
 1) `rails db:setup`
 1) Copy `.env.example` to `.env` and set the given values.
 1) `rails s`
-1) Visit http://localhost:3000
+1) Visit [http://localhost:3000](http://localhost:3000)
 
 ## Deploying
 
@@ -21,4 +21,4 @@ I've been running this application in some form since 2015. I've open-sourced it
 2) `git push heroku`
 3) Add scheduler task to run `rake fetch:all` every 10 minutes.
 
-Once configured, the application generates images via Scheduler, which means that sleeping Free dynos are no issue.
+Once configured, the application generates images via Scheduler, which means that sleeping `Free` dynos are no issue.

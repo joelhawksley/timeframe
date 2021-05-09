@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :fetch do
   task all: :environment do
     GoogleAccount.all.each(&:refresh!)

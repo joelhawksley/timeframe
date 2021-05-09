@@ -1,4 +1,6 @@
-  class HomeController < ApplicationController
+# frozen_string_literal: true
+
+class HomeController < ApplicationController
   def index
   end
 
@@ -22,8 +24,8 @@
     people_service.authorization = client
 
     person =
-      people_service.
-        get_person("people/me", person_fields: "emailAddresses")
+      people_service
+        .get_person("people/me", person_fields: "emailAddresses")
 
     email_address =
       if person.email_addresses
@@ -49,6 +51,6 @@
       )
     end
 
-    redirect_to(root_path, flash: { notice: 'Google Account connected' })
+    redirect_to(root_path, flash: {notice: "Google Account connected"})
   end
 end

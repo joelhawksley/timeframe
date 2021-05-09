@@ -1,4 +1,6 @@
-require 'visionect'
+# frozen_string_literal: true
+
+require "visionect"
 
 class Device < ApplicationRecord
   belongs_to :user
@@ -12,9 +14,7 @@ class Device < ApplicationRecord
   def error_messages
     out = user.alerts
 
-    if battery_level < 10
-      out << "Battery level low. Please plug me in overnight!"
-    end
+    out << "Battery level low. Please plug me in overnight!" if battery_level < 10
 
     out
   end
@@ -29,7 +29,7 @@ class Device < ApplicationRecord
 
   def render_image
     imgkit_params = {
-      encoding: 'UTF-8',
+      encoding: "UTF-8",
       quality: 100,
       width: width,
       height: height

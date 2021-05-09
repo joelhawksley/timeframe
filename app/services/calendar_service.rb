@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CalendarService
   def self.call(user)
     user.update(calendar_events: new.fetch_calendar_events(user))
@@ -9,11 +11,11 @@ class CalendarService
     {
       client_id: ENV["GOOGLE_CLIENT_ID"],
       client_secret: ENV["GOOGLE_CLIENT_SECRET"],
-      authorization_uri: 'https://accounts.google.com/o/oauth2/auth',
-      token_credential_uri: 'https://accounts.google.com/o/oauth2/token',
+      authorization_uri: "https://accounts.google.com/o/oauth2/auth",
+      token_credential_uri: "https://accounts.google.com/o/oauth2/token",
       scope: "#{Google::Apis::CalendarV3::AUTH_CALENDAR_READONLY} #{Google::Apis::PeopleV1::AUTH_CONTACTS_READONLY} #{Google::Apis::PeopleV1::AUTH_USERINFO_PROFILE} #{Google::Apis::PeopleV1::AUTH_CONTACTS_OTHER_READONLY}",
       redirect_uri: ENV["GOOGLE_REDIRECT_URI"],
-      access_type: 'offline'
+      access_type: "offline"
     }
   end
 
@@ -30,82 +32,80 @@ class CalendarService
       client = Signet::OAuth2::Client.new(self.class.client_options)
 
       client.update!(
-        :refresh_token => google_account.refresh_token,
-        :access_token => google_account.access_token,
-        :expires_in => 3600
+        refresh_token: google_account.refresh_token,
+        access_token: google_account.access_token,
+        expires_in: 3600
       )
 
       service = Google::Apis::CalendarV3::CalendarService.new
       service.authorization = client
 
-      begin
-        service.list_calendar_lists.items.each_with_index do |calendar, index|
-          calendar_record = google_account.google_calendars.find_by(uuid: calendar.id)
+      service.list_calendar_lists.items.each_with_index do |calendar, _index|
+        calendar_record = google_account.google_calendars.find_by(uuid: calendar.id)
 
-          if calendar_record
-            calendar_record.update(summary: calendar.summary)
-          else
-            calendar_record =
-              google_account.google_calendars.create(uuid: calendar.id, summary: calendar.summary)
-          end
+        if calendar_record
+          calendar_record.update(summary: calendar.summary)
+        else
+          calendar_record =
+            google_account.google_calendars.create(uuid: calendar.id, summary: calendar.summary)
+        end
 
-          if calendar_record.enabled?
-            service.list_events(calendar.id, max_results: 250, single_events: true, order_by: 'startTime', time_min: (DateTime.now - 2.weeks).iso8601).items.each_with_index do |event, index_2|
-              own_attendee = event.attendees.to_a.find { |attendee| attendee.email == calendar.id }
+        next unless calendar_record.enabled?
 
-              # exclude declined events
-              next if own_attendee && own_attendee.response_status == "declined"
+        service.list_events(calendar.id, max_results: 250, single_events: true, order_by: "startTime",
+                                         time_min: (DateTime.now - 2.weeks).iso8601).items.each_with_index do |event, _index_2|
+          own_attendee = event.attendees.to_a.find { |attendee| attendee.email == calendar.id }
 
-              # exclude blank events
-              next unless event.summary.present?
+          # exclude declined events
+          next if own_attendee && own_attendee.response_status == "declined"
 
-              event_json = event.as_json
+          # exclude blank events
+          next unless event.summary.present?
 
-              start_i =
-                if event_json["start"].key?("date")
-                  ActiveSupport::TimeZone["America/Denver"].parse(event_json["start"]["date"]).utc.to_i
-                else
-                  ActiveSupport::TimeZone["America/Denver"].parse(event_json["start"]["date_time"]).utc.to_i
-                end
+          event_json = event.as_json
 
-              end_i =
-                if event_json["end"].key?("date")
-                  # Subtract 1 second, as Google gives us the end date as the following day, not the end of the current day
-                  ActiveSupport::TimeZone["America/Denver"].parse(event_json["end"]["date"]).utc.to_i - 1
-                else
-                  ActiveSupport::TimeZone["America/Denver"].parse(event_json["end"]["date_time"]).utc.to_i
-                end
-
-              summary =
-                if (1900..2100).cover?(event_json["description"].to_s.to_i)
-                  "#{event_json["summary"]} (#{Date.today.year - event_json["description"].to_s.to_i})"
-                else
-                  event_json["summary"]
-                end
-
-              if (
-                  !event_json["description"].to_s.downcase.include?("timeframe-omit") &&
-                  summary != "."
-                )
-                events[event.id] = event_json.slice(
-                    "start",
-                    "end",
-                    "location"
-                  ).merge(
-                    background_color: event_json["color"] || calendar.background_color,
-                    foreround_color: event_json["color"] || calendar.foreground_color,
-                    summary: summary,
-                    description: event_json["description"],
-                    calendar: calendar.summary,
-                    icon: calendar_record.icon,
-                    letter: calendar_record.letter,
-                    start_i: start_i,
-                    end_i: end_i,
-                    all_day: event_json["start"].key?("date") || ((end_i - start_i) > 86400)
-                  ).symbolize_keys!
-              end
+          start_i =
+            if event_json["start"].key?("date")
+              ActiveSupport::TimeZone["America/Denver"].parse(event_json["start"]["date"]).utc.to_i
+            else
+              ActiveSupport::TimeZone["America/Denver"].parse(event_json["start"]["date_time"]).utc.to_i
             end
-          end
+
+          end_i =
+            if event_json["end"].key?("date")
+              # Subtract 1 second, as Google gives us the end date as the following day, not the end of the current day
+              ActiveSupport::TimeZone["America/Denver"].parse(event_json["end"]["date"]).utc.to_i - 1
+            else
+              ActiveSupport::TimeZone["America/Denver"].parse(event_json["end"]["date_time"]).utc.to_i
+            end
+
+          summary =
+            if (1900..2100).cover?(event_json["description"].to_s.to_i)
+              "#{event_json["summary"]} (#{Date.today.year - event_json["description"].to_s.to_i})"
+            else
+              event_json["summary"]
+            end
+
+          next unless
+                !event_json["description"].to_s.downcase.include?("timeframe-omit") &&
+                  summary != "."
+
+          events[event.id] = event_json.slice(
+            "start",
+            "end",
+            "location"
+          ).merge(
+            background_color: event_json["color"] || calendar.background_color,
+            foreround_color: event_json["color"] || calendar.foreground_color,
+            summary: summary,
+            description: event_json["description"],
+            calendar: calendar.summary,
+            icon: calendar_record.icon,
+            letter: calendar_record.letter,
+            start_i: start_i,
+            end_i: end_i,
+            all_day: event_json["start"].key?("date") || ((end_i - start_i) > 86_400)
+          ).symbolize_keys!
         end
       end
     end
