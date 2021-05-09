@@ -2,7 +2,11 @@
 
 class GoogleService
   def self.call(user)
-    user.update(calendar_events: new.fetch_calendar_events(user))
+    service = new(user)
+
+    user.update(
+      calendar_events: service.events
+    )
   rescue => e
     user.update(error_messages: user.error_messages << e.message)
   end
@@ -19,8 +23,10 @@ class GoogleService
     }
   end
 
-  def fetch_calendar_events(user)
-    calendar_events(user)
+  attr_reader :events
+
+  def initialize(user)
+    @events = calendar_events(user)
   end
 
   private
