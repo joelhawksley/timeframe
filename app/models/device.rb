@@ -5,6 +5,24 @@ require "visionect"
 class Device < ApplicationRecord
   belongs_to :user
 
+  TEMPLATES = {
+    "13_calendar_weather": {
+      title: "13\" Place & Play",
+      width: 1600,
+      height: 1200,
+    },
+    "calendar_weather": {
+      title: "10\" EPD",
+      width: 825,
+      height: 1200,
+    },
+    "weather": {
+      title: "6\" EPD",
+      width: 758,
+      height: 1024,
+    }
+  }
+
   def battery_level
     return 100 unless status.is_a?(Hash)
 
@@ -25,6 +43,14 @@ class Device < ApplicationRecord
     out[:battery_level] = battery_level
 
     out
+  end
+
+  def width
+    TEMPLATES[template][:width]
+  end
+
+  def height
+    TEMPLATES[template][:height]
   end
 
   def render_image

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_09_142303) do
+ActiveRecord::Schema.define(version: 2021_05_09_143253) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -19,8 +19,6 @@ ActiveRecord::Schema.define(version: 2021_05_09_142303) do
     t.bigint "user_id", null: false
     t.string "uuid", null: false
     t.string "template", null: false
-    t.integer "width", null: false
-    t.integer "height", null: false
     t.binary "current_image"
     t.jsonb "status", default: "{}", null: false
     t.index ["user_id"], name: "index_devices_on_user_id"
