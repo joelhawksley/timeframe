@@ -75,10 +75,14 @@ class Device < ApplicationRecord
   end
 
   def push
+    return unless ENV["VISIONECT_HOST"].present?
+
     Visionect::Client.new.update_backend(uuids: [uuid], binary_png: current_image)
   end
 
   def fetch
+    return unless ENV["VISIONECT_HOST"].present?
+
     update(status: JSON.parse(Visionect::Client.new.get_device(uuid: uuid).body))
   rescue
     puts "device not found"
