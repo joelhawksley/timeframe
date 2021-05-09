@@ -9,7 +9,7 @@ class GoogleCalendarsController < ApplicationController
       .find(params[:id])
       .update(google_calendar_params)
 
-    redirect_to(root_path, flash: { notice: 'Updated' })
+    redirect_to(root_path, flash: {notice: "Updated"})
   end
 
   private

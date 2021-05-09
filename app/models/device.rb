@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'visionect'
+require "visionect"
 
 class Device < ApplicationRecord
   belongs_to :user
@@ -8,13 +8,13 @@ class Device < ApplicationRecord
   def battery_level
     return 100 unless status.is_a?(Hash)
 
-    status.dig('Status', 'Battery')&.to_i || 100
+    status.dig("Status", "Battery")&.to_i || 100
   end
 
   def error_messages
     out = user.alerts
 
-    out << 'Battery level low. Please plug me in overnight!' if battery_level < 10
+    out << "Battery level low. Please plug me in overnight!" if battery_level < 10
 
     out
   end
@@ -29,7 +29,7 @@ class Device < ApplicationRecord
 
   def render_image
     imgkit_params = {
-      encoding: 'UTF-8',
+      encoding: "UTF-8",
       quality: 100,
       width: width,
       height: height
@@ -37,7 +37,7 @@ class Device < ApplicationRecord
 
     html =
       Slim::Template.new(
-        Rails.root.join('app', 'views', 'image_templates', "#{template}.html.slim")
+        Rails.root.join("app", "views", "image_templates", "#{template}.html.slim")
       ).render(
         Object.new,
         view_object: view_object
@@ -54,7 +54,7 @@ class Device < ApplicationRecord
 
   def fetch
     update(status: JSON.parse(Visionect::Client.new.get_device(uuid: uuid).body))
-  rescue StandardError
-    puts 'device not found'
+  rescue
+    puts "device not found"
   end
 end
