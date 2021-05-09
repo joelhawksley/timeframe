@@ -162,7 +162,6 @@ class User < ApplicationRecord
   def alerts
     out = error_messages
     out.concat(weather["alerts"].map { |a| a["title"] }) if weather.key?("alerts")
-    out << air if air.present?
     out.uniq
   end
 

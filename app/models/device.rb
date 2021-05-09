@@ -46,11 +46,11 @@ class Device < ApplicationRecord
   end
 
   def width
-    TEMPLATES[template][:width]
+    TEMPLATES[template.to_sym][:width]
   end
 
   def height
-    TEMPLATES[template][:height]
+    TEMPLATES[template.to_sym][:height]
   end
 
   def render_image
