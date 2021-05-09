@@ -3,24 +3,13 @@ nav.navbar.navbar-default
     .navbar-header
       a.navbar-brand href="#" Timeframe
     ul.nav.navbar-nav.navbar-right
-        - if current_user
-          li = link_to "Sign Out (#{current_user.email})", destroy_user_session_path, method: :delete
-        - else
-          li = link_to "Sign In", new_user_session_path
-          li = link_to "Sign up", new_registration_path(:user)
+      - if current_user
+        li = link_to "Sign Out (#{current_user.email})", destroy_user_session_path, method: :delete
+      - else
+        li = link_to "Sign In", new_user_session_path
+        li = link_to "Sign up", new_registration_path(:user)
 .container
   .col-md-4
-    .panel.panel-default
-      .panel-heading
-        h3.panel-title Screens
-      - if current_user.devices.any?
-        .list-group
-          - current_user.devices.each do |device|
-            .list-group-item
-              h4 = device.template
-              img.preview src="#{device_path(device, format: :png)}" width="#{device.width / 4}"
-      - else
-        .panel-body No devices yet. Contact Joel to add one for you!
     .panel.panel-default.panel.panel-default
       .panel-heading
         h3.panel-title Location
@@ -33,6 +22,22 @@ nav.navbar.navbar-default
             = f.label :longitude
             = f.number_field :longitude, step: :any, placeholder: "Longitude", class: "form-control"
           = f.submit "Update", class: "btn btn-default"
+    .panel.panel-default
+      .panel-heading
+        h3.panel-title Devices
+      - if current_user.devices.any?
+        .list-group
+          - current_user.devices.each do |device|
+            .list-group-item
+              h4 = Device::TEMPLATES[device.template.to_sym][:title]
+              img.preview src="#{device_path(device, format: :png)}" width="#{device.width / 4}" style="max-width: 100%"
+      .panel-footer
+        = form_for Device.new do |f|
+          .form-group
+            = f.text_field :uuid, placeholder: "UUID", class: "form-control"
+          .form-group
+            = f.select :template, Device::TEMPLATES.map { |k, v| [v[:title], k] }, {}, class: "form-control"
+          = f.submit "Add device", class: "btn btn-default"
   .col-md-8
     .panel.panel-default
       .panel-heading
