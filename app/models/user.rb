@@ -11,7 +11,7 @@ class User < ApplicationRecord
   def fetch
     update(error_messages: [])
     WeatherService.call(self)
-    CalendarService.call(self)
+    GoogleService.call(self)
   end
 
   def tz

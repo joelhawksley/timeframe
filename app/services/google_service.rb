@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class CalendarService
+class GoogleService
   def self.call(user)
     user.update(calendar_events: new.fetch_calendar_events(user))
   rescue => e
@@ -13,7 +13,7 @@ class CalendarService
       client_secret: ENV["GOOGLE_CLIENT_SECRET"],
       authorization_uri: "https://accounts.google.com/o/oauth2/auth",
       token_credential_uri: "https://accounts.google.com/o/oauth2/token",
-      scope: "#{Google::Apis::CalendarV3::AUTH_CALENDAR_READONLY} #{Google::Apis::PeopleV1::AUTH_CONTACTS_READONLY} #{Google::Apis::PeopleV1::AUTH_USERINFO_PROFILE} #{Google::Apis::PeopleV1::AUTH_CONTACTS_OTHER_READONLY}",
+      scope: "#{Google::Apis::CalendarV3::AUTH_CALENDAR_READONLY} #{Google::Apis::PeopleV1::AUTH_CONTACTS_READONLY} #{Google::Apis::PeopleV1::AUTH_USERINFO_PROFILE} #{Google::Apis::PeopleV1::AUTH_CONTACTS_OTHER_READONLY} #{Google::Apis::GmailV1::AUTH_GMAIL_READONLY}",
       redirect_uri: ENV["GOOGLE_REDIRECT_URI"],
       access_type: "offline"
     }

@@ -7,7 +7,7 @@ class HomeController < ApplicationController
   def redirect
     authenticate_user!
 
-    client = Signet::OAuth2::Client.new(CalendarService.client_options)
+    client = Signet::OAuth2::Client.new(GoogleService.client_options)
 
     redirect_to(client.authorization_uri.to_s)
   end
@@ -15,7 +15,7 @@ class HomeController < ApplicationController
   def callback
     authenticate_user!
 
-    client = Signet::OAuth2::Client.new(CalendarService.client_options)
+    client = Signet::OAuth2::Client.new(GoogleService.client_options)
     client.code = params[:code]
 
     response = client.fetch_access_token!
