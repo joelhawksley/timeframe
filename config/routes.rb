@@ -8,4 +8,5 @@ Rails.application.routes.draw do
   resources :users, only: [:update]
   resources :devices, only: [:show, :create]
   resources :google_calendars, only: [:update]
+  resources :google_accounts, only: [:update]
 end
