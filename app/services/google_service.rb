@@ -52,7 +52,7 @@ class GoogleService
             .list_user_messages("me", q: "in:inbox is:unread")
             .messages
 
-        if messages.any?
+        if messages
           google_account.update(
             emails: messages.map(&:id).map do |message_id|
               message = service.get_user_message("me", message_id)
