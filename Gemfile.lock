@@ -163,14 +163,15 @@ GEM
       nokogiri (~> 1)
       rake
     mini_mime (1.1.0)
-    mini_portile2 (2.3.0)
+    mini_portile2 (2.5.1)
     minitest (5.14.4)
     multi_json (1.15.0)
     multi_xml (0.6.0)
     multipart-post (2.1.1)
     nio4r (2.5.7)
-    nokogiri (1.8.5)
-      mini_portile2 (~> 2.3.0)
+    nokogiri (1.11.4)
+      mini_portile2 (~> 2.5.0)
+      racc (~> 1.4)
     orm_adapter (0.5.0)
     os (1.1.1)
     parallel (1.20.1)
@@ -184,6 +185,7 @@ GEM
       pry (>= 0.10.4)
     public_suffix (4.0.6)
     puma (3.12.6)
+    racc (1.5.2)
     rack (2.2.3)
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
@@ -307,7 +309,7 @@ DEPENDENCIES
   httparty
   imgkit
   multipart-post
-  nokogiri (= 1.8.5)
+  nokogiri (= 1.11.4)
   pg (~> 1.1)
   pry-rails
   puma (~> 3.7)
