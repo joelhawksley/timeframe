@@ -63,6 +63,8 @@ class GoogleService
               }
             end
           )
+        else
+          google_account.update(emails: [])
         end
       end
 
