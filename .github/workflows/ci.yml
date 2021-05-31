@@ -30,6 +30,12 @@ jobs:
         bundle exec standardrb
   test:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:latest
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
     - uses: actions/checkout@master
     - name: Setup Ruby
@@ -44,4 +50,7 @@ jobs:
       run: |
         bundle config path vendor/bundle
         bundle install --jobs 4 --retry 3
+        bundle exec rake db:test:prepare
         bundle exec rake
+      env:
+        RAILS_ENV: test
