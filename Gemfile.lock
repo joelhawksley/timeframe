@@ -309,6 +309,7 @@ DEPENDENCIES
   google-api-client (~> 0.11)
   httparty
   imgkit
+  minitest
   multipart-post
   nokogiri (= 1.11.4)
   pg (~> 1.1)
