@@ -70,4 +70,13 @@ class UserTest < Minitest::Test
     assert_equal(1, result.length)
     assert_equal(included_start_i, result[0]["start_i"])
   end
+
+  def test_render_json_payload_empty
+    result = User.new.render_json_payload(DateTime.new(2001, 2, 3, 4, 5, 6))
+
+    assert_equal("Friday at 9:05 PM", result[:timestamp])
+    assert_equal({}, result[:yearly_events])
+    assert_equal(4, result[:day_groups].length)
+    assert_equal([], result[:emails])
+  end
 end

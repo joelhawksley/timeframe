@@ -33,11 +33,11 @@ class User < ApplicationRecord
     parsed_events.sort_by { |event| event["start_i"] }
   end
 
-  def render_json_payload
-    current_time = DateTime.now.utc.in_time_zone(tz)
+  def render_json_payload(at = DateTime.now)
+    current_time = at.utc.in_time_zone(tz)
 
     day_groups =
-      (0..28).each_with_object([]) do |day_index, memo|
+      (0..3).each_with_object([]) do |day_index, memo|
         date = Time.now.in_time_zone(tz) + day_index.day
 
         start_i =
@@ -73,7 +73,7 @@ class User < ApplicationRecord
           }
         }
 
-        if day_index < 7
+        if day_index < 7 && weather.present?
           precip_label =
             if weather["daily"]["data"][day_index]["precipAccumulation"].present?
               "#{(weather["daily"]["data"][day_index]["precipProbability"] * 100).to_i}% / #{weather["daily"]["data"][day_index]["precipAccumulation"].round(1)}\""
@@ -105,56 +105,24 @@ class User < ApplicationRecord
       end
 
     yearly_events =
-      calendar_events_for(Time.now.in_time_zone(tz).beginning_of_day.to_i,
-        (Time.now.in_time_zone(tz) + 1.year).end_of_day.utc.to_i)
-        .select do |event|
-        event["calendar"] == "Birthdays"
-      end
+      calendar_events_for(
+        Time.now.in_time_zone(tz).beginning_of_day.to_i,
+        (Time.now.in_time_zone(tz) + 1.year).end_of_day.utc.to_i
+      ).select { |event| event["calendar"] == "Birthdays" }
         .first(10)
-        .group_by do |e|
-        Date.parse(e["start"]["date"]).month
-      end
+        .group_by { |e| Date.parse(e["start"]["date"]).month }
 
-    hour_of_day = DateTime.now.in_time_zone(tz).hour
-    hours_to_graph = 169 - hour_of_day
-
-    hours = weather["hourly"]["data"].first(hours_to_graph).map do |e|
+    out =
       {
-        temperature: e["temperature"].to_f.round,
-        wind_speed: e["windSpeed"].round,
-        wind_bearing: e["windBearing"],
-        precip_probability: (e["precipProbability"] * 100).to_i
+        yearly_events: yearly_events,
+        day_groups: day_groups,
+        timestamp: current_time.in_time_zone(tz).strftime("%A at %-l:%M %p"),
+        emails: google_accounts.flat_map(&:emails)
       }
-    end
 
-    temps = hours.map { |e| e[:temperature] }
+    out[:current_temperature] = "#{weather["currently"]["temperature"].round}°" if weather.present?
 
-    max_temp = temps.max
-    min_temp = temps.min
-
-    scale = 180 / (max_temp - min_temp).to_f
-
-    svg_temp_points = hours.each_with_index.map do |hour, index|
-      "#{index * 14},#{190 - ((hour[:temperature] - min_temp) * scale)}"
-    end.join(" ")
-    svg_precip_points = hours.each_with_index.map do |hour, index|
-      "#{index * 14},#{190 - (hour[:precip_probability] * 2)}"
-    end.join(" ")
-
-    {
-      api_version: 3,
-      yearly_events: yearly_events,
-      day_groups: day_groups,
-      time: current_time,
-      timestamp: updated_at.in_time_zone(tz).strftime("%A at %l:%M %p"),
-      hours_to_graph: hours_to_graph,
-      hour_of_day: hour_of_day,
-      svg_temp_points: svg_temp_points,
-      svg_precip_points: svg_precip_points,
-      tz: tz,
-      current_temperature: "#{weather["currently"]["temperature"].round}°",
-      emails: google_accounts.flat_map(&:emails)
-    }
+    out
   end
 
   def alerts
