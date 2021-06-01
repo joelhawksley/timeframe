@@ -18,6 +18,8 @@ class User < ApplicationRecord
     "America/Denver"
   end
 
+  # Returns calendar events for a given UTC integer time range,
+  # adding a `time` key for the time formatted for the user's timezone
   def calendar_events_for(beginning_i, ending_i)
     filtered_events = calendar_events.select do |event|
       (event["start_i"]..event["end_i"]).overlaps?(beginning_i...ending_i)
