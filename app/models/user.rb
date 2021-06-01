@@ -24,7 +24,7 @@ class User < ApplicationRecord
     end
 
     parsed_events = filtered_events.map do |event|
-      event["time"] = time_for_event(event, tz)
+      event["time"] = EventTimeService.call(event["start_i"], event["end_i"], tz)
       event
     end
 
@@ -164,35 +164,5 @@ class User < ApplicationRecord
     out = error_messages
     out.concat(weather["alerts"].map { |a| a["title"] }) if weather.key?("alerts")
     out.uniq
-  end
-
-  def time_for_event(event, tz)
-    start = Time.at(event["start_i"]).in_time_zone(tz)
-    endtime = Time.at(event["end_i"]).in_time_zone(tz)
-
-    if start == endtime
-      label = start.min.positive? ? start.strftime("%-l:%M") : start.strftime("%-l")
-      suffix = start.strftime("%p").gsub("AM", "a").gsub("PM", "p")
-
-      "#{label}#{suffix}"
-    else
-      start_label = start.min.positive? ? start.strftime("%-l:%M") : start.strftime("%-l")
-      end_label = endtime.min.positive? ? endtime.strftime("%-l:%M%p") : endtime.strftime("%-l%p")
-      start_suffix =
-        if start.strftime("%p") == endtime.strftime("%p") && start.to_date == endtime.to_date
-          ""
-        else
-          start.strftime("%p").gsub("AM", "a").gsub("PM", "p")
-        end
-      start_date = ""
-      end_date = ""
-
-      if start.to_date != endtime.to_date
-        start_date = "#{start.strftime("%-m/%-e")} "
-        end_date = "#{endtime.strftime("%-m/%-e")} "
-      end
-
-      "#{start_date}#{start_label}#{start_suffix} - #{end_date}#{end_label.gsub("AM", "a").gsub("PM", "p")}"
-    end
   end
 end
