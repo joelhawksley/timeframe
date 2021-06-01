@@ -34,9 +34,6 @@ class User < ApplicationRecord
   def render_json_payload
     current_time = DateTime.now.utc.in_time_zone(tz)
 
-    sunrise_datetime = Time.at(weather["daily"]["data"][0]["sunriseTime"]).to_datetime.in_time_zone(tz)
-    sunset_datetime = Time.at(weather["daily"]["data"][0]["sunsetTime"]).to_datetime.in_time_zone(tz)
-
     day_groups =
       (0..28).each_with_object([]) do |day_index, memo|
         date = Time.now.in_time_zone(tz) + day_index.day
@@ -146,10 +143,8 @@ class User < ApplicationRecord
       api_version: 3,
       yearly_events: yearly_events,
       day_groups: day_groups,
-      sunset_datetime: sunset_datetime,
       time: current_time,
       timestamp: updated_at.in_time_zone(tz).strftime("%A at %l:%M %p"),
-      is_daytime: (current_time.strftime("%-H%M").to_i > sunrise_datetime.strftime("%-H%M").to_i) && (current_time.strftime("%-H%M").to_i < sunset_datetime.strftime("%-H%M").to_i),
       hours_to_graph: hours_to_graph,
       hour_of_day: hour_of_day,
       svg_temp_points: svg_temp_points,
