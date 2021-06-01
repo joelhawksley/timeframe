@@ -86,15 +86,15 @@ class UserTest < Minitest::Test
 
   def test_yearly_events
     yearly_event = {
-      "end"=>{"date"=>"2021-06-03"},
-      "end_i"=>1622699999,
-      "start_i"=>1622613600,
-      "start"=>{"date"=>"2021-06-02"},
-      "summary"=>"Len Inderhees (62)",
-      "calendar"=>"Birthdays"
+      "end" => {"date" => "2021-06-03"},
+      "end_i" => 1622699999,
+      "start_i" => 1622613600,
+      "start" => {"date" => "2021-06-02"},
+      "summary" => "Len Inderhees (62)",
+      "calendar" => "Birthdays"
     }
 
-    result = User.new(calendar_events: [yearly_event]).yearly_events(Time.new(2021,6,1))
+    result = User.new(calendar_events: [yearly_event]).yearly_events(Time.new(2021, 6, 1))
 
     assert_equal([6], result.keys)
     assert_equal("Len Inderhees (62)", result[6][0]["summary"])
@@ -102,15 +102,15 @@ class UserTest < Minitest::Test
 
   def test_yearly_events_excludes_non_birthday
     yearly_event = {
-      "end"=>{"date"=>"2021-06-03"},
-      "end_i"=>1622699999,
-      "start_i"=>1622613600,
-      "start"=>{"date"=>"2021-06-02"},
-      "summary"=>"Len Inderhees (62)",
-      "calendar"=>"Foo"
+      "end" => {"date" => "2021-06-03"},
+      "end_i" => 1622699999,
+      "start_i" => 1622613600,
+      "start" => {"date" => "2021-06-02"},
+      "summary" => "Len Inderhees (62)",
+      "calendar" => "Foo"
     }
 
-    result = User.new(calendar_events: [yearly_event]).yearly_events(Time.new(2021,6,1))
+    result = User.new(calendar_events: [yearly_event]).yearly_events(Time.new(2021, 6, 1))
 
     refute result.present?
   end
