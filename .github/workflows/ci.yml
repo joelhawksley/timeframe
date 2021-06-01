@@ -32,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres:latest
+        image: postgres:12.1-alpine
         ports:
           - 5432:5432
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
@@ -54,3 +54,4 @@ jobs:
         bundle exec rake
       env:
         RAILS_ENV: test
+        DATABASE_URL: "postgres://postgres@localhost:5432/timeframe_test"
