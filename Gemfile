@@ -22,6 +22,7 @@ gem "uglifier", ">= 1.3.0"
 gem "visionect-ruby", git: "https://github.com/joelhawksley/visionect-ruby.git"
 
 group :development, :test do
+  gem "minitest"
   gem "standard"
   gem "pry-rails"
   gem "wkhtmltoimage-binary"
