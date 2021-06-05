@@ -78,7 +78,7 @@ class User < ApplicationRecord
           precip_label: "",
           precip_icon: "",
           wind: "",
-          wind_bearing: "",
+          wind_bearing: ""
         }
 
         if weather&.dig("daily", "data", day_index).present?

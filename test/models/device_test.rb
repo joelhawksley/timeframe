@@ -20,6 +20,6 @@ class DeviceTest < Minitest::Test
   end
 
   def test_battery_level_valid_hash
-    assert_equal(93, Device.new(status: { "Status" => { "Battery" => 93.09 } }).battery_level)
+    assert_equal(93, Device.new(status: {"Status" => {"Battery" => 93.09}}).battery_level)
   end
 end
