@@ -73,6 +73,15 @@ class User < ApplicationRecord
           }
         }
 
+        out[:temperature_range] = ""
+        out[:weather_icon] = ""
+        out[:weather_summary] = ""
+        out[:precip_probability] = ""
+        out[:precip_label] = ""
+        out[:precip_icon] = ""
+        out[:wind] = ""
+        out[:wind_bearing] = ""
+
         if day_index < 7 && weather.present?
           precip_label =
             if weather["daily"]["data"][day_index]["precipAccumulation"].present?
@@ -90,15 +99,6 @@ class User < ApplicationRecord
           out[:precip_icon] = weather["daily"]["data"][day_index]["precipType"]
           out[:wind] = weather["daily"]["data"][day_index]["windGust"].to_i
           out[:wind_bearing] = weather["daily"]["data"][day_index]["windBearing"].to_i
-        else
-          out[:temperature_range] = ""
-          out[:weather_icon] = ""
-          out[:weather_summary] = ""
-          out[:precip_probability] = ""
-          out[:precip_label] = ""
-          out[:precip_icon] = ""
-          out[:wind] = ""
-          out[:wind_bearing] = ""
         end
 
         memo << out
