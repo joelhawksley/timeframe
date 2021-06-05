@@ -82,23 +82,19 @@ class User < ApplicationRecord
         out[:wind] = ""
         out[:wind_bearing] = ""
 
-        if day_index < 7 && weather.present? && weather["daily"]["data"][day_index].present?
-          precip_label =
-            if weather["daily"]["data"][day_index]["precipAccumulation"].present?
-              "#{(weather["daily"]["data"][day_index]["precipProbability"] * 100).to_i}% / #{weather["daily"]["data"][day_index]["precipAccumulation"].round(1)}\""
-            else
-              "#{(weather["daily"]["data"][day_index]["precipProbability"] * 100).to_i}%"
-            end
+        if weather&.dig("daily", "data", day_index).present?
+          daily_weather = weather["daily"]["data"][day_index]
 
+          out[:precip_label] = "#{(daily_weather["precipProbability"] * 100).to_i}%"
+          out[:precip_label] << " / #{daily_weather["precipAccumulation"].round(1)}\"" if daily_weather["precipAccumulation"].present?
           out[:temperature_range] =
-            "#{weather["daily"]["data"][day_index]["temperatureHigh"].round}° / #{weather["daily"]["data"][day_index]["temperatureLow"].round}°"
-          out[:weather_icon] = weather["daily"]["data"][day_index]["icon"]
-          out[:weather_summary] = weather["daily"]["data"][day_index]["summary"]
-          out[:precip_probability] = weather["daily"]["data"][day_index]["precipProbability"]
-          out[:precip_label] = precip_label
-          out[:precip_icon] = weather["daily"]["data"][day_index]["precipType"]
-          out[:wind] = weather["daily"]["data"][day_index]["windGust"].to_i
-          out[:wind_bearing] = weather["daily"]["data"][day_index]["windBearing"].to_i
+            "#{daily_weather["temperatureHigh"].round}° / #{daily_weather["temperatureLow"].round}°"
+          out[:weather_icon] = daily_weather["icon"]
+          out[:weather_summary] = daily_weather["summary"]
+          out[:precip_probability] = daily_weather["precipProbability"]
+          out[:precip_icon] = daily_weather["precipType"]
+          out[:wind] = daily_weather["windGust"].to_i
+          out[:wind_bearing] = daily_weather["windBearing"].to_i
         end
 
         memo << out
