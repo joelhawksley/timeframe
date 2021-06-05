@@ -82,7 +82,7 @@ class User < ApplicationRecord
         out[:wind] = ""
         out[:wind_bearing] = ""
 
-        if day_index < 7 && weather.present?
+        if day_index < 7 && weather.present? && weather["daily"]["data"][day_index].present?
           precip_label =
             if weather["daily"]["data"][day_index]["precipAccumulation"].present?
               "#{(weather["daily"]["data"][day_index]["precipProbability"] * 100).to_i}% / #{weather["daily"]["data"][day_index]["precipAccumulation"].round(1)}\""

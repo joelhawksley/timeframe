@@ -80,6 +80,90 @@ class UserTest < Minitest::Test
     assert_equal([], result[:emails])
   end
 
+  def test_render_json_weather
+    weather = {
+      "currently" => {
+        "icon"=>"partly-cloudy-day",
+        "time"=>1622930480,
+        "ozone"=>310.2,
+        "summary"=>"Partly Cloudy",
+        "uvIndex"=>5,
+        "dewPoint"=>45.08,
+        "humidity"=>0.22,
+        "pressure"=>1001.4,
+        "windGust"=>11.55,
+        "windSpeed"=>4.68,
+        "cloudCover"=>0.51,
+        "visibility"=>10,
+        "temperature"=>89.12,
+        "windBearing"=>261,
+        "precipIntensity"=>0,
+        "precipProbability"=>0,
+        "apparentTemperature"=>89.12,
+        "nearestStormBearing"=>242,
+        "nearestStormDistance"=>9
+      },
+      "daily" => {
+        "data" => [{
+          "icon"=>"partly-cloudy-day",
+          "time"=>1622872800,
+          "ozone"=>310.4,
+          "summary"=>"Partly cloudy throughout the day.",
+          "uvIndex"=>10,
+          "dewPoint"=>45.11,
+          "humidity"=>0.37,
+          "pressure"=>1003.8,
+          "windGust"=>22.16,
+          "moonPhase"=>0.87,
+          "windSpeed"=>5.26,
+          "cloudCover"=>0.35,
+          "precipType"=>"rain",
+          "sunsetTime"=>1622946420,
+          "visibility"=>10,
+          "sunriseTime"=>1622892840,
+          "uvIndexTime"=>1622917560,
+          "windBearing"=>263,
+          "windGustTime"=>1622939040,
+          "temperatureLow"=>58.86,
+          "temperatureMax"=>91.67,
+          "temperatureMin"=>58.42,
+          "precipIntensity"=>0.0011,
+          "temperatureHigh"=>91.67,
+          "precipProbability"=>0.08,
+          "precipIntensityMax"=>0.0091,
+          "temperatureLowTime"=>1622979660,
+          "temperatureMaxTime"=>1622926440,
+          "temperatureMinTime"=>1622893440,
+          "temperatureHighTime"=>1622926440,
+          "apparentTemperatureLow"=>59.35,
+          "apparentTemperatureMax"=>91.17,
+          "apparentTemperatureMin"=>58.91,
+          "precipIntensityMaxTime"=>1622941080,
+          "apparentTemperatureHigh"=>91.17,
+          "apparentTemperatureLowTime"=>1622979660,
+          "apparentTemperatureMaxTime"=>1622926440,
+          "apparentTemperatureMinTime"=>1622893440,
+          "apparentTemperatureHighTime"=>1622926440
+        }]
+      }
+    }
+
+    result = User.new(weather: weather).render_json_payload(DateTime.new(2021, 6, 5, 4, 5, 6))
+
+    assert_equal("89°", result[:current_temperature])
+
+    first_day_group = result[:day_groups][0]
+
+    assert_equal("92° / 59°", first_day_group[:temperature_range])
+    assert_equal("Partly cloudy throughout the day.", first_day_group[:weather_summary])
+    assert_equal("partly-cloudy-day", first_day_group[:weather_icon])
+    assert_equal("rain", first_day_group[:precip_icon])
+    assert_equal("8%", first_day_group[:precip_label])
+    assert_equal(0.08, first_day_group[:precip_probability])
+    assert_equal(263, first_day_group[:wind_bearing])
+    assert_equal(22, first_day_group[:wind])
+  end
+
   def test_yearly_events_empty_case
     assert_equal({}, User.new.yearly_events)
   end
