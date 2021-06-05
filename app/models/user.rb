@@ -70,25 +70,23 @@ class User < ApplicationRecord
           events: {
             all_day: events.select { |event| event["all_day"] },
             periodic: events.reject { |event| event["all_day"] }
-          }
+          },
+          temperature_range: "",
+          weather_icon: "",
+          weather_summary: "",
+          precip_probability: "",
+          precip_label: "",
+          precip_icon: "",
+          wind: "",
+          wind_bearing: "",
         }
-
-        out[:temperature_range] = ""
-        out[:weather_icon] = ""
-        out[:weather_summary] = ""
-        out[:precip_probability] = ""
-        out[:precip_label] = ""
-        out[:precip_icon] = ""
-        out[:wind] = ""
-        out[:wind_bearing] = ""
 
         if weather&.dig("daily", "data", day_index).present?
           daily_weather = weather["daily"]["data"][day_index]
 
           out[:precip_label] = "#{(daily_weather["precipProbability"] * 100).to_i}%"
           out[:precip_label] << " / #{daily_weather["precipAccumulation"].round(1)}\"" if daily_weather["precipAccumulation"].present?
-          out[:temperature_range] =
-            "#{daily_weather["temperatureHigh"].round}° / #{daily_weather["temperatureLow"].round}°"
+          out[:temperature_range] = "#{daily_weather["temperatureHigh"].round}° / #{daily_weather["temperatureLow"].round}°"
           out[:weather_icon] = daily_weather["icon"]
           out[:weather_summary] = daily_weather["summary"]
           out[:precip_probability] = daily_weather["precipProbability"]
