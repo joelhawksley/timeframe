@@ -74,11 +74,11 @@ class User < ApplicationRecord
           temperature_range: "",
           weather_icon: "",
           weather_summary: "",
-          precip_probability: "",
+          precip_probability: 0,
           precip_label: "",
           precip_icon: "",
-          wind: "",
-          wind_bearing: ""
+          wind: 0,
+          wind_bearing: 0
         }
 
         if weather&.dig("daily", "data", day_index).present?
@@ -122,7 +122,7 @@ class User < ApplicationRecord
 
   def alerts
     out = error_messages
-    out.concat(weather["alerts"].map { |a| a["title"] }) if weather.key?("alerts")
+    out.concat(weather["alerts"].map { |a| a["title"] }) if weather&.key?("alerts")
     out.uniq
   end
 end
