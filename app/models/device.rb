@@ -53,6 +53,15 @@ class Device < ApplicationRecord
     TEMPLATES[template.to_sym][:height]
   end
 
+  def html
+    Slim::Template.new(
+      Rails.root.join("app", "views", "image_templates", "#{template}.html.slim")
+    ).render(
+      Object.new,
+      view_object: view_object
+    )
+  end
+
   def render_image
     imgkit_params = {
       encoding: "UTF-8",
@@ -60,14 +69,6 @@ class Device < ApplicationRecord
       width: width,
       height: height
     }
-
-    html =
-      Slim::Template.new(
-        Rails.root.join("app", "views", "image_templates", "#{template}.html.slim")
-      ).render(
-        Object.new,
-        view_object: view_object
-      )
 
     image = IMGKit.new(html, imgkit_params)
 

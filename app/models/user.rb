@@ -70,35 +70,29 @@ class User < ApplicationRecord
           events: {
             all_day: events.select { |event| event["all_day"] },
             periodic: events.reject { |event| event["all_day"] }
-          }
+          },
+          temperature_range: "",
+          weather_icon: "",
+          weather_summary: "",
+          precip_probability: 0,
+          precip_label: "",
+          precip_icon: "",
+          wind: 0,
+          wind_bearing: 0
         }
 
-        if day_index < 7 && weather.present?
-          precip_label =
-            if weather["daily"]["data"][day_index]["precipAccumulation"].present?
-              "#{(weather["daily"]["data"][day_index]["precipProbability"] * 100).to_i}% / #{weather["daily"]["data"][day_index]["precipAccumulation"].round(1)}\""
-            else
-              "#{(weather["daily"]["data"][day_index]["precipProbability"] * 100).to_i}%"
-            end
+        if weather&.dig("daily", "data", day_index).present?
+          daily_weather = weather["daily"]["data"][day_index]
 
-          out[:temperature_range] =
-            "#{weather["daily"]["data"][day_index]["temperatureHigh"].round}° / #{weather["daily"]["data"][day_index]["temperatureLow"].round}°"
-          out[:weather_icon] = weather["daily"]["data"][day_index]["icon"]
-          out[:weather_summary] = weather["daily"]["data"][day_index]["summary"]
-          out[:precip_probability] = weather["daily"]["data"][day_index]["precipProbability"]
-          out[:precip_label] = precip_label
-          out[:precip_icon] = weather["daily"]["data"][day_index]["precipType"]
-          out[:wind] = weather["daily"]["data"][day_index]["windGust"].to_i
-          out[:wind_bearing] = weather["daily"]["data"][day_index]["windBearing"].to_i
-        else
-          out[:temperature_range] = ""
-          out[:weather_icon] = ""
-          out[:weather_summary] = ""
-          out[:precip_probability] = ""
-          out[:precip_label] = ""
-          out[:precip_icon] = ""
-          out[:wind] = ""
-          out[:wind_bearing] = ""
+          out[:precip_label] = "#{(daily_weather["precipProbability"] * 100).to_i}%"
+          out[:precip_label] << " / #{daily_weather["precipAccumulation"].round(1)}\"" if daily_weather["precipAccumulation"].present?
+          out[:temperature_range] = "#{daily_weather["temperatureHigh"].round}° / #{daily_weather["temperatureLow"].round}°"
+          out[:weather_icon] = daily_weather["icon"]
+          out[:weather_summary] = daily_weather["summary"]
+          out[:precip_probability] = daily_weather["precipProbability"]
+          out[:precip_icon] = daily_weather["precipType"]
+          out[:wind] = daily_weather["windGust"].to_i
+          out[:wind_bearing] = daily_weather["windBearing"].to_i
         end
 
         memo << out
@@ -128,7 +122,7 @@ class User < ApplicationRecord
 
   def alerts
     out = error_messages
-    out.concat(weather["alerts"].map { |a| a["title"] }) if weather.key?("alerts")
+    out.concat(weather["alerts"].map { |a| a["title"] }) if weather&.key?("alerts")
     out.uniq
   end
 end
