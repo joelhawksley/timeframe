@@ -54,12 +54,12 @@ class UserTest < Minitest::Test
 
     events = [
       {
-        start_i: excluded_start_i, # 4pm
-        end_i: excluded_end_i # 5pm
+        start_i: excluded_start_i,
+        end_i: excluded_end_i
       },
       {
-        start_i: included_start_i, # 4pm
-        end_i: included_end_i # 5pm
+        start_i: included_start_i,
+        end_i: included_end_i
       }
     ]
 

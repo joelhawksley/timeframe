@@ -43,7 +43,8 @@ class User < ApplicationRecord
         start_i =
           case day_index
           when 0
-            Time.now.in_time_zone(tz).utc.to_i
+            # Add 180 seconds so that events ending at the top of the hour are not shown for the following half hour
+            Time.now.in_time_zone(tz).utc.to_i + 180
           else
             date.beginning_of_day.utc.to_i
           end
