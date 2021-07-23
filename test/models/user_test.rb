@@ -19,6 +19,23 @@ class UserTest < Minitest::Test
     assert_equal(["bar"], User.new(weather: {alerts: [{title: "bar"}]}).alerts)
   end
 
+  def test_alerts_with_air_quality_description
+    weather = {
+      alerts: [
+        {
+          "time" => 1627060200,
+          "title" => "Air Quality Alert",
+          "expires" => 1627077600,
+          "severity" => "advisory",
+          "description" =>
+            "...OZONE ACTION DAY ALERT....\n"
+        }
+      ]
+    }
+
+    assert_equal(["Ozone Action Day"], User.new(weather: weather).alerts)
+  end
+
   def test_alerts_with_weather_alert_and_error_message
     assert_equal(
       ["foo", "bar"],

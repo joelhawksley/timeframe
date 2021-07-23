@@ -123,7 +123,17 @@ class User < ApplicationRecord
 
   def alerts
     out = error_messages
-    out.concat(weather["alerts"].map { |a| a["title"] }) if weather&.key?("alerts")
+    if weather&.key?("alerts")
+      weather_alerts = weather["alerts"].map do |alert|
+        if alert["description"].to_s.include?("OZONE ACTION DAY")
+          "Ozone Action Day"
+        else
+          alert["title"]
+        end
+      end
+
+      out.concat(weather_alerts)
+    end
     out.uniq
   end
 end
