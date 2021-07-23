@@ -3,18 +3,6 @@
   padding: 10px 0 40px 0;
 }
 
-.banner {
-  border-collapse: collapse;
-  width: 100%;
-  background-color: black;
-  color: white;
-  height: 100px;
-}
-
-.banner .fa {
-  padding-right: 1rem;
-}
-
 .error-message {
   margin-left: 1rem;
   line-height: 100px;

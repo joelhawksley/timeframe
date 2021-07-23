@@ -28,3 +28,7 @@ group :development, :test do
   gem "pry-rails"
   gem "wkhtmltoimage-binary"
 end
+
+group :test do
+  gem "simplecov", require: false
+end
