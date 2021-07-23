@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require "visionect"
-require 'slim/include'
+require "slim/include"
 
 class Device < ApplicationRecord
   belongs_to :user
