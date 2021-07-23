@@ -1,27 +1,20 @@
-style
-  = File.read(Rails.root.join("app", "assets", "image_templates", "font-awesome.css")).html_safe
-  = File.read(Rails.root.join("app", "assets", "image_templates", "weathericons.css")).html_safe
-  = File.read(Rails.root.join("app", "assets", "image_templates", "fonts.css")).html_safe
-  = File.read(Rails.root.join("app", "assets", "image_templates", "styles.css")).html_safe
-  = File.read(Rails.root.join("app", "assets", "image_templates", "weather.css")).html_safe
-.abs #{view_object[:timestamp]} - #{view_object[:battery_level]}
-.fade-bottom
-- if view_object[:error_messages].any?
-  .error-messages
-    i.fa.fa-fw.fa-warning
-    - view_object[:error_messages].each do |error_message|
-      .error-message = error_message
-.wrapper.weather
-  .current-temp = view_object[:current_temperature]
-  - if DateTime.now.utc.in_time_zone("America/Denver").hour > 19
-    .tomorrow-label Tomorrow
-    h2
-      i.climacon class="#{view_object[:day_groups][1][:weather_icon]}"
+include app/views/image_templates/shared
+div style="padding: 40px 20px 20px 40px;"
+  .current-temp style="font-size: 420px; line-height: 320px; margin-bottom: 80px; margin-left: -20px;"
+    = view_object[:current_temperature]
+  - show_tomorrow = DateTime.now.utc.in_time_zone("America/Denver").hour > 19
+  div style="font-size: 4rem;text-align: left;width: 100%;font-weight: 900;"
+    - if show_tomorrow
+      | Tomorrow
+    - else
+      | Today
+  h2 style="font-size: 60px;font-weight: 500;margin-left: -15px;padding-bottom: 10px;"
+    - if show_tomorrow
+      i.climacon class="#{view_object[:day_groups][1][:weather_icon]}" style="font-size: 5.5rem;vertical-align: sub; margin-right: 1rem;"
       = view_object[:day_groups][1][:temperature_range]
-    .summary-item style="#{"font-size: 40px" if view_object[:day_groups][1][:weather_summary].length > 90 || view_object[:error_messages].any?}"= view_object[:day_groups][1][:weather_summary]
-  - else
-    .tomorrow-label Today
-    h2
-      i.climacon class="#{view_object[:day_groups][0][:weather_icon]}"
+    - else
+      i.climacon class="#{view_object[:day_groups][0][:weather_icon]}" style="font-size: 5.5rem;vertical-align: sub; margin-right: 1rem;"
       = view_object[:day_groups][0][:temperature_range]
-    .summary-item style="#{"font-size: 40px" if view_object[:day_groups][0][:weather_summary].length > 90 || view_object[:error_messages].any?}"= view_object[:day_groups][0][:weather_summary]
+  - summary = show_tomorrow ? view_object[:day_groups][1][:weather_summary] : view_object[:day_groups][0][:weather_summary]
+  div style="line-height: 1.3; #{"font-size: 40px" if summary.length > 90 || view_object[:error_messages].any?}"
+    = summary

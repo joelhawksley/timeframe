@@ -1,16 +1,6 @@
+include app/views/image_templates/shared
 style
-  = File.read(Rails.root.join("app", "assets", "image_templates", "font-awesome.css")).html_safe
-  = File.read(Rails.root.join("app", "assets", "image_templates", "weathericons.css")).html_safe
-  = File.read(Rails.root.join("app", "assets", "image_templates", "fonts.css")).html_safe
-  = File.read(Rails.root.join("app", "assets", "image_templates", "styles.css")).html_safe
   = File.read(Rails.root.join("app", "assets", "image_templates", "13_calendar_weather.css")).html_safe
-.abs #{view_object[:timestamp]} - #{view_object[:battery_level]}
-- if view_object[:error_messages].any?
-  .error-messages
-    i.fa.fa-fw.fa-warning
-    - view_object[:error_messages].each do |error_message|
-      .error-message = error_message
-.fade-bottom
 .sidebar
   .yearly-events-table
     table
