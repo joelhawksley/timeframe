@@ -1,6 +1,4 @@
 include app/views/image_templates/shared
-style
-  = File.read(Rails.root.join("app", "assets", "image_templates", "calendar_weather.css")).html_safe
 table.calendar-events
   tbody
     - view_object[:day_groups].first(2).each_with_index do |event_day, index|
