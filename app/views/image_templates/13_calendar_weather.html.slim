@@ -1,22 +1,21 @@
 include app/views/image_templates/shared
-style
-  = File.read(Rails.root.join("app", "assets", "image_templates", "13_calendar_weather.css")).html_safe
-.sidebar
-  .yearly-events-table
-    table
+.sidebar style="background-color: #eee; position: absolute; left: 1100px; width: 500px; min-height: 100%; z-index: 6"
+  .yearly-events-table style="background-color: #ddd; width: 420px; padding: 35px 40px 40px;"
+    table style="font-size: 24px; width: 100%;"
       - view_object[:yearly_events].each do |month_int, events|
         tr
-          td.yearly-events-month colspan="2" = Date::MONTHNAMES[month_int]
+          td.yearly-events-month colspan="2" style="border-bottom: 1px solid black; padding-bottom: 5px;padding-top: 10px;"
+            strong = Date::MONTHNAMES[month_int]
         - events.each do |event|
           tr.yearly-table-event
-            td.date
+            td.date style="padding: 3px 1rem 3px 0;"
               - time = Time.at(event["start_i"]).in_time_zone("America/Denver")
               strong = time.day.ordinalize
-            td =< event["summary"]
-  .emails
+            td style="padding: 3px 0" =< event["summary"]
+  div style="padding: 35px 40px 40px;"
     - view_object[:emails].each do |email|
       span = email["from"].split("@")[0]
-.timeline-container
+div style="max-width: 1100px;"
   table.calendar-events
     tbody
       - view_object[:day_groups].first(2).each_with_index do |event_day, index|
