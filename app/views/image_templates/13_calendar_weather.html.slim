@@ -9,7 +9,7 @@ include app/views/image_templates/shared
         - events.each do |event|
           tr.yearly-table-event
             td.date style="padding: 3px 1rem 3px 0;"
-              - time = Time.at(event["start_i"]).in_time_zone("America/Denver")
+              - time = Time.at(event["start_i"]).in_time_zone(Timeframe::Application::LOCAL_TZ)
               strong = time.day.ordinalize
             td style="padding: 3px 0" =< event["summary"]
   div style="padding: 35px 40px 40px;"
