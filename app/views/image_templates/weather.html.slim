@@ -2,7 +2,7 @@ include app/views/image_templates/shared
 div style="padding: 40px 20px 20px 40px;"
   .current-temp style="font-size: 420px; line-height: 320px; margin-bottom: 80px; margin-left: -20px;"
     = view_object[:current_temperature]
-  - if DateTime.now.utc.in_time_zone("America/Denver").hour > 19
+  - if DateTime.now.utc.in_time_zone(Timeframe::Application::LOCAL_TZ).hour > 19
     - summary = view_object[:day_groups][1][:weather_summary]
     - icon = view_object[:day_groups][1][:weather_icon]
     - range = view_object[:day_groups][1][:temperature_range]

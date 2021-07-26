@@ -97,17 +97,17 @@ class GoogleService
 
           start_i =
             if event_json["start"].key?("date")
-              ActiveSupport::TimeZone["America/Denver"].parse(event_json["start"]["date"]).utc.to_i
+              ActiveSupport::TimeZone[Timeframe::Application::LOCAL_TZ].parse(event_json["start"]["date"]).utc.to_i
             else
-              ActiveSupport::TimeZone["America/Denver"].parse(event_json["start"]["date_time"]).utc.to_i
+              ActiveSupport::TimeZone[Timeframe::Application::LOCAL_TZ].parse(event_json["start"]["date_time"]).utc.to_i
             end
 
           end_i =
             if event_json["end"].key?("date")
               # Subtract 1 second, as Google gives us the end date as the following day, not the end of the current day
-              ActiveSupport::TimeZone["America/Denver"].parse(event_json["end"]["date"]).utc.to_i - 1
+              ActiveSupport::TimeZone[Timeframe::Application::LOCAL_TZ].parse(event_json["end"]["date"]).utc.to_i - 1
             else
-              ActiveSupport::TimeZone["America/Denver"].parse(event_json["end"]["date_time"]).utc.to_i
+              ActiveSupport::TimeZone[Timeframe::Application::LOCAL_TZ].parse(event_json["end"]["date_time"]).utc.to_i
             end
 
           summary =

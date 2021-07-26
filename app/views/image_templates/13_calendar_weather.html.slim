@@ -9,47 +9,11 @@ include app/views/image_templates/shared
         - events.each do |event|
           tr.yearly-table-event
             td.date style="padding: 3px 1rem 3px 0;"
-              - time = Time.at(event["start_i"]).in_time_zone("America/Denver")
+              - time = Time.at(event["start_i"]).in_time_zone(Timeframe::Application::LOCAL_TZ)
               strong = time.day.ordinalize
             td style="padding: 3px 0" =< event["summary"]
   div style="padding: 35px 40px 40px;"
     - view_object[:emails].each do |email|
       span = email["from"].split("@")[0]
 div style="max-width: 1100px;"
-  table.calendar-events
-    tbody
-      - view_object[:day_groups].first(2).each_with_index do |event_day, index|
-        - next if !event_day[:show_all_day_events] && event_day[:events][:periodic].empty?
-        - if index > 0
-          tr.divider
-            td colspan="3"
-              hr
-        - if event_day[:show_all_day_events]
-          tr.calendar-event
-            td
-            td.icon
-              i.climacon class="#{event_day[:weather_icon]}"
-            td
-              span
-                => event_day[:temperature_range]
-              - if event_day[:precip_probability] > 0.1
-                span style="margin-left: 1.5rem"
-                  i.climacon class="#{event_day[:precip_icon]}"
-                  =< event_day[:precip_label]
-              - if event_day[:wind] > 10
-                span style="margin-left: 1.5rem"
-                  i.climacon.wind
-                  '  #{event_day[:wind]} mph
-                  .arrow style="-webkit-transform: rotate(#{event_day[:wind_bearing]}deg);" ↑
-        - [event_day[:events][:all_day], event_day[:events][:periodic]].flatten.each do |event|
-          - if !event["all_day"] || event_day[:show_all_day_events]
-            tr.calendar-event
-              td.subtitle
-                - if !event["all_day"]
-                  = event["time"]
-              td.icon
-                - if event["letter"].present?
-                  span.letter = event["letter"]
-                - else
-                  i.fa.fa-fw class="fa-#{event['icon']}"
-              td = event["summary"]
+  include app/views/image_templates/timeline

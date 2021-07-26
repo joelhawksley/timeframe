@@ -15,7 +15,7 @@ class User < ApplicationRecord
   end
 
   def tz
-    "America/Denver"
+    Timeframe::Application::LOCAL_TZ
   end
 
   # Returns calendar events for a given UTC integer time range,

@@ -53,7 +53,7 @@ li {
   line-height: 50px;
 }
 
-.error-messages .error-message {
+.error-message {
   margin-left: 60px;
   line-height: 50px;
 }
@@ -61,9 +61,6 @@ li {
 .calendar-event {
   padding: .6rem 0;
   font-size: 40px;
-}
-
-.calendar-event {
   width: 100%;
   position: relative;
 }
