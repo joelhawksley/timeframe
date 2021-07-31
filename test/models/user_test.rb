@@ -175,10 +175,8 @@ class UserTest < Minitest::Test
     assert_equal("92° / 59°", first_day_group[:temperature_range])
     assert_equal("Partly cloudy throughout the day.", first_day_group[:weather_summary])
     assert_equal("partly-cloudy-day", first_day_group[:weather_icon])
-    assert_equal("rain", first_day_group[:precip_icon])
     assert_equal("8% / 1.1\"", first_day_group[:precip_label])
     assert_equal(0.08, first_day_group[:precip_probability])
-    assert_equal(263, first_day_group[:wind_bearing])
     assert_equal(22, first_day_group[:wind])
   end
 

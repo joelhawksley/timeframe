@@ -77,9 +77,7 @@ class User < ApplicationRecord
           weather_summary: "",
           precip_probability: 0,
           precip_label: "",
-          precip_icon: "",
-          wind: 0,
-          wind_bearing: 0
+          wind: 0
         }
 
         if weather&.dig("daily", "data", day_index).present?
@@ -91,9 +89,7 @@ class User < ApplicationRecord
           out[:weather_icon] = daily_weather["icon"]
           out[:weather_summary] = daily_weather["summary"]
           out[:precip_probability] = daily_weather["precipProbability"]
-          out[:precip_icon] = daily_weather["precipType"]
           out[:wind] = daily_weather["windGust"].to_i
-          out[:wind_bearing] = daily_weather["windBearing"].to_i
         end
 
         memo << out
