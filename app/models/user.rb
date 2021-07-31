@@ -123,12 +123,31 @@ class User < ApplicationRecord
         yearly_events: yearly_events,
         day_groups: day_groups,
         timestamp: current_time.in_time_zone(tz).strftime("%A at %-l:%M %p"),
-        emails: google_accounts.flat_map(&:emails)
+        emails: emails
       }
 
     out[:current_temperature] = "#{weather["currently"]["temperature"].round}°" if weather.present?
 
     out
+  end
+
+  def emails
+    senders =
+      google_accounts.flat_map(&:emails).map do |email|
+        sender = email["from"]
+        if sender.include?(" <")
+          # Clean up sender in format "Joel <joel@foo.com>" => "Joel"
+          sender.split(" <").first
+        elsif sender.include?("reply")
+          # Clean up sender in format "noreply@foo.com" => "thriftbooks.com"
+          sender.split("@").last
+        else
+          # Otherwise, grab the content before the @
+          sender.split("@").first
+        end
+      end
+
+    senders.tally
   end
 
   def yearly_events(at = Time.now)

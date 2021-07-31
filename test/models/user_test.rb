@@ -114,7 +114,38 @@ class UserTest < Minitest::Test
     assert_equal("Friday at 9:05 PM", result[:timestamp])
     assert_equal({}, result[:yearly_events])
     assert_equal(4, result[:day_groups].length)
-    assert_equal([], result[:emails])
+    assert_equal({}, result[:emails])
+  end
+
+  def test_render_json_emails
+    emails = [
+      {"from" => "no-reply@thriftbooks.com", "subject" => "Order Confirmation - Thriftbooks.com"},
+      {"from" => "Old Navy Customer Service <custserv@oldnavy.com>"},
+      {"from" => "Christ the Servant Lutheran Church <cts.communications@gmail.com>"},
+      {"from" => "Ruby Weekly <rw@peterc.org>"},
+      {"from" => "Nate Berkopec <nate.berkopec@speedshop.co>"},
+      {"from" => "notifier <exceptions@solofolio.net>"},
+      {"from" => "notifier <exceptions@solofolio.net>"},
+      {"from" => "Jim <mt@gmail.com>"}
+    ]
+
+    result =
+      User
+        .new(google_accounts: [GoogleAccount.new(emails: emails)])
+        .render_json_payload[:emails]
+
+    expected_result =
+      {
+        "thriftbooks.com" => 1,
+        "Old Navy Customer Service" => 1,
+        "Christ the Servant Lutheran Church" => 1,
+        "Ruby Weekly" => 1,
+        "Nate Berkopec" => 1,
+        "notifier" => 2,
+        "Jim" => 1
+      }
+
+    assert_equal(expected_result, result)
   end
 
   def test_render_json_weather

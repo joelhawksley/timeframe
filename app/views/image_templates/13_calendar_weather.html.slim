@@ -1,7 +1,7 @@
 include app/views/image_templates/shared
 .sidebar style="background-color: #eee; position: absolute; left: 1100px; width: 500px; min-height: 100%; z-index: 6"
   include app/views/image_templates/error_messages
-  .yearly-events-table style="background-color: #ddd; width: 420px; padding: 35px;"
+  .yearly-events-table style="background-color: #ddd; width: 420px; padding: 20px 35px 35px;"
     table style="font-size: 24px; width: 100%;"
       - view_object[:yearly_events].each_with_index do |(month_int, events), index|
         tr
@@ -13,8 +13,11 @@ include app/views/image_templates/shared
               - time = Time.at(event["start_i"]).in_time_zone(Timeframe::Application::LOCAL_TZ)
               strong = time.day.ordinalize
             td style="padding: 3px 0" =< event["summary"]
-  div style="padding: 35px 40px 40px;"
-    - view_object[:emails].each do |email|
-      span = email["from"].split("@")[0]
+  div style="padding: 35px 40px 40px;font-size: 24px;"
+    - view_object[:emails].each do |email, count|
+      div style="padding: 3px 1rem 3px 0;"
+        = email.truncate(30)
+        - if count > 1
+          |  (#{count})
 div style="max-width: 1100px;"
   include app/views/image_templates/timeline
