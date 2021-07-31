@@ -43,6 +43,26 @@ class UserTest < Minitest::Test
     )
   end
 
+  def test_events_weather_alert
+    weather = {
+      alerts: [
+        {
+          "time" => 1627060200,
+          "title" => "Air Quality Alert",
+          "expires" => 1627077600,
+          "severity" => "advisory",
+          "description" =>
+            "...OZONE ACTION DAY ALERT....\n"
+        }
+      ]
+    }
+
+    result = User.new(weather: weather).calendar_events_for(1627060000, 1627077800)
+
+    assert_equal(1, result.length)
+    assert_equal("11:10a - 4p", result[0]["time"])
+  end
+
   def test_calendar_events_single_event
     start_i = 1621288800
     end_i = 1621292400
@@ -94,7 +114,38 @@ class UserTest < Minitest::Test
     assert_equal("Friday at 9:05 PM", result[:timestamp])
     assert_equal({}, result[:yearly_events])
     assert_equal(4, result[:day_groups].length)
-    assert_equal([], result[:emails])
+    assert_equal({}, result[:emails])
+  end
+
+  def test_render_json_emails
+    emails = [
+      {"from" => "no-reply@thriftbooks.com", "subject" => "Order Confirmation - Thriftbooks.com"},
+      {"from" => "Old Navy Customer Service <custserv@oldnavy.com>"},
+      {"from" => "Christ the Servant Lutheran Church <cts.communications@gmail.com>"},
+      {"from" => "Ruby Weekly <rw@peterc.org>"},
+      {"from" => "Nate Berkopec <nate.berkopec@speedshop.co>"},
+      {"from" => "notifier <exceptions@solofolio.net>"},
+      {"from" => "notifier <exceptions@solofolio.net>"},
+      {"from" => "Jim <mt@gmail.com>"}
+    ]
+
+    result =
+      User
+        .new(google_accounts: [GoogleAccount.new(emails: emails)])
+        .render_json_payload[:emails]
+
+    expected_result =
+      {
+        "thriftbooks.com" => 1,
+        "Old Navy Customer Service" => 1,
+        "Christ the Servant Lutheran Church" => 1,
+        "Ruby Weekly" => 1,
+        "Nate Berkopec" => 1,
+        "notifier" => 2,
+        "Jim" => 1
+      }
+
+    assert_equal(expected_result, result)
   end
 
   def test_render_json_weather
@@ -175,10 +226,8 @@ class UserTest < Minitest::Test
     assert_equal("92° / 59°", first_day_group[:temperature_range])
     assert_equal("Partly cloudy throughout the day.", first_day_group[:weather_summary])
     assert_equal("partly-cloudy-day", first_day_group[:weather_icon])
-    assert_equal("rain", first_day_group[:precip_icon])
     assert_equal("8% / 1.1\"", first_day_group[:precip_label])
     assert_equal(0.08, first_day_group[:precip_probability])
-    assert_equal(263, first_day_group[:wind_bearing])
     assert_equal(22, first_day_group[:wind])
   end
 

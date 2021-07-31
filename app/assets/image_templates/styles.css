@@ -69,10 +69,6 @@ li {
   margin-bottom: 2rem;
 }
 
-.arrow {
-  display: inline-block;
-}
-
 .fa-fw {
   width: 100%;
 }
@@ -92,7 +88,6 @@ li {
 }
 
 .calendar-event .subtitle {
-  opacity: .7;
   font-size: 20px;
   text-align: right;
   white-space: nowrap;

@@ -18,10 +18,33 @@ class User < ApplicationRecord
     Timeframe::Application::LOCAL_TZ
   end
 
+  # convert weather alerts to be timeline events;
+  # they are timely, after all!
+  def weather_calendar_events
+    return [] unless weather.to_h.key?("alerts")
+
+    weather["alerts"].map do |alert|
+      title =
+        if alert["description"].to_s.include?("OZONE ACTION DAY")
+          "Ozone Action Day"
+        else
+          alert["title"]
+        end
+
+      {
+        "start_i" => alert["time"],
+        "end_i" => alert["expires"],
+        "calendar" => "_weather_alerts",
+        "summary" => title,
+        "icon" => "warning"
+      }
+    end
+  end
+
   # Returns calendar events for a given UTC integer time range,
   # adding a `time` key for the time formatted for the user's timezone
   def calendar_events_for(beginning_i, ending_i)
-    filtered_events = calendar_events.select do |event|
+    filtered_events = (weather_calendar_events + calendar_events).select do |event|
       (event["start_i"]..event["end_i"]).overlaps?(beginning_i...ending_i)
     end
 
@@ -77,9 +100,7 @@ class User < ApplicationRecord
           weather_summary: "",
           precip_probability: 0,
           precip_label: "",
-          precip_icon: "",
-          wind: 0,
-          wind_bearing: 0
+          wind: 0
         }
 
         if weather&.dig("daily", "data", day_index).present?
@@ -91,9 +112,7 @@ class User < ApplicationRecord
           out[:weather_icon] = daily_weather["icon"]
           out[:weather_summary] = daily_weather["summary"]
           out[:precip_probability] = daily_weather["precipProbability"]
-          out[:precip_icon] = daily_weather["precipType"]
           out[:wind] = daily_weather["windGust"].to_i
-          out[:wind_bearing] = daily_weather["windBearing"].to_i
         end
 
         memo << out
@@ -104,12 +123,31 @@ class User < ApplicationRecord
         yearly_events: yearly_events,
         day_groups: day_groups,
         timestamp: current_time.in_time_zone(tz).strftime("%A at %-l:%M %p"),
-        emails: google_accounts.flat_map(&:emails)
+        emails: emails
       }
 
     out[:current_temperature] = "#{weather["currently"]["temperature"].round}°" if weather.present?
 
     out
+  end
+
+  def emails
+    senders =
+      google_accounts.flat_map(&:emails).map do |email|
+        sender = email["from"]
+        if sender.include?(" <")
+          # Clean up sender in format "Joel <joel@foo.com>" => "Joel"
+          sender.split(" <").first
+        elsif sender.include?("reply")
+          # Clean up sender in format "noreply@foo.com" => "thriftbooks.com"
+          sender.split("@").last
+        else
+          # Otherwise, grab the content before the @
+          sender.split("@").first
+        end
+      end
+
+    senders.tally
   end
 
   def yearly_events(at = Time.now)
@@ -121,9 +159,10 @@ class User < ApplicationRecord
       .group_by { |e| Date.parse(e["start"]["date"]).month }
   end
 
-  def alerts
+  def alerts(include_weather_alerts = true)
     out = error_messages
-    if weather&.key?("alerts")
+
+    if include_weather_alerts && weather&.key?("alerts")
       weather_alerts = weather["alerts"].map do |alert|
         if alert["description"].to_s.include?("OZONE ACTION DAY")
           "Ozone Action Day"
@@ -134,6 +173,7 @@ class User < ApplicationRecord
 
       out.concat(weather_alerts)
     end
+
     out.uniq
   end
 end
