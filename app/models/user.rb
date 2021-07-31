@@ -34,7 +34,7 @@ class User < ApplicationRecord
       {
         "start_i" => alert["time"],
         "end_i" => alert["expires"],
-        "calendar" =>  "_weather_alerts",
+        "calendar" => "_weather_alerts",
         "summary" => title,
         "icon" => "warning"
       }
