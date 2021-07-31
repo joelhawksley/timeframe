@@ -88,7 +88,6 @@ li {
 }
 
 .calendar-event .subtitle {
-  opacity: .7;
   font-size: 20px;
   text-align: right;
   white-space: nowrap;

@@ -43,6 +43,26 @@ class UserTest < Minitest::Test
     )
   end
 
+  def test_events_weather_alert
+    weather = {
+      alerts: [
+        {
+          "time" => 1627060200,
+          "title" => "Air Quality Alert",
+          "expires" => 1627077600,
+          "severity" => "advisory",
+          "description" =>
+            "...OZONE ACTION DAY ALERT....\n"
+        }
+      ]
+    }
+
+    result = User.new(weather: weather).calendar_events_for(1627060000, 1627077800)
+
+    assert_equal(1, result.length)
+    assert_equal("11:10a - 4p", result[0]["time"])
+  end
+
   def test_calendar_events_single_event
     start_i = 1621288800
     end_i = 1621292400

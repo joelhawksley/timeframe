@@ -31,7 +31,8 @@ class Device < ApplicationRecord
   end
 
   def error_messages
-    out = user.alerts
+    # Only include weather error messages for weather display
+    out = user.alerts(template.to_sym == :weather)
 
     out << "Battery level low. Please plug me in overnight!" if battery_level < 10
 
