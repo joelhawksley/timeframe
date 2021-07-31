@@ -16,7 +16,7 @@
 body {
   bottom: 0;
   font-family: 'lato';
-  font-size: 40px;
+  font-size: 32px;
   left: 0;
   overflow: hidden;
   position: absolute;
@@ -41,7 +41,7 @@ li {
 .error-messages {
   color: #fff;
   background-color: #000;
-  padding: 25px 40px;
+  padding: 20px 35px;
 }
 
 .error-messages i {

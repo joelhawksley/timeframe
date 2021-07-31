@@ -5,8 +5,3 @@ style
   = File.read(Rails.root.join("app", "assets", "image_templates", "styles.css")).html_safe
 .abs #{view_object[:timestamp]} - #{view_object[:battery_level]}
 .fade-bottom
-- if view_object[:error_messages].any?
-  .error-messages
-    i.fa.fa-fw.fa-warning
-    - view_object[:error_messages].each do |error_message|
-      .error-message = error_message

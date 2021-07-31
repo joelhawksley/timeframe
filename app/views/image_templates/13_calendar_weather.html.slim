@@ -1,10 +1,11 @@
 include app/views/image_templates/shared
 .sidebar style="background-color: #eee; position: absolute; left: 1100px; width: 500px; min-height: 100%; z-index: 6"
-  .yearly-events-table style="background-color: #ddd; width: 420px; padding: 35px 40px 40px;"
+  include app/views/image_templates/error_messages
+  .yearly-events-table style="background-color: #ddd; width: 420px; padding: 35px;"
     table style="font-size: 24px; width: 100%;"
-      - view_object[:yearly_events].each do |month_int, events|
+      - view_object[:yearly_events].each_with_index do |(month_int, events), index|
         tr
-          td.yearly-events-month colspan="2" style="border-bottom: 1px solid black; padding-bottom: 5px;padding-top: 10px;"
+          td.yearly-events-month colspan="2" style="border-bottom: 1px solid black; padding-bottom: 5px;#{'padding-top: 10px;' if index > 0}"
             strong = Date::MONTHNAMES[month_int]
         - events.each do |event|
           tr.yearly-table-event

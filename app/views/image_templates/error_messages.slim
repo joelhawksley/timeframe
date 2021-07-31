@@ -1,0 +1,5 @@
+- if view_object[:error_messages].any?
+  .error-messages
+    i.fa.fa-fw.fa-warning
+    - view_object[:error_messages].each do |error_message|
+      .error-message = error_message
