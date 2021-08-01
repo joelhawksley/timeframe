@@ -54,6 +54,7 @@ li {
 }
 
 .error-message {
+  font-size: 40px;
   margin-left: 60px;
   line-height: 50px;
 }

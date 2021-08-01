@@ -18,27 +18,36 @@ class User < ApplicationRecord
     Timeframe::Application::LOCAL_TZ
   end
 
+  ALERT_SEVERITY_MAPPINGS = {
+    "warning" => 0,
+    "watch" => 1,
+    "advisory" => 2
+  }
+
+  def most_important_weather_alert
+    return nil unless weather.to_h.key?("alerts")
+
+    weather["alerts"]
+      .uniq { |alert| alert["title"] }
+      .sort_by { |alert| ALERT_SEVERITY_MAPPINGS[alert["severity"]] }
+      .reject { |alert| alert["description"].to_s.include?("OZONE ACTION DAY") }
+      .first
+  end
+
   # convert weather alerts to be timeline events;
   # they are timely, after all!
   def weather_calendar_events
-    return [] unless weather.to_h.key?("alerts")
+    alert = most_important_weather_alert
 
-    weather["alerts"].map do |alert|
-      title =
-        if alert["description"].to_s.include?("OZONE ACTION DAY")
-          "Ozone Action Day"
-        else
-          alert["title"]
-        end
+    return [] unless alert
 
-      {
-        "start_i" => alert["time"],
-        "end_i" => alert["expires"],
-        "calendar" => "_weather_alerts",
-        "summary" => title,
-        "icon" => "warning"
-      }
-    end
+    [{
+      "start_i" => alert["time"],
+      "end_i" => alert["expires"],
+      "calendar" => "_weather_alerts",
+      "summary" => alert["title"],
+      "icon" => "warning"
+    }]
   end
 
   # Returns calendar events for a given UTC integer time range,
@@ -162,16 +171,8 @@ class User < ApplicationRecord
   def alerts(include_weather_alerts = true)
     out = error_messages
 
-    if include_weather_alerts && weather&.key?("alerts")
-      weather_alerts = weather["alerts"].map do |alert|
-        if alert["description"].to_s.include?("OZONE ACTION DAY")
-          "Ozone Action Day"
-        else
-          alert["title"]
-        end
-      end
-
-      out.concat(weather_alerts)
+    if include_weather_alerts && most_important_weather_alert
+      out << most_important_weather_alert["title"]
     end
 
     out.uniq
