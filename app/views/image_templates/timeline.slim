@@ -23,7 +23,7 @@ table.calendar-events
                 '  #{event_day[:wind]} mph
       - [event_day[:events][:all_day], event_day[:events][:periodic]].flatten.each do |event|
         - if !event["all_day"] || event_day[:show_all_day_events]
-          tr.calendar-event
+          tr.calendar-event style="#{'font-weight: bold' if event["icon"] == "warning"}"
             td.subtitle
               - if !event["all_day"]
                 = event["time"]
