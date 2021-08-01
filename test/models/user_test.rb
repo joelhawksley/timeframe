@@ -19,23 +19,6 @@ class UserTest < Minitest::Test
     assert_equal(["bar"], User.new(weather: {alerts: [{title: "bar"}]}).alerts)
   end
 
-  def test_alerts_with_air_quality_description
-    weather = {
-      alerts: [
-        {
-          "time" => 1627060200,
-          "title" => "Air Quality Alert",
-          "expires" => 1627077600,
-          "severity" => "advisory",
-          "description" =>
-            "...OZONE ACTION DAY ALERT....\n"
-        }
-      ]
-    }
-
-    assert_equal(["Ozone Action Day"], User.new(weather: weather).alerts)
-  end
-
   def test_alerts_with_weather_alert_and_error_message
     assert_equal(
       ["foo", "bar"],
@@ -52,7 +35,7 @@ class UserTest < Minitest::Test
           "expires" => 1627077600,
           "severity" => "advisory",
           "description" =>
-            "...OZONE ACTION DAY ALERT....\n"
+            "...ALERT....\n"
         }
       ]
     }
@@ -61,6 +44,51 @@ class UserTest < Minitest::Test
 
     assert_equal(1, result.length)
     assert_equal("11:10a - 4p", result[0]["time"])
+  end
+
+  def test_weather_duplicate_titles
+    weather = {
+      alerts: [{
+        "time" => 1627770120,
+        "title" => "Flash Flood Warning",
+        "expires" => 1627778700,
+        "regions" => ["Boulder"],
+        "severity" => "warning",
+        "description" =>
+      "...FLASH FLOOD WARNING REMAINS IN EFFECT UNTIL 645 PM MDT THIS EVENING FOR NORTH CENTRAL BOULDER COUNTY... At 422 PM MDT, \n"
+      },
+        {"time" => 1627762260,
+         "title" => "Flash Flood Watch",
+         "expires" => 1627786800,
+         "severity" => "watch",
+         "description" =>
+          "...FLASH FLOOD WATCH REMAINS IN EFFECT UNTIL 9 PM MDT THIS EVENING..."},
+        {"time" => 1627769460,
+         "title" => "Air Quality Alert",
+         "expires" => 1627855200,
+         "severity" => "advisory",
+         "description" =>
+          "...OZONE ACTION DAY ALERT FROM 400 PM SATURDAY UNTIL 400 PM SUNDAY... The Colorado Department of Public Health \n"},
+        {"time" => 1627769460,
+         "title" => "Flood Advisory",
+         "expires" => 1627855200,
+         "regions" => ["Boulder"],
+         "severity" => "advisory",
+         "description" =>
+          "The National Weather Service in Denver has issued a * Small Stream Flood Advisory for..."},
+        {"time" => 1627769460,
+         "title" => "Flood Advisory",
+         "expires" => 1627855200,
+         "regions" => ["Boulder"],
+         "severity" => "advisory",
+         "description" =>
+          "The National Weather Service in Denver has issued a * Small Stream Flood Advisory for... "}]
+    }
+
+    result = User.new(weather: weather).calendar_events_for(1627060000, 1627855200)
+
+    assert_equal(1, result.length)
+    assert_equal("Flash Flood Warning", result[0]["summary"])
   end
 
   def test_calendar_events_single_event
