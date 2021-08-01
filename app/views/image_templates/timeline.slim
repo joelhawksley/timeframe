@@ -32,4 +32,7 @@ table.calendar-events
                 span.letter = event["letter"]
               - else
                 i.fa.fa-fw class="fa-#{event['icon']}"
-            td = event["summary"]
+            td
+              div = event["summary"]
+              - if event["all_day"]
+                .location style="font-size: 20px" = event["location"]
