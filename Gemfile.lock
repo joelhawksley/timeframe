@@ -172,14 +172,14 @@ GEM
       mime-types-data (~> 3.2015)
     mime-types-data (3.2021.0225)
     mini_mime (1.0.3)
-    mini_portile2 (2.5.3)
+    mini_portile2 (2.6.1)
     minitest (5.14.4)
     multi_json (1.15.0)
     multi_xml (0.6.0)
     multipart-post (2.1.1)
     nio4r (2.5.7)
-    nokogiri (1.11.4)
-      mini_portile2 (~> 2.5.0)
+    nokogiri (1.12.5)
+      mini_portile2 (~> 2.6.1)
       racc (~> 1.4)
     orm_adapter (0.5.0)
     os (1.1.1)
@@ -329,7 +329,7 @@ DEPENDENCIES
   imgkit
   minitest
   multipart-post
-  nokogiri (= 1.11.4)
+  nokogiri (= 1.12.5)
   pg (~> 1.1)
   pry-rails
   puma (~> 4.3)

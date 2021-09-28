@@ -12,7 +12,7 @@ gem "google-api-client", "~> 0.11", require: ["google/apis/calendar_v3", "google
 gem "httparty"
 gem "imgkit"
 gem "multipart-post"
-gem "nokogiri", "1.11.4"
+gem "nokogiri", "1.12.5"
 gem "pg", "~> 1.1"
 gem "puma", "~> 4.3"
 gem "rails", "~> 6.1"
