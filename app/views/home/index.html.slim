@@ -51,13 +51,17 @@ nav.navbar.navbar-default
               table.table.table-condensed.table-bordered
                 thead
                   tr
-                    th Name
-                    th Letter
-                    th Icon
-                    th Enabled
+                    th
+                      strong Name
+                    th
+                      strong Letter
+                    th
+                      strong Icon
+                    th
+                      strong Enabled
                     th
                 tbody
-                  - google_account.google_calendars.each do |google_calendar|
+                  - google_account.google_calendars.order(:summary).each do |google_calendar|
                     tr
                       = form_with(model: google_calendar, remote: false) do |f|
                         td = google_calendar.summary
