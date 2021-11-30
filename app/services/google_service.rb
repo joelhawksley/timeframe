@@ -58,8 +58,8 @@ class GoogleService
               message = service.get_user_message("me", message_id)
 
               {
-                from: message.payload.headers.find { |h| h.name == "From" }.value,
-                subject: message.payload.headers.find { |h| h.name == "Subject" }.value
+                from: message.payload.headers.find { |h| h.name == "From" }&.value,
+                subject: message.payload.headers.find { |h| h.name == "Subject" }&.value
               }
             end
           )
