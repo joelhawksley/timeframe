@@ -9,8 +9,8 @@ class Device < ApplicationRecord
   TEMPLATES = {
     "13_calendar_weather": {
       title: "13\" Place & Play",
-      width: 1600,
-      height: 1200
+      width: 1200,
+      height: 1600
     },
     calendar_weather: {
       title: "10\" EPD",
