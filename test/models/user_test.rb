@@ -141,7 +141,7 @@ class UserTest < Minitest::Test
 
     assert_equal("Friday at 9:05 PM", result[:timestamp])
     assert_equal({}, result[:yearly_events])
-    assert_equal(4, result[:day_groups].length)
+    assert_equal(6, result[:day_groups].length)
     assert_equal({}, result[:emails])
   end
 
