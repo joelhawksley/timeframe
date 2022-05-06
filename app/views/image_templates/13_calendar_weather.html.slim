@@ -1,6 +1,24 @@
 include app/views/image_templates/shared
 .sidebar style="background-color: #eee; position: absolute; left: 800px; width: 400px; min-height: 100%; z-index: 6"
   include app/views/image_templates/error_messages
+  .weather-list style="background-color: #eee; width: 330px; padding: 20px 35px 35px;"
+    table style="width: 100%;"
+      - view_object[:day_groups].first(6).each_with_index do |event_day, index|
+        - next if !event_day[:show_all_day_events] && event_day[:events][:periodic].empty?
+        tr
+          td style="padding-bottom: 6px; font-size: 20px;" colspan="2" = event_day[:day_name]
+        tr style="font-size: 24px"
+          td style="padding-bottom: 15px" width="30"
+            i.climacon class="#{event_day[:weather_icon]}"
+          td style="padding-bottom: 15px"
+            span
+              => event_day[:temperature_range]
+              - if event_day[:precip_probability] > 0.1
+                ' /
+                =< event_day[:precip_label]
+            - if event_day[:wind] > 10
+              span
+                '  /  #{event_day[:wind]} mph
   .yearly-events-table style="background-color: #ddd; width: 330px; padding: 20px 35px 35px;"
     table style="font-size: 24px; width: 100%;"
       - view_object[:yearly_events].each_with_index do |(month_int, events), index|
@@ -16,7 +34,7 @@ include app/views/image_templates/shared
   div style="padding: 35px 40px 40px;font-size: 24px;"
     - view_object[:emails].each do |email, count|
       div style="padding: 3px 1rem 3px 0;"
-        = email.truncate(30)
+        = email.truncate(30).gsub('"', '')
         - if count > 1
           |  (#{count})
 div style="max-width: 775px;"

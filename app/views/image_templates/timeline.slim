@@ -6,21 +6,6 @@ table.calendar-events
         tr.divider
           td colspan="3"
             hr
-      - if event_day[:show_all_day_events]
-        tr.calendar-event
-          td
-          td.icon
-            i.climacon class="#{event_day[:weather_icon]}"
-          td
-            span
-              => event_day[:temperature_range]
-              - if event_day[:precip_probability] > 0.1
-                ' /
-                =< event_day[:precip_label]
-            - if event_day[:wind] > 10
-              span style="margin-left: 1.5rem"
-                i.climacon.wind
-                '  #{event_day[:wind]} mph
       - [event_day[:events][:all_day], event_day[:events][:periodic]].flatten.each do |event|
         - if !event["all_day"] || event_day[:show_all_day_events]
           tr.calendar-event style="#{'font-weight: bold' if event["icon"] == "warning"}"

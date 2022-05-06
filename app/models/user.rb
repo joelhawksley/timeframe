@@ -69,7 +69,7 @@ class User < ApplicationRecord
     current_time = at.utc.in_time_zone(tz)
 
     day_groups =
-      (0..3).each_with_object([]) do |day_index, memo|
+      (0..5).each_with_object([]) do |day_index, memo|
         date = Time.now.in_time_zone(tz) + day_index.day
 
         start_i =
