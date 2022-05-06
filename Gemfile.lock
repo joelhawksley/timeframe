@@ -189,6 +189,8 @@ GEM
       nio4r (~> 2.0)
     racc (1.6.0)
     rack (2.2.3)
+    rack-cache (1.13.0)
+      rack (>= 0.4)
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rails (6.1.5.1)
@@ -325,6 +327,7 @@ DEPENDENCIES
   pg (~> 1.1)
   pry-rails
   puma (~> 4.3)
+  rack-cache
   rails (~> 6.1)
   sass-rails (~> 5.0)
   simplecov
