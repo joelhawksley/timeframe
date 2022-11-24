@@ -1,11 +1,10 @@
 .abs {
   color: #777;
   position: fixed;
-  bottom: 5px;
-  left: 10px;
-  font-size: 12px;
+  bottom: 0.3125rem;
+  left: 0.625rem;
+  font-size: 0.75rem;
   z-index: 10;
-  width: 200px;
 }
 
 * {
@@ -16,7 +15,7 @@
 body {
   bottom: 0;
   font-family: 'lato';
-  font-size: 32px;
+  font-size: 16px;
   left: 0;
   overflow: hidden;
   position: absolute;
@@ -30,7 +29,7 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  height: 75px;
+  height: 4.6875rem;
   z-index: 5;
 }
 
@@ -41,33 +40,25 @@ li {
 .error-messages {
   color: #fff;
   background-color: #000;
-  padding: 20px 35px;
+  padding: 1.25rem 2.1875rem;
 }
 
 .error-messages i {
   display: block;
   position: absolute;
-  width: 50px;
-  height: 50px;
+  width: 3.125rem;
+  height: 3.125rem;
   text-algn: center;
-  line-height: 50px;
+  line-height: 3.125rem;
 }
 
 .error-message {
-  font-size: 40px;
-  margin-left: 60px;
-  line-height: 50px;
-}
-
-.calendar-event {
-  padding: .6rem 0;
-  font-size: 40px;
-  width: 100%;
-  position: relative;
+  margin-left: 3.75rem;
+  line-height: 3.125rem;
 }
 
 .calendar-day {
-  margin-bottom: 2rem;
+  margin-bottom: 4rem;
 }
 
 .fa-fw {
@@ -77,26 +68,29 @@ li {
 .calendar-events {
   border-collapse: collapse;
   width: 100%;
-  margin-top: 5px;
+  margin-top: 0.3125rem;
 }
 
 .calendar-event {
-  font-size: 32px;
+  font-size: 2rem;
+  padding: 1.2rem 0;
+  width: 100%;
+  position: relative;
 }
 
 .calendar-event td {
-  padding: .9rem 0;
+  padding: 1rem 0;
 }
 
 .calendar-event .subtitle {
-  font-size: 20px;
+  font-size: 1.5rem;
   text-align: right;
   white-space: nowrap;
-  padding-left: 1rem;
+  padding-left: 2rem;
 }
 
 tr.divider td {
-  padding: 30px;
+  padding: 1.875rem;
 }
 
 hr {
@@ -105,14 +99,14 @@ hr {
 }
 
 td.icon {
-  padding: 0 .4rem;
+  padding: 0 .8rem;
   text-align: center;
-  width: 40px;
+  width: 2.5rem;
 }
 
 .climacon {
   font-size: 2.6rem;
-  line-height: 1rem;
+  line-height: 2rem;
   vertical-align: middle;
 }
 
@@ -121,5 +115,5 @@ td.icon {
   width: 100%;
   display: inline-block;
   font-weight: bold;
-  font-size: 44px;
+  font-size: 3rem;
 }

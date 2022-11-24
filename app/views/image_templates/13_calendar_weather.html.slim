@@ -1,16 +1,16 @@
 include app/views/image_templates/shared
 .sidebar style="background-color: #eee; position: absolute; left: 800px; width: 400px; min-height: 100%; z-index: 6"
   include app/views/image_templates/error_messages
-  .weather-list style="background-color: #eee; width: 330px; padding: 20px 35px 35px;"
+  .weather-list style="background-color: #eee; width: 330px; padding: 1.25rem 2.1875rem 2.1875rem;"
     table style="width: 100%;"
       - view_object[:day_groups].first(6).each_with_index do |event_day, index|
         - next if !event_day[:show_all_day_events] && event_day[:events][:periodic].empty?
         tr
-          td style="padding-bottom: 6px; font-size: 20px;" colspan="2" = event_day[:day_name]
-        tr style="font-size: 24px"
-          td style="padding-bottom: 15px" width="30"
+          td style="padding-bottom: 0.375rem; font-size: 1.25rem;" colspan="2" = event_day[:day_name]
+        tr style="font-size: 1.5rem"
+          td style="padding-bottom: 1rem" width="30"
             i.climacon class="#{event_day[:weather_icon]}"
-          td style="padding-bottom: 15px"
+          td style="padding-bottom: 1rem"
             span
               => event_day[:temperature_range]
               - if event_day[:precip_probability] > 0.1
@@ -19,21 +19,21 @@ include app/views/image_templates/shared
             - if event_day[:wind] > 10
               span
                 '  /  #{event_day[:wind]} mph
-  .yearly-events-table style="background-color: #ddd; width: 330px; padding: 20px 35px 35px;"
-    table style="font-size: 24px; width: 100%;"
+  .yearly-events-table style="background-color: #ddd; width: 330px; padding: 1.25rem 2.1875rem 2.1875rem;"
+    table style="font-size: 1.5rem; width: 100%;"
       - view_object[:yearly_events].each_with_index do |(month_int, events), index|
         tr
-          td.yearly-events-month colspan="2" style="border-bottom: 1px solid black; padding-bottom: 5px;#{'padding-top: 10px;' if index > 0}"
-            strong = Date::MONTHNAMES[month_int]
+          td colspan="2" style="font-size: 1.25rem; #{'padding-top: .75rem;' if index > 0}"
+            = Date::MONTHNAMES[month_int]
         - events.each do |event|
           tr.yearly-table-event
-            td.date style="padding: 3px 1rem 3px 0;"
+            td.date style="padding: 0.1875rem 1rem 0.1875rem 0;"
               - time = Time.at(event["start_i"]).in_time_zone(Timeframe::Application::LOCAL_TZ)
               strong = time.day.ordinalize
-            td style="padding: 3px 0" =< event["summary"]
-  div style="padding: 35px 40px 40px;font-size: 24px;"
+            td style="padding: 0.1875rem 0" =< event["summary"]
+  div style="padding: 2.1875rem 2.5rem 2.5rem;font-size: 1.5rem;"
     - view_object[:emails].each do |email, count|
-      div style="padding: 3px 1rem 3px 0;"
+      div style="padding: 0.1875rem 1rem 0.1875rem 0;"
         = email.truncate(30).gsub('"', '')
         - if count > 1
           |  (#{count})

@@ -1,6 +1,6 @@
 include app/views/image_templates/shared
 include app/views/image_templates/error_messages
-div style="padding: 40px 20px 20px 40px;"
+div style="padding: 2.5rem 1.25rem 1.25rem 2.5rem;"
   .current-temp style="font-size: 420px; line-height: 320px; margin-bottom: 80px; margin-left: -20px;"
     = view_object[:current_temperature]
   - if DateTime.now.utc.in_time_zone(Timeframe::Application::LOCAL_TZ).hour > 19
@@ -17,5 +17,5 @@ div style="padding: 40px 20px 20px 40px;"
   h2 style="font-size: 60px;font-weight: 500;margin-left: -15px;padding-bottom: 10px;"
     i.climacon class="#{icon}" style="font-size: 5.5rem;vertical-align: sub; margin-right: 1rem;"
     = range
-  div style="line-height: 1.3; font-size: 40px"
+  div style="line-height: 1.3; font-size: 2.5rem"
     = summary
