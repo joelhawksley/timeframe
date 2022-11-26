@@ -12,15 +12,10 @@ class Device < ApplicationRecord
       width: 1200,
       height: 1600
     },
-    calendar_weather: {
-      title: "10\" EPD",
-      width: 825,
-      height: 1200
-    },
-    weather: {
-      title: "6\" EPD",
-      width: 758,
-      height: 1024
+    mira_pro_vert: {
+      title: "4k Boox Mira Pro, Vertical",
+      width: 1800,
+      height: 3200,
     }
   }
 
@@ -60,7 +55,8 @@ class Device < ApplicationRecord
       Rails.root.join("app", "views", "image_templates", "#{template}.html.slim")
     ).render(
       Object.new,
-      view_object: view_object
+      view_object: view_object,
+      device: self
     )
   end
 

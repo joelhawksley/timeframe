@@ -1,12 +1,3 @@
-.abs {
-  color: #777;
-  position: fixed;
-  bottom: 0.3125rem;
-  left: 0.625rem;
-  font-size: 0.75rem;
-  z-index: 10;
-}
-
 * {
   margin: 0;
   padding: 0;
@@ -21,6 +12,15 @@ body {
   position: absolute;
   right: 0;
   top: 0;
+}
+
+.abs {
+  color: #777;
+  position: fixed;
+  bottom: 0.3125rem;
+  left: 0.625rem;
+  font-size: 0.75rem;
+  z-index: 10;
 }
 
 .fade-bottom {
@@ -83,7 +83,7 @@ li {
 }
 
 .calendar-event .subtitle {
-  font-size: 1.5rem;
+  font-size: 1.375rem;
   text-align: right;
   white-space: nowrap;
   padding-left: 2rem;

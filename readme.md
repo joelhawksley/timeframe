@@ -11,6 +11,7 @@ I've been running this application in some form since 2015. I've open-sourced it
 1) Ensure you have Postgres installed.
 1) `bundle install`
 1) `rails db:setup`
+1) Install https://wkhtmltopdf.org/
 1) Copy `.env.example` to `.env` and set the given values.
 1) `rails s`
 1) Visit [http://localhost:3000](http://localhost:3000)
