@@ -1,11 +1,14 @@
-.sidebar style="background-color: #eee; position: absolute; left: 50rem; width: 25rem; min-height: 100%; z-index: 6"
+.sidebar style="background-color: #eee; position: absolute; left: #{small ? "50rem" : "61.5rem"}; width: 25rem; min-height: 100%; z-index: 6"
   include app/views/image_templates/error_messages
+
   .weather-list style="background-color: #eee; width: 20.625rem; padding: 1.25rem 2.1875rem;"
+    - unless small
+      div style="font-size: 10rem; line-height: 1; margin-bottom: 2rem;" = view_object[:current_temperature]
     table style="width: 100%;"
       - view_object[:day_groups].first(6).each_with_index do |event_day, index|
         - next if !event_day[:show_all_day_events] && event_day[:events][:periodic].empty?
         tr
-          td style="padding-bottom: 0.375rem; font-size: 1.25rem;" colspan="2" = event_day[:day_name]
+          td style="font-weight: bold; padding-bottom: 0.375rem; font-size: 1.25rem;" colspan="2" = event_day[:day_name]
         tr style="font-size: 1.5rem"
           td style="padding-bottom: 1rem" width="30"
             i.climacon class="#{event_day[:weather_icon]}"

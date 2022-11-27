@@ -10,6 +10,7 @@ class TemplatesController < ApplicationController
           ).render(
             Object.new,
             view_object: view_object,
+            small: params[:id] != "mira_pro_vert"
           ).html_safe, layout: false
         )
       end
