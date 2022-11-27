@@ -4,7 +4,6 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
     :recoverable, :rememberable, :trackable, :validatable
 
-  has_many :devices
   has_many :google_accounts
   has_many :google_calendars, through: :google_accounts
 

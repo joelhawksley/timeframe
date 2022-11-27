@@ -33,5 +33,7 @@ module Timeframe
     config.generators.system_tests = nil
 
     config.hosts << "hawksley-server.local"
+    config.hosts << "192.168.1.200.nip.io"
+    config.hosts << "timeframetesting.com"
   end
 end

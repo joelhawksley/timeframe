@@ -6,7 +6,7 @@ Rails.application.routes.draw do
   get :redirect, to: "home#redirect"
   get :google_callback, to: "home#callback"
   resources :users, only: [:update]
-  resources :devices, only: [:show, :create]
+  resources :templates, only: [:show]
   resources :google_calendars, only: [:update]
   resources :google_accounts, only: [:update]
 end

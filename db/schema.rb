@@ -10,18 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2021_05_09_172534) do
+ActiveRecord::Schema[7.0].define(version: 2022_11_27_054831) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-
-  create_table "devices", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.string "uuid", null: false
-    t.string "template", null: false
-    t.binary "current_image"
-    t.jsonb "status", default: "{}", null: false
-    t.index ["user_id"], name: "index_devices_on_user_id"
-  end
 
   create_table "google_accounts", force: :cascade do |t|
     t.bigint "user_id"
