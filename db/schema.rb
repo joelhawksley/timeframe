@@ -10,8 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_09_172534) do
-
+ActiveRecord::Schema[7.0].define(version: 2021_05_09_172534) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -27,11 +26,11 @@ ActiveRecord::Schema.define(version: 2021_05_09_172534) do
   create_table "google_accounts", force: :cascade do |t|
     t.bigint "user_id"
     t.string "email", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.text "access_token", default: "", null: false
     t.text "refresh_token", default: "", null: false
-    t.datetime "expires_at"
+    t.datetime "expires_at", precision: nil
     t.boolean "email_enabled", default: false, null: false
     t.jsonb "emails", default: [], null: false
     t.index ["email"], name: "index_google_accounts_on_email"
@@ -52,20 +51,20 @@ ActiveRecord::Schema.define(version: 2021_05_09_172534) do
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
-    t.datetime "reset_password_sent_at"
-    t.datetime "remember_created_at"
+    t.datetime "reset_password_sent_at", precision: nil
+    t.datetime "remember_created_at", precision: nil
     t.integer "sign_in_count", default: 0, null: false
-    t.datetime "current_sign_in_at"
-    t.datetime "last_sign_in_at"
+    t.datetime "current_sign_in_at", precision: nil
+    t.datetime "last_sign_in_at", precision: nil
     t.inet "current_sign_in_ip"
     t.inet "last_sign_in_ip"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.jsonb "weather"
     t.jsonb "calendar_events", default: [], null: false
     t.string "error_messages", default: [], array: true
-    t.decimal "latitude", precision: 10, scale: 6
-    t.decimal "longitude", precision: 10, scale: 6
+    t.decimal "latitude"
+    t.decimal "longitude"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end

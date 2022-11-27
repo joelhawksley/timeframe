@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class DevicesController < ApplicationController
-  before_action :authenticate_user!
-
   def show
     current_device = current_user.devices.find(params[:id])
 
@@ -17,6 +15,8 @@ class DevicesController < ApplicationController
   end
 
   def create
+    authenticate_user!
+
     current_user.devices.create(device_params)
 
     redirect_to(root_path, flash: {notice: "Device created."})

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 source "https://rubygems.org"
-ruby "3.0.3"
+ruby "3.0.5"
 
 gem "bootstrap-sass"
 gem "devise"
@@ -19,7 +19,6 @@ gem "rails", "~> 7"
 gem "rack-cache"
 gem "sass-rails", "~> 5.0"
 gem "slim"
-gem "uglifier", ">= 1.3.0"
 gem "visionect-ruby", git: "https://github.com/joelhawksley/visionect-ruby.git"
 
 group :development, :test do

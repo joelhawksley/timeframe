@@ -319,8 +319,6 @@ GEM
     tzinfo (2.0.5)
       concurrent-ruby (~> 1.0)
     uber (0.1.0)
-    uglifier (4.2.0)
-      execjs (>= 0.3.0, < 3)
     unicode-display_width (2.2.0)
     warden (1.2.9)
       rack (>= 2.0.9)
@@ -358,12 +356,11 @@ DEPENDENCIES
   simplecov
   slim
   standard
-  uglifier (>= 1.3.0)
   visionect-ruby!
   wkhtmltoimage-binary
 
 RUBY VERSION
-   ruby 3.0.3p157
+   ruby 3.0.5p211
 
 BUNDLED WITH
-   2.2.32
+   2.2.33
