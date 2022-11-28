@@ -96,18 +96,14 @@ tr.divider td {
 hr {
   width: 50%;
   margin: 0 auto;
+  border: 1px solid black;
+  opacity: .5;
 }
 
 td.icon {
   padding: 0 .8rem;
   text-align: center;
   width: 2.5rem;
-}
-
-.climacon {
-  font-size: 2.6rem;
-  line-height: 2rem;
-  vertical-align: middle;
 }
 
 .letter {

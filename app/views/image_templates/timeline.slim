@@ -1,4 +1,4 @@
-div style="max-width: #{small ? "43.4375rem" : "56rem"}; padding: 3.125rem;"
+div style="max-width: #{small ? "42rem" : "47rem"}; padding: 0 3.125rem;"
   table.calendar-events
     tbody
       - view_object[:day_groups].first(3).each_with_index do |event_day, index|
@@ -12,7 +12,7 @@ div style="max-width: #{small ? "43.4375rem" : "56rem"}; padding: 3.125rem;"
             tr.calendar-event style="#{'font-weight: bold' if event["icon"] == "warning"}"
               td.subtitle
                 - if !event["all_day"]
-                  = event["time"]
+                  small = event["time"]
               td.icon
                 - if event["letter"].present?
                   span.letter = event["letter"]

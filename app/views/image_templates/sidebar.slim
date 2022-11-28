@@ -1,41 +1,44 @@
-.sidebar style="background-color: #eee; position: absolute; left: #{small ? "50rem" : "61.5rem"}; width: 25rem; min-height: 100%; z-index: 6"
+.sidebar style="background-color: #000; color: #fff; position: absolute; left: #{small ? "48rem" : "53.5rem"}; width: 27rem; min-height: 100%; z-index: 6; padding: 1.25rem 3rem;"
   include app/views/image_templates/error_messages
-
-  .weather-list style="background-color: #eee; width: 20.625rem; padding: 1.25rem 2.1875rem;"
-    - unless small
-      div style="font-size: 10rem; line-height: 1; margin-bottom: 2rem;" = view_object[:current_temperature]
-    table style="width: 100%;"
-      - view_object[:day_groups].first(6).each_with_index do |event_day, index|
-        - next if !event_day[:show_all_day_events] && event_day[:events][:periodic].empty?
-        tr
-          td style="font-weight: bold; padding-bottom: 0.375rem; font-size: 1.25rem;" colspan="2" = event_day[:day_name]
-        tr style="font-size: 1.5rem"
-          td style="padding-bottom: 1rem" width="30"
-            i.climacon class="#{event_day[:weather_icon]}"
-          td style="padding-bottom: 1rem"
+  - unless small
+    div style="font-size: 14rem; line-height: 1; margin-bottom: 1rem;" = view_object[:current_temperature]
+  table style="width: 100%; color: #fff; margin-left: -.5rem;"
+    - view_object[:day_groups].first(6).each_with_index do |event_day, index|
+      - next if !event_day[:show_all_day_events] && event_day[:events][:periodic].empty?
+      tr
+        td rowspan="2" style="text-align: center;"
+          i.climacon style="font-size: 4rem; line-height: 2rem; vertical-align: middle;" class="#{event_day[:weather_icon]}"
+        td style="font-weight: bold; padding-bottom: 0; font-size: 2rem;"
+          = event_day[:day_name]
+      tr style="font-size: 1.4375rem"
+        td style="padding-bottom: 1rem"
+          span
+            => event_day[:temperature_range].html_safe
+          - if event_day[:wind] > 10
             span
-              => event_day[:temperature_range]
-              - if event_day[:precip_probability] > 0.1
-                ' /
-                =< event_day[:precip_label]
-            - if event_day[:wind] > 10
-              span
-                '  /  #{event_day[:wind]}mph
-  .yearly-events-table style="background-color: #ddd; width: 20.625rem; padding: 1.25rem 2.1875rem;"
-    table style="font-size: 1.5rem; width: 100%;"
-      - view_object[:yearly_events].each_with_index do |(month_int, events), index|
-        tr
-          td colspan="2" style="border-bottom: 0.125rem solid #777; padding-bottom: 0.25rem; font-size: 1.5rem; #{'padding-top: .75rem;' if index > 0}"
-            strong = Date::MONTHNAMES[month_int]
-        - events.each do |event|
-          tr.yearly-table-event
-            td.date style="padding: 0.1875rem 1rem 0.1875rem 0;"
-              - time = Time.at(event["start_i"]).in_time_zone(Timeframe::Application::LOCAL_TZ)
-              strong = time.day.ordinalize
-            td style="padding: 0.1875rem 0" =< event["summary"]
-  div style="padding: 2.1875rem 2.5rem 2.5rem;font-size: 1.5rem;"
+              |  ~#{event_day[:wind]}
+              span style="font-size: 1rem;" mph
+          span
+            - if event_day[:precip_probability] > 0.1
+              =< event_day[:precip_label]
+  table style="font-size: 1.4375rem; width: 100%; color: #fff; margin-top: 2rem;"
+    - view_object[:yearly_events].each_with_index do |(month_int, events), index|
+      tr
+        td colspan="2" style="font-size: 1.75rem; #{'padding-top: .75rem;' if index > 0}"
+          strong = Date::MONTHNAMES[month_int]
+      - events.each do |event|
+        tr.yearly-table-event
+          td.date
+            - time = Time.at(event["start_i"]).in_time_zone(Timeframe::Application::LOCAL_TZ)
+            span style="font-size: 1rem; line-height: 1.4375rem; padding-right: .75rem;" = time.day.ordinalize
+          td style="padding: 0.1875rem 0; width: 100%;"
+            =< event["summary"]
+            - if event["counter"]
+              span style="font-size: 1rem"
+                |  (#{event["counter"]})
+  - if view_object[:emails].any?
     - view_object[:emails].each do |email, count|
-      div style="padding: 0.1875rem 1rem 0.1875rem 0;"
+      div style="padding: 0.1875rem 1rem 0.1875rem 0; margin-top: 2rem; font-size: 1.4375rem;"
         = email.truncate(30).gsub('"', '')
         - if count > 1
           |  (#{count})

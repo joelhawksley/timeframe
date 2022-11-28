@@ -110,16 +110,14 @@ class GoogleService
               ActiveSupport::TimeZone[Timeframe::Application::LOCAL_TZ].parse(event_json["end"]["date_time"]).utc.to_i
             end
 
-          summary =
+          counter =
             if (1900..2100).cover?(event_json["description"].to_s.to_i)
-              "#{event_json["summary"]} (#{Date.today.year - event_json["description"].to_s.to_i})"
-            else
-              event_json["summary"]
+              Date.today.year - event_json["description"].to_s.to_i
             end
 
           next unless
                 !event_json["description"].to_s.downcase.include?("timeframe-omit") &&
-                  summary != "."
+                event_json["summary"] != "."
 
           events[event.id] = event_json.slice(
             "start",
@@ -128,7 +126,8 @@ class GoogleService
           ).merge(
             background_color: event_json["color"] || calendar.background_color,
             foreround_color: event_json["color"] || calendar.foreground_color,
-            summary: summary,
+            summary: event_json["summary"],
+            counter: counter,
             description: event_json["description"],
             calendar: calendar.summary,
             icon: calendar_record.icon,
