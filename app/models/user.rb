@@ -114,10 +114,12 @@ class User < ApplicationRecord
         if weather&.dig("daily", "data", day_index).present?
           daily_weather = weather["daily"]["data"][day_index]
 
-          out[:precip_label] = "(#{(daily_weather["precipProbability"] * 100).to_i}%"
-          out[:precip_label] << " #{daily_weather["precipAccumulation"].round}\"" if daily_weather["precipAccumulation"].present?
-          out[:precip_label] << ")"
-          out[:temperature_range] = "&#8593;#{daily_weather["temperatureHigh"].round} &#8595;#{daily_weather["temperatureLow"].round}"
+          if daily_weather["precipAccumulation"].present?
+            out[:precip_label] = " #{daily_weather["precipAccumulation"].round}\""
+          else
+            out[:precip_label] = "#{(daily_weather["precipProbability"] * 100).to_i}%"
+          end
+          out[:temperature_range] = "&#8593;#{daily_weather["temperatureHigh"].round} &#8595;#{daily_weather["temperatureLow"].round}".html_safe
           out[:weather_icon] = daily_weather["icon"]
           out[:weather_summary] = daily_weather["summary"]
           out[:precip_probability] = daily_weather["precipProbability"]

@@ -1,0 +1,20 @@
+@import "font-awesome";
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 32px;
+}
+
+body {
+  padding: 1rem;
+  font-family: 'Lato', sans-serif;
+  overflow: hidden;
+}
+
+table { height: 1px; } /* Will be ignored, don't worry. */
+tr { height: 100%; }
+td { height: 100%; }

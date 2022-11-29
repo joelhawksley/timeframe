@@ -17,6 +17,10 @@ class TemplatesController < ApplicationController
     end
   end
 
+  def thirteen
+    render "thirteen", locals: { view_object: view_object }, layout: "display"
+  end
+
   private
 
   def view_object
