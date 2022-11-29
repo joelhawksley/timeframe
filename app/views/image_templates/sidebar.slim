@@ -23,6 +23,7 @@
               =< event_day[:precip_label]
   table style="font-size: 1.75rem; width: 100%; padding: 4rem 3rem 0;"
     - view_object[:yearly_events].each_with_index do |(month_int, events), index|
+      - next if index > 1
       tr
         td colspan="2" style="font-size: 1.75rem; #{'padding-top: .75rem;' if index > 0}"
           strong = Date::MONTHNAMES[month_int]
