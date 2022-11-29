@@ -1,52 +1,47 @@
-table style="width: 100%;"
-  tbody
-    - shown_days = 0
-    - view_object[:day_groups].first(5).each_with_index do |event_day|
-      - next if !event_day[:show_all_day_events] && event_day[:events][:periodic].empty?
-      - shown_days += 1
-      - if shown_days > 1
-        tr
-          td style="padding: 1rem 0" colspan="4"
-            hr style="border: none;background-color: #ccc;color: #ccc;height: 2px;"
-      tr
-        td style="width: 11.5rem; vertical-align: top; padding-right: 1rem; border-right: 2px solid #ccc;" rowspan="#{[event_day[:events][:periodic].length + 1, 1].max}"
-          div style="display: flex; justify-content: space-between; flex-direction: column; height: 100%;"
-            div
-              div style="font-size: 2rem; font-weight: 700" = event_day[:day_name]
-              div style="margin-bottom: 1rem;"
-                => event_day[:temperature_range]
-                - if event_day[:wind] > 10
-                  span
-                    |  ~#{event_day[:wind]}
-                    span style="font-size: .8rem;" mph
-                span
-                  - if event_day[:precip_probability] > 0.1
-                    =< event_day[:precip_label]
-            div
-              table
-                - event_day[:events][:all_day].each do |event|
-                  tr
-                    td style="width: 1%; text-align: center; font-size: 1.25rem; font-weight: bold; padding-right: 0.25rem;"
-                      - if event["letter"].present?
-                        = event["letter"]
-                      - else
-                        i.fa.fa-fw class="fa-#{event['icon']}"
-                    td
-                      div
-                        = event["summary"]
-                        - if event["counter"]
-                          |  (#{event["counter"]})
-                        div style="font-size: .5rem;" = event["location"]
-        td
-        td
-        td
-      - event_day[:events][:periodic].each do |event|
-        tr style="#{'font-weight: bold' if event["icon"] == "warning"}"
-          td style="width: 1%; text-align: center; font-size: 1.25rem; font-weight: bold; padding-left: 1rem;"
-            - if event["letter"].present?
-              = event["letter"]
-            - else
-              i.fa.fa-fw class="fa-#{event['icon']}"
-          td style="white-space: nowrap; font-size: .75rem; padding: 0 .5rem;"
-            = event["time"]
-          td = event["summary"].truncate(30)
+- shown_days = 0
+- view_object[:day_groups].first(5).each_with_index do |event_day|
+  - next if !event_day[:show_all_day_events] && event_day[:events][:periodic].empty?
+  - shown_days += 1
+  - if shown_days > 1
+    hr style="margin: 1rem 0; border: none;background-color: #ccc;color: #ccc;height: 2px;"
+  div style="display: flex;"
+    div style="width: 16rem; vertical-align: top; padding-right: 1rem; border-right: 2px solid #ccc;" rowspan="#{[event_day[:events][:periodic].length + 1, 1].max}"
+      div style="display: flex; justify-content: space-between; flex-direction: column; height: 100%;"
+        div
+          div style="font-size: 2rem; font-weight: 700" = event_day[:day_name]
+          div style="margin-bottom: 1rem;"
+            => event_day[:temperature_range]
+            - if event_day[:wind] > 10
+              span
+                |  ~#{event_day[:wind]}
+                span style="font-size: .8rem;" mph
+            span
+              - if event_day[:precip_probability] > 0.1
+                =< event_day[:precip_label]
+        div
+          table
+            - event_day[:events][:all_day].each do |event|
+              tr
+                td style="width: 1%; text-align: center; font-size: 1.25rem; font-weight: bold; padding-right: 0.25rem;"
+                  - if event["letter"].present?
+                    = event["letter"]
+                  - else
+                    i.fa.fa-fw class="fa-#{event['icon']}"
+                td
+                  div
+                    = event["summary"]
+                    - if event["counter"]
+                      |  (#{event["counter"]})
+                    div style="font-size: .5rem;" = event["location"]
+    div style="width: 30rem;"
+      table
+        - event_day[:events][:periodic].each do |event|
+          tr style="#{'font-weight: bold' if event["icon"] == "warning"}"
+            td style="width: 1rem; text-align: center; font-size: 1.25rem; font-weight: bold; padding-left: 1rem;"
+              - if event["letter"].present?
+                = event["letter"]
+              - else
+                i.fa.fa-fw class="fa-#{event['icon']}"
+            td style="white-space: nowrap; font-size: .75rem; padding: 0 .5rem; width: 5rem;"
+              = event["time"]
+            td = event["summary"].truncate(30)

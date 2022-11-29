@@ -146,6 +146,8 @@ class User < ApplicationRecord
     senders =
       google_accounts.flat_map(&:emails).map do |email|
         sender = email["from"]
+        return unless sender.present?
+
         if sender.include?(" <")
           # Clean up sender in format "Joel <joel@foo.com>" => "Joel"
           sender.split(" <").first
