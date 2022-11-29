@@ -1,5 +1,5 @@
 - if view_object[:error_messages].any?
-  .error-messages
+  .error-messages style="font-size: 1.4375rem; margin-bottom: 1rem;"
     i.fa.fa-fw.fa-warning
     - view_object[:error_messages].each do |error_message|
       .error-message = error_message
