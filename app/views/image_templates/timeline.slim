@@ -19,6 +19,9 @@ div style="max-width: #{small ? "42rem" : "47rem"}; padding: 0 3.125rem;"
                 - else
                   i.fa.fa-fw class="fa-#{event['icon']}"
               td
-                div = event["summary"]
+                div
+                  = event["summary"]
+                  - if event["counter"]
+                    |  (#{event["counter"]})
                 - if event["all_day"]
                   .location style="font-size: 1.25rem" = event["location"]

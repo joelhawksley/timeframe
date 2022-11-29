@@ -79,7 +79,7 @@ li {
 }
 
 .calendar-event td {
-  padding: 1rem 0;
+  padding: .875rem 0;
 }
 
 .calendar-event .subtitle {
