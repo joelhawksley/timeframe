@@ -10,20 +10,7 @@ nav.navbar.navbar-default
         li = link_to "Sign up", new_registration_path(:user)
 - if current_user
   .container
-    .col-md-4
-      .panel.panel-default.panel.panel-default
-        .panel-heading
-          h3.panel-title Location
-        .panel-body
-          = form_for(current_user) do |f|
-            .form-group
-              = f.label :latitude
-              = f.number_field :latitude, step: :any, placeholder: "Latitude", class: "form-control"
-            .form-group
-              = f.label :longitude
-              = f.number_field :longitude, step: :any, placeholder: "Longitude", class: "form-control"
-            = f.submit "Update", class: "btn btn-default"
-    .col-md-8
+    .col-md-12
       .panel.panel-default
         .panel-heading
           h3.panel-title Google Accounts

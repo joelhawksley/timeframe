@@ -1,4 +1,9 @@
-.timestamp style="position: absolute; top: .25rem; right: .25rem; font-size: .4rem; color: #777;" = view_object[:timestamp]
+.timestamp style="position: absolute; top: .25rem; right: .25rem; font-size: .4rem; color: #777;"
+  ' Rendered on
+  = view_object[:timestamp]
+  '  - Data fetched
+  = ((Time.now - User.last.updated_at) / 60).round
+  | m ago
 .fade-bottom
 - shown_days = 0
 - view_object[:day_groups].first(5).each_with_index do |event_day|
@@ -15,8 +20,9 @@
           div style="margin-bottom: 1rem;"
             => event_day[:temperature_range]
             - if event_day[:wind] > 10
-              span
-                |  ~#{event_day[:wind]}
+              span style="padding-left: .25rem;"
+                i.fa-solid.fa-wind
+                |  #{event_day[:wind]}
                 span style="font-size: .8rem;" mph
             span
               - if event_day[:precip_probability] > 0.1
@@ -44,7 +50,7 @@
               - if event["letter"].present?
                 = event["letter"]
               - else
-                i.fa.fa-fw class="fa-#{event['icon']}"
+                i.fa-solid.fa-fw class="fa-#{event['icon']}"
             td style="white-space: nowrap; font-size: .75rem; padding: 0 .5rem; width: 5rem;"
               = event["time"]
             td = event["summary"].truncate(30)

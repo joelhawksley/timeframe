@@ -11,13 +11,14 @@
  * It is generally better to create a new file per style scope.
  *
  *= require_self
- *= require font-awesome
  */
 
  /* http://meyerweb.com/eric/tools/css/reset/
    v2.0 | 20110126
    License: none (public domain)
 */
+
+@import "font-awesome";
 
 $min-width:           1025px;
 
