@@ -8,7 +8,8 @@
     div style="width: 16rem; vertical-align: top; padding-right: 1rem; border-right: 2px solid #ccc;" rowspan="#{[event_day[:events][:periodic].length + 1, 1].max}"
       div style="display: flex; justify-content: space-between; flex-direction: column; height: 100%;"
         div
-          div style="font-size: 2rem; font-weight: 700" = event_day[:day_name]
+          div style="font-size: 2rem; font-weight: 700"
+            = event_day[:day_name]
           div style="margin-bottom: 1rem;"
             => event_day[:temperature_range]
             - if event_day[:wind] > 10

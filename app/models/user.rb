@@ -95,8 +95,6 @@ class User < ApplicationRecord
         events = calendar_events_for(start_i, end_i)
 
         out = {
-          day_of_week_index: date.to_date.strftime("%w").to_i,
-          day_of_month: date.day,
           day_name: day_name,
           show_all_day_events: day_index.zero? ? date.hour <= 19 : true,
           events: {
@@ -105,7 +103,6 @@ class User < ApplicationRecord
           },
           temperature_range: "",
           weather_icon: "",
-          weather_summary: "",
           precip_probability: 0,
           precip_label: "",
           wind: 0
@@ -121,7 +118,6 @@ class User < ApplicationRecord
           end
           out[:temperature_range] = "&#8593;#{daily_weather["temperatureHigh"].round} &#8595;#{daily_weather["temperatureLow"].round}".html_safe
           out[:weather_icon] = daily_weather["icon"]
-          out[:weather_summary] = daily_weather["summary"]
           out[:precip_probability] = daily_weather["precipProbability"]
           out[:wind] = daily_weather["windGust"].to_i
         end

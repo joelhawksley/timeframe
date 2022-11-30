@@ -1,22 +1,6 @@
 # frozen_string_literal: true
 
 class TemplatesController < ApplicationController
-  def show
-    respond_to do |format|
-      format.html do
-        render(
-          html: Slim::Template.new(
-            Rails.root.join("app", "views", "image_templates", "#{params[:id]}.slim")
-          ).render(
-            Object.new,
-            view_object: view_object,
-            small: params[:id] != "mira_pro_vert"
-          ).html_safe, layout: false
-        )
-      end
-    end
-  end
-
   def thirteen
     render "thirteen", locals: { view_object: view_object }, layout: "display"
   end
