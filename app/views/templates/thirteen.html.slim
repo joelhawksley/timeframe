@@ -1,4 +1,5 @@
-.timestamp style="position: absolute; top: .25rem; right: .25rem; font-size: .4rem;" = view_object[:timestamp]
+.timestamp style="position: absolute; top: .25rem; right: .25rem; font-size: .4rem; color: #777;" = view_object[:timestamp]
+.fade-bottom
 - shown_days = 0
 - view_object[:day_groups].first(5).each_with_index do |event_day|
   - next if !event_day[:show_all_day_events] && event_day[:events][:periodic].empty?

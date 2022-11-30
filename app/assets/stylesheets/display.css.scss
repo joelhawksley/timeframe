@@ -18,3 +18,13 @@ body {
 table { height: 1px; }
 tr { height: 100%; }
 td { height: 100%; }
+
+.fade-bottom {
+  background:-webkit-gradient(linear,left top,left bottom,color-stop(0%, rgba(255,255,255,0)),color-stop(100%,rgba(255,255,255,1)));
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 4.6875rem;
+  z-index: 5;
+}
