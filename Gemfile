@@ -7,7 +7,7 @@ gem "bootstrap-sass"
 gem "devise"
 gem "dotenv-rails"
 gem "exception_notification"
-gem "font-awesome-rails"
+gem "font-awesome-sass", "~> 6.2.1"
 gem "google-api-client", "~> 0.11", require: ["google/apis/calendar_v3", "google/apis/people_v1", "google/apis/gmail_v1"]
 gem "httparty"
 gem "imgkit"

@@ -118,8 +118,8 @@ GEM
       ruby2_keywords (>= 0.0.4)
     faraday-net_http (3.0.0)
     ffi (1.15.5)
-    font-awesome-rails (4.7.0.8)
-      railties (>= 3.2, < 8.0)
+    font-awesome-sass (6.2.1)
+      sassc (~> 2.0)
     gems (1.2.0)
     globalid (1.0.0)
       activesupport (>= 5.0)
@@ -340,7 +340,7 @@ DEPENDENCIES
   devise
   dotenv-rails
   exception_notification
-  font-awesome-rails
+  font-awesome-sass (~> 6.2.1)
   google-api-client (~> 0.11)
   httparty
   imgkit
