@@ -28,3 +28,12 @@ td { height: 100%; }
   height: 4.6875rem;
   z-index: 5;
 }
+
+.flash {
+  color: #FFF;
+  background-color: #000;
+}
+
+.flash .fade-bottom {
+  background: none;
+}

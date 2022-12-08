@@ -8,9 +8,28 @@
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
     <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
     <%= stylesheet_link_tag 'display', media: 'all' %>
+    <script>
+      function flash() {
+        document.getElementsByTagName("body")[0].classList.toggle("flash");
+
+        setTimeout(function(){
+          document.getElementsByTagName("body")[0].classList.toggle("flash");
+
+          setTimeout(function(){
+            document.getElementsByTagName("body")[0].classList.toggle("flash");
+
+            setTimeout(function(){
+              document.getElementsByTagName("body")[0].classList.toggle("flash");
+            }, 1000);
+          }, 1000);
+        }, 1000);
+      };
+      setInterval(flash, 3600000);
+    </script>
   </head>
 
   <body>
+    <div class="fade-bottom"></div>
     <%= yield %>
   </body>
 </html>

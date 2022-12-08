@@ -2,7 +2,11 @@
 
 class TemplatesController < ApplicationController
   def thirteen
-    render "thirteen", locals: { view_object: view_object }, layout: "display"
+    render "thirteen", locals: { view_object: view_object }, layout: "layouts/display"
+  end
+
+  def mira
+    render "mira", locals: { view_object: view_object }, layout: "display"
   end
 
   private
