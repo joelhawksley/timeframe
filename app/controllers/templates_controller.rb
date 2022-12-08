@@ -14,5 +14,3 @@ class TemplatesController < ApplicationController
     out
   end
 end
-
-# TODO check device battery levels
