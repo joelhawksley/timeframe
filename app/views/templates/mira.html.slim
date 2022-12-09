@@ -17,9 +17,8 @@ hr style="margin: 1rem 0; border: none;background-color: #ccc;color: #ccc;height
 
 javascript:
   function flash() {
-    document.getElementsByTagName("body")[0].classList.toggle("flash");
-
-    setTimeout(function(){
+    var dt = new Date();
+    if(dt.getHours() == 3 && dt.getMinutes() > 40 && dt.getMinutes() < 45) {
       document.getElementsByTagName("body")[0].classList.toggle("flash");
 
       setTimeout(function(){
@@ -27,11 +26,15 @@ javascript:
 
         setTimeout(function(){
           document.getElementsByTagName("body")[0].classList.toggle("flash");
+
+          setTimeout(function(){
+            document.getElementsByTagName("body")[0].classList.toggle("flash");
+          }, 1000);
         }, 1000);
       }, 1000);
-    }, 1000);
+    }
   };
-  setInterval(flash, 3600000);
+  setInterval(flash, 30000);
 
   function clock() {
     var dt = new Date();
