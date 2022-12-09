@@ -32,8 +32,9 @@ module Timeframe
     # Don't generate system test files.
     config.generators.system_tests = nil
 
+    config.assets.paths << Rails.root.join("app", "assets", "fonts")
+
     config.hosts << "hawksley-server.local"
-    config.hosts << "192.168.1.200.nip.io"
     config.hosts << "timeframetesting.com"
   end
 end

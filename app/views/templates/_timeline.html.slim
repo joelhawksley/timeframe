@@ -11,7 +11,7 @@
   - if shown_days > 1
     hr style="margin: 1rem 0; border: none;background-color: #ccc;color: #ccc;height: 2px;"
   div style="display: flex;"
-    div style="width: 16rem; vertical-align: top; padding-right: 1rem; border-right: 2px solid #ccc;" rowspan="#{[event_day[:events][:periodic].length + 1, 1].max}"
+    div style="width: 16rem; vertical-align: top; padding-right: 1rem; border-right: 2px solid #ccc;"
       div style="display: flex; justify-content: space-between; flex-direction: column; height: 100%;"
         div
           div style="font-size: 2rem; font-weight: 700"
@@ -52,4 +52,9 @@
                 i.fa-solid.fa-fw class="fa-#{event['icon']}"
             td style="white-space: nowrap; font-size: .75rem; padding: 0 .5rem; width: 5rem;"
               = event["time"]
-            td = event["summary"].truncate(30)
+            td
+              = event["summary"].truncate(30)
+              - if event["description"].to_s.include?("timeframe-weather")
+                - w = User.last.weather["hourly"]["data"].find { _1["time"] >= event["start_i"] }
+                - if w
+                  =< "(#{w["temperature"].round}°)"
