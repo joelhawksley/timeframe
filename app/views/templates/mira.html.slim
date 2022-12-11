@@ -11,7 +11,7 @@ div style="display: flex;"
   div style="width: 16rem; padding-bottom: 1rem;"
     span style="font-size: 8rem; line-height: 6rem;" = view_object[:current_temperature]
   div style="width: 30rem;"
-    div#time style="font-size: 2rem; text-align: right;"
+    div#time style="font-size: 2rem; line-height: 1.5rem; text-align: right;"
 hr style="margin: 1rem 0; border: none;background-color: #ccc;color: #ccc;height: 2px;"
 = render "timeline", view_object: view_object
 
@@ -46,4 +46,4 @@ javascript:
   function reload() {
     location.reload();
   }
-  setInterval(reload, 3000000)
+  setInterval(reload, 300000)
