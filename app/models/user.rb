@@ -19,18 +19,20 @@ class User < ApplicationRecord
 
   ALERT_SEVERITY_MAPPINGS = {
     "warning" => 0,
-    "watch" => 1,
+    "Moderate" => 1,
     "advisory" => 2
   }
 
   def most_important_weather_alert
-    return nil unless weather.to_h.key?("alerts")
+    return nil unless weather["nws_alerts"]["features"].any?
 
-    weather["alerts"]
-      .uniq { |alert| alert["title"] }
-      .sort_by { |alert| ALERT_SEVERITY_MAPPINGS[alert["severity"]] }
-      .reject { |alert| alert["description"].to_s.include?("OZONE ACTION DAY") }
-      .first
+    alerts = weather["nws_alerts"]["features"]
+
+    alerts
+      .uniq { |alert| alert["properties"]["event"] }
+      .sort_by { |alert| ALERT_SEVERITY_MAPPINGS[alert["properties"]["severity"]] }
+      .reject { |alert| alert["properties"]["areaDesc"].to_s.include?("OZONE ACTION DAY") }
+      .first["properties"]
   end
 
   # convert weather alerts to be timeline events;
@@ -40,12 +42,34 @@ class User < ApplicationRecord
 
     return [] unless alert
 
+    icon =
+      if alert["event"].include?("Winter")
+        "snowflake"
+      else
+        "warning"
+      end
+
+    summary =
+      if alert["event"].include?("Winter")
+        alert["description"].
+          gsub("\n", " ").
+          split("accumulations between").
+          last.
+          split(".").
+          first.
+          strip.
+          gsub(" and ", "-").
+          gsub(" inches", "\"")
+      else
+        alert["event"]
+      end
+
     [{
-      "start_i" => alert["time"],
-      "end_i" => alert["expires"],
+      "start_i" => DateTime.parse(alert["effective"]).to_i,
+      "end_i" => DateTime.parse(alert["expires"]).to_i,
       "calendar" => "_weather_alerts",
-      "summary" => alert["title"],
-      "icon" => "warning"
+      "summary" => summary,
+      "icon" => icon
     }]
   end
 
@@ -133,7 +157,7 @@ class User < ApplicationRecord
         emails: emails
       }
 
-    out[:current_temperature] = "#{weather["currently"]["temperature"].round}°" if weather.present?
+    out[:current_temperature] = "#{weather["nearby"]["imperial"]["temp"].round}°" if weather.present?
 
     out
   end
