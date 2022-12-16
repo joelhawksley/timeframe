@@ -51,15 +51,26 @@ class User < ApplicationRecord
 
     summary =
       if alert["event"].include?("Winter")
-        alert["description"].
-          gsub("\n", " ").
-          split("accumulations between").
-          last.
-          split(".").
-          first.
-          strip.
-          gsub(" and ", "-").
-          gsub(" inches", "\"")
+        if alert["description"].include?("Additional snow")
+          alert["description"].
+            gsub("\n", " ").
+            split("Additional snow accumulations").
+            last.
+            split(".").
+            first.
+            strip.
+            gsub(" inches", "\"")
+        else
+          alert["description"].
+            gsub("\n", " ").
+            split("accumulations between").
+            last.
+            split(".").
+            first.
+            strip.
+            gsub(" and ", "-").
+            gsub(" inches", "\"")
+        end
       else
         alert["event"]
       end

@@ -31,9 +31,11 @@ class EventTimeService
       if start.to_date != endtime.to_date
         start_date = "#{start.strftime("%-m/%-e")} "
         end_date = "#{endtime.strftime("%-m/%-e")} "
-      end
 
-      "#{start_date}#{start_label}#{start_suffix} - #{end_date}#{end_label.gsub("AM", "a").gsub("PM", "p")}"
+        "#{start_date}#{start_label}#{start_suffix} -<br />#{end_date}#{end_label.gsub("AM", "a").gsub("PM", "p")}"
+      else
+        "#{start_date}#{start_label}#{start_suffix} - #{end_date}#{end_label.gsub("AM", "a").gsub("PM", "p")}"
+      end
     end
   end
 end

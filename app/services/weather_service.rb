@@ -10,6 +10,9 @@ class WeatherService
 
     result["nws_alerts"] = JSON.parse(HTTParty.get('https://api.weather.gov/alerts/active/zone/COZ040', { headers: {"User-Agent" => "joel@hawksley.org"} }))
 
+    # https://api.weather.gov/gridpoints/BOU/61,69/forecast/hourly
+    # https://api.weather.gov/gridpoints/BOU/61,69/forecast
+
     user.update(weather: result.as_json)
   rescue => e
     user.update(error_messages: user.error_messages << e.message)
