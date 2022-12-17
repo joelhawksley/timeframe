@@ -37,11 +37,19 @@ class GoogleService
     user.google_accounts.each do |google_account|
       client = Signet::OAuth2::Client.new(self.class.client_options)
 
-      client.update!(
-        refresh_token: google_account.refresh_token,
-        access_token: google_account.access_token,
-        expires_in: 3600
-      )
+      begin
+        client.update!(
+          refresh_token: google_account.refresh_token,
+          access_token: google_account.access_token,
+          expires_in: 3600
+        )
+      rescue => e
+        Log.create(
+          globalid: google_account.to_global_id,
+          event: "client_refresh_error",
+          message: e.message
+        )
+      end
 
       if google_account.email_enabled?
         service = service = Google::Apis::GmailV1::GmailService.new
@@ -71,7 +79,17 @@ class GoogleService
       service = Google::Apis::CalendarV3::CalendarService.new
       service.authorization = client
 
-      service.list_calendar_lists.items.each_with_index do |calendar, _index|
+      begin
+        calendars = service.list_calendar_lists.items
+      rescue => e
+        Log.create(
+          globalid: google_account.to_global_id,
+          event: "list_calendar_lists",
+          message: e.message
+        )
+      end
+
+      calendars.each_with_index do |calendar, _index|
         calendar_record = google_account.google_calendars.find_by(uuid: calendar.id)
 
         if calendar_record
