@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_08_191229) do
+ActiveRecord::Schema[7.0].define(version: 2022_12_17_160713) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -36,6 +36,14 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_08_191229) do
     t.string "icon", default: "", null: false
     t.string "letter", default: "", null: false
     t.index ["google_account_id"], name: "index_google_calendars_on_google_account_id"
+  end
+
+  create_table "logs", force: :cascade do |t|
+    t.string "globalid", null: false
+    t.string "event", null: false
+    t.string "message", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "users", force: :cascade do |t|
