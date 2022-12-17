@@ -128,12 +128,34 @@ class User < ApplicationRecord
           end
 
         events = calendar_events_for(start_i, end_i)
+        all_day_events = events.select { |event| event["all_day"] }
+
+        all_day_events.sort! do |x,y|
+          #if this result is 1 means x should come later relative to y
+	        #if this result is -1 means x should come earlier relative to y
+	        #if this result is 0 means both are same so position doesn't matter
+          if x["calendar"] == "Dinner" && y["calendar"] == "Us"
+            1
+          elsif x["summary"].starts_with?("Dinner") && y["summary"].starts_with?("Lunch")
+            1
+          elsif x["summary"].starts_with?("Lunch") && y["summary"].starts_with?("Breakfast")
+            1
+          elsif y["calendar"] == "Dinner" && x["calendar"] == "Us"
+            -1
+          elsif x["summary"].starts_with?("Breakfast") && y["summary"].starts_with?("Lunch")
+            -1
+          elsif x["summary"].starts_with?("Lunch") && y["summary"].starts_with?("Dinner")
+            -1
+          else
+            0
+          end
+        end
 
         out = {
           day_name: day_name,
           show_all_day_events: day_index.zero? ? date.hour <= 19 : true,
           events: {
-            all_day: events.select { |event| event["all_day"] },
+            all_day: all_day_events,
             periodic: events.reject { |event| event["all_day"] }
           },
           temperature_range: "",
