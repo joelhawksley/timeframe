@@ -77,14 +77,6 @@ Rails.application.configure do
   # require 'syslog/logger'
   # config.logger = ActiveSupport::TaggedLogging.new(Syslog::Logger.new 'app-name')
 
-  config.middleware.use ExceptionNotification::Rack,
-    email: {
-      deliver_with: :deliver, # Rails >= 4.2.1 do not need this option since it defaults to :deliver_now
-      email_prefix: "[PREFIX] ",
-      sender_address: %("notifier" <notifier@example.com>),
-      exception_recipients: %w[exceptions@example.com]
-    }
-
   if ENV["RAILS_LOG_TO_STDOUT"].present?
     logger = ActiveSupport::Logger.new($stdout)
     logger.formatter = config.log_formatter
