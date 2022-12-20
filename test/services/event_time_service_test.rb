@@ -61,7 +61,7 @@ class EventTimeServiceTest < Minitest::Test
 
     result = EventTimeService.call(start, finish, "America/Denver")
 
-    assert_equal("5/16 8:53p - 5/17 4p", result)
+    assert_equal("5/16 8:53p -<br />5/17 4p", result)
   end
 
   def test_event_different_days
@@ -70,6 +70,6 @@ class EventTimeServiceTest < Minitest::Test
 
     result = EventTimeService.call(start, finish, "America/Denver")
 
-    assert_equal("5/16 8p - 5/17 4p", result)
+    assert_equal("5/16 8p -<br />5/17 4p", result)
   end
 end

@@ -12,9 +12,6 @@ class TemplatesController < ApplicationController
   private
 
   def view_object
-    out = User.last.render_json_payload
-    out[:error_messages] = User.last.alerts
-
-    out
+    User.last.render_json_payload
   end
 end

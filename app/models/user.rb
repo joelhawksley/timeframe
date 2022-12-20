@@ -24,12 +24,12 @@ class User < ApplicationRecord
   }
 
   def most_important_weather_alert
-    return nil unless weather["nws_alerts"]["features"].any?
+    return nil unless weather.to_h.dig("nws_alerts", "features").to_a.any?
 
     alerts = weather["nws_alerts"]["features"]
 
     alerts
-      .reject { |alert| alert["properties"]["urgency"] == "Past" }
+      .reject { |alert| alert.dig("properties", "urgency") == "Past" }
       .sort_by { |alert| ALERT_SEVERITY_MAPPINGS[alert["properties"]["severity"]] }
       .uniq { |alert| alert["properties"]["event"] }
       .reject { |alert| alert["properties"]["areaDesc"].to_s.include?("OZONE ACTION DAY") }
@@ -44,14 +44,14 @@ class User < ApplicationRecord
     return [] unless alert
 
     icon =
-      if alert["event"].include?("Winter")
+      if String(alert["event"]).include?("Winter")
         "snowflake"
       else
         "warning"
       end
 
     summary =
-      if alert["event"].include?("Winter")
+      if String(alert["event"]).include?("Winter")
         if alert["description"].include?("Additional snow")
           alert["description"].
             gsub("\n", " ").
@@ -224,15 +224,5 @@ class User < ApplicationRecord
     ).select { |event| event["calendar"] == "Birthdays" }
       .first(10)
       .group_by { |e| Date.parse(e["start"]["date"]).month }
-  end
-
-  def alerts(include_weather_alerts = true)
-    out = error_messages
-
-    if include_weather_alerts && most_important_weather_alert
-      out << most_important_weather_alert["title"]
-    end
-
-    out.uniq
   end
 end

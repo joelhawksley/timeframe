@@ -17,11 +17,11 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_17_160713) do
   create_table "google_accounts", force: :cascade do |t|
     t.bigint "user_id"
     t.string "email", null: false
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.text "access_token", default: "", null: false
     t.text "refresh_token", default: "", null: false
-    t.datetime "expires_at", precision: nil
+    t.datetime "expires_at"
     t.boolean "email_enabled", default: false, null: false
     t.jsonb "emails", default: [], null: false
     t.index ["email"], name: "index_google_accounts_on_email"
@@ -50,15 +50,15 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_17_160713) do
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
-    t.datetime "reset_password_sent_at", precision: nil
-    t.datetime "remember_created_at", precision: nil
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
     t.integer "sign_in_count", default: 0, null: false
-    t.datetime "current_sign_in_at", precision: nil
-    t.datetime "last_sign_in_at", precision: nil
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
     t.inet "current_sign_in_ip"
     t.inet "last_sign_in_ip"
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.jsonb "weather"
     t.jsonb "calendar_events", default: [], null: false
     t.string "error_messages", default: [], array: true

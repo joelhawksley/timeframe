@@ -7,38 +7,23 @@ class UserTest < Minitest::Test
     assert_equal(User.new.tz, "America/Denver")
   end
 
-  def test_alerts_empty_state
-    assert_equal([], User.new(weather: {}).alerts)
-  end
-
-  def test_alerts_with_error_message
-    assert_equal(["foo"], User.new(weather: {}, error_messages: ["foo"]).alerts)
-  end
-
-  def test_alerts_with_weather_alert
-    assert_equal(["bar"], User.new(weather: {alerts: [{title: "bar"}]}).alerts)
-  end
-
-  def test_alerts_with_weather_alert_and_error_message
-    assert_equal(
-      ["foo", "bar"],
-      User.new(weather: {alerts: [{title: "bar"}]}, error_messages: ["foo"]).alerts
-    )
-  end
-
   def test_events_weather_alert
-    weather = {
-      alerts: [
-        {
-          "time" => 1627060200,
-          "title" => "Air Quality Alert",
-          "expires" => 1627077600,
-          "severity" => "advisory",
-          "description" =>
-            "...ALERT....\n"
+    weather =
+      {
+        "nws_alerts" => {
+          "features" => [
+            {
+              "properties" => {
+                "effective" => Time.at(1627060200).to_s,
+                "title" => "Air Quality Alert",
+                "expires" => Time.at(1627077600).to_s,
+                "severity" => "Severe",
+                "description" => "...ALERT....\n"
+              }
+            }
+          ]
         }
-      ]
-    }
+      }
 
     result = User.new(weather: weather).calendar_events_for(1627060000, 1627077800)
 
@@ -48,41 +33,27 @@ class UserTest < Minitest::Test
 
   def test_weather_duplicate_titles
     weather = {
-      alerts: [{
-        "time" => 1627770120,
-        "title" => "Flash Flood Warning",
-        "expires" => 1627778700,
-        "regions" => ["Boulder"],
-        "severity" => "warning",
-        "description" =>
-      "...FLASH FLOOD WARNING REMAINS IN EFFECT UNTIL 645 PM MDT THIS EVENING FOR NORTH CENTRAL BOULDER COUNTY... At 422 PM MDT, \n"
-      },
-        {"time" => 1627762260,
-         "title" => "Flash Flood Watch",
-         "expires" => 1627786800,
-         "severity" => "watch",
-         "description" =>
-          "...FLASH FLOOD WATCH REMAINS IN EFFECT UNTIL 9 PM MDT THIS EVENING..."},
-        {"time" => 1627769460,
-         "title" => "Air Quality Alert",
-         "expires" => 1627855200,
-         "severity" => "advisory",
-         "description" =>
-          "...OZONE ACTION DAY ALERT FROM 400 PM SATURDAY UNTIL 400 PM SUNDAY... The Colorado Department of Public Health \n"},
-        {"time" => 1627769460,
-         "title" => "Flood Advisory",
-         "expires" => 1627855200,
-         "regions" => ["Boulder"],
-         "severity" => "advisory",
-         "description" =>
-          "The National Weather Service in Denver has issued a * Small Stream Flood Advisory for..."},
-        {"time" => 1627769460,
-         "title" => "Flood Advisory",
-         "expires" => 1627855200,
-         "regions" => ["Boulder"],
-         "severity" => "advisory",
-         "description" =>
-          "The National Weather Service in Denver has issued a * Small Stream Flood Advisory for... "}]
+      "nws_alerts" => {
+        "features" => [
+          {
+            "properties" => {
+              "effective" => Time.at(1627770120).to_s,
+              "event" => "Flash Flood Warning",
+              "expires" => Time.at(1627778700).to_s,
+              "regions" => ["Boulder"],
+              "severity" => "Severe"
+            }
+          },
+          {
+            "properties" => {
+              "effective" => Time.at(1627762260).to_s,
+              "event" => "Flash Flood Watch",
+              "expires" => Time.at(1627786800).to_s,
+              "severity" => "Moderate"
+            }
+          }
+        ]
+      }
     }
 
     result = User.new(weather: weather).calendar_events_for(1627060000, 1627855200)
@@ -178,6 +149,11 @@ class UserTest < Minitest::Test
 
   def test_render_json_weather
     weather = {
+      "nearby" => {
+        "imperial" => {
+          "temp" => 89.02
+        }
+      },
       "currently" => {
         "icon" => "partly-cloudy-day",
         "time" => 1622930480,
@@ -251,9 +227,8 @@ class UserTest < Minitest::Test
 
     first_day_group = result[:day_groups][0]
 
-    assert_equal("92° / 59°", first_day_group[:temperature_range])
     assert_equal("partly-cloudy-day", first_day_group[:weather_icon])
-    assert_equal("8% / 1.1\"", first_day_group[:precip_label])
+    assert_equal(" 1\"", first_day_group[:precip_label])
     assert_equal(0.08, first_day_group[:precip_probability])
     assert_equal(22, first_day_group[:wind])
   end
