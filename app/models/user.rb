@@ -8,6 +8,7 @@ class User < ApplicationRecord
   has_many :google_calendars, through: :google_accounts
 
   def fetch
+    Log.create(globalid: self.to_global_id, event: "fetch", message: "")
     update(error_messages: [])
     WeatherService.call(self)
     GoogleService.call(self)
@@ -18,9 +19,8 @@ class User < ApplicationRecord
   end
 
   ALERT_SEVERITY_MAPPINGS = {
-    "warning" => 0,
-    "Moderate" => 1,
-    "advisory" => 2
+    "Severe" => 0,
+    "Moderate" => 1
   }
 
   def most_important_weather_alert
@@ -29,8 +29,9 @@ class User < ApplicationRecord
     alerts = weather["nws_alerts"]["features"]
 
     alerts
-      .uniq { |alert| alert["properties"]["event"] }
+      .reject { |alert| alert["properties"]["urgency"] == "Past" }
       .sort_by { |alert| ALERT_SEVERITY_MAPPINGS[alert["properties"]["severity"]] }
+      .uniq { |alert| alert["properties"]["event"] }
       .reject { |alert| alert["properties"]["areaDesc"].to_s.include?("OZONE ACTION DAY") }
       .first["properties"]
   end

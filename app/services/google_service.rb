@@ -89,6 +89,8 @@ class GoogleService
         )
       end
 
+      next unless calendars.present?
+
       calendars.each_with_index do |calendar, _index|
         calendar_record = google_account.google_calendars.find_by(uuid: calendar.id)
 
