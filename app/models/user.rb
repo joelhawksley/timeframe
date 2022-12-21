@@ -11,15 +11,22 @@ class User < ApplicationRecord
 
   def fetch
     Log.create(globalid: self.to_global_id, event: "fetch", message: "")
-    update(error_messages: [])
-    WeatherService.call(self)
-    GoogleService.call(self)
+    WeatherService.call
+    GoogleService.call
   end
 
   ALERT_SEVERITY_MAPPINGS = {
     "Severe" => 0,
     "Moderate" => 1
   }
+
+  def weather
+    Value.find_by_key("weather").value
+  end
+
+  def calendar_events
+    Value.find_by_key("calendar_events").value
+  end
 
   def most_important_weather_alert
     return nil unless weather.to_h.dig("nws_alerts", "features").to_a.any?

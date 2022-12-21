@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class WeatherService
-  def self.call(user)
+  def self.call
     result = HTTParty.get("https://api.darksky.net/forecast/#{ENV["DARK_SKY_API_KEY"]}/39.9147082,-105.0220883?extend=hourly")
 
     result["nearby"] = HTTParty.get("https://api.weather.com/v2/pws/observations/current?apiKey=dfcb91ac7fef48198b91ac7fef18199a&format=json&units=e&stationId=KCOWESTM190")["observations"].first
@@ -13,8 +13,12 @@ class WeatherService
     # https://api.weather.gov/gridpoints/BOU/61,69/forecast/hourly
     # https://api.weather.gov/gridpoints/BOU/61,69/forecast
 
-    user.update(weather: result.as_json)
+    Value.find_by_key("weather").update(value: result)
   rescue => e
-    user.update(error_messages: user.error_messages << e.message)
+    Log.create(
+      globalid: "WeatherService",
+      event: "call_error",
+      message: e.message
+    )
   end
 end

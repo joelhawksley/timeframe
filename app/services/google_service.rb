@@ -1,14 +1,16 @@
 # frozen_string_literal: true
 
 class GoogleService
-  def self.call(user)
-    service = new(user)
+  def self.call
+    service = new
 
-    user.update(
-      calendar_events: service.events
-    )
+    Value.find_by_key("calendar_events").update(value: service.events)
   rescue => e
-    user.update(error_messages: user.error_messages << e.message)
+    Log.create(
+      globalid: "GoogleService",
+      event: "call_error",
+      message: e.message
+    )
   end
 
   def self.client_options
@@ -25,16 +27,16 @@ class GoogleService
 
   attr_reader :events
 
-  def initialize(user)
-    @events = calendar_events(user)
+  def initialize
+    @events = calendar_events
   end
 
   private
 
-  def calendar_events(user)
+  def calendar_events
     events = {}
 
-    user.google_accounts.each do |google_account|
+    GoogleAccount.all.each do |google_account|
       client = Signet::OAuth2::Client.new(self.class.client_options)
 
       begin
