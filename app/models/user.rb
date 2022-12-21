@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class User < ApplicationRecord
+  include ApplicationHelper
+
   devise :database_authenticatable, :registerable,
     :recoverable, :rememberable, :trackable, :validatable
 
@@ -12,10 +14,6 @@ class User < ApplicationRecord
     update(error_messages: [])
     WeatherService.call(self)
     GoogleService.call(self)
-  end
-
-  def tz
-    Timeframe::Application::LOCAL_TZ
   end
 
   ALERT_SEVERITY_MAPPINGS = {

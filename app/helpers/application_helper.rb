@@ -17,4 +17,8 @@ module ApplicationHelper
 
     "#{week_count}w#{remainder}d"
   end
+
+  def tz
+    Timeframe::Application::LOCAL_TZ
+  end
 end
