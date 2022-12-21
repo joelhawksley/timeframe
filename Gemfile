@@ -4,7 +4,6 @@ source "https://rubygems.org"
 ruby "3.0.3"
 
 gem "bootstrap-sass"
-gem "devise"
 gem "dotenv-rails"
 gem "font-awesome-sass", "~> 6.2.1"
 gem "google-api-client", "~> 0.11", require: ["google/apis/calendar_v3", "google/apis/people_v1", "google/apis/gmail_v1"]

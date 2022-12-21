@@ -1,9 +1,0 @@
--# frozen_string_literal: true
-.panel-lonely
-  = form_for(resource, as: resource_name, url: session_path(resource_name)) do |f|
-    .form-group
-      = f.email_field :email, autofocus: true, class: 'form-control', required: true, placeholder: 'Email address'
-    .form-group
-      = f.password_field :password, autocomplete: "off", class: 'form-control', required: true, placeholder: 'Password'
-    .form-group = f.submit "Sign In", class: 'btn btn-primary btn-block'
-    = render "devise/shared/links"
