@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class TemplatesController < ApplicationController
+  include ApplicationHelper
+
   def thirteen
     render "thirteen", locals: { view_object: view_object }, layout: "layouts/display"
   end
@@ -12,6 +14,6 @@ class TemplatesController < ApplicationController
   private
 
   def view_object
-    User.last.render_json_payload
+    render_json_payload
   end
 end
