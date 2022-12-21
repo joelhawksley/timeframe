@@ -9,4 +9,12 @@ module ApplicationHelper
     else "alert alert-info"
     end
   end
+
+  def pregnancy_string(today = Date.today)
+    day_count = today - Date.parse("2022-10-01")
+    week_count = (day_count / 7).to_i
+    remainder = (day_count % 7).to_i
+
+    "#{week_count}w#{remainder}d"
+  end
 end
