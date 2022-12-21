@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class GoogleAccount < ApplicationRecord
-  belongs_to :user
   has_many :google_calendars
 
   def refresh!
