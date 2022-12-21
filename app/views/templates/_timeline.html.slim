@@ -60,6 +60,6 @@
             td
               = event["summary"].truncate(30)
               - if event["description"].to_s.include?("timeframe-weather")
-                - w = User.last.weather["hourly"]["data"].find { _1["time"] >= event["start_i"] }
+                - w = Value.find_by_key("weather").value["hourly"]["data"].find { _1["time"] >= event["start_i"] }
                 - if w
                   =< "(#{w["temperature"].round}°)"

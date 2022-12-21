@@ -32,7 +32,7 @@ module ApplicationHelper
   end
 
   def calendar_events
-    Value.find_by_key("calendar_events").value
+    Value.find_by_key("calendar_events")&.value || []
   end
 
   def most_important_weather_alert
@@ -203,7 +203,7 @@ module ApplicationHelper
         emails: emails
       }
 
-    out[:current_temperature] = "#{weather["nearby"]["imperial"]["temp"].round}°" if weather.present?
+    out[:current_temperature] = "#{weather["nearby"]["imperial"]["temp"].round}°" if weather.dig("nearby", "imperial", "temp")
 
     out
   end

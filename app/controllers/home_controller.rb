@@ -5,16 +5,12 @@ class HomeController < ApplicationController
   end
 
   def redirect
-    authenticate_user!
-
     client = Signet::OAuth2::Client.new(GoogleService.client_options)
 
     redirect_to(client.authorization_uri.to_s)
   end
 
   def callback
-    authenticate_user!
-
     client = Signet::OAuth2::Client.new(GoogleService.client_options)
     client.code = params[:code]
 
@@ -34,7 +30,7 @@ class HomeController < ApplicationController
         person.resource_name
       end
 
-    existing_account = current_user.google_accounts.find_by(email: email_address)
+    existing_account = GoogleAccount.find_by(email: email_address)
 
     if existing_account
       existing_account.update(
@@ -43,7 +39,7 @@ class HomeController < ApplicationController
         expires_at: Time.now + response["expires_in"].to_i.seconds
       )
     else
-      current_user.google_accounts.create(
+      GoogleAccount.create(
         email: email_address,
         access_token: response["access_token"],
         refresh_token: response["refresh_token"].to_s,

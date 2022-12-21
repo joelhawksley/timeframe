@@ -1,51 +1,40 @@
-nav.navbar.navbar-default
-  .container-fluid
-    .navbar-header
-      a.navbar-brand href="#" Timeframe
-    ul.nav.navbar-nav.navbar-right
-      - if current_user
-        li = link_to "Sign Out (#{current_user.email})", destroy_user_session_path, method: :delete
-      - else
-        li = link_to "Sign In", new_user_session_path
-        li = link_to "Sign up", new_registration_path(:user)
-- if current_user
-  .container
-    .col-md-12
-      .panel.panel-default
-        .panel-heading
-          h3.panel-title Google Accounts
-        .panel-body
-          - current_user.google_accounts.each do |google_account|
-            .panel.panel-default
-              .panel-heading
-                h3.panel-title = google_account.email
-              table.table.table-condensed.table-bordered
-                thead
+.container
+  .col-md-12
+    .panel.panel-default
+      .panel-heading
+        h3.panel-title Google Accounts
+      .panel-body
+        - GoogleAccount.all.each do |google_account|
+          .panel.panel-default
+            .panel-heading
+              h3.panel-title = google_account.email
+            table.table.table-condensed.table-bordered
+              thead
+                tr
+                  th
+                    strong Name
+                  th
+                    strong Letter
+                  th
+                    strong Icon
+                  th
+                    strong Enabled
+                  th
+              tbody
+                - google_account.google_calendars.order(:summary).each do |google_calendar|
                   tr
-                    th
-                      strong Name
-                    th
-                      strong Letter
-                    th
-                      strong Icon
-                    th
-                      strong Enabled
-                    th
-                tbody
-                  - google_account.google_calendars.order(:summary).each do |google_calendar|
-                    tr
-                      = form_with(model: google_calendar, remote: false) do |f|
-                        td = google_calendar.summary
-                        td = f.text_field :letter, placeholder: "letter", size: 1, class: "form-control input-sm"
-                        td = f.text_field :icon, placeholder: "icon", size: 20, class: "form-control input-sm"
-                        td = f.check_box :enabled
-                        td = f.submit "Update", class: "btn btn-sm btn-default"
-              .panel-footer
-                = form_for google_account do |f|
-                  .input-group
-                    .input-group-addon
-                      = f.check_box :email_enabled
-                    .input-group-btn
-                      = f.submit "Update Email status", class: "btn btn-default"
-        .panel-footer
-          = link_to "Connect to Google", redirect_path, class: "btn btn-sm btn-default"
+                    = form_with(model: google_calendar, remote: false) do |f|
+                      td = google_calendar.summary
+                      td = f.text_field :letter, placeholder: "letter", size: 1, class: "form-control input-sm"
+                      td = f.text_field :icon, placeholder: "icon", size: 20, class: "form-control input-sm"
+                      td = f.check_box :enabled
+                      td = f.submit "Update", class: "btn btn-sm btn-default"
+            .panel-footer
+              = form_for google_account do |f|
+                .input-group
+                  .input-group-addon
+                    = f.check_box :email_enabled
+                  .input-group-btn
+                    = f.submit "Update Email status", class: "btn btn-default"
+      .panel-footer
+        = link_to "Connect to Google", redirect_path, class: "btn btn-sm btn-default"

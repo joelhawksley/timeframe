@@ -1,13 +1,8 @@
 # frozen_string_literal: true
 
 class GoogleAccountsController < ApplicationController
-  before_action :authenticate_user!
-
   def update
-    current_user
-      .google_accounts
-      .find(params[:id])
-      .update(google_account_params)
+    GoogleAccount.find(params[:id]).update(google_account_params)
 
     redirect_to(root_path, flash: {notice: "Updated"})
   end

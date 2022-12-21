@@ -1,13 +1,8 @@
 # frozen_string_literal: true
 
 class GoogleCalendarsController < ApplicationController
-  before_action :authenticate_user!
-
   def update
-    current_user
-      .google_calendars
-      .find(params[:id])
-      .update(google_calendar_params)
+    GoogleCalendar.find(params[:id]).update(google_calendar_params)
 
     redirect_to(root_path, flash: {notice: "Updated"})
   end
