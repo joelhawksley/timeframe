@@ -4,7 +4,13 @@ class GoogleService
   def self.call
     service = new
 
-    Value.find_by_key("calendar_events").update(value: service.events)
+    Value.find_by_key("calendar_events").update!(value: service.events)
+
+    Log.create(
+      globalid: "GoogleService",
+      event: "fetch_success",
+      message: ""
+    )
   rescue => e
     Log.create(
       globalid: "GoogleService",
@@ -105,8 +111,14 @@ class GoogleService
 
         next unless calendar_record.enabled?
 
-        service.list_events(calendar.id, max_results: 250, single_events: true, order_by: "startTime",
-                                         time_min: (DateTime.now - 2.weeks).iso8601).items.each_with_index do |event, _index_2|
+        service.list_events(
+          calendar.id,
+          max_results: 250,
+          single_events: true,
+          order_by: "startTime",
+          time_min: (DateTime.now - 2.weeks).iso8601,
+          time_max: (DateTime.now + 12.weeks).iso8601
+        ).items.each_with_index do |event, _index_2|
           own_attendee = event.attendees.to_a.find { |attendee| attendee.email == calendar.id }
 
           # exclude declined events
