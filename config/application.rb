@@ -20,6 +20,8 @@ Bundler.require(*Rails.groups)
 
 module Timeframe
   class Application < Rails::Application
+    config.app = config_for(:app)
+
     LOCAL_TZ = "America/Denver"
 
     # Initialize configuration defaults for originally generated Rails version.
