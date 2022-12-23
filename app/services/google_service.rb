@@ -150,8 +150,8 @@ class GoogleService
             end
 
           next unless
-                !event_json["description"].to_s.downcase.include?("timeframe-omit") &&
-                event_json["summary"] != "."
+                !event_json["description"].to_s.downcase.include?("timeframe-omit") && # hide timeframe-omit
+                event_json["summary"] != "." # hide . marker
 
           events[event.id] = event_json.slice(
             "start",
