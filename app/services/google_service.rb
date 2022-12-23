@@ -149,17 +149,14 @@ class GoogleService
               Date.today.year - event_json["description"].to_s.to_i
             end
 
-          next unless
-                !event_json["description"].to_s.downcase.include?("timeframe-omit") && # hide timeframe-omit
-                event_json["summary"] != "." # hide . marker
+          next if event_json["description"].to_s.downcase.include?("timeframe-omit") ||  # hide timeframe-omit
+            event_json["summary"] == "." # hide . marker
 
           events[event.id] = event_json.slice(
             "start",
             "end",
             "location"
           ).merge(
-            background_color: event_json["color"] || calendar.background_color,
-            foreround_color: event_json["color"] || calendar.foreground_color,
             summary: event_json["summary"],
             counter: counter,
             description: event_json["description"],
