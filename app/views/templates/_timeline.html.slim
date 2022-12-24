@@ -1,9 +1,3 @@
-.timestamp style="position: absolute; top: .25rem; right: .25rem; font-size: .4rem; color: #777;"
-  ' Rendered on
-  = view_object[:timestamp]
-  '  - Data fetched
-  = ((Time.now - Log.where(globalid: "GoogleService", event: "fetch_success").last.updated_at) / 60).round
-  | m ago
 - shown_days = 0
 - view_object[:day_groups].first(5).each_with_index do |event_day|
   - next if !event_day[:show_all_day_events] && event_day[:events][:periodic].empty?

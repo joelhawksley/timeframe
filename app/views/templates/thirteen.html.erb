@@ -3,4 +3,8 @@
     okular.SleepSchedule(10, true);
   }
 </script>
+
+<div class="timestamp" style="position: absolute; top: .25rem; right: .25rem; font-size: .4rem; color: #777;">
+  <%= view_object[:timestamp] %>
+</div>
 <%= render "timeline", view_object: view_object %>

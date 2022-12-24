@@ -191,7 +191,7 @@ module ApplicationHelper
       {
         yearly_events: yearly_events,
         day_groups: day_groups,
-        timestamp: current_time.in_time_zone(tz).strftime("%A at %-l:%M %p"),
+        timestamp: current_time.in_time_zone(tz).strftime("%A @ %-l:%M %p"),
         emails: emails
       }
 
