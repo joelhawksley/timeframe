@@ -199,7 +199,7 @@ module ApplicationHelper
         emails: emails
       }
 
-    out[:current_temperature] = "#{weather["nearby"]["imperial"]["temp"].round}°" if weather.dig("nearby", "imperial", "temp")
+    out[:current_temperature] = "#{weather["nws_hourly"][0]["temperature"]}°" if weather.dig("nearby", "imperial", "temp")
 
     out
   end
