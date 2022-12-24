@@ -10,7 +10,11 @@ class ApplicationHelperTest < Minitest::Test
   end
 
   def test_pregnancy_string
-    assert_equal(@helper.pregnancy_string(Date.parse("2022-12-21")), "11w4d")
+    assert_equal("11w4d", @helper.pregnancy_string(Date.parse("2022-12-21")))
+  end
+
+  def test_pregnancy_no_remainder
+    assert_equal("12w", @helper.pregnancy_string(Date.parse("2022-12-24")))
   end
 
   def test_events_weather_alert

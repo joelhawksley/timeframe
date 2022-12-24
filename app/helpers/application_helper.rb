@@ -15,7 +15,11 @@ module ApplicationHelper
     week_count = (day_count / 7).to_i
     remainder = (day_count % 7).to_i
 
-    "#{week_count}w#{remainder}d"
+    if remainder > 0
+      "#{week_count}w#{remainder}d"
+    else
+      "#{week_count}w"
+    end
   end
 
   def tz
