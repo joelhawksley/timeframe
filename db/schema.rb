@@ -51,4 +51,5 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_21_221757) do
     t.datetime "updated_at", null: false
     t.index ["key"], name: "index_values_on_key", unique: true
   end
+
 end

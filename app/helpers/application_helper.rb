@@ -28,11 +28,11 @@ module ApplicationHelper
   }
 
   def weather
-    Value.find_by_key("weather").value
+    Value.weather
   end
 
   def calendar_events
-    Value.find_by_key("calendar_events")&.value || []
+    Value.calendar_events
   end
 
   def most_important_weather_alert
@@ -170,27 +170,19 @@ module ApplicationHelper
           events: {
             all_day: all_day_events,
             periodic: events.reject { |event| event["all_day"] }
-          },
-          temperature_range: "",
-          weather_icon: "",
-          precip_probability: 0,
-          precip_label: "",
-          wind: 0
+          }
         }
 
-        if weather&.dig("daily", "data", day_index).present?
-          daily_weather = weather["daily"]["data"][day_index]
+        high = weather["wunderground_forecast"]["calendarDayTemperatureMax"][day_index]
+        low = weather["wunderground_forecast"]["calendarDayTemperatureMin"][day_index]
 
-          if daily_weather["precipAccumulation"].present?
-            out[:precip_label] = " #{daily_weather["precipAccumulation"].round}\""
-          else
-            out[:precip_label] = "#{(daily_weather["precipProbability"] * 100).to_i}%"
-          end
-          out[:temperature_range] = "&#8593;#{daily_weather["temperatureHigh"].round} &#8595;#{daily_weather["temperatureLow"].round}".html_safe
-          out[:weather_icon] = daily_weather["icon"]
-          out[:precip_probability] = daily_weather["precipProbability"]
-          out[:wind] = daily_weather["windGust"].to_i
+        if weather["wunderground_forecast"]["qpfSnow"][day_index] > 0
+          out[:precip_label] = " #{weather["wunderground_forecast"]["qpfSnow"][day_index].round}\""
+        else
+          out[:precip_label] = "#{weather["wunderground_forecast"]["qpf"][day_index].round}%"
         end
+        out[:temperature_range] = "&#8593;#{high} &#8595;#{low}".html_safe
+        out[:precip_probability] = weather["wunderground_forecast"]["qpf"][day_index]
 
         memo << out
       end

@@ -18,11 +18,11 @@
             = event_day[:day_name]
           div style="margin-bottom: 1rem;"
             => event_day[:temperature_range]
-            - if event_day[:wind] > 10
-              span style="padding-left: .25rem;"
-                i.fa-solid.fa-wind
-                |  #{event_day[:wind]}
-                span style="font-size: .8rem;" mph
+            / - if event_day[:wind] > 10
+            /   span style="padding-left: .25rem;"
+            /     i.fa-solid.fa-wind
+            /     |  #{event_day[:wind]}
+            /     span style="font-size: .8rem;" mph
             span
               - if event_day[:precip_probability] > 0.1
                 =< event_day[:precip_label]
