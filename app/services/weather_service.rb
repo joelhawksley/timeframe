@@ -10,7 +10,22 @@ class WeatherService
 
     result["nws_alerts"] = JSON.parse(HTTParty.get('https://api.weather.gov/alerts/active/zone/COZ040', { headers: {"User-Agent" => "joel@hawksley.org"} }))
 
-    # https://api.weather.gov/gridpoints/BOU/61,69/forecast/hourly
+    result["nws_hourly"] =
+      JSON.parse(
+        HTTParty.get(
+          'https://api.weather.gov/gridpoints/BOU/61,69/forecast/hourly',
+          { headers: {"User-Agent" => "joel@hawksley.org"} }
+        )
+      )["properties"]["periods"].map do |period|
+        {
+          start_i: Time.parse(period["startTime"]).to_i,
+          end_i: Time.parse(period["endTime"]).to_i,
+          temperature: period["temperature"],
+          wind: period["windSpeed"],
+          short_forecast: period["shortForecast"]
+        }
+      end
+
     # https://api.weather.gov/gridpoints/BOU/61,69/forecast
 
     Value.find_by_key("weather").update(value: result)

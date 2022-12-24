@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class GoogleService
-  def self.call
-    service = new
+  def self.call(debug = false)
+    service = new(debug)
 
     Value.find_by_key("calendar_events").update!(value: service.events)
 
@@ -33,7 +33,8 @@ class GoogleService
 
   attr_reader :events
 
-  def initialize
+  def initialize(debug)
+    @debug = debug
     @events = calendar_events
   end
 
@@ -152,6 +153,13 @@ class GoogleService
           next if event_json["description"].to_s.downcase.include?("timeframe-omit") ||  # hide timeframe-omit
             event_json["summary"] == "." # hide . marker
 
+          weather =
+            if event_json["description"].to_s.downcase.include?("timeframe-weather")
+              Value.
+                find_by_key("weather").
+                value["nws_hourly"].find { _1["start_i"] >= start_i }
+            end
+
           events[event.id] = event_json.slice(
             "start",
             "end",
@@ -165,6 +173,7 @@ class GoogleService
             letter: calendar_record.letter,
             start_i: start_i,
             end_i: end_i,
+            weather: weather,
             all_day: event_json["start"].key?("date") || ((end_i - start_i) > 86_400)
           ).symbolize_keys!
         end

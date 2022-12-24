@@ -59,7 +59,5 @@
               = event["time"].html_safe
             td
               = event["summary"].truncate(30)
-              - if event["description"].to_s.include?("timeframe-weather")
-                - w = Value.find_by_key("weather").value["hourly"]["data"].find { _1["time"] >= event["start_i"] }
-                - if w
-                  =< "(#{w["temperature"].round}°)"
+              - if event["weather"].present?
+                =< "(#{event["weather"]["temperature"].round}° / #{event["weather"]["short_forecast"]})"
