@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class WeatherService
-  def self.call
+  def self.call(debug = false)
     result = {}
 
     result["nearby"] = HTTParty.get("https://api.weather.com/v2/pws/observations/current?apiKey=#{Rails.application.config.app.wunderground_token}&format=json&units=e&stationId=KCOWESTM190")["observations"].first

@@ -11,7 +11,7 @@ div style="display: flex;"
   div style="width: 16rem; padding-bottom: 1rem;"
     span style="font-size: 8rem; line-height: 6rem;" = view_object[:current_temperature]
   div style="width: 30rem;"
-    div#time style="font-size: 2rem; line-height: 1.5rem; text-align: right;"
+    div#time style="font-size: 4rem; line-height: 6rem; text-align: right;"
 hr style="margin: 1rem 0; border: none;background-color: #ccc;color: #ccc;height: 2px;"
 = render "timeline", view_object: view_object
 
@@ -38,7 +38,7 @@ javascript:
 
   function clock() {
     var dt = new Date();
-    document.getElementById('time').innerHTML=dt.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+    document.getElementById('time').innerHTML=dt.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }).replace(" PM", "pm").replace(" AM", "am");
   }
   clock();
   setInterval(clock, 1000);

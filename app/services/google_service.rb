@@ -19,18 +19,6 @@ class GoogleService
     )
   end
 
-  def self.client_options
-    {
-      client_id: ENV["GOOGLE_CLIENT_ID"],
-      client_secret: ENV["GOOGLE_CLIENT_SECRET"],
-      authorization_uri: "https://accounts.google.com/o/oauth2/auth",
-      token_credential_uri: "https://accounts.google.com/o/oauth2/token",
-      scope: "#{Google::Apis::CalendarV3::AUTH_CALENDAR_READONLY} #{Google::Apis::PeopleV1::AUTH_CONTACTS_READONLY} #{Google::Apis::PeopleV1::AUTH_USERINFO_PROFILE} #{Google::Apis::PeopleV1::AUTH_CONTACTS_OTHER_READONLY} #{Google::Apis::GmailV1::AUTH_GMAIL_READONLY}",
-      redirect_uri: ENV["GOOGLE_REDIRECT_URI"],
-      access_type: "offline"
-    }
-  end
-
   attr_reader :events
 
   def initialize(debug)
@@ -44,7 +32,7 @@ class GoogleService
     events = {}
 
     GoogleAccount.all.each do |google_account|
-      client = Signet::OAuth2::Client.new(self.class.client_options)
+      client = GoogleAccount.client
 
       begin
         client.update!(
@@ -61,7 +49,7 @@ class GoogleService
       end
 
       if google_account.email_enabled?
-        service = service = Google::Apis::GmailV1::GmailService.new
+        service = Google::Apis::GmailV1::GmailService.new
         service.authorization = client
 
         messages =

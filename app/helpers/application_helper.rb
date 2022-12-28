@@ -196,33 +196,11 @@ module ApplicationHelper
         yearly_events: yearly_events,
         day_groups: day_groups,
         timestamp: current_time.strftime("%-l:%M %p"),
-        emails: emails
       }
 
     out[:current_temperature] = "#{weather["nws_hourly"][0]["temperature"]}°" if weather.dig("nearby", "imperial", "temp")
 
     out
-  end
-
-  def emails
-    senders =
-      GoogleAccount.all.flat_map(&:emails).map do |email|
-        sender = email["from"]
-        return unless sender.present?
-
-        if sender.include?(" <")
-          # Clean up sender in format "Joel <joel@foo.com>" => "Joel"
-          sender.split(" <").first
-        elsif sender.include?("reply")
-          # Clean up sender in format "noreply@foo.com" => "thriftbooks.com"
-          sender.split("@").last
-        else
-          # Otherwise, grab the content before the @
-          sender.split("@").first
-        end
-      end
-
-    senders.tally
   end
 
   def yearly_events(at = Time.now)

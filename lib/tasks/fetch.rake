@@ -2,8 +2,8 @@
 
 namespace :fetch do
   task all: :environment do
-    GoogleAccount.all.each(&:refresh!)
     Log.create(globalid: "Application/Timeframe", event: "fetch", message: "")
+    GoogleAccount.all.each(&:refresh!)
     WeatherService.call
     GoogleService.call
   end

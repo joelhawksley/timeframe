@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_21_221757) do
+ActiveRecord::Schema[7.0].define(version: 2022_12_28_235451) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -21,8 +21,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_21_221757) do
     t.text "access_token", default: "", null: false
     t.text "refresh_token", default: "", null: false
     t.datetime "expires_at"
-    t.boolean "email_enabled", default: false, null: false
-    t.jsonb "emails", default: [], null: false
     t.index ["email"], name: "index_google_accounts_on_email"
   end
 

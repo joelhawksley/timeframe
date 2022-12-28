@@ -29,12 +29,5 @@
                       td = f.text_field :icon, placeholder: "icon", size: 20, class: "form-control input-sm"
                       td = f.check_box :enabled
                       td = f.submit "Update", class: "btn btn-sm btn-default"
-            .panel-footer
-              = form_for google_account do |f|
-                .input-group
-                  .input-group-addon
-                    = f.check_box :email_enabled
-                  .input-group-btn
-                    = f.submit "Update Email status", class: "btn btn-default"
       .panel-footer
         = link_to "Connect to Google", redirect_path, class: "btn btn-sm btn-default"

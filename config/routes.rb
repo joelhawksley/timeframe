@@ -8,5 +8,4 @@ Rails.application.routes.draw do
   get :google_callback, to: "home#callback"
   resources :templates, only: [:show]
   resources :google_calendars, only: [:update]
-  resources :google_accounts, only: [:update]
 end
