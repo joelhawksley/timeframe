@@ -17,8 +17,7 @@ class GoogleAccount < ApplicationRecord
         "#{Google::Apis::CalendarV3::AUTH_CALENDAR_READONLY} " \
         "#{Google::Apis::PeopleV1::AUTH_CONTACTS_READONLY} " \
         "#{Google::Apis::PeopleV1::AUTH_USERINFO_PROFILE} " \
-        "#{Google::Apis::PeopleV1::AUTH_CONTACTS_OTHER_READONLY} " \
-        "#{Google::Apis::GmailV1::AUTH_GMAIL_READONLY}",
+        "#{Google::Apis::PeopleV1::AUTH_CONTACTS_OTHER_READONLY}",
       redirect_uri: ENV["GOOGLE_REDIRECT_URI"],
       access_type: "offline"
     }

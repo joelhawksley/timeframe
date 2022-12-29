@@ -5,13 +5,13 @@ class HomeController < ApplicationController
   end
 
   def redirect
-    client = Signet::OAuth2::Client.new(GoogleService.client_options)
+    client = GoogleAccount.client
 
     redirect_to(client.authorization_uri.to_s)
   end
 
   def callback
-    client = Signet::OAuth2::Client.new(GoogleService.client_options)
+    client = GoogleAccount.client
     client.code = params[:code]
 
     response = client.fetch_access_token!

@@ -48,31 +48,6 @@ class GoogleService
         )
       end
 
-      if google_account.email_enabled?
-        service = Google::Apis::GmailV1::GmailService.new
-        service.authorization = client
-
-        messages =
-          service
-            .list_user_messages("me", q: "in:inbox is:unread")
-            .messages
-
-        if messages
-          google_account.update(
-            emails: messages.map(&:id).map do |message_id|
-              message = service.get_user_message("me", message_id)
-
-              {
-                from: message.payload.headers.find { |h| h.name == "From" }&.value,
-                subject: message.payload.headers.find { |h| h.name == "Subject" }&.value
-              }
-            end
-          )
-        else
-          google_account.update(emails: [])
-        end
-      end
-
       service = Google::Apis::CalendarV3::CalendarService.new
       service.authorization = client
 
