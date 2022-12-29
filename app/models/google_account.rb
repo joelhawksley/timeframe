@@ -3,6 +3,10 @@
 class GoogleAccount < ApplicationRecord
   has_many :google_calendars
 
+  def self.refresh_all
+    all.each(&:refresh!)
+  end
+
   def self.client
     Signet::OAuth2::Client.new(client_options)
   end
@@ -24,6 +28,12 @@ class GoogleAccount < ApplicationRecord
   end
 
   def refresh!
+    refresh_token! if expires_at < Time.now
+  end
+
+  private
+
+  def refresh_token!
     begin
       response =
         HTTParty.post("https://accounts.google.com/o/oauth2/token",
@@ -40,6 +50,12 @@ class GoogleAccount < ApplicationRecord
         expires_at: Time.now + response["expires_in"].to_i.seconds
       )
       save
+
+      Log.create(
+        globalid: to_global_id,
+        event: "refresh_success",
+        message: ""
+      )
     rescue => e
       Log.create(
         globalid: to_global_id,
