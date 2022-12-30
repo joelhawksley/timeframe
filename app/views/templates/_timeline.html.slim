@@ -52,6 +52,6 @@
             td style="whitespace: nowrap; font-size: .75rem; padding: 0 .5rem; width: 5rem;"
               = event["time"].html_safe
             td
-              = event["summary"].truncate(29)
+              = event["summary"].truncate(28)
               - if event["weather"].present?
                 =< "(#{event["weather"]["temperature"].round}° / #{event["weather"]["short_forecast"]})"

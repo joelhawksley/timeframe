@@ -186,7 +186,7 @@ module ApplicationHelper
         else
           out[:precip_label] = "#{weather["wunderground_forecast"]["qpf"][day_index].round}%"
         end
-        out[:temperature_range] = "&#8593;#{high} &#8595;#{low}".html_safe
+        out[:temperature_range] = "<i class='fa-solid fa-arrow-up-long'></i>#{high} <i class='fa-solid fa-arrow-down-long'></i>#{low}".html_safe
         out[:precip_probability] = weather["wunderground_forecast"]["qpf"][day_index]
 
         memo << out
