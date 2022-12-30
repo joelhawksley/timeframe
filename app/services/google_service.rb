@@ -120,8 +120,10 @@ class GoogleService
               Date.today.year - event_json["description"].to_s.to_i
             end
 
-          next if event_json["description"].to_s.downcase.include?("timeframe-omit") ||  # hide timeframe-omit
-            event_json["summary"] == "." # hide . marker
+          next if 
+            event_json["description"].to_s.downcase.include?("timeframe-omit") ||  # hide timeframe-omit
+            event_json["summary"] == "." || # hide . marker
+            event_json["summary"] == "Out of office"
 
           weather =
             if event_json["description"].to_s.downcase.include?("timeframe-weather")
