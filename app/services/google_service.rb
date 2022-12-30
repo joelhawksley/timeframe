@@ -90,7 +90,7 @@ class GoogleService
           order_by: "startTime",
           time_min: (DateTime.now - 2.weeks).iso8601,
           time_max: (DateTime.now + 12.weeks).iso8601
-        ).items.each_with_index do |event, _index_2|
+        ).items.each do |event|
           own_attendee = event.attendees.to_a.find { |attendee| attendee.email == calendar.id }
 
           # exclude declined events
