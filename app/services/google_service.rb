@@ -139,7 +139,6 @@ class GoogleService
           ).merge(
             summary: event_json["summary"],
             counter: counter,
-            description: event_json["description"],
             calendar: calendar.summary,
             icon: calendar_record.icon,
             letter: calendar_record.letter,
