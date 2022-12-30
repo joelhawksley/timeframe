@@ -12,20 +12,33 @@ class WeatherService
 
     result["nws_alerts"] = JSON.parse(HTTParty.get('https://api.weather.gov/alerts/active/zone/COZ040', { headers: {"User-Agent" => "joel@hawksley.org"} }))
 
+    nws_hourly_response = JSON.parse(
+      HTTParty.get(
+        'https://api.weather.gov/gridpoints/BOU/61,69/forecast/hourly',
+        { headers: {"User-Agent" => "joel@hawksley.org"} }
+      )
+    )
+
     result["nws_hourly"] =
-      JSON.parse(
-        HTTParty.get(
-          'https://api.weather.gov/gridpoints/BOU/61,69/forecast/hourly',
-          { headers: {"User-Agent" => "joel@hawksley.org"} }
+      if nws_hourly_response["status"] == 503
+        Log.create(
+          globalid: "WeatherService",
+          event: "nws_hourly_error",
+          message: "NWS hourly API returned a 503"
         )
-      )["properties"]["periods"].map do |period|
-        {
-          start_i: Time.parse(period["startTime"]).to_i,
-          end_i: Time.parse(period["endTime"]).to_i,
-          temperature: period["temperature"],
-          wind: period["windSpeed"],
-          short_forecast: period["shortForecast"]
-        }
+
+        # Just use old value
+        Value.weather["nws_hourly"]
+      else
+        nws_hourly_response["properties"]["periods"].map do |period|
+          {
+            start_i: Time.parse(period["startTime"]).to_i,
+            end_i: Time.parse(period["endTime"]).to_i,
+            temperature: period["temperature"],
+            wind: period["windSpeed"],
+            short_forecast: period["shortForecast"]
+          }
+        end
       end
 
     Value.find_by_key("weather").update(value: result)
@@ -36,6 +49,8 @@ class WeatherService
       message: ""
     )
   rescue => e
+    binding.irb if debug
+
     Log.create(
       globalid: "WeatherService",
       event: "call_error",
