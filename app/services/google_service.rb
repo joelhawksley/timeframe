@@ -85,7 +85,6 @@ class GoogleService
 
         service.list_events(
           calendar.id,
-          max_results: 250,
           single_events: true,
           order_by: "startTime",
           time_min: (DateTime.now - 2.weeks).iso8601,
