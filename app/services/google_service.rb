@@ -2,10 +2,10 @@
 
 class GoogleService
   def self.call(debug = false)
-    service = new(debug)
+    events = new(debug).events
 
-    if service.events.any?
-      Value.find_by_key("calendar_events").update!(value: service.events)
+    if events.any?
+      Value.find_by_key("calendar_events").update!(value: events)
 
       Log.create(
         globalid: "GoogleService",
