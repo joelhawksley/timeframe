@@ -35,7 +35,7 @@
                     - if event["counter"]
                       |  (#{event["counter"]})
                     div style="font-size: .5rem;" = event["location"]
-            - if shown_days == 1
+            - if event_day[:day_index] == 0
               td style="width: 1%; text-align: center; font-size: 1.25rem; font-weight: bold; padding-right: 0.25rem;"
                 i.fa-solid.fa-fw.fa-baby-carriage
               td
@@ -52,6 +52,6 @@
             td style="whitespace: nowrap; font-size: .75rem; padding: 0 .5rem; width: 5rem;"
               = event["time"].html_safe
             td
-              = event["summary"].truncate(30)
+              = event["summary"].truncate(29)
               - if event["weather"].present?
                 =< "(#{event["weather"]["temperature"].round}° / #{event["weather"]["short_forecast"]})"

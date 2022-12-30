@@ -169,6 +169,7 @@ module ApplicationHelper
         end
 
         out = {
+          day_index: day_index,
           day_name: day_name,
           show_all_day_events: day_index.zero? ? date.hour <= 19 : true,
           events: {
