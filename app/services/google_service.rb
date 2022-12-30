@@ -4,13 +4,21 @@ class GoogleService
   def self.call(debug = false)
     service = new(debug)
 
-    Value.find_by_key("calendar_events").update!(value: service.events)
+    if service.events.any?
+      Value.find_by_key("calendar_events").update!(value: service.events)
 
-    Log.create(
-      globalid: "GoogleService",
-      event: "fetch_success",
-      message: ""
-    )
+      Log.create(
+        globalid: "GoogleService",
+        event: "fetch_success",
+        message: ""
+      )
+    else
+      Log.create(
+        globalid: "GoogleService",
+        event: "error_no_events",
+        message: ""
+      )
+    end
   rescue => e
     Log.create(
       globalid: "GoogleService",
