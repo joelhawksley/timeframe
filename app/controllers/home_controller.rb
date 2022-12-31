@@ -1,7 +1,14 @@
 # frozen_string_literal: true
 
 class HomeController < ApplicationController
-  def index
+  include ApplicationHelper
+
+  def thirteen
+    render "thirteen", locals: { view_object: render_json_payload }, layout: "layouts/display"
+  end
+
+  def mira
+    render "mira", locals: { view_object: render_json_payload }, layout: "display"
   end
 
   def redirect
