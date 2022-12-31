@@ -182,11 +182,11 @@ module ApplicationHelper
         low = weather["wunderground_forecast"]["calendarDayTemperatureMin"][day_index]
 
         if weather["wunderground_forecast"]["qpfSnow"][day_index] > 0
-          out[:precip_label] = " #{weather["wunderground_forecast"]["qpfSnow"][day_index].round}\""
+          out[:precip_label] = " <i class='fa-regular fa-snowflake'></i> #{weather["wunderground_forecast"]["qpfSnow"][day_index].round}\""
         else
-          out[:precip_label] = "#{weather["wunderground_forecast"]["qpf"][day_index].round}%"
+          out[:precip_label] = " #{weather["wunderground_forecast"]["qpf"][day_index].round}%"
         end
-        out[:temperature_range] = "<i class='fa-solid fa-arrow-up-long'></i>#{high} <i class='fa-solid fa-arrow-down-long'></i>#{low}".html_safe
+        out[:temperature_range] = "&#8593;#{high} &#8595;#{low}".html_safe
         out[:precip_probability] = weather["wunderground_forecast"]["qpf"][day_index]
 
         memo << out
@@ -199,7 +199,12 @@ module ApplicationHelper
         timestamp: current_time.strftime("%-l:%M %p"),
       }
 
-    out[:current_temperature] = "#{weather["nws_hourly"][0]["temperature"]}°" if weather.dig("nearby", "imperial", "temp")
+    out[:current_temperature] = 
+      if weather.dig("nearby", "imperial", "temp")
+        "#{weather["nws_hourly"][0]["temperature"]}°" 
+      else
+        "N/A"
+      end
 
     out
   end
