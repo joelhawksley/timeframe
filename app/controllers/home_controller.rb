@@ -3,8 +3,12 @@
 class HomeController < ApplicationController
   include ApplicationHelper
 
+  def logs
+    render "logs", layout: false
+  end
+
   def thirteen
-    render "thirteen", locals: { view_object: render_json_payload }, layout: "layouts/display"
+    render "thirteen", locals: { view_object: render_json_payload }, layout: "display"
   end
 
   def mira
