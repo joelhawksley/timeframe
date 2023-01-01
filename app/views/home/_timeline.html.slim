@@ -54,4 +54,4 @@
             td
               = event["summary"].truncate(28)
               - if event["weather"].present?
-                =< "(#{event["weather"]["temperature"].round}° / #{event["weather"]["short_forecast"]})"
+                =< "(#{event["weather"]["temperature"].round}° <i class='#{event['weather']['icon_class']}'></i>)".html_safe

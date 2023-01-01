@@ -31,12 +31,47 @@ class WeatherService
         Value.weather["nws_hourly"]
       else
         nws_hourly_response["properties"]["periods"].map do |period|
+          day_part = period["icon"].split("/")[-2]
+          icon = period["icon"].split("?").first.split("/").last
+
+          icon_class = 
+            if day_part == "day"
+              case icon
+              when "few"
+                "fa-solid fa-sun"
+              when "bkn", "sct"
+                "fa-solid fa-cloud-sun"
+              when "ovc"
+                "fa-solid fa-cloud"
+              when "snow"
+                "fa-solid fa-snowflake"
+              else
+                "fa-solid fa-question"
+              end
+            else 
+              case icon
+              when "few"
+                "fa-solid fa-moon"
+              when "bkn", "sct"
+                "fa-solid fa-cloud-moon"
+              when "ovc"
+                "fa-solid fa-cloud"
+              when "snow"
+                "fa-solid fa-snowflake"
+              else
+                "fa-solid fa-question"
+              end
+            end
+
+
           {
             start_i: Time.parse(period["startTime"]).to_i,
             end_i: Time.parse(period["endTime"]).to_i,
             temperature: period["temperature"],
             wind: period["windSpeed"],
-            short_forecast: period["shortForecast"]
+            short_forecast: period["shortForecast"],
+            icon: icon,
+            icon_class: icon_class
           }
         end
       end
