@@ -87,9 +87,13 @@ module ApplicationHelper
             strip.
             gsub(" and ", "-").
             gsub(" inches", "\"").
-            gsub(" possible", "")
+            gsub(" possible", "").
+            split(", with").
+            first.
+            split("\"").
+            first
 
-          "NWS #{alert['event'].split(" ").last}: ~#{out}"
+          "NWS #{alert['event'].split(" ").last}: ~#{out}\""
         end
       else
         alert["event"]
