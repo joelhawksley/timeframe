@@ -199,12 +199,14 @@ module ApplicationHelper
         timestamp: current_time.strftime("%-l:%M %p"),
       }
 
-    out[:current_temperature] = 
-      if weather.dig("nearby", "imperial", "temp")
-        "#{weather["nws_hourly"][0]["temperature"]}°" 
-      else
-        "N/A"
+    current_nws_hour = 
+      weather["nws_hourly"].
+      find do 
+        (_1["start_i"].._1["end_i"]).
+          cover?(DateTime.now.utc.in_time_zone(Timeframe::Application::LOCAL_TZ).to_i)
       end
+
+    out[:current_temperature] = "#{current_nws_hour["temperature"]}°" 
 
     out
   end
