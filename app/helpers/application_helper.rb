@@ -93,8 +93,8 @@ module ApplicationHelper
       end
 
     [{
-      "start_i" => DateTime.parse(alert["effective"]).to_i,
-      "end_i" => DateTime.parse(alert["expires"]).to_i,
+      "start_i" => DateTime.parse(alert["onset"]).to_i,
+      "end_i" => DateTime.parse(alert["ends"]).to_i,
       "calendar" => "_weather_alerts",
       "summary" => summary,
       "icon" => icon
