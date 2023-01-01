@@ -132,6 +132,8 @@ class GoogleService
                 value["nws_hourly"].find { _1["start_i"] >= start_i }
             end
 
+          multi_day = ((end_i - start_i) > 86_400)
+
           events[event.id] = event_json.slice(
             "start",
             "end",
@@ -145,7 +147,8 @@ class GoogleService
             start_i: start_i,
             end_i: end_i,
             weather: weather,
-            all_day: event_json["start"].key?("date") || ((end_i - start_i) > 86_400)
+            multi_day: multi_day,
+            all_day: event_json["start"].key?("date") || multi_day,
           ).symbolize_keys!
         end
       end

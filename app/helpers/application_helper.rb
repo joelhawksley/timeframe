@@ -78,7 +78,7 @@ module ApplicationHelper
             strip.
             gsub(" inches", "\"")
         else
-          alert["description"].
+          out = alert["description"].
             gsub("\n", " ").
             split("accumulations between").
             last.
@@ -86,7 +86,10 @@ module ApplicationHelper
             first.
             strip.
             gsub(" and ", "-").
-            gsub(" inches", "\"")
+            gsub(" inches", "\"").
+            gsub(" possible", "")
+
+          "NWS #{alert['event'].split(" ").last}: ~#{out}"
         end
       else
         alert["event"]
@@ -120,7 +123,7 @@ module ApplicationHelper
     current_time = at.utc.in_time_zone(tz)
 
     day_groups =
-      (0..5).each_with_object([]) do |day_index, memo|
+      (0...5).each_with_object([]) do |day_index, memo|
         date = Time.now.in_time_zone(tz) + day_index.day
 
         start_i =
@@ -163,6 +166,19 @@ module ApplicationHelper
             -1
           elsif x["summary"].starts_with?("Lunch") && y["summary"].starts_with?("Dinner")
             -1
+          else
+            0
+          end
+        end
+
+        all_day_events.sort! do |x,y|
+          #if this result is 1 means x should come later relative to y
+	        #if this result is -1 means x should come earlier relative to y
+	        #if this result is 0 means both are same so position doesn't matter
+          if !x["multi_day"] && y["multi_day"]
+            -1
+          elsif x["multi_day"] && !y["multi_day"]
+            1
           else
             0
           end

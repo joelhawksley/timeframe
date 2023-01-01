@@ -1,5 +1,5 @@
 - shown_days = 0
-- view_object[:day_groups].first(5).each do |event_day|
+- view_object[:day_groups].each do |event_day|
   - next if !event_day[:show_all_day_events] && event_day[:events][:periodic].empty?
   - shown_days += 1
   - if shown_days > 1
