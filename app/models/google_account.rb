@@ -60,7 +60,7 @@ class GoogleAccount < ApplicationRecord
       Log.create(
         globalid: to_global_id,
         event: "refresh_error",
-        message: e.message
+        message: e.message + response.to_s
       )
     end
   end

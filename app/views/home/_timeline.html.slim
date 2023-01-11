@@ -1,3 +1,5 @@
+- if Date.today.yday == 1
+  .bg style="position: absolute; bottom: 0; top: 2rem; right: 0; left: 0; z-index: -1; background-image: url(#{asset_path('fireworks.jpg')}); background-size: cover; opacity: .05;"
 - shown_days = 0
 - view_object[:day_groups].each do |event_day|
   - next if !event_day[:show_all_day_events] && event_day[:events][:periodic].empty?

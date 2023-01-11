@@ -48,11 +48,18 @@ class HomeController < ApplicationController
     existing_account = GoogleAccount.find_by(email: email_address)
 
     if existing_account
-      existing_account.update(
-        access_token: response["access_token"],
-        refresh_token: response["refresh_token"].to_s,
-        expires_at: Time.now + response["expires_in"].to_i.seconds
-      )
+      if response["refresh_token"].present?
+        existing_account.update(
+          access_token: response["access_token"],
+          refresh_token: response["refresh_token"].to_s,
+          expires_at: Time.now + response["expires_in"].to_i.seconds
+        )
+      else
+        existing_account.update(
+          access_token: response["access_token"],
+          expires_at: Time.now + response["expires_in"].to_i.seconds
+        )
+      end
     else
       GoogleAccount.create(
         email: email_address,

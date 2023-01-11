@@ -37,6 +37,8 @@ class WeatherService
           icon_class = 
             if day_part == "day"
               case icon
+              when "fog"
+                "fa-solid fa-eye-low-vision"
               when "few"
                 "fa-solid fa-sun"
               when "bkn", "sct"
@@ -50,6 +52,8 @@ class WeatherService
               end
             else 
               case icon
+              when "fog"
+                "fa-solid fa-eye-low-vision"
               when "few"
                 "fa-solid fa-moon"
               when "bkn", "sct"
@@ -89,7 +93,7 @@ class WeatherService
     Log.create(
       globalid: "WeatherService",
       event: "call_error",
-      message: e.message
+      message: e.message + e.backtrace.join("\n")
     )
   end
 end
