@@ -3,6 +3,7 @@
 Rails.application.routes.draw do
   root to: "home#index"
   get :thirteen, to: "home#thirteen"
+  get :sonos, to: "home#sonos"
   get :mira, to: "home#mira"
   get :logs, to: "home#logs"
   get :weather_logs, to: "home#weather_logs"

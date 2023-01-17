@@ -8,6 +8,8 @@ div style="display: flex;"
   div style="width: 16rem; padding-bottom: 1rem; padding-right: 1rem;"
     span style="font-size: 6rem; line-height: 5rem;" 
       = view_object[:current_temperature]
-  div style="width: 30rem; padding-left: 1rem;"
+  div style="width: 30rem; padding-left: 1rem; text-align: right"
+    - if Log.where(event: "list_calendar_lists").last.created_at > (DateTime.now - 15.minutes)
+      i.fa-regular.fa-calendar-xmark
 hr style="margin: 1rem 0; border: none;background-color: #ccc;color: #ccc;height: 2px;"
 = render "timeline", view_object: view_object

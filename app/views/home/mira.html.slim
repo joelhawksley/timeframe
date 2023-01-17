@@ -7,11 +7,18 @@ css:
     padding: 1.5rem 2rem;;
   }
 
+/ div hx-get="#{sonos_path}" hx-trigger="every 1s" hx-swap="innerHTML"
+/   = render "sonos"
+
+div style="position: absolute; top: .5rem; right: .5rem;"
+  - if Log.where(event: "list_calendar_lists").last.created_at > (DateTime.now - 15.minutes)
+    i.fa-regular.fa-calendar-xmark
 div style="display: flex;"
   div style="width: 16rem; padding-bottom: 1rem;"
     span style="font-size: 8rem; line-height: 6rem;" = view_object[:current_temperature]
-  div style="width: 30rem;"
-    div#time style="font-size: 4rem; line-height: 6rem; text-align: right;"
+  div style="width: 30rem; text-align: right;"
+    span style="font-size: 1.5rem;" = Date.today.strftime("%A, %B %-d")
+    div#time style="font-size: 4rem; line-height: 4rem;"
 hr style="margin: 1rem 0; border: none;background-color: #ccc;color: #ccc;height: 2px;"
 = render "timeline", view_object: view_object
 

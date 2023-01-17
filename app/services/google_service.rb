@@ -37,7 +37,7 @@ class GoogleService
   private
 
   def calendar_events
-    events = {}
+    events = Value.calendar_events
 
     GoogleAccount.all.each do |google_account|
       client = GoogleAccount.client
@@ -70,6 +70,8 @@ class GoogleService
       end
 
       next unless calendars.present?
+
+      events[google_account.email] = {}
 
       calendars.each_with_index do |calendar, _index|
         calendar_record = google_account.google_calendars.find_by(uuid: calendar.id)
@@ -134,7 +136,7 @@ class GoogleService
 
           multi_day = ((end_i - start_i) > 86_400)
 
-          events[event.id] = event_json.slice(
+          events[google_account.email][event.id] = event_json.slice(
             "start",
             "end",
             "location"
@@ -154,6 +156,6 @@ class GoogleService
       end
     end
 
-    events.values.sort_by { |event| event[:start_i] }
+    events
   end
 end

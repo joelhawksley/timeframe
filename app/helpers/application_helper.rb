@@ -35,10 +35,6 @@ module ApplicationHelper
     Value.weather
   end
 
-  def calendar_events
-    Value.calendar_events
-  end
-
   def most_important_weather_alert
     return nil unless weather.to_h.dig("nws_alerts", "features").to_a.any?
 
@@ -111,7 +107,7 @@ module ApplicationHelper
   # Returns calendar events for a given UTC integer time range,
   # adding a `time` key for the time formatted for the user's timezone
   def calendar_events_for(beginning_i, ending_i)
-    filtered_events = (weather_calendar_events + calendar_events).select do |event|
+    filtered_events = (weather_calendar_events + Value.sorted_calendar_events_array).select do |event|
       (event["start_i"]..event["end_i"]).overlaps?(beginning_i...ending_i)
     end
 

@@ -19,6 +19,10 @@ class HomeController < ApplicationController
     render "mira", locals: { view_object: render_json_payload }, layout: "display"
   end
 
+  def sonos
+    render partial: "sonos"
+  end
+
   def redirect
     client = GoogleAccount.client
 
