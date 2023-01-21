@@ -3,6 +3,18 @@
 class GoogleAccount < ApplicationRecord
   has_many :google_calendars
 
+  def healthy?
+    Log.where(globalid: to_global_id.to_s, event: "fetch_success").last.created_at > DateTime.now - 2.hours
+  end
+
+  def pretty_name
+    if email == "joel@hawksley.org"
+      "personal"
+    else
+      "work"
+    end
+  end
+
   def self.refresh_all
     all.each(&:refresh!)
   end

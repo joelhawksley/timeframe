@@ -7,6 +7,10 @@ class HomeController < ApplicationController
     render "logs", layout: false
   end
 
+  def calendars
+    render "calendars", layout: false
+  end
+
   def weather_logs
     render "weather_logs", layout: false
   end

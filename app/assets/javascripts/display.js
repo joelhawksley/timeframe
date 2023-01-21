@@ -1,1 +1,1 @@
-//= require htmx
+//= require htmx.org/dist/htmx

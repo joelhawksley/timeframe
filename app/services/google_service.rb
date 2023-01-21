@@ -6,12 +6,6 @@ class GoogleService
 
     if events.any?
       Value.find_by_key("calendar_events").update!(value: events)
-
-      Log.create(
-        globalid: "GoogleService",
-        event: "fetch_success",
-        message: ""
-      )
     else
       Log.create(
         globalid: "GoogleService",
@@ -23,7 +17,7 @@ class GoogleService
     Log.create(
       globalid: "GoogleService",
       event: "call_error",
-      message: e.message
+      message: e.message + e.backtrace.join("\n")
     )
   end
 
@@ -52,7 +46,7 @@ class GoogleService
         Log.create(
           globalid: google_account.to_global_id,
           event: "client_refresh_error",
-          message: e.message
+          message: e.message + e.backtrace.join("\n")
         )
       end
 
@@ -154,6 +148,12 @@ class GoogleService
           ).symbolize_keys!
         end
       end
+
+      Log.create(
+        globalid: google_account.to_global_id,
+        event: "fetch_success",
+        message: ""
+      )
     end
 
     events
