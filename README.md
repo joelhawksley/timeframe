@@ -36,7 +36,7 @@ A web application for displaying information from various APIs on digital signag
 - Ensure tests and lints pass pre-commit
 - Improve test coverage
 - Improve architecture of application
-- Experiment with technologies (Hanami, Dry RB, Sorbet, HStore etc)
+- Experiment with technologies (Hanami, Dry RB, Sorbet, HStore, Phlex, etc)
 - Integrate with Home Assistant to show whether mail has been delivered today
 - Improve OAuth refresh token availability
 - Improve local workflow as debugging is difficult due to using development server as production
