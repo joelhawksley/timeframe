@@ -1,0 +1,51 @@
+css:
+  td {
+    vertical-align: top;
+  }
+table border="1"
+  tbody
+    - Value.weather.keys.each do |key|
+      tr
+        td 
+          strong = key
+        td
+          - case key
+          - when "nws_alerts"
+            table
+              - Value.weather[key]["features"].each do |feature|
+                tr
+                  td
+                    table
+                      - feature["properties"].keys.each do |key_3|
+                        tr
+                          td = key_3
+                          td = feature["properties"][key_3]
+          - when "nws_hourly"
+            table style="width: 100%;"
+              thead
+                - hour_keys = Value.weather[key][0].keys
+                - hour_keys.each do |hour_key|
+                  th = hour_key
+              - Value.weather[key].each do |hour|
+                tr
+                  - hour_keys.each do |hour_key|
+                    - if hour_key.include?("_i")
+                      td = Time.at(hour[hour_key]).in_time_zone(tz).strftime('%a %b %e %I:%M:%S %p')
+                    - else
+                      td = hour[hour_key]
+          - else
+            - if Value.weather[key].is_a?(Array)
+              table
+                - Value.weather[key].each do |row|
+                  tr 
+                    td = row
+            - else
+              table
+                - Value.weather[key].keys.each do |key_2|
+                  tr
+                    td 
+                      strong = key_2
+                    td = Value.weather[key][key_2]
+
+                  
+

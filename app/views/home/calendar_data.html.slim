@@ -1,0 +1,26 @@
+css:
+  td {
+    vertical-align: top;
+  }
+table border="1"
+  thead
+    th id
+    th email
+    th logs
+  tbody
+    - GoogleAccount.all.each do |google_account|
+      tr
+        td = google_account.id
+        td = google_account.email
+        td 
+          table
+            thead
+              th event
+              th message
+              th timestamp
+            tbody
+              - Log.where(globalid: google_account.to_global_id.to_s).order(created_at: :desc).first(100).each do |log|
+                tr
+                  td = log.event
+                  td = log.message
+                  td = log.created_at.in_time_zone(tz).strftime('%a %b %e %I:%M:%S %p')

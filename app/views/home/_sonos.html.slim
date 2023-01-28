@@ -1,0 +1,16 @@
+- res = JSON.parse(HTTParty.get("http://hawksley-server.local:5005/Sonos%20Move/state").body)
+- if res["playbackState"] == "PLAYING"
+  div style="position: absolute; bottom: 0; left: 0; right: 0; z-index: 20; background-color: #000; color: white; padding: 2rem; border-top: 1rem solid white"
+    css:
+      .fade-bottom {
+        bottom: 478px;
+      }
+    - if res["currentTrack"]["albumArtUri"].include?("htt")
+      - url = res["currentTrack"]["albumArtUri"]
+    - else
+      - url = res["currentTrack"]["absoluteAlbumArtUri"]
+    img src="#{url}" width="250" height="250" style="float: left; margin-right: 1rem; border: 1px solid #ccc;"
+    div style="font-size: 1.25rem; line-height: 1.25rem" = res["currentTrack"]["artist"]
+    div style="font-size: 2.1rem; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;" = res["currentTrack"]["title"]
+    div style="font-size: 1.25rem;"
+      em = res["currentTrack"]["album"]
