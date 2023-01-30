@@ -61,7 +61,7 @@ module ApplicationHelper
 
   # convert weather alerts to be timeline events;
   # they are timely, after all!
-  def weather_calendar_events
+  def weather_calendar_events(now = DateTime.now)
     alert = most_important_weather_alert
 
     out = []
@@ -86,7 +86,7 @@ module ApplicationHelper
               .strip
               .gsub(" inches", "\"")
           else
-            out = alert["description"]
+            desc = alert["description"]
               .tr("\n", " ")
               .split("accumulations between")
               .last
@@ -101,7 +101,7 @@ module ApplicationHelper
               .split("\"")
               .first
 
-            "NWS #{alert["event"].split(" ").last}: ~#{out}\""
+            "NWS #{alert["event"].split(" ").last}: ~#{desc}\""
           end
         else
           alert["event"]
@@ -118,7 +118,7 @@ module ApplicationHelper
 
     sunset_i =
       DateTime.parse(
-        weather["wunderground_forecast"]["sunsetTimeLocal"].find { DateTime.parse(_1) > DateTime.now }
+        weather["wunderground_forecast"]["sunsetTimeLocal"].find { DateTime.parse(_1) > now }
       ).to_i
 
     out <<
@@ -133,7 +133,7 @@ module ApplicationHelper
 
     sunrise_i =
       DateTime.parse(
-        weather["wunderground_forecast"]["sunriseTimeLocal"].find { DateTime.parse(_1) > DateTime.now }
+        weather["wunderground_forecast"]["sunriseTimeLocal"].find { DateTime.parse(_1) > now }
       ).to_i
 
     out <<
