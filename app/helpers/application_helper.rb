@@ -127,7 +127,7 @@ module ApplicationHelper
         "end_i" => sunset_i,
         "calendar" => "_weather_alerts",
         "weather" => weather["nws_hourly"].find { (_1["start_i"].._1["end_i"]).cover?(sunset_i) },
-        "icon" => "moon",
+        "icon" => "fa-solid fa-sunset",
         "summary" => "Sunset"
       }
 
@@ -142,7 +142,7 @@ module ApplicationHelper
         "end_i" => sunrise_i,
         "calendar" => "_weather_alerts",
         "weather" => weather["nws_hourly"].find { (_1["start_i"].._1["end_i"]).cover?(sunrise_i) },
-        "icon" => "sun",
+        "icon" => "fa-solid fa-sunrise",
         "summary" => "Sunrise"
       }
 

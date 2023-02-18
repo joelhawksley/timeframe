@@ -14,11 +14,6 @@
             = event_day[:day_name]
           div style="margin-bottom: 1rem;"
             => event_day[:temperature_range]
-            / - if event_day[:wind] > 10
-            /   span style="padding-left: .25rem;"
-            /     i.fa-solid.fa-wind
-            /     |  #{event_day[:wind]}
-            /     span style="font-size: .8rem;" mph
             span
               - if event_day[:precip_probability] > 0.1
                 =< event_day[:precip_label].html_safe
@@ -30,7 +25,7 @@
                   - if event["letter"].present?
                     = event["letter"]
                   - else
-                    i.fa-solid.fa-fw class="fa-#{event['icon']}"
+                    i.fa-fw class="#{event['icon']}"
                 td
                   div
                     = event["summary"]
@@ -50,7 +45,7 @@
               - if event["letter"].present?
                 = event["letter"]
               - else
-                i.fa-solid.fa-fw class="fa-#{event['icon']}"
+                i.fa-fw class="#{event['icon']}"
             td style="whitespace: nowrap; font-size: .75rem; padding: 0 .5rem; width: 5rem;"
               = event["time"].html_safe
             td style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;max-width: 0;"
