@@ -1,0 +1,34 @@
+/*!
+ * Font Awesome Pro 6.3.0 by @fontawesome - https://fontawesome.com
+ * License - https://fontawesome.com/license (Commercial License)
+ * Copyright 2023 Fonticons, Inc.
+ */
+@font-face {
+  font-family: 'Font Awesome 5 Brands';
+  font-display: block;
+  font-weight: 400;
+  src: font-url("fa-brands-400.woff2") format("woff2"), font-url("fa-brands-400.ttf") format("truetype"); }
+
+@font-face {
+  font-family: 'Font Awesome 5 Pro';
+  font-display: block;
+  font-weight: 900;
+  src: font-url("fa-solid-900.woff2") format("woff2"), font-url("fa-solid-900.ttf") format("truetype"); }
+
+@font-face {
+  font-family: 'Font Awesome 5 Pro';
+  font-display: block;
+  font-weight: 400;
+  src: font-url("fa-regular-400.woff2") format("woff2"), font-url("fa-regular-400.ttf") format("truetype"); }
+
+@font-face {
+  font-family: 'Font Awesome 5 Pro';
+  font-display: block;
+  font-weight: 300;
+  src: font-url("fa-light-300.woff2") format("woff2"), font-url("fa-light-300.ttf") format("truetype"); }
+
+@font-face {
+  font-family: 'Font Awesome 5 Duotone';
+  font-display: block;
+  font-weight: 900;
+  src: font-url("fa-duotone-900.woff2") format("woff2"), font-url("fa-duotone-900.ttf") format("truetype"); }
