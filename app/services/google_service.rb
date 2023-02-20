@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class GoogleService
-  def self.call(debug = false)
-    events = new(debug).events
+  def self.call
+    events = new.events
 
     if events.any?
       Value.find_by_key("calendar_events").update!(value: events)
@@ -23,8 +23,7 @@ class GoogleService
 
   attr_reader :events
 
-  def initialize(debug)
-    @debug = debug
+  def initialize
     @events = calendar_events
   end
 

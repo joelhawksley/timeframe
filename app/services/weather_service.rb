@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class WeatherService
-  def self.call(debug = false)
+  def self.call
     result = {}
 
     result["nearby"] = HTTParty.get(
@@ -48,8 +48,6 @@ class WeatherService
         nws_hourly_response["properties"]["periods"].map do |period|
           icon, icon_class = icon_for_period(period["icon"])
 
-          binding.irb if debug
-
           {
             start_i: Time.parse(period["startTime"]).to_i,
             end_i: Time.parse(period["endTime"]).to_i,
@@ -70,8 +68,6 @@ class WeatherService
       message: ""
     )
   rescue => e
-    binding.irb if debug
-
     Log.create(
       globalid: "WeatherService",
       event: "call_error",
@@ -90,6 +86,7 @@ class WeatherService
     "/day/rain" => "fa-solid fa-cloud-rain",
     "/day/snow" => "fa-solid fa-cloud-snow",
     "/day/cold" => "fa-solid fa-hat-winter",
+    "/night/ovc" => "fa-solid fa-clouds",
     "/night/bkn" => "fa-solid fa-clouds-moon",
     "/night/sct" => "fa-solid fa-cloud-moon",
     "/night/few" => "fa-solid fa-moon",

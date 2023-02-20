@@ -11,6 +11,12 @@ class WeatherServiceTest < Minitest::Test
     assert_equal(["bkn,0", "fa-solid fa-clouds-sun"], result)
   end
 
+  def test_icon_for_period_ovc
+    result = WeatherService.icon_for_period("https://api.weather.gov/icons/land/day/ovc,12?size=small")
+
+    assert_equal(["ovc,12", "fa-solid fa-clouds"], result)
+  end
+
   def test_icon_for_unknown
     result = WeatherService.icon_for_period("https://api.weather.gov/icons/land/day/foo,0?size=small")
 
