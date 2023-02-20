@@ -25,7 +25,7 @@
                   - if event["letter"].present?
                     = event["letter"]
                   - else
-                    i.fa-fw class="#{event['icon']}"
+                    i.fa-fw class="fa-solid fa-#{event['icon']}"
                 td
                   div
                     = event["summary"]
@@ -45,10 +45,10 @@
               - if event["letter"].present?
                 = event["letter"]
               - else
-                i.fa-fw class="#{event['icon']}"
+                i.fa-fw class="fa-solid fa-#{event['icon']}"
             td style="whitespace: nowrap; font-size: .75rem; padding: 0 .5rem; width: 5rem;"
               = event["time"].html_safe
             td style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;max-width: 0;"
               = event["summary"]
               - if event["weather"].present?
-                =< "(#{event["weather"]["temperature"].round}° <i class='#{event['weather']['icon_class']}'></i>)".html_safe
+                =< "(#{event["weather"]["temperature"].round}° <i class='fa-fw fa-solid fa-#{event['weather']['icon_class']}'></i>)".html_safe

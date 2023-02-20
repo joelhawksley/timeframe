@@ -76,26 +76,26 @@ class WeatherService
   end
 
   MAPPINGS = {
-    "/day/ovc" => "fa-solid fa-clouds",
-    "/day/bkn" => "fa-solid fa-clouds-sun",
-    "/day/sct" => "fa-solid fa-cloud-sun",
-    "/day/few" => "fa-solid fa-sun",
-    "/day/wind_bkn" => "fa-solid fa-wind",
-    "/day/wind_few" => "fa-solid fa-wind",
-    "/day/wind_sct" => "fa-solid fa-wind",
-    "/day/rain" => "fa-solid fa-cloud-rain",
-    "/day/snow" => "fa-solid fa-cloud-snow",
-    "/day/cold" => "fa-solid fa-hat-winter",
-    "/night/ovc" => "fa-solid fa-clouds",
-    "/night/bkn" => "fa-solid fa-clouds-moon",
-    "/night/sct" => "fa-solid fa-cloud-moon",
-    "/night/few" => "fa-solid fa-moon",
-    "/night/wind_bkn" => "fa-solid fa-wind",
-    "/night/wind_few" => "fa-solid fa-wind",
-    "/night/wind_sct" => "fa-solid fa-wind",
-    "/night/rain" => "fa-solid fa-cloud-rain",
-    "/night/snow" => "fa-solid fa-cloud-snow",
-    "/night/cold" => "fa-solid fa-hat-winter",
+    "/day/ovc" => "clouds",
+    "/day/bkn" => "clouds-sun",
+    "/day/sct" => "cloud-sun",
+    "/day/few" => "sun",
+    "/day/wind_bkn" => "wind",
+    "/day/wind_few" => "wind",
+    "/day/wind_sct" => "wind",
+    "/day/rain" => "cloud-rain",
+    "/day/snow" => "cloud-snow",
+    "/day/cold" => "hat-winter",
+    "/night/ovc" => "clouds",
+    "/night/bkn" => "clouds-moon",
+    "/night/sct" => "cloud-moon",
+    "/night/few" => "moon",
+    "/night/wind_bkn" => "wind",
+    "/night/wind_few" => "wind",
+    "/night/wind_sct" => "wind",
+    "/night/rain" => "cloud-rain",
+    "/night/snow" => "cloud-snow",
+    "/night/cold" => "hat-winter",
   }
 
   def self.icon_for_period(nws_url)
@@ -106,6 +106,6 @@ class WeatherService
       split("land").last.
       split(",").first
     
-    [icon, MAPPINGS[token] || "fa-solid fa-question"]
+    [icon, MAPPINGS[token] || "question"]
   end
 end
