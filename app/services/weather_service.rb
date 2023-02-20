@@ -46,43 +46,9 @@ class WeatherService
         Value.weather["nws_hourly"]
       else
         nws_hourly_response["properties"]["periods"].map do |period|
-          day_part = period["icon"].split("/")[-2]
-          icon = period["icon"].split("?").first.split("/").last
+          icon, icon_class = icon_for_period(period["icon"])
 
-          icon_class =
-            if icon.include? "snow"
-              "fa-solid fa-snowflake"
-            elsif day_part == "day"
-              case icon
-              when "fog"
-                "fa-solid fa-eye-low-vision"
-              when "few"
-                "fa-solid fa-sun"
-              when "bkn", "sct"
-                "fa-solid fa-cloud-sun"
-              when "ovc"
-                "fa-solid fa-cloud"
-              when "snow"
-                "fa-solid fa-snowflake"
-              else
-                "fa-solid fa-question"
-              end
-            else
-              case icon
-              when "fog"
-                "fa-solid fa-eye-low-vision"
-              when "few"
-                "fa-solid fa-moon"
-              when "bkn", "sct"
-                "fa-solid fa-cloud-moon"
-              when "ovc"
-                "fa-solid fa-cloud"
-              when "snow"
-                "fa-solid fa-snowflake"
-              else
-                "fa-solid fa-question"
-              end
-            end
+          binding.irb if debug
 
           {
             start_i: Time.parse(period["startTime"]).to_i,
@@ -111,5 +77,38 @@ class WeatherService
       event: "call_error",
       message: e.message + e.backtrace.join("\n")
     )
+  end
+
+  MAPPINGS = {
+    "/day/ovc" => "fa-solid fa-clouds",
+    "/day/bkn" => "fa-solid fa-clouds-sun",
+    "/day/sct" => "fa-solid fa-cloud-sun",
+    "/day/few" => "fa-solid fa-sun",
+    "/day/wind_bkn" => "fa-solid fa-wind",
+    "/day/wind_few" => "fa-solid fa-wind",
+    "/day/wind_sct" => "fa-solid fa-wind",
+    "/day/rain" => "fa-solid fa-cloud-rain",
+    "/day/snow" => "fa-solid fa-cloud-snow",
+    "/day/cold" => "fa-solid fa-hat-winter",
+    "/night/bkn" => "fa-solid fa-clouds-moon",
+    "/night/sct" => "fa-solid fa-cloud-moon",
+    "/night/few" => "fa-solid fa-moon",
+    "/night/wind_bkn" => "fa-solid fa-wind",
+    "/night/wind_few" => "fa-solid fa-wind",
+    "/night/wind_sct" => "fa-solid fa-wind",
+    "/night/rain" => "fa-solid fa-cloud-rain",
+    "/night/snow" => "fa-solid fa-cloud-snow",
+    "/night/cold" => "fa-solid fa-hat-winter",
+  }
+
+  def self.icon_for_period(nws_url)
+    icon = nws_url.split("?").first.split("/").last
+
+    token = 
+      nws_url.split("?").first.
+      split("land").last.
+      split(",").first
+    
+    [icon, MAPPINGS[token] || "fa-solid fa-question"]
   end
 end

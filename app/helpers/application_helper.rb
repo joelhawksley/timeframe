@@ -116,35 +116,35 @@ module ApplicationHelper
       }
     end
 
-    sunset_i =
-      DateTime.parse(
-        weather["wunderground_forecast"]["sunsetTimeLocal"].find { DateTime.parse(_1) > now }
-      ).to_i
+    weather["wunderground_forecast"]["sunsetTimeLocal"].each do |sunset_time|
+      sunset_i = DateTime.parse(sunset_time).to_i
 
-    out <<
-      {
-        "start_i" => sunset_i,
-        "end_i" => sunset_i,
-        "calendar" => "_weather_alerts",
-        "weather" => weather["nws_hourly"].find { (_1["start_i"].._1["end_i"]).cover?(sunset_i) },
-        "icon" => "fa-solid fa-sunset",
-        "summary" => "Sunset"
-      }
+      out <<
+        {
+          "id" => sunset_i,
+          "start_i" => sunset_i,
+          "end_i" => sunset_i,
+          "calendar" => "_weather_alerts",
+          "weather" => weather["nws_hourly"].find { (_1["start_i"].._1["end_i"]).cover?(sunset_i) },
+          "icon" => "fa-solid fa-sunset",
+          "summary" => "Sunset"
+        }
+    end
 
-    sunrise_i =
-      DateTime.parse(
-        weather["wunderground_forecast"]["sunriseTimeLocal"].find { DateTime.parse(_1) > now }
-      ).to_i
+    weather["wunderground_forecast"]["sunriseTimeLocal"].each do |sunrise_time|
+      sunrise_i = DateTime.parse(sunrise_time).to_i
 
-    out <<
-      {
-        "start_i" => sunrise_i,
-        "end_i" => sunrise_i,
-        "calendar" => "_weather_alerts",
-        "weather" => weather["nws_hourly"].find { (_1["start_i"].._1["end_i"]).cover?(sunrise_i) },
-        "icon" => "fa-solid fa-sunrise",
-        "summary" => "Sunrise"
-      }
+      out <<
+        {
+          "id" => sunrise_i,
+          "start_i" => sunrise_i,
+          "end_i" => sunrise_i,
+          "calendar" => "_weather_alerts",
+          "weather" => weather["nws_hourly"].find { (_1["start_i"].._1["end_i"]).cover?(sunrise_i) },
+          "icon" => "fa-solid fa-sunrise",
+          "summary" => "Sunrise"
+        }
+    end
 
     out
   end
@@ -155,6 +155,7 @@ module ApplicationHelper
     beginning_i = DateTime.now.in_time_zone(tz).tomorrow.beginning_of_day.to_i,
     ending_i = DateTime.now.in_time_zone(tz).tomorrow.end_of_day.to_i
   )
+
     filtered_events = (weather_calendar_events + sorted_calendar_events_array).select do |event|
       (event["start_i"]..event["end_i"]).overlaps?(beginning_i...ending_i)
     end
