@@ -25,7 +25,7 @@
                   - if event["letter"].present?
                     = event["letter"]
                   - else
-                    i.fa-fw class="fa-solid fa-#{event['icon']}"
+                    i.fa-fw class="fa-#{icon_set} fa-#{event['icon']}"
                 td
                   div
                     = event["summary"]
@@ -34,7 +34,7 @@
                     div style="font-size: .5rem;" = event["location"]
             - if event_day[:day_index] == 0
               td style="width: 1%; text-align: center; font-size: 1.25rem; font-weight: bold; padding-right: 0.25rem;"
-                i.fa-solid.fa-fw.fa-baby-carriage
+                i.fa-fw.fa-baby-carriage class="fa-#{icon_set}"
               td
                 = pregnancy_string
     div.periodic style="width: 30rem;"
@@ -45,10 +45,10 @@
               - if event["letter"].present?
                 = event["letter"]
               - else
-                i.fa-fw class="fa-solid fa-#{event['icon']}"
+                i.fa-fw class="fa-#{icon_set} fa-#{event['icon']}"
             td style="whitespace: nowrap; font-size: .75rem; padding: 0 .5rem; width: 5rem;"
               = event["time"].html_safe
             td style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;max-width: 0;"
               = event["summary"]
               - if event["weather"].present?
-                =< "(#{event["weather"]["temperature"].round}° <i class='fa-fw fa-solid fa-#{event['weather']['icon_class']}'></i>)".html_safe
+                =< "(#{event["weather"]["temperature"].round}° <i class='fa-fw fa-#{icon_set} fa-#{event['weather']['icon_class']}'></i>)".html_safe
