@@ -10,13 +10,13 @@
     div.daily style="width: 16rem; vertical-align: top; padding-right: 1rem; border-right: 2px solid #ccc;"
       div style="display: flex; justify-content: space-between; flex-direction: column; height: 100%;"
         div
-          / div style="font-size: 2rem; font-weight: 700"
-          /   = event_day[:day_name]
-          / div style="margin-bottom: 1rem;"
-          /   => event_day[:temperature_range]
-          /   span
-          /     - if event_day[:precip_probability] > 0.1
-          /       =< event_day[:precip_label].html_safe
+          div style="font-size: 2rem; font-weight: 700"
+            = event_day[:day_name]
+          div style="margin-bottom: 1rem;"
+            => event_day[:temperature_range]
+            span
+              - if event_day[:precip_probability] > 0.1
+                =< event_day[:precip_label].html_safe
         div
           table
             - event_day[:events][:all_day].each do |event|
