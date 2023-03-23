@@ -937,7 +937,7 @@ class ApplicationHelperTest < Minitest::Test
             "2023-02-04T16:20:54-0700"],
           "calendarDayTemperatureMax"=>[9, 28, 37, 41, 45, 43],
           "calendarDayTemperatureMin"=>[-5, 3, 11, 18, 22, 26]},
-          nws_alerts: 
+          nws_alerts:
             {"type"=>"FeatureCollection",
       "title"=>
       "current watches, warnings, and advisories for North Douglas County Below 6000 Feet/Denver/West Adams and Arapahoe Counties/East Broomfield County (COZ040) CO",
@@ -1065,7 +1065,7 @@ class ApplicationHelperTest < Minitest::Test
 
     result = @helper.weather_calendar_events(DateTime.new(2023,1,30,12,44,30,'+7'))
 
-    assert(result.map { |result| result["summary"] }.include?("Sunrise"))
-    assert(result.map { |result| result["summary"] }.include?("Sunset"))
+    assert(result.map { |result| result["icon"] }.include?("sunrise"))
+    assert(result.map { |result| result["icon"] }.include?("sunset"))
   end
 end

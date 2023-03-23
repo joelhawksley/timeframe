@@ -15,7 +15,7 @@ module ApplicationHelper
   end
 
   def pregnancy_string(
-    today = Date.today, 
+    today = Date.today,
     pregnancy_start_date = ENV["PREGNANCY_START_DATE"]
   )
     day_count = today - Date.parse(pregnancy_start_date)
@@ -118,32 +118,36 @@ module ApplicationHelper
 
     weather["wunderground_forecast"]["sunsetTimeLocal"].each do |sunset_time|
       sunset_i = DateTime.parse(sunset_time).to_i
+      weather_hour = weather["nws_hourly"].find { (_1["start_i"].._1["end_i"]).cover?(sunset_i) }
 
-      out <<
-        {
-          "id" => sunset_i,
-          "start_i" => sunset_i,
-          "end_i" => sunset_i,
-          "calendar" => "_weather_alerts",
-          "weather" => weather["nws_hourly"].find { (_1["start_i"].._1["end_i"]).cover?(sunset_i) },
-          "icon" => "sunset",
-          "summary" => "Sunset"
-        }
+      if weather_hour
+        out <<
+          {
+            "id" => sunset_i,
+            "start_i" => sunset_i,
+            "end_i" => sunset_i,
+            "calendar" => "_weather_alerts",
+            "icon" => "sunset",
+            "summary" => "#{weather_hour['temperature'].round}° <i class='fa-fw fa-solid fa-#{weather_hour['icon_class']}'></i>".html_safe
+          }
+      end
     end
 
     weather["wunderground_forecast"]["sunriseTimeLocal"].each do |sunrise_time|
       sunrise_i = DateTime.parse(sunrise_time).to_i
+      weather_hour = weather["nws_hourly"].find { (_1["start_i"].._1["end_i"]).cover?(sunrise_i) }
 
-      out <<
-        {
-          "id" => sunrise_i,
-          "start_i" => sunrise_i,
-          "end_i" => sunrise_i,
-          "calendar" => "_weather_alerts",
-          "weather" => weather["nws_hourly"].find { (_1["start_i"].._1["end_i"]).cover?(sunrise_i) },
-          "icon" => "sunrise",
-          "summary" => "Sunrise"
-        }
+      if weather_hour
+        out <<
+          {
+            "id" => sunrise_i,
+            "start_i" => sunrise_i,
+            "end_i" => sunrise_i,
+            "calendar" => "_weather_alerts",
+            "icon" => "sunrise",
+            "summary" => "#{weather_hour['temperature'].round}° <i class='fa-fw fa-solid fa-#{weather_hour['icon_class']}'></i>".html_safe
+          }
+      end
     end
 
     out

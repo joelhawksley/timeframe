@@ -83,8 +83,10 @@ class WeatherService
     "/day/wind_bkn" => "wind",
     "/day/wind_few" => "wind",
     "/day/wind_sct" => "wind",
-    "/day/rain" => "cloud-rain",
-    "/day/snow" => "cloud-snow",
+    "/day/rain" => "raindrops",
+    "/day/rain_showers" => "raindrops",
+    "/day/snow" => "snowflake",
+    "/day/blizzard" => "snowflake",
     "/day/cold" => "hat-winter",
     "/night/ovc" => "clouds",
     "/night/bkn" => "clouds-moon",
@@ -93,19 +95,21 @@ class WeatherService
     "/night/wind_bkn" => "wind",
     "/night/wind_few" => "wind",
     "/night/wind_sct" => "wind",
-    "/night/rain" => "cloud-rain",
-    "/night/snow" => "cloud-snow",
+    "/night/rain" => "raindrops",
+    "/night/rain_showers" => "raindrops",
+    "/night/snow" => "snowflake",
+    "/night/blizzaed" => "snowflake",
     "/night/cold" => "hat-winter",
   }
 
   def self.icon_for_period(nws_url)
     icon = nws_url.split("?").first.split("/").last
 
-    token = 
+    token =
       nws_url.split("?").first.
       split("land").last.
       split(",").first
-    
+
     [icon, MAPPINGS[token] || "question"]
   end
 end

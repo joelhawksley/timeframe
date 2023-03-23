@@ -5,7 +5,7 @@
       .fade-bottom {
         bottom: 478px;
       }
-    - if res["currentTrack"]["albumArtUri"].include?("htt")
+    - if res["currentTrack"]["albumArtUri"]&.include?("htt")
       - url = res["currentTrack"]["albumArtUri"]
     - else
       - url = res["currentTrack"]["absoluteAlbumArtUri"]

@@ -19,7 +19,7 @@ div style="display: flex;"
     div#time style="font-size: 4rem; line-height: 4rem;"
 hr style="margin: 1rem 0; border: none;background-color: #ccc;color: #ccc;height: 2px;"
 div hx-get="#{timeline_path}" hx-trigger="every 5s" hx-swap="innerHTML"
-  = render Timeline.new(view_object: view_object, icon_set: "duotone")
+  = render Timeline.new(view_object: view_object)
 
 javascript:
   function flash() {
