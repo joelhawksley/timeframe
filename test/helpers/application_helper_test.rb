@@ -1068,4 +1068,69 @@ class ApplicationHelperTest < Minitest::Test
     assert(result.map { |result| result["icon"] }.include?("sunrise"))
     assert(result.map { |result| result["icon"] }.include?("sunset"))
   end
+
+  def test_weather_calendar_events
+    Value.
+      find_by_key("weather").
+      update(
+        value: {
+          nws_hourly: [{"icon"=>"snow,60",
+            "wind"=>"6 mph",
+            "end_i"=>1675108800,
+            "start_i"=>1675105200,
+            "icon_class"=>"snowflake",
+            "temperature"=>1,
+            "short_forecast"=>"Light Snow Likely"},
+           {"icon"=>"snow,60",
+            "wind"=>"6 mph",
+            "end_i"=>1675112400,
+            "start_i"=>1675108800,
+            "icon_class"=>"snowflake",
+            "temperature"=>2,
+            "short_forecast"=>"Light Snow Likely"},
+           {"icon"=>"snow,50",
+            "wind"=>"6 mph",
+            "end_i"=>1675116000,
+            "start_i"=>1675112400,
+            "icon_class"=>"snowflake",
+            "temperature"=>4,
+            "short_forecast"=>"Chance Light Snow"},
+           {"icon"=>"snow,50",
+            "wind"=>"5 mph",
+            "end_i"=>1675119600,
+            "start_i"=>1675116000,
+            "icon_class"=>"snowflake",
+            "temperature"=>5,
+            "short_forecast"=>"Chance Light Snow"},
+           {"icon"=>"snow,50",
+            "wind"=>"3 mph",
+            "end_i"=>1675123200,
+            "start_i"=>1675119600,
+            "icon_class"=>"snowflake",
+            "temperature"=>5,
+            "short_forecast"=>"Chance Light Snow"},
+           {"icon"=>"snow,40",
+            "wind"=>"5 mph",
+            "end_i"=>1675126800,
+            "start_i"=>1675123200,
+            "icon_class"=>"snowflake",
+            "temperature"=>6,
+            "short_forecast"=>"Chance Light Snow"},
+         ]
+      })
+
+    result = @helper.weather_calendar_events(DateTime.new(2023,1,30,12,44,30,'+7'))
+
+    assert_equal(
+      result.first,
+      {
+        "id" => 1675105200,
+        "start_i" => 1675105200,
+        "end_i" => 1675123200,
+        "calendar" => "_weather_alerts",
+        "icon" => "snowflake",
+        "summary" => "Snow"
+      }
+    )
+  end
 end

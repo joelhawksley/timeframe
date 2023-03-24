@@ -116,7 +116,7 @@ module ApplicationHelper
       }
     end
 
-    weather["wunderground_forecast"]["sunsetTimeLocal"].each do |sunset_time|
+    weather.dig("wunderground_forecast", "sunsetTimeLocal").to_a.each do |sunset_time|
       sunset_i = DateTime.parse(sunset_time).to_i
       weather_hour = weather["nws_hourly"].find { (_1["start_i"].._1["end_i"]).cover?(sunset_i) }
 
@@ -133,7 +133,7 @@ module ApplicationHelper
       end
     end
 
-    weather["wunderground_forecast"]["sunriseTimeLocal"].each do |sunrise_time|
+    weather.dig("wunderground_forecast", "sunriseTimeLocal").to_a.each do |sunrise_time|
       sunrise_i = DateTime.parse(sunrise_time).to_i
       weather_hour = weather["nws_hourly"].find { (_1["start_i"].._1["end_i"]).cover?(sunrise_i) }
 
@@ -150,7 +150,29 @@ module ApplicationHelper
       end
     end
 
-    out
+    precip_windows = []
+
+    weather["nws_hourly"].each_with_index do |hour, index|
+      next unless hour["icon"].split(",").length == 2 && hour["icon"].split(",").last.to_i > 49
+      next unless hour["icon"].split(",").first == "snow"
+
+
+      if existing_index = precip_windows.find_index { _1["summary"] == "Snow likely" && _1["end_i"] == hour["start_i"] }
+        precip_windows[existing_index]["end_i"] = hour["end_i"]
+      else
+        precip_windows <<
+          {
+            "id" => hour["start_i"],
+            "start_i" => hour["start_i"],
+            "end_i" => hour["end_i"],
+            "calendar" => "_weather_alerts",
+            "icon" => "snowflake",
+            "summary" => "Snow likely"
+          }
+      end
+    end
+
+    out.concat(precip_windows)
   end
 
   # Returns calendar events for a given UTC integer time range,
