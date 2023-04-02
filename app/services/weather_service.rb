@@ -78,7 +78,7 @@ class WeatherService
   MAPPINGS = {
     "/day/ovc" => "clouds",
     "/day/bkn" => "clouds-sun",
-    "/day/sct" => "cloud-sun",
+    "/day/sct" => "clouds-sun",
     "/day/few" => "sun",
     "/day/wind_bkn" => "wind",
     "/day/wind_few" => "wind",
@@ -99,7 +99,7 @@ class WeatherService
     "/night/rain" => "raindrops",
     "/night/rain_showers" => "raindrops",
     "/night/snow" => "snowflake",
-    "/night/blizzaed" => "snowflake",
+    "/night/blizzard" => "snowflake",
     "/night/cold" => "hat-winter",
     "/night/fog" => "cloud-fog",
   }

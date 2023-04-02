@@ -116,6 +116,23 @@ module ApplicationHelper
       }
     end
 
+    [Date.today.in_time_zone(tz), Date.tomorrow.in_time_zone(tz), Date.tomorrow.in_time_zone(tz) + 1.day].each do |twz|
+      noon_i = twz.noon.to_i
+      weather_hour = weather["nws_hourly"].find { (_1["start_i"].._1["end_i"]).cover?(noon_i) }
+
+      if weather_hour
+        out <<
+          {
+            "id" => noon_i,
+            "start_i" => noon_i,
+            "end_i" => noon_i,
+            "calendar" => "_weather_alerts",
+            "icon" => weather_hour['icon_class'],
+            "summary" => "#{weather_hour['temperature'].round}°".html_safe
+          }
+      end
+    end
+
     weather.dig("wunderground_forecast", "sunsetTimeLocal").to_a.each do |sunset_time|
       sunset_i = DateTime.parse(sunset_time).to_i
       weather_hour = weather["nws_hourly"].find { (_1["start_i"].._1["end_i"]).cover?(sunset_i) }
@@ -127,8 +144,8 @@ module ApplicationHelper
             "start_i" => sunset_i,
             "end_i" => sunset_i,
             "calendar" => "_weather_alerts",
-            "icon" => "sunset",
-            "summary" => "#{weather_hour['temperature'].round}° <i class='fa-fw fa-solid fa-#{weather_hour['icon_class']}'></i>".html_safe
+            "icon" => weather_hour['icon_class'],
+            "summary" => "#{weather_hour['temperature'].round}°".html_safe
           }
       end
     end
@@ -144,8 +161,8 @@ module ApplicationHelper
             "start_i" => sunrise_i,
             "end_i" => sunrise_i,
             "calendar" => "_weather_alerts",
-            "icon" => "sunrise",
-            "summary" => "#{weather_hour['temperature'].round}° <i class='fa-fw fa-solid fa-#{weather_hour['icon_class']}'></i>".html_safe
+            "icon" => weather_hour['icon_class'],
+            "summary" => "#{weather_hour['temperature'].round}°".html_safe
           }
       end
     end
