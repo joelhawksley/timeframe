@@ -1129,7 +1129,7 @@ class ApplicationHelperTest < Minitest::Test
         "end_i" => 1675123200,
         "calendar" => "_weather_alerts",
         "icon" => "snowflake",
-        "summary" => "Snow"
+        "summary" => "Snow likely"
       }
     )
   end

@@ -28,7 +28,7 @@ class HomeController < ApplicationController
   end
 
   def timeline
-    render Timeline.new(view_object: render_json_payload, icon_set: "duotone")
+    render Timeline.new(view_object: render_json_payload)
   end
 
   def redirect

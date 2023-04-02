@@ -156,7 +156,6 @@ module ApplicationHelper
       next unless hour["icon"].split(",").length == 2 && hour["icon"].split(",").last.to_i > 49
       next unless hour["icon"].split(",").first == "snow"
 
-
       if existing_index = precip_windows.find_index { _1["summary"] == "Snow likely" && _1["end_i"] == hour["start_i"] }
         precip_windows[existing_index]["end_i"] = hour["end_i"]
       else
