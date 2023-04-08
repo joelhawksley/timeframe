@@ -116,7 +116,7 @@ module ApplicationHelper
       }
     end
 
-    [Date.today.in_time_zone(tz), Date.tomorrow.in_time_zone(tz), Date.tomorrow.in_time_zone(tz) + 1.day].each do |twz|
+    [Date.today.in_time_zone(tz), Date.today.in_time_zone(tz).tomorrow, Date.today.in_time_zone(tz) + 2.day, Date.today.in_time_zone(tz) + 3.day].each do |twz|
       noon_i = twz.noon.to_i
       weather_hour = weather["nws_hourly"].find { (_1["start_i"].._1["end_i"]).cover?(noon_i) }
 
@@ -170,10 +170,17 @@ module ApplicationHelper
     precip_windows = []
 
     weather["nws_hourly"].each_with_index do |hour, index|
-      next unless hour["icon"].split(",").length == 2 && hour["icon"].split(",").last.to_i > 49
-      next unless hour["icon"].split(",").first == "snow"
+      next unless hour["icon"].split(",").length == 2 && hour["icon"].split(",").last.to_i > 25
+      
+      summary, icon = 
+        case hour["icon"].split(",").first
+        when "snow", "blizzard"
+          ["Snow", "snowflake"]
+        when "rain", "rain_showers"
+          ["Rain", "raindrops"]
+        end
 
-      if existing_index = precip_windows.find_index { _1["summary"] == "Snow likely" && _1["end_i"] == hour["start_i"] }
+      if existing_index = precip_windows.find_index { _1["summary"] == summary && _1["end_i"] == hour["start_i"] }
         precip_windows[existing_index]["end_i"] = hour["end_i"]
       else
         precip_windows <<
@@ -182,8 +189,8 @@ module ApplicationHelper
             "start_i" => hour["start_i"],
             "end_i" => hour["end_i"],
             "calendar" => "_weather_alerts",
-            "icon" => "snowflake",
-            "summary" => "Snow likely"
+            "icon" => icon,
+            "summary" => summary
           }
       end
     end
@@ -249,15 +256,15 @@ module ApplicationHelper
 
         end_i = date.end_of_day.utc.to_i
 
-        day_name =
-          case day_index
-          when 0
-            "Today"
-          when 1
-            "Tomorrow"
-          else
-            date.strftime("%A")
-          end
+        day_name = date.strftime("%A")
+          # case day_index
+          # when 0
+          #   "Today"
+          # when 1
+          #   "Tomorrow"
+          # else
+          #   date.strftime("%A")
+          # end
 
         events = calendar_events_for(start_i, end_i)
         all_day_events = events.select { |event| event["all_day"] }
