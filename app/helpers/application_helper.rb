@@ -2,21 +2,21 @@
 
 module ApplicationHelper
   def weather_healthy?
-    Log.where(globalid: "WeatherService", event: "call_success").last.created_at > DateTime.now - 1.hour
+    Log.where(globalid: 'WeatherService', event: 'call_success').last.created_at > DateTime.now - 1.hour
   end
 
   def flash_class(level)
     case level
-    when :success then "alert alert-success"
-    when :error then "alert alert-error"
-    when :alert then "alert alert-error"
-    else "alert alert-info"
+    when :success then 'alert alert-success'
+    when :error then 'alert alert-error'
+    when :alert then 'alert alert-error'
+    else 'alert alert-info'
     end
   end
 
   def pregnancy_string(
     today = Date.today,
-    pregnancy_start_date = ENV["PREGNANCY_START_DATE"]
+    pregnancy_start_date = ENV['PREGNANCY_START_DATE']
   )
     day_count = today - Date.parse(pregnancy_start_date)
     week_count = (day_count / 7).to_i
@@ -34,8 +34,8 @@ module ApplicationHelper
   end
 
   ALERT_SEVERITY_MAPPINGS = {
-    "Severe" => 0,
-    "Moderate" => 1
+    'Severe' => 0,
+    'Moderate' => 1
   }
 
   def weather
@@ -47,150 +47,155 @@ module ApplicationHelper
   end
 
   def most_important_weather_alert
-    return nil unless weather.to_h.dig("nws_alerts", "features").to_a.any?
+    return nil unless weather.to_h.dig('nws_alerts', 'features').to_a.any?
 
-    alerts = weather["nws_alerts"]["features"]
+    alerts = weather['nws_alerts']['features']
 
     alerts
-      .reject { |alert| alert.dig("properties", "urgency") == "Past" }
-      .sort_by { |alert| ALERT_SEVERITY_MAPPINGS[alert["properties"]["severity"]] }
-      .uniq { |alert| alert["properties"]["event"] }
-      .reject { |alert| alert["properties"]["areaDesc"].to_s.include?("OZONE ACTION DAY") }
-      .first["properties"]
+      .reject { |alert| alert.dig('properties', 'urgency') == 'Past' }
+      .sort_by { |alert| ALERT_SEVERITY_MAPPINGS[alert['properties']['severity']] }
+      .uniq { |alert| alert['properties']['event'] }
+      .reject { |alert| alert['properties']['areaDesc'].to_s.include?('OZONE ACTION DAY') }
+      .first['properties']
   end
 
   # convert weather alerts to be timeline events;
   # they are timely, after all!
-  def weather_calendar_events(now = DateTime.now)
+  def weather_calendar_events(_now = DateTime.now)
     alert = most_important_weather_alert
 
     out = []
 
     if alert
       icon =
-        if String(alert["event"]).include?("Winter")
-          "snowflake"
+        if String(alert['event']).include?('Winter')
+          'snowflake'
         else
-          "warning"
+          'warning'
         end
 
       summary =
-        if String(alert["event"]).include?("Winter")
-          if alert["description"].include?("Additional snow")
-            alert["description"]
-              .tr("\n", " ")
-              .split("Additional snow accumulations")
+        if String(alert['event']).include?('Winter')
+          if alert['description'].include?('Additional snow')
+            alert['description']
+              .tr("\n", ' ')
+              .split('Additional snow accumulations')
               .last
-              .split(".")
+              .split('.')
               .first
               .strip
-              .gsub(" inches", "\"")
+              .gsub(' inches', '"')
           else
-            desc = alert["description"]
-              .tr("\n", " ")
-              .split("accumulations between")
-              .last
-              .split(".")
-              .first
-              .strip
-              .gsub(" and ", "-")
-              .gsub(" inches", "\"")
-              .gsub(" possible", "")
-              .split(", with")
-              .first
-              .split("\"")
-              .first
+            desc = alert['description']
+                   .tr("\n", ' ')
+                   .split('accumulations between')
+                   .last
+                   .split('.')
+                   .first
+                   .strip
+                   .gsub(' and ', '-')
+                   .gsub(' inches', '"')
+                   .gsub(' possible', '')
+                   .split(', with')
+                   .first
+                   .split('"')
+                   .first
 
-            "NWS #{alert["event"].split(" ").last}: ~#{desc}\""
+            "NWS #{alert['event'].split(' ').last}: ~#{desc}\""
           end
         else
-          alert["event"]
+          alert['event']
         end
 
       out << {
-        "start_i" => DateTime.parse(alert["onset"]).to_i,
-        "end_i" => DateTime.parse(alert["ends"]).to_i,
-        "calendar" => "_weather_alerts",
-        "summary" => summary,
-        "icon" => icon
+        'start_i' => DateTime.parse(alert['onset']).to_i,
+        'end_i' => DateTime.parse(alert['ends'] || alert['expires']).to_i,
+        'calendar' => '_weather_alerts',
+        'summary' => summary,
+        'icon' => icon
       }
     end
 
-    [Date.today.in_time_zone(tz), Date.today.in_time_zone(tz).tomorrow, Date.today.in_time_zone(tz) + 2.day, Date.today.in_time_zone(tz) + 3.day].each do |twz|
+    [Date.today.in_time_zone(tz), Date.today.in_time_zone(tz).tomorrow, Date.today.in_time_zone(tz) + 2.day,
+     Date.today.in_time_zone(tz) + 3.day].each do |twz|
       noon_i = twz.noon.to_i
-      weather_hour = weather["nws_hourly"].find { (_1["start_i"].._1["end_i"]).cover?(noon_i) }
+      weather_hour = weather['nws_hourly'].find { (_1['start_i'].._1['end_i']).cover?(noon_i) }
 
-      if weather_hour
-        out <<
-          {
-            "id" => noon_i,
-            "start_i" => noon_i,
-            "end_i" => noon_i,
-            "calendar" => "_weather_alerts",
-            "icon" => weather_hour['icon_class'],
-            "summary" => "#{weather_hour['temperature'].round}°".html_safe
-          }
-      end
+      next unless weather_hour
+
+      out <<
+        {
+          'id' => noon_i,
+          'start_i' => noon_i,
+          'end_i' => noon_i,
+          'calendar' => '_weather_alerts',
+          'icon' => weather_hour['icon_class'],
+          'summary' => "#{weather_hour['temperature'].round}°".html_safe
+        }
     end
 
-    weather.dig("wunderground_forecast", "sunsetTimeLocal").to_a.each do |sunset_time|
+    weather.dig('wunderground_forecast', 'sunsetTimeLocal').to_a.each do |sunset_time|
       sunset_i = DateTime.parse(sunset_time).to_i
-      weather_hour = weather["nws_hourly"].find { (_1["start_i"].._1["end_i"]).cover?(sunset_i) }
+      weather_hour = weather['nws_hourly'].find { (_1['start_i'].._1['end_i']).cover?(sunset_i) }
 
-      if weather_hour
-        out <<
-          {
-            "id" => sunset_i,
-            "start_i" => sunset_i,
-            "end_i" => sunset_i,
-            "calendar" => "_weather_alerts",
-            "icon" => weather_hour['icon_class'],
-            "summary" => "#{weather_hour['temperature'].round}°".html_safe
-          }
-      end
+      next unless weather_hour
+
+      out <<
+        {
+          'id' => sunset_i,
+          'start_i' => sunset_i,
+          'end_i' => sunset_i,
+          'calendar' => '_weather_alerts',
+          'icon' => weather_hour['icon_class'],
+          'summary' => "#{weather_hour['temperature'].round}°".html_safe
+        }
     end
 
-    weather.dig("wunderground_forecast", "sunriseTimeLocal").to_a.each do |sunrise_time|
+    weather.dig('wunderground_forecast', 'sunriseTimeLocal').to_a.each do |sunrise_time|
       sunrise_i = DateTime.parse(sunrise_time).to_i
-      weather_hour = weather["nws_hourly"].find { (_1["start_i"].._1["end_i"]).cover?(sunrise_i) }
+      weather_hour = weather['nws_hourly'].find { (_1['start_i'].._1['end_i']).cover?(sunrise_i) }
 
-      if weather_hour
-        out <<
-          {
-            "id" => sunrise_i,
-            "start_i" => sunrise_i,
-            "end_i" => sunrise_i,
-            "calendar" => "_weather_alerts",
-            "icon" => weather_hour['icon_class'],
-            "summary" => "#{weather_hour['temperature'].round}°".html_safe
-          }
-      end
+      next unless weather_hour
+
+      out <<
+        {
+          'id' => sunrise_i,
+          'start_i' => sunrise_i,
+          'end_i' => sunrise_i,
+          'calendar' => '_weather_alerts',
+          'icon' => weather_hour['icon_class'],
+          'summary' => "#{weather_hour['temperature'].round}°".html_safe
+        }
     end
 
     precip_windows = []
 
-    weather["nws_hourly"].each_with_index do |hour, index|
-      next unless hour["icon"].split(",").length == 2 && hour["icon"].split(",").last.to_i > 25
-      
-      summary, icon = 
-        case hour["icon"].split(",").first
-        when "snow", "blizzard"
-          ["Snow", "snowflake"]
-        when "rain", "rain_showers"
-          ["Rain", "raindrops"]
+    weather['nws_hourly'].each_with_index do |hour, _index|
+      next unless hour['icon'].split(',').length == 2 # && hour['icon'].split(',').last.to_i >= 1
+
+      summary, icon =
+        case hour['icon'].split(',').first
+        when 'snow', 'blizzard'
+          %w[Snow snowflake]
+        when 'rain', 'rain_showers', 'tsra', 'tsra_sct', 'tsra_hi'
+          %w[Rain raindrops]
+        when 'smoke'
+          %w[Smoke smoke]
         end
 
-      if existing_index = precip_windows.find_index { _1["summary"] == summary && _1["end_i"] == hour["start_i"] }
-        precip_windows[existing_index]["end_i"] = hour["end_i"]
+      next unless summary
+
+      if (existing_index = precip_windows.find_index { _1['summary'] == summary && _1['end_i'] == hour['start_i'] })
+        precip_windows[existing_index]['end_i'] = hour['end_i']
       else
         precip_windows <<
           {
-            "id" => hour["start_i"],
-            "start_i" => hour["start_i"],
-            "end_i" => hour["end_i"],
-            "calendar" => "_weather_alerts",
-            "icon" => icon,
-            "summary" => summary
+            'id' => "#{hour['start_i']}_window",
+            'start_i' => hour['start_i'],
+            'end_i' => hour['end_i'],
+            'calendar' => '_weather_alerts',
+            'icon' => icon,
+            'summary' => summary
           }
       end
     end
@@ -206,36 +211,36 @@ module ApplicationHelper
   )
 
     filtered_events = (weather_calendar_events + sorted_calendar_events_array).select do |event|
-      (event["start_i"]..event["end_i"]).overlaps?(beginning_i...ending_i)
+      (event['start_i']..event['end_i']).overlaps?(beginning_i...ending_i)
     end
 
     parsed_events = filtered_events.map do |event|
-      event["time"] = EventTimeService.call(event["start_i"], event["end_i"], tz)
+      event['time'] = EventTimeService.call(event['start_i'], event['end_i'], tz)
       event
     end
 
     # Merge duplicate events, merging the letter with a custom rule if so
     parsed_events
-      .group_by { _1["id"] }
-      .map do |k, v|
+      .group_by { _1['id'] }
+      .map do |_k, v|
         if v.length > 1
-          letters = v.map { |iv| iv["letter"] }
+          letters = v.map { |iv| iv['letter'] }
           letter =
             if letters.uniq.length == 1
               letters[0]
-            elsif letters.include?("+")
-              "+"
+            elsif letters.include?('+')
+              '+'
             else
               letters[0]
             end
 
           out = v[0]
-          out["letter"] = letter
+          out['letter'] = letter
           out
         else
           v[0]
         end
-      end.sort_by { |event| event["start_i"] }
+      end.sort_by { |event| event['start_i'] }
   end
 
   def render_json_payload(at = DateTime.now)
@@ -256,47 +261,78 @@ module ApplicationHelper
 
         end_i = date.end_of_day.utc.to_i
 
-        day_name = date.strftime("%A")
-          # case day_index
-          # when 0
-          #   "Today"
-          # when 1
-          #   "Tomorrow"
-          # else
-          #   date.strftime("%A")
-          # end
+        day_name = date.strftime('%A')
 
         events = calendar_events_for(start_i, end_i)
-        all_day_events = events.select { |event| event["all_day"] }
+        all_day_events = events.select { |event| event['all_day'] }
 
-        all_day_events.sort! do |x, y|
-          # if this result is 1 means x should come later relative to y
-          # if this result is -1 means x should come earlier relative to y
-          # if this result is 0 means both are same so position doesn't matter
-          if x["calendar"] == "Dinner" && y["calendar"] == "Us"
-            1
-          elsif x["summary"].starts_with?("Dinner") && y["summary"].starts_with?("Lunch")
-            1
-          elsif x["summary"].starts_with?("Lunch") && y["summary"].starts_with?("Breakfast")
-            1
-          elsif y["calendar"] == "Dinner" && x["calendar"] == "Us"
-            -1
-          elsif x["summary"].starts_with?("Breakfast") && y["summary"].starts_with?("Lunch")
-            -1
-          elsif x["summary"].starts_with?("Lunch") && y["summary"].starts_with?("Dinner")
-            -1
-          else
-            0
+        mappings = [
+          "Birthdays",
+          "Us",
+          "Caitlin",
+          "Caitlin Exercise Log",
+          "Captain",
+          "Dinner",
+          "Friends & Family",
+          "HelloFresh",
+          "Holidays in United States",
+          "Home",
+          "Joel",
+          "Joel Health",
+          "On Call Schedule for joelhawksley",
+          "joelhawksley@github.com",
+          "Work",
+        ]
+
+        groupings = all_day_events.group_by { |event| event['calendar'] }
+
+        groupings.transform_values! do |arr|
+          arr.sort! do |x, y|
+            # if this result is 1 means x should come later relative to y
+            # if this result is -1 means x should come earlier relative to y
+            # if this result is 0 means both are same so position doesn't matter
+            if x['calendar'] != 'Dinner'
+              # if this result is 1 means x should come later relative to y
+              # if this result is -1 means x should come earlier relative to y
+              # if this result is 0 means both are same so position doesn't matter
+              if !x['multi_day'] && y['multi_day']
+                -1
+              elsif x['multi_day'] && !y['multi_day']
+                1
+              else
+                0
+              end
+            # elsif x['summary'].starts_with?('Dinner')
+            #   1
+            # elsif x['summary'].starts_with?('Lunch') && y['summary'].starts_with?('Dinner')
+            #   -1
+            # elsif x['summary'].starts_with?('Lunch') && y['summary'].starts_with?('Breakfast')
+            #   1
+            # elsif x['summary'].starts_with?('Breakfast')
+            #   -1
+            else
+              0
+            end
           end
         end
 
+        pairs = groupings.flat_map do |calendar, events|
+          events.map do |event|
+            [calendar, event]
+          end
+        end
+
+        pairs.sort_by! do |pair|
+          mappings.index(pair[0])
+        end.map!(&:last)
+
         all_day_events.sort! do |x, y|
           # if this result is 1 means x should come later relative to y
           # if this result is -1 means x should come earlier relative to y
           # if this result is 0 means both are same so position doesn't matter
-          if !x["multi_day"] && y["multi_day"]
+          if !x['multi_day'] && y['multi_day']
             -1
-          elsif x["multi_day"] && !y["multi_day"]
+          elsif x['multi_day'] && !y['multi_day']
             1
           else
             0
@@ -308,21 +344,21 @@ module ApplicationHelper
           day_name: day_name,
           show_all_day_events: day_index.zero? ? date.hour <= 19 : true,
           events: {
-            all_day: all_day_events,
-            periodic: events.reject { |event| event["all_day"] }
+            all_day: pairs,
+            periodic: events.reject { |event| event['all_day'] }
           }
         }
 
-        high = weather["wunderground_forecast"]["calendarDayTemperatureMax"][day_index]
-        low = weather["wunderground_forecast"]["calendarDayTemperatureMin"][day_index]
+        high = weather['wunderground_forecast']['calendarDayTemperatureMax'][day_index]
+        low = weather['wunderground_forecast']['calendarDayTemperatureMin'][day_index]
 
-        out[:precip_label] = if weather["wunderground_forecast"]["qpfSnow"][day_index] > 0
-          " <i class='fa-regular fa-snowflake'></i> #{weather["wunderground_forecast"]["qpfSnow"][day_index].round}\""
-        else
-          " #{weather["wunderground_forecast"]["qpf"][day_index].round}%"
-        end
+        out[:precip_label] = if weather['wunderground_forecast']['qpfSnow'][day_index] > 0
+                               " <i class='fa-regular fa-snowflake'></i> #{weather['wunderground_forecast']['qpfSnow'][day_index].round}\""
+                             else
+                               " #{weather['wunderground_forecast']['qpf'][day_index].round}%"
+                             end
         out[:temperature_range] = "&#8593;#{high} &#8595;#{low}".html_safe
-        out[:precip_probability] = weather["wunderground_forecast"]["qpf"][day_index]
+        out[:precip_probability] = weather['wunderground_forecast']['qpf'][day_index]
 
         memo << out
       end
@@ -331,17 +367,17 @@ module ApplicationHelper
       {
         yearly_events: yearly_events,
         day_groups: day_groups,
-        timestamp: current_time.strftime("%-l:%M %p")
+        timestamp: current_time.strftime('%-l:%M %p')
       }
 
     current_nws_hour =
-      weather["nws_hourly"]
-        .find do
-        (_1["start_i"].._1["end_i"])
-          .cover?(DateTime.now.utc.in_time_zone(Timeframe::Application::LOCAL_TZ).to_i)
+      weather['nws_hourly']
+      .find do
+        (_1['start_i'].._1['end_i'])
+      .cover?(DateTime.now.utc.in_time_zone(Timeframe::Application::LOCAL_TZ).to_i)
       end
 
-    out[:current_temperature] = "#{current_nws_hour["temperature"]}°"
+    out[:current_temperature] = "#{current_nws_hour['temperature']}°"
 
     out
   end
@@ -350,8 +386,8 @@ module ApplicationHelper
     calendar_events_for(
       at.in_time_zone(tz).beginning_of_day.to_i,
       (at.in_time_zone(tz) + 1.year).end_of_day.utc.to_i
-    ).select { |event| event["calendar"] == "Birthdays" }
+    ).select { |event| event['calendar'] == 'Birthdays' }
       .first(10)
-      .group_by { |e| Date.parse(e["start"]["date"]).month }
+      .group_by { |e| Date.parse(e['start']['date']).month }
   end
 end

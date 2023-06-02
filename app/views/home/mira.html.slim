@@ -13,10 +13,10 @@ div style="position: absolute; top: .5rem; right: 2rem;"
   = render "api_health"
 div style="display: flex;"
   div style="width: 16rem; padding-bottom: 1rem;"
-    span style="font-size: 8rem; line-height: 6rem;" = view_object[:current_temperature]
-  div style="width: 30rem; text-align: right; padding-top: 0.5rem;"
-    div style="font-size: 1.5rem;" = Date.today.strftime("%A, %B %-d")
-    div#time style="font-size: 4rem; line-height: 4rem;"
+    span style="font-size: 10rem; line-height: 8rem;" = view_object[:current_temperature]
+  div style="width: 30rem; text-align: right; padding-top: 0.75rem;"
+    div style="font-size: 2rem;" = Date.today.strftime("%A, %B %-d")
+    div#time style="font-size: 5rem; line-height: 4rem;"
 hr style="margin: 1rem 0; border: none;background-color: #ccc;color: #ccc;height: 2px;"
 div hx-get="#{timeline_path}" hx-trigger="every 5s" hx-swap="innerHTML"
   = render Timeline.new(view_object: view_object)

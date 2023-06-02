@@ -93,6 +93,7 @@ class WeatherService
     "/day/cold" => "hat-winter",
     "/day/fog" => "cloud-fog",
     "/day/skc" => "sun",
+    "/day/smoke" => "smoke",
     "/night/ovc" => "clouds",
     "/night/bkn" => "clouds-moon",
     "/night/sct" => "cloud-moon",
@@ -110,6 +111,7 @@ class WeatherService
     "/night/blizzard" => "snowflake",
     "/night/cold" => "hat-winter",
     "/night/fog" => "cloud-fog",
+    "/night/smoke" => "smoke"
   }
 
   def self.icon_for_period(nws_url)

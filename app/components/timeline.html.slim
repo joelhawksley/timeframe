@@ -14,9 +14,6 @@
             = event_day[:day_name]
           div style="margin-bottom: 1rem;"
             => event_day[:temperature_range]
-            span
-              - if event_day[:precip_probability] > 0.1
-                =< event_day[:precip_label].html_safe
         div
           table
             - event_day[:events][:all_day].each do |event|
