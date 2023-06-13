@@ -78,3 +78,9 @@ td { height: 100%; }
 .flash .fade-bottom {
   background: none;
 }
+
+.clearfix:after {
+  content:"";
+  display:block;
+  clear:both;
+ }
