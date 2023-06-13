@@ -121,17 +121,32 @@ module ApplicationHelper
       noon_i = twz.noon.to_i
       weather_hour = weather['nws_hourly'].find { (_1['start_i'].._1['end_i']).cover?(noon_i) }
 
-      next unless weather_hour
+      if weather_hour.present?
+        out <<
+          {
+            'id' => noon_i,
+            'start_i' => noon_i,
+            'end_i' => noon_i,
+            'calendar' => '_weather_alerts',
+            'icon' => weather_hour['icon_class'],
+            'summary' => "#{weather_hour['temperature'].round}°".html_safe
+          }
+      end
 
-      out <<
-        {
-          'id' => noon_i,
-          'start_i' => noon_i,
-          'end_i' => noon_i,
-          'calendar' => '_weather_alerts',
-          'icon' => weather_hour['icon_class'],
-          'summary' => "#{weather_hour['temperature'].round}°".html_safe
-        }
+      p_i = (twz.noon + 4.hours).to_i
+      weather_hour = weather['nws_hourly'].find { (_1['start_i'].._1['end_i']).cover?(p_i) }
+
+      if weather_hour.present?
+        out <<
+          {
+            'id' => p_i,
+            'start_i' => p_i,
+            'end_i' => p_i,
+            'calendar' => '_weather_alerts',
+            'icon' => weather_hour['icon_class'],
+            'summary' => "#{weather_hour['temperature'].round}°".html_safe
+          }
+      end
     end
 
     weather.dig('wunderground_forecast', 'sunsetTimeLocal').to_a.each do |sunset_time|
