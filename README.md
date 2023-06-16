@@ -10,7 +10,7 @@ A web application for displaying information from various APIs on digital signag
 - Availability: 100% uptime.
 - Fault tolerance: the application functions when no internet connection is available. (Comcast is not 100% reliable and I reset my internet connection daily for 5m in the early morning)
 
-## Functional architecture
+## Architecture
 
 - Signage endpoints
     - Visionect 13" displays (/thirteen)
@@ -63,3 +63,9 @@ _Note: OAuth setup is not documented_
 ### Deploying
 
 Currently, Timeframe runs on a local Mac Mini in development mode. There is no production deployment.
+
+To upgrade Visionect: `docker-compose pull && docker-compose up -d` in Visionect directory
+
+Run Sonos server: `cd node-sonos-http-api && npm start`
+
+Rails server: `rails s -p 3000 -b 0.0.0.0`
