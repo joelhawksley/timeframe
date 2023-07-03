@@ -31,9 +31,7 @@ class GoogleAccount < ApplicationRecord
       token_credential_uri: "https://accounts.google.com/o/oauth2/token",
       scope:
         "#{Google::Apis::CalendarV3::AUTH_CALENDAR_READONLY} " \
-        "#{Google::Apis::PeopleV1::AUTH_CONTACTS_READONLY} " \
-        "#{Google::Apis::PeopleV1::AUTH_USERINFO_PROFILE} " \
-        "#{Google::Apis::PeopleV1::AUTH_CONTACTS_OTHER_READONLY}",
+        "#{Google::Apis::PeopleV1::AUTH_USERINFO_PROFILE}",
       redirect_uri: ENV["GOOGLE_REDIRECT_URI"],
       access_type: "offline"
     }
