@@ -5,7 +5,7 @@ ruby "3.0.3"
 
 gem "bootstrap-sass"
 gem "dotenv-rails"
-gem "google-api-client", "~> 0.11", require: ["google/apis/calendar_v3", "google/apis/people_v1", "google/apis/gmail_v1"]
+gem "google-api-client", "~> 0.11", require: ["google/apis/calendar_v3", "google/apis/people_v1"]
 gem "htmx-rails"
 gem "httparty"
 gem "mime-types-data", "3.2021.1115" # TODO: See https://github.com/mime-types/mime-types-data/pull/50
