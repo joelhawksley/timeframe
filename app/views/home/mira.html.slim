@@ -9,20 +9,17 @@ css:
 
 - res = JSON.parse(HTTParty.get("http://hawksley-server.local:5005/Sonos%20Move/state").body)
 - if res["playbackState"] == "PLAYING"
-  div style="position: absolute; bottom: 0; left: 0; right: 0; z-index: 20; background-color: #000; color: white; padding: 2rem"
+  div style="position: absolute; bottom: 0; left: 0; right: 0; z-index: 20; background-color: #000; color: white; padding: 1.5rem 2rem"
     css:
       .fade-bottom {
-        bottom: 458px;
+        bottom: 428px;
       }
-    - if res["currentTrack"]["albumArtUri"]&.include?("htt")
-      - url = res["currentTrack"]["albumArtUri"]
-    - else
-      - url = res["currentTrack"]["absoluteAlbumArtUri"]
-    img src="#{url}" width="250" height="250" style="float: left; margin-right: 1rem; border: 1px solid #ccc;"
-    div style="font-size: 1.25rem; line-height: 1.25rem" = res["currentTrack"]["artist"]
+    div style="float: left; margin-right: 1rem; height: 200px;"
+      i.fa-light.fa-speaker style="font-size: 3.5rem; line-height: 180px;"
+    div style="font-size: 1.25rem; line-height: 1.3rem" = res["currentTrack"]["artist"]
     div style="font-size: 2.1rem; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;" = res["currentTrack"]["title"]
-    div style="font-size: 1.25rem;"
-      em = res["currentTrack"]["album"]
+    / div style="font-size: 1.25rem;"
+    /   em = res["currentTrack"]["album"]
 div style="position: absolute; top: .5rem; right: 2rem;"
   - if !weather_healthy?
     span
