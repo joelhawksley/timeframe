@@ -20,6 +20,8 @@ class HomeController < ApplicationController
   end
 
   def mira
+    @refresh = true
+    
     render "mira", locals: {view_object: render_json_payload}, layout: "display"
   end
 
