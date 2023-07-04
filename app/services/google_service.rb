@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "yaml"
+
 class GoogleService
   def self.call
     events = new.events
@@ -19,6 +21,10 @@ class GoogleService
       event: "call_error",
       message: e.message + e.backtrace.join("\n")
     )
+  end
+
+  def self.config
+    @config ||= YAML.load_file(Rails.root.join("config.yml"))
   end
 
   attr_reader :events
@@ -67,16 +73,10 @@ class GoogleService
       events[google_account.email] = {}
 
       calendars.each_with_index do |calendar, _index|
-        calendar_record = google_account.google_calendars.find_by(uuid: calendar.id)
+        calendar_config = 
+          self.class.config["calendars"].find { _1["id"] == calendar.id }
 
-        if calendar_record
-          calendar_record.update(summary: calendar.summary)
-        else
-          calendar_record =
-            google_account.google_calendars.create(uuid: calendar.id, summary: calendar.summary)
-        end
-
-        next unless calendar_record.enabled?
+        next unless calendar_config.present?
 
         service.list_events(
           calendar.id,
@@ -138,8 +138,8 @@ class GoogleService
             summary: event_json["summary"],
             counter: counter,
             calendar: calendar.summary,
-            icon: calendar_record.icon,
-            letter: calendar_record.letter,
+            icon: calendar_config["icon"],
+            letter: calendar_config["letter"],
             start_i: start_i,
             end_i: end_i,
             weather: weather,

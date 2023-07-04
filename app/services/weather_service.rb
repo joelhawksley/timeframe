@@ -60,7 +60,7 @@ class WeatherService
         end
       end
 
-    Value.find_by_key("weather").update(value: result)
+    Value.find_or_create_by(key: "weather").update(value: result)
 
     Log.create(
       globalid: "WeatherService",

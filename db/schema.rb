@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_28_235451) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_04_180334) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -22,16 +22,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_28_235451) do
     t.text "refresh_token", default: "", null: false
     t.datetime "expires_at"
     t.index ["email"], name: "index_google_accounts_on_email"
-  end
-
-  create_table "google_calendars", force: :cascade do |t|
-    t.bigint "google_account_id", null: false
-    t.string "uuid", null: false
-    t.string "summary", null: false
-    t.boolean "enabled", default: false, null: false
-    t.string "icon", default: "", null: false
-    t.string "letter", default: "", null: false
-    t.index ["google_account_id"], name: "index_google_calendars_on_google_account_id"
   end
 
   create_table "logs", force: :cascade do |t|
@@ -49,4 +39,5 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_28_235451) do
     t.datetime "updated_at", null: false
     t.index ["key"], name: "index_values_on_key", unique: true
   end
+
 end

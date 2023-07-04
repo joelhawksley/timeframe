@@ -10,7 +10,6 @@ Rails.application.routes.draw do
   root to: "home#index"
   get :redirect, to: "home#redirect"
   get :google_callback, to: "home#callback"
-  resources :google_calendars, only: [:update]
 
   get :logs, to: "home#logs"
   get :weather_data, to: "home#weather_data"
