@@ -4,11 +4,5 @@ javascript:
   }
 
 .timestamp style="position: absolute; bottom: .25rem; right: .25rem; font-size: .4rem; color: #777; z-index: 10" = view_object[:timestamp]
-/ div style="display: flex;"
-/   div style="width: 16rem; padding-bottom: 1rem; padding-right: 1rem;"
-/     span style="font-size: 6rem; line-height: 5rem;"
-/       = view_object[:current_temperature]
-/   div style="width: 30rem; padding-left: 1rem; text-align: right"
 = render "api_health"
-/ hr style="margin: 1rem 0; border: none;background-color: #ccc;color: #ccc;height: 2px;"
 = render Timeline.new(view_object: view_object)
