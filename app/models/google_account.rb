@@ -2,7 +2,13 @@
 
 class GoogleAccount < ApplicationRecord
   def healthy?
-    (Log.where(globalid: to_global_id.to_s, event: "fetch_success").last&.created_at || 0) > DateTime.now - 2.hours
+    log = Log.where(globalid: to_global_id.to_s, event: "fetch_success").last
+
+    if log
+      Log.where(globalid: to_global_id.to_s, event: "fetch_success").last.created_at > DateTime.now - 2.hours
+    else
+      true
+    end
   end
 
   def self.refresh_all
