@@ -1,3 +1,11 @@
+div style="position: absolute; top: .75rem; right: 2rem;"
+  - if !weather_healthy?
+    span
+      i.fa-solid.fa-cloud-exclamation style="font-size: 1rem"
+  - GoogleAccount.all.each do |google_account|
+    - if !google_account.healthy?
+      span 
+        i.fa-regular.fa-calendar-exclamation style="font-size: 1rem; padding: 0 0.1rem 0 0.5rem;"
 - if Date.today.yday == 1
   .bg style="position: absolute; bottom: 0; top: 2rem; right: 0; left: 0; z-index: -1; background-image: url(#{asset_path('fireworks.jpg')}); background-size: cover; opacity: .05;"
 - shown_days = 0

@@ -18,22 +18,10 @@ css:
       i.fa-light.fa-speaker style="font-size: 3.5rem; line-height: 180px;"
     div style="font-size: 1.25rem; line-height: 1.3rem" = res["currentTrack"]["artist"]
     div style="font-size: 2.1rem; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;" = res["currentTrack"]["title"]
-    / div style="font-size: 1.25rem;"
-    /   em = res["currentTrack"]["album"]
-div style="position: absolute; top: .5rem; right: 2rem;"
-  - if !weather_healthy?
-    span
-      i.fa-solid.fa-cloud style="font-size: 1.25rem; padding: 0 0.1rem 0 0.5rem;"
-      span error
-  - GoogleAccount.all.each do |google_account|
-    - if !google_account.healthy?
-      span 
-        i.fa-regular.fa-calendar-xmark style="font-size: 1.25rem; padding: 0 0.1rem 0 0.5rem;"
-        span =< google_account.email
 div class="clearfix" style="margin-bottom: -1rem;"
   div style="float: left;"
     span style="font-size: 8rem; line-height: 7rem;" = view_object[:current_temperature]
-  div style="text-align: right; float: right;"
+  div style="text-align: right; float: right; margin-top: 0.5rem;"
     div style="font-size: 2rem;" = Date.today.strftime("%A, %B %-d")
     div#time style="font-size: 4rem; line-height: 4rem;" = DateTime.now.strftime("%l:%M%P").strip
 hr style="margin: 2rem 0 1rem; border: none;background-color: #ccc;color: #ccc;height: 2px;"
