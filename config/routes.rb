@@ -2,10 +2,7 @@
 
 Rails.application.routes.draw do
   get :thirteen, to: "home#thirteen"
-
   get :mira, to: "home#mira"
-  get :sonos, to: "home#sonos"
-  get :timeline, to: "home#timeline"
 
   root to: "home#index"
   get :redirect, to: "home#redirect"

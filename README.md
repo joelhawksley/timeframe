@@ -17,8 +17,7 @@ A web application for displaying information from various APIs on digital signag
         - Fetched by [Visionect Software Suite](https://docs.visionect.com/VisionectSoftwareSuite/index.html) running on local network and displayed on [13" Place and Play](https://www.visionect.com/shop/place-play-13/) devices. Fetch interval is currently 10m.
     - Boox Mira Pro (/mira)
         - Fetched by a client Mac Mini with a [Boox Mira Pro](https://shop.boox.com/products/mira) (25.3" 3200x1800px e-Paper display) running Google Chrome full screen.
-        - Uses HTMX to live-reload calendar events and Sonos state. (From /sonos and /timeline)
-        - Self-refreshes entire every 5m.
+        - Self-refreshes entire screen every 5s.
 - Admin
     - Configuration page (root path)
         - Google OAuth flow

@@ -1,9 +1,9 @@
 - res = JSON.parse(HTTParty.get("http://hawksley-server.local:5005/Sonos%20Move/state").body)
 - if res["playbackState"] == "PLAYING"
-  div style="position: absolute; bottom: 0; left: 0; right: 0; z-index: 20; background-color: #000; color: white; padding: 2rem; border-top: 1rem solid white"
+  div style="position: absolute; bottom: 0; left: 0; right: 0; z-index: 20; background-color: #000; color: white; padding: 2rem"
     css:
       .fade-bottom {
-        bottom: 478px;
+        bottom: 458px;
       }
     - if res["currentTrack"]["albumArtUri"]&.include?("htt")
       - url = res["currentTrack"]["albumArtUri"]
