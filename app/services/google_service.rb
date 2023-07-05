@@ -110,11 +110,6 @@ class GoogleService
               ActiveSupport::TimeZone[Timeframe::Application::LOCAL_TZ].parse(event_json["end"]["date_time"]).utc.to_i
             end
 
-          counter =
-            if (1900..2100).cover?(event_json["description"].to_s.to_i)
-              Date.today.year - event_json["description"].to_s.to_i
-            end
-
           next if
             event_json["description"].to_s.downcase.include?("timeframe-omit") || # hide timeframe-omit
               event_json["summary"] == "." || # hide . marker
@@ -129,14 +124,22 @@ class GoogleService
 
           multi_day = ((end_i - start_i) > 86_400)
 
+          summary =
+            if (1900..2100).cover?(event_json["description"].to_s.to_i)
+              counter = Date.today.year - event_json["description"].to_s.to_i
+
+              "#{event_json["summary"]} (#{counter})"
+            else
+              event_json["summary"]
+            end
+
           events[google_account.email][event.id] = event_json.slice(
             "id",
             "start",
             "end",
             "location"
           ).merge(
-            summary: event_json["summary"],
-            counter: counter,
+            summary: summary,
             calendar: calendar.summary,
             icon: calendar_config["icon"],
             letter: calendar_config["letter"],
