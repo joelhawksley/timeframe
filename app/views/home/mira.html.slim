@@ -10,10 +10,6 @@ css:
 - res = JSON.parse(HTTParty.get("http://hawksley-server.local:5005/Sonos%20Move/state").body)
 - if res["playbackState"] == "PLAYING"
   div style="position: absolute; bottom: 0; left: 0; right: 0; z-index: 20; background-color: #000; color: white; padding: 1.5rem 2rem"
-    css:
-      .fade-bottom {
-        bottom: 338px;
-      }
     div style="float: left; margin-right: 1rem; height: 200px;"
       i.fa-light.fa-speaker style="font-size: 3.5rem; line-height: 180px;"
     div style="font-size: 1.25rem; line-height: 1.3rem" = res["currentTrack"]["artist"]
