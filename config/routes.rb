@@ -10,5 +10,4 @@ Rails.application.routes.draw do
 
   get :logs, to: "home#logs"
   get :weather_data, to: "home#weather_data"
-  get :calendar_data, to: "home#calendar_data"
 end
