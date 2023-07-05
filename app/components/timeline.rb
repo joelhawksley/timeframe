@@ -1,11 +1,10 @@
 class Timeline < ViewComponent::Base
   include ApplicationHelper
 
-  attr_reader :view_object, :icon_set
+  attr_reader :view_object
 
-  def initialize(view_object:, icon_set: 'solid')
+  def initialize(view_object:)
     @view_object = view_object
-    @icon_set = icon_set
 
     super
   end
