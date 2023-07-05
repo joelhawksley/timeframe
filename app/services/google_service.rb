@@ -78,12 +78,15 @@ class GoogleService
 
         next unless calendar_config.present?
 
+        time_max = calendar.summary == "Birthdays" ? (DateTime.now + 12.weeks).iso8601 : (DateTime.now + 1.weeks).iso8601
+
         service.list_events(
           calendar.id,
           single_events: true,
           order_by: "startTime",
-          time_min: (DateTime.now - 2.weeks).iso8601,
-          time_max: (DateTime.now + 12.weeks).iso8601
+          fields: "items/id,items/start,items/end,items/description,items/summary,items/location",
+          time_min: (DateTime.now - 2.days).iso8601,
+          time_max: time_max
         ).items.each do |event|
           own_attendee = event.attendees.to_a.find { |attendee| attendee.email == calendar.id }
 
