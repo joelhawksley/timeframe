@@ -9,7 +9,7 @@
     <% end %>
   </head>
 
-  <body>
+  <body class='<%= "#{'flash' if @refresh && DateTime.now.hour == 3 && [0,2,4,6,8].include?(DateTime.now.minute)}" %>'>
     <div class="fade-bottom"></div>
     <%= yield %>
   </body>
