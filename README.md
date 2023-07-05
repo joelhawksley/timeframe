@@ -37,6 +37,7 @@ A web application for displaying information from various APIs on digital signag
 - Integrate with Home Assistant to show whether mail has been delivered today
 - Improve OAuth refresh token availability
 - Improve local workflow as debugging is difficult due to using development server as production
+- remove Cron and Postgres dependencies for better application portability
 
 ## Local development
 
