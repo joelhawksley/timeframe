@@ -115,13 +115,6 @@ class GoogleService
               event_json["summary"] == "." || # hide . marker
               event_json["summary"] == "Out of office"
 
-          weather =
-            if event_json["description"].to_s.downcase.include?("timeframe-weather")
-              Value
-                .find_by_key("weather")
-                .value["nws_hourly"].find { _1["start_i"] >= start_i }
-            end
-
           multi_day = ((end_i - start_i) > 86_400)
 
           summary =
@@ -145,7 +138,6 @@ class GoogleService
             letter: calendar_config["letter"],
             start_i: start_i,
             end_i: end_i,
-            weather: weather,
             multi_day: multi_day,
             all_day: event_json["start"].key?("date") || multi_day
           ).symbolize_keys!

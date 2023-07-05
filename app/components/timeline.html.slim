@@ -57,5 +57,3 @@ div style="position: absolute; top: .75rem; right: 2rem;"
               = event["time"].html_safe
             td style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;max-width: 0;"
               = event["summary"]
-              - if event["weather"].present?
-                =< "(#{event["weather"]["temperature"].round}° <i class='fa-fw fa-#{icon_set} fa-#{event['weather']['icon_class']}'></i>)".html_safe
