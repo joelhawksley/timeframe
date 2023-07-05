@@ -1,11 +1,6 @@
 css:
-  html {
-    font-size: 46px;
-  }
-
-  body {
-    padding: 1.5rem 2rem;;
-  }
+  html { font-size: 46px }
+  body { padding: 1.5rem 2rem }
 
 - res = JSON.parse(HTTParty.get("http://hawksley-server.local:5005/Sonos%20Move/state").body)
 - if res["playbackState"] == "PLAYING"
