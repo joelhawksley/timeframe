@@ -16,10 +16,7 @@
               tr
                 td style="width: 1%; text-align: center; font-size: 1.25rem; font-weight: bold; padding-right: 0.25rem;"
                   - if event["letter"].present?
-                    - if baby_is_here?
-                      = event["letter"].gsub("J", "D").gsub("C", "M")
-                    - else
-                      = event["letter"]
+                    = event["letter"]
                   - else
                     i.fa-fw.fa-solid class="fa-#{event['icon']}"
                 td
@@ -30,17 +27,14 @@
               td style="width: 1%; text-align: center; font-size: 1.25rem; font-weight: bold; padding-right: 0.25rem;"
                 i.fa-fw.fa-solid.fa-baby-carriage
               td
-                = baby_is_here? ? baby_age_string : pregnancy_string
+                = baby_age_string
     div.periodic style="width: 30rem;"
       table style="width: 100%"
         - event_day[:events][:periodic].each do |event|
           tr
             td style="width: 1.5rem; text-align: center; font-size: 1.25rem; font-weight: bold; padding-left: 1rem;"
               - if event["letter"].present?
-                - if baby_is_here?
-                  = event["letter"].gsub("J", "D").gsub("C", "M")
-                - else
-                  = event["letter"]
+                = event["letter"]
               - else
                 i.fa-fw.fa-solid class="fa-#{event['icon']}"
             td style="whitespace: nowrap; font-size: .75rem; padding: 0 .5rem; width: 5rem;"

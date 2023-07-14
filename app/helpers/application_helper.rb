@@ -15,31 +15,12 @@ module ApplicationHelper
   end
 
   def baby_age_string
-    day_count = Date.today - Date.parse(baby_birthday)
+    day_count = Date.today - Date.parse(ENV['BIRTH_DATE'])
     week_count = (day_count / 7).to_i
     remainder = (day_count % 7).to_i
 
     if remainder > 0
       "#{week_count}w#{remainder}d"
-    else
-      "#{week_count}w"
-    end
-  end
-
-  def pregnancy_string(
-    today = Date.today,
-    pregnancy_start_date = ENV['PREGNANCY_START_DATE']
-  )
-    day_count = today - Date.parse(pregnancy_start_date)
-    week_count = (day_count / 7).to_i
-    remainder = (day_count % 7).to_i
-
-    if remainder > 0
-      if week_count == 0
-        "#{remainder}d"
-      else
-        "#{week_count}w#{remainder}d"
-      end
     else
       "#{week_count}w"
     end
@@ -56,22 +37,6 @@ module ApplicationHelper
 
   def weather
     @weather ||= Value.weather
-  end
-
-  def baby_calendar_event
-    sorted_calendar_events_array.select { _1["summary"].include?("Jack") }.concat(
-      sorted_calendar_events_array.select { _1["summary"].include?("John") }
-    ).first
-  end
-
-  def baby_birthday
-    if baby_is_here?
-      baby_calendar_event["start"]["date"]
-    end
-  end
-
-  def baby_is_here?
-    baby_calendar_event.present?
   end
 
   def sorted_calendar_events_array
