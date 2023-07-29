@@ -10,13 +10,14 @@ div style="margin: 0 -2rem; background-color: black; color: white; padding: 0 2r
       strong =< res["currentTrack"]["artist"]
       |  :
       =< res["currentTrack"]["title"]
-  div style="float: right; text-align: right; padding: 1.5rem 0"
-    - if !weather_healthy?
-      span
-        i.fa-solid.fa-cloud-exclamation style="font-size: 1.5rem"
-    - unless GoogleAccount.all.all?(&:healthy?)
-      span 
-        i.fa-regular.fa-calendar-exclamation style="font-size: 1.5rem; padding: 0 0.1rem 0 0.5rem;"
+  - if !weather_healthy? || !GoogleAccount.all.all?(&:healthy?)
+    div style="float: right; text-align: right; padding: 1.5rem 0"
+      - if !weather_healthy?
+        span
+          i.fa-solid.fa-cloud-exclamation style="font-size: 1.5rem"
+      - if !GoogleAccount.all.all?(&:healthy?)
+        span 
+          i.fa-regular.fa-calendar-exclamation style="font-size: 1.5rem; padding: 0 0.1rem 0 0.5rem;"
 div class="clearfix" style="margin: 1.5rem 0 -1rem;"
   div style="float: left; font-size: 8rem; line-height: 7rem;" = view_object[:current_temperature]
   div style="text-align: right; float: right; margin-top: 0.5rem;"
