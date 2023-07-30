@@ -1,4 +1,4 @@
-# Timeframe terms of service
+# Terms of service
 
 ## Warranty
 

@@ -1,3 +1,3 @@
-# Timeframe privacy
+# Privacy
 
-Timeframe has the utmost respect for user privacy. Any privacy concerns should be directed to joel@hawksley.org; we take all privacy concerns very seriously and will respond appropriately and quickly.
+Timeframe accesses private user data from Google via the Google API. It uses this data to display calendar events in a feed for use in your home. Your data is stored locally on the device Timeframe runs on and is not shared or transferred elsewhere in any way.
