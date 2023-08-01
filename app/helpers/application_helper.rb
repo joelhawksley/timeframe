@@ -14,7 +14,11 @@ module ApplicationHelper
   end
 
   def tz
-    Timeframe::Application::LOCAL_TZ
+    config["timezone"]
+  end
+
+  def self.config
+    @config ||= YAML.load_file(Rails.root.join("config.yml"))
   end
 
   ALERT_SEVERITY_MAPPINGS = {
@@ -372,7 +376,7 @@ module ApplicationHelper
       weather['nws_hourly']
       .find do
         (_1['start_i'].._1['end_i'])
-      .cover?(DateTime.now.utc.in_time_zone(Timeframe::Application::LOCAL_TZ).to_i)
+      .cover?(DateTime.now.utc.in_time_zone(tz).to_i)
       end
 
     out[:current_temperature] = "#{current_nws_hour['temperature']}°"
