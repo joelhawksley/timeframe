@@ -377,7 +377,6 @@ module ApplicationHelper
 
     out =
       {
-        yearly_events: yearly_events,
         day_groups: day_groups,
         timestamp: current_time.strftime('%-l:%M %p')
       }
@@ -392,14 +391,5 @@ module ApplicationHelper
     out[:current_temperature] = "#{current_nws_hour['temperature']}°"
 
     out
-  end
-
-  def yearly_events(at = Time.now)
-    calendar_events_for(
-      at.in_time_zone(tz).beginning_of_day.to_i,
-      (at.in_time_zone(tz) + 1.year).end_of_day.utc.to_i
-    ).select { |event| event['calendar'] == 'Birthdays' }
-      .first(10)
-      .group_by { |e| Date.parse(e['start']['date']).month }
   end
 end
