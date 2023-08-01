@@ -5,11 +5,6 @@ module ApplicationHelper
     Timeframe::Application.config.local["timezone"]
   end
 
-  ALERT_SEVERITY_MAPPINGS = {
-    'Severe' => 0,
-    'Moderate' => 1
-  }
-
   def weather
     @weather ||= Value.weather
   end
@@ -23,9 +18,14 @@ module ApplicationHelper
 
     alerts = weather['nws_alerts']['features']
 
+    alert_severity_mappings = {
+      'Severe' => 0,
+      'Moderate' => 1
+    }
+
     alerts
       .reject { |alert| alert.dig('properties', 'urgency') == 'Past' }
-      .sort_by { |alert| ALERT_SEVERITY_MAPPINGS[alert['properties']['severity']] }
+      .sort_by { |alert| alert_severity_mappings[alert['properties']['severity']] }
       .uniq { |alert| alert['properties']['event'] }
       .reject { |alert| alert['properties']['areaDesc'].to_s.include?('OZONE ACTION DAY') }
       .first['properties']
