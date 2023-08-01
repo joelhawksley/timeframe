@@ -10,7 +10,7 @@
 
   <body>
     <% flash.each do |key, value| %>
-      <div class="<%= flash_class(key) %>" data-flash="<%= key %>">
+      <div class="alert alert-info" data-flash="<%= key %>">
         <%= value %>
       </div>
     <% end %>
