@@ -366,20 +366,19 @@ module ApplicationHelper
         memo << out
       end
 
-    out =
-      {
-        day_groups: day_groups,
-        timestamp: current_time.strftime('%-l:%M %p')
-      }
-
     current_nws_hour =
       weather['nws_hourly']
       .find do
         (_1['start_i'].._1['end_i'])
       .cover?(DateTime.now.utc.in_time_zone(tz).to_i)
       end
-
-    out[:current_temperature] = "#{current_nws_hour['temperature']}°"
+    
+    out =
+      {
+        current_temperature: "#{current_nws_hour['temperature']}°",
+        day_groups: day_groups,
+        timestamp: current_time.strftime('%-l:%M %p')
+      }
 
     out
   end
