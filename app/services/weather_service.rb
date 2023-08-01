@@ -132,4 +132,184 @@ class WeatherService
 
     log.created_at > DateTime.now - 1.hour
   end
+
+  def self.calendar_events
+    alert = most_important_weather_alert
+
+    out = []
+
+    if alert
+      icon =
+        if String(alert['event']).include?('Winter')
+          'snowflake'
+        else
+          'warning'
+        end
+
+      summary =
+        if String(alert['event']).include?('Winter')
+          if alert['description'].include?('Additional snow')
+            alert['description']
+              .tr("\n", ' ')
+              .split('Additional snow accumulations')
+              .last
+              .split('.')
+              .first
+              .strip
+              .gsub(' inches', '"')
+          else
+            desc = alert['description']
+                   .tr("\n", ' ')
+                   .split('accumulations between')
+                   .last
+                   .split('.')
+                   .first
+                   .strip
+                   .gsub(' and ', '-')
+                   .gsub(' inches', '"')
+                   .gsub(' possible', '')
+                   .split(', with')
+                   .first
+                   .split('"')
+                   .first
+
+            "NWS #{alert['event'].split(' ').last}: ~#{desc}\""
+          end
+        else
+          alert['event']
+        end
+
+      out << {
+        'start_i' => DateTime.parse(alert['onset']).to_i,
+        'end_i' => DateTime.parse(alert['ends'] || alert['expires']).to_i,
+        'calendar' => '_weather_alerts',
+        'summary' => summary,
+        'icon' => icon
+      }
+    end
+
+    today = Date.today.in_time_zone(Timeframe::Application.config.local["timezone"])
+
+    [today, today.tomorrow, today + 2.day, today + 3.day].each do |twz|
+      noon_i = twz.noon.to_i
+      weather_hour = weather['nws_hourly'].find { (_1['start_i'].._1['end_i']).cover?(noon_i) }
+
+      if weather_hour.present?
+        out <<
+          {
+            'id' => noon_i,
+            'start_i' => noon_i,
+            'end_i' => noon_i,
+            'calendar' => '_weather_alerts',
+            'icon' => weather_hour['icon_class'],
+            'summary' => "#{weather_hour['temperature'].round}°".html_safe
+          }
+      end
+
+      p_i = (twz.noon + 4.hours).to_i
+      weather_hour = weather['nws_hourly'].find { (_1['start_i'].._1['end_i']).cover?(p_i) }
+
+      if weather_hour.present?
+        out <<
+          {
+            'id' => p_i,
+            'start_i' => p_i,
+            'end_i' => p_i,
+            'calendar' => '_weather_alerts',
+            'icon' => weather_hour['icon_class'],
+            'summary' => "#{weather_hour['temperature'].round}°".html_safe
+          }
+      end
+    end
+
+    weather.dig('wunderground_forecast', 'sunsetTimeLocal').to_a.each do |sunset_time|
+      sunset_i = DateTime.parse(sunset_time).to_i
+      weather_hour = weather['nws_hourly'].find { (_1['start_i'].._1['end_i']).cover?(sunset_i) }
+
+      next unless weather_hour
+
+      out <<
+        {
+          'id' => sunset_i,
+          'start_i' => sunset_i,
+          'end_i' => sunset_i,
+          'calendar' => '_weather_alerts',
+          'icon' => weather_hour['icon_class'],
+          'summary' => "#{weather_hour['temperature'].round}°".html_safe
+        }
+    end
+
+    weather.dig('wunderground_forecast', 'sunriseTimeLocal').to_a.each do |sunrise_time|
+      sunrise_i = DateTime.parse(sunrise_time).to_i
+      weather_hour = weather['nws_hourly'].find { (_1['start_i'].._1['end_i']).cover?(sunrise_i) }
+
+      next unless weather_hour
+
+      out <<
+        {
+          'id' => sunrise_i,
+          'start_i' => sunrise_i,
+          'end_i' => sunrise_i,
+          'calendar' => '_weather_alerts',
+          'icon' => weather_hour['icon_class'],
+          'summary' => "#{weather_hour['temperature'].round}°".html_safe
+        }
+    end
+
+    precip_windows = []
+
+    weather['nws_hourly'].each_with_index do |hour, _index|
+      next unless hour['icon'].split(',').length == 2
+
+      summary, icon =
+        case hour['icon'].split(',').first
+        when 'snow', 'blizzard'
+          %w[Snow snowflake]
+        when 'rain', 'rain_showers', 'tsra', 'tsra_sct', 'tsra_hi'
+          %w[Rain raindrops]
+        when 'smoke'
+          %w[Smoke smoke]
+        end
+
+      next unless summary
+
+      if (existing_index = precip_windows.find_index { _1['summary'] == summary && _1['end_i'] == hour['start_i'] })
+        precip_windows[existing_index]['end_i'] = hour['end_i']
+      else
+        precip_windows <<
+          {
+            'id' => "#{hour['start_i']}_window",
+            'start_i' => hour['start_i'],
+            'end_i' => hour['end_i'],
+            'calendar' => '_weather_alerts',
+            'icon' => icon,
+            'summary' => summary
+          }
+      end
+    end
+
+    out.concat(precip_windows)
+  end
+
+  def self.most_important_weather_alert
+    return nil unless weather.to_h.dig('nws_alerts', 'features').to_a.any?
+
+    alerts = weather['nws_alerts']['features']
+
+    alert_severity_mappings = {
+      'Severe' => 0,
+      'Moderate' => 1
+    }
+
+    alerts
+      .reject { |alert| alert.dig('properties', 'urgency') == 'Past' }
+      .sort_by { |alert| alert_severity_mappings[alert['properties']['severity']] }
+      .uniq { |alert| alert['properties']['event'] }
+      .reject { |alert| alert['properties']['areaDesc'].to_s.include?('OZONE ACTION DAY') }
+      .first['properties']
+  end
+
+  def self.weather
+    @weather ||= Value.weather
+  end
 end

@@ -16,4 +16,47 @@ class CalendarService
       "#{week_count}w"
     end
   end
+
+  def self.sorted_calendar_events_array
+    @sorted_calendar_events_array ||= Value.sorted_calendar_events_array
+  end
+
+  # Returns calendar events for a given UTC integer time range,
+  # adding a `time` key for the time formatted for the user's timezone
+  def self.events_for(
+    beginning_i = DateTime.now.in_time_zone(Timeframe::Application.config.local["timezone"]).tomorrow.beginning_of_day.to_i,
+    ending_i = DateTime.now.in_time_zone(Timeframe::Application.config.local["timezone"]).tomorrow.end_of_day.to_i
+  )
+    filtered_events = (WeatherService.calendar_events + sorted_calendar_events_array).select do |event|
+      (event['start_i']..event['end_i']).overlaps?(beginning_i...ending_i)
+    end
+
+    parsed_events = filtered_events.map do |event|
+      event['time'] = EventTimeService.call(event['start_i'], event['end_i'], Timeframe::Application.config.local["timezone"])
+      event
+    end
+
+    # Merge duplicate events, merging the letter with a custom rule if so
+    parsed_events
+      .group_by { _1['id'] }
+      .map do |_k, v|
+        if v.length > 1
+          letters = v.map { |iv| iv['letter'] }
+          letter =
+            if letters.uniq.length == 1
+              letters[0]
+            elsif letters.include?('+')
+              '+'
+            else
+              letters[0]
+            end
+
+          out = v[0]
+          out['letter'] = letter
+          out
+        else
+          v[0]
+        end
+      end.sort_by { |event| event['start_i'] }
+  end
 end
