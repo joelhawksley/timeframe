@@ -2,7 +2,7 @@
 
 module ApplicationHelper
   def baby_age_string
-    day_count = Date.today - Date.parse(ENV['BIRTH_DATE'])
+    day_count = Date.today - Date.parse(config["birthdate"])
     week_count = (day_count / 7).to_i
     remainder = (day_count % 7).to_i
 
