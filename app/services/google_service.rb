@@ -23,10 +23,6 @@ class GoogleService
     )
   end
 
-  def self.config
-    @config ||= YAML.load_file(Rails.root.join("config.yml"))
-  end
-
   attr_reader :events
 
   def initialize
@@ -74,7 +70,7 @@ class GoogleService
 
       calendars.each_with_index do |calendar, _index|
         calendar_config = 
-          self.class.config["calendars"].find { _1["id"] == calendar.id }
+          Timeframe::Application.config.local["calendars"].find { _1["id"] == calendar.id }
 
         next unless calendar_config.present?
 

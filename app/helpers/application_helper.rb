@@ -1,24 +1,8 @@
 # frozen_string_literal: true
 
 module ApplicationHelper
-  def baby_age_string
-    day_count = Date.today - Date.parse(app_config["birthdate"])
-    week_count = (day_count / 7).to_i
-    remainder = (day_count % 7).to_i
-
-    if remainder > 0
-      "#{week_count}w#{remainder}d"
-    else
-      "#{week_count}w"
-    end
-  end
-
   def tz
-    app_config["timezone"]
-  end
-
-  def app_config
-    @app_config ||= YAML.load_file(Rails.root.join("config.yml"))
+    Timeframe::Application.config.local["timezone"]
   end
 
   ALERT_SEVERITY_MAPPINGS = {
