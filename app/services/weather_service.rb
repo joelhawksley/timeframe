@@ -75,47 +75,6 @@ class WeatherService
     )
   end
 
-  MAPPINGS = {
-    "/day/ovc" => "clouds",
-    "/day/bkn" => "clouds-sun",
-    "/day/sct" => "cloud-sun",
-    "/day/few" => "sun",
-    "/day/wind_bkn" => "wind",
-    "/day/wind_few" => "wind",
-    "/day/wind_sct" => "wind",
-    "/day/rain" => "raindrops",
-    "/day/tsra_hi" => "raindrops",
-    "/day/tsra_sct" => "raindrops",
-    "/day/tsra" => "raindrops",
-    "/day/rain_showers" => "raindrops",
-    "/day/snow" => "snowflake",
-    "/day/blizzard" => "snowflake",
-    "/day/cold" => "hat-winter",
-    "/day/fog" => "cloud-fog",
-    "/day/skc" => "sun",
-    "/day/smoke" => "smoke",
-    "/day/hot" => "temperature-high",
-    "/night/ovc" => "clouds",
-    "/night/bkn" => "clouds-moon",
-    "/night/sct" => "cloud-moon",
-    "/night/few" => "moon",
-    "/night/skc" => "moon",
-    "/night/wind_bkn" => "wind",
-    "/night/wind_few" => "wind",
-    "/night/wind_sct" => "wind",
-    "/night/rain" => "raindrops",
-    "/night/tsra_hi" => "raindrops",
-    "/night/tsra_sct" => "raindrops",
-    "/night/tsra" => "raindrops",
-    "/night/rain_showers" => "raindrops",
-    "/night/snow" => "snowflake",
-    "/night/blizzard" => "snowflake",
-    "/night/cold" => "hat-winter",
-    "/night/fog" => "cloud-fog",
-    "/night/smoke" => "smoke",
-    "/night/hot" => "temperature-high"
-  }
-
   def self.icon_for_period(nws_url)
     icon = nws_url.split("?").first.split("/").last
 
@@ -124,7 +83,48 @@ class WeatherService
       split("land").last.
       split(",").first
 
-    [icon, MAPPINGS[token] || "question"]
+    mappings = {
+      "/day/ovc" => "clouds",
+      "/day/bkn" => "clouds-sun",
+      "/day/sct" => "cloud-sun",
+      "/day/few" => "sun",
+      "/day/wind_bkn" => "wind",
+      "/day/wind_few" => "wind",
+      "/day/wind_sct" => "wind",
+      "/day/rain" => "raindrops",
+      "/day/tsra_hi" => "raindrops",
+      "/day/tsra_sct" => "raindrops",
+      "/day/tsra" => "raindrops",
+      "/day/rain_showers" => "raindrops",
+      "/day/snow" => "snowflake",
+      "/day/blizzard" => "snowflake",
+      "/day/cold" => "hat-winter",
+      "/day/fog" => "cloud-fog",
+      "/day/skc" => "sun",
+      "/day/smoke" => "smoke",
+      "/day/hot" => "temperature-high",
+      "/night/ovc" => "clouds",
+      "/night/bkn" => "clouds-moon",
+      "/night/sct" => "cloud-moon",
+      "/night/few" => "moon",
+      "/night/skc" => "moon",
+      "/night/wind_bkn" => "wind",
+      "/night/wind_few" => "wind",
+      "/night/wind_sct" => "wind",
+      "/night/rain" => "raindrops",
+      "/night/tsra_hi" => "raindrops",
+      "/night/tsra_sct" => "raindrops",
+      "/night/tsra" => "raindrops",
+      "/night/rain_showers" => "raindrops",
+      "/night/snow" => "snowflake",
+      "/night/blizzard" => "snowflake",
+      "/night/cold" => "hat-winter",
+      "/night/fog" => "cloud-fog",
+      "/night/smoke" => "smoke",
+      "/night/hot" => "temperature-high"
+    }
+
+    [icon, mappings[token] || "question"]
   end
 
   def self.healthy?(log = Log.where(globalid: 'WeatherService', event: 'call_success').last)
