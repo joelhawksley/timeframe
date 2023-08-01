@@ -174,7 +174,7 @@ module ApplicationHelper
     precip_windows = []
 
     weather['nws_hourly'].each_with_index do |hour, _index|
-      next unless hour['icon'].split(',').length == 2 # && hour['icon'].split(',').last.to_i >= 1
+      next unless hour['icon'].split(',').length == 2
 
       summary, icon =
         case hour['icon'].split(',').first
