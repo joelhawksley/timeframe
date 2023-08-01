@@ -126,4 +126,10 @@ class WeatherService
 
     [icon, MAPPINGS[token] || "question"]
   end
+
+  def self.healthy?(log = Log.where(globalid: 'WeatherService', event: 'call_success').last)
+    return false unless log
+
+    log.created_at > DateTime.now - 1.hour
+  end
 end

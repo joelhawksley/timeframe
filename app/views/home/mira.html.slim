@@ -10,9 +10,9 @@ div style="margin: 0 -2rem; background-color: black; color: white; padding: 0 2r
       strong =< res["currentTrack"]["artist"]
       |  :
       =< res["currentTrack"]["title"]
-  - if !weather_healthy? || !GoogleAccount.all.all?(&:healthy?)
+  - if !WeatherService.healthy? || !GoogleAccount.all.all?(&:healthy?)
     div style="float: right; text-align: right; padding: 1.5rem 0"
-      - if !weather_healthy?
+      - if !WeatherService.healthy?
         span
           i.fa-solid.fa-cloud-exclamation style="font-size: 1.5rem"
       - if !GoogleAccount.all.all?(&:healthy?)

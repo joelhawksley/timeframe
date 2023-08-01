@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
 module ApplicationHelper
-  def weather_healthy?
-    Log.where(globalid: 'WeatherService', event: 'call_success').last.created_at > DateTime.now - 1.hour
-  end
-
   def flash_class(level)
     case level
     when :success then 'alert alert-success'
