@@ -96,17 +96,17 @@ class GoogleService
 
           start_i =
             if event_json["start"].key?("date")
-              ActiveSupport::TimeZone[config["timezone"]].parse(event_json["start"]["date"]).utc.to_i
+              ActiveSupport::TimeZone[Timeframe::Application.config.local["timezone"]].parse(event_json["start"]["date"]).utc.to_i
             else
-              ActiveSupport::TimeZone[config["timezone"]].parse(event_json["start"]["date_time"]).utc.to_i
+              ActiveSupport::TimeZone[Timeframe::Application.config.local["timezone"]].parse(event_json["start"]["date_time"]).utc.to_i
             end
 
           end_i =
             if event_json["end"].key?("date")
               # Subtract 1 second, as Google gives us the end date as the following day, not the end of the current day
-              ActiveSupport::TimeZone[config["timezone"]].parse(event_json["end"]["date"]).utc.to_i - 1
+              ActiveSupport::TimeZone[Timeframe::Application.config.local["timezone"]].parse(event_json["end"]["date"]).utc.to_i - 1
             else
-              ActiveSupport::TimeZone[config["timezone"]].parse(event_json["end"]["date_time"]).utc.to_i
+              ActiveSupport::TimeZone[Timeframe::Application.config.local["timezone"]].parse(event_json["end"]["date_time"]).utc.to_i
             end
 
           next if
@@ -125,12 +125,7 @@ class GoogleService
               event_json["summary"]
             end
 
-          events[google_account.email][event.id] = event_json.slice(
-            "id",
-            "start",
-            "end",
-            "location"
-          ).merge(
+          events[google_account.email][event.id] = event_json.slice("id", "location").merge(
             summary: summary,
             calendar: calendar.summary,
             icon: calendar_config["icon"],
