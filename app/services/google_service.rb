@@ -114,8 +114,6 @@ class GoogleService
               event_json["summary"] == "." || # hide . marker
               event_json["summary"] == "Out of office"
 
-          multi_day = ((end_i - start_i) > 86_400)
-
           summary =
             if (1900..2100).cover?(event_json["description"].to_s.to_i)
               counter = Date.today.year - event_json["description"].to_s.to_i
@@ -134,8 +132,7 @@ class GoogleService
             letter: calendar_config["letter"],
             start_i: start_i,
             end_i: end_i,
-            multi_day: multi_day,
-            all_day: event_json["start"].key?("date") || multi_day
+            all_day: event_json["start"].key?("date") || ((end_i - start_i) > 86_400)
           )
 
           events[google_account.email][event.id] = calendar_event.to_h

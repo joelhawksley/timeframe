@@ -1,4 +1,6 @@
 class CalendarEvent
+  DAY_IN_SECONDS = 86_400
+
   def initialize(
     start_i:, 
     end_i:, 
@@ -7,12 +9,11 @@ class CalendarEvent
     icon: nil,
     letter: nil,
     location: nil,
-    multi_day: false,
     all_day: false,
     id: SecureRandom.hex
   )
-    @id, @start_i, @end_i, @calendar, @icon, @letter, @summary, @location, @multi_day, @all_day = 
-      id, start_i, end_i, calendar, icon, letter, summary, location, multi_day, all_day
+    @id, @start_i, @end_i, @calendar, @icon, @letter, @summary, @location, @all_day = 
+      id, start_i, end_i, calendar, icon, letter, summary, location, all_day
   end
 
   def to_h
@@ -25,7 +26,7 @@ class CalendarEvent
       letter: @letter,
       summary: @summary,
       location: @location,
-      multi_day: @multi_day,
+      multi_day: ((@end_i - @start_i) > DAY_IN_SECONDS),
       all_day: @all_day,
       time: EventTimeService.call(@start_i, @end_i)
     }
