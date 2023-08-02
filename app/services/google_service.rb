@@ -92,12 +92,12 @@ class GoogleService
           # exclude blank events
           next unless event.summary.present?
 
+          event_json = event.as_json
+
           next if
             event_json["description"].to_s.downcase.include?("timeframe-omit") || # hide timeframe-omit
               event_json["summary"] == "." || # hide . marker
               event_json["summary"] == "Out of office"
-
-          event_json = event.as_json
 
           start_i =
             if event_json["start"].key?("date")
