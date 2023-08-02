@@ -114,19 +114,11 @@ class GoogleService
               ActiveSupport::TimeZone[Timeframe::Application.config.local["timezone"]].parse(event_json["end"]["date_time"]).utc.to_i
             end
 
-          summary =
-            if (1900..2100).cover?(event_json["description"].to_s.to_i)
-              counter = Date.today.year - event_json["description"].to_s.to_i
-
-              "#{event_json["summary"]} (#{counter})"
-            else
-              event_json["summary"]
-            end
-
           calendar_event = CalendarEvent.new(
             id: event_json["id"],
             location: event_json["location"],
-            summary: summary,
+            summary: event_json["summary"],
+            description: event_json["description"],
             calendar: calendar.summary,
             icon: calendar_config["icon"],
             letter: calendar_config["letter"],

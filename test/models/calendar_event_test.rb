@@ -24,4 +24,16 @@ class CalendarEventTest < Minitest::Test
 
     assert_equal(true, event[:multi_day])
   end
+
+  def test_sets_counter
+    event = CalendarEvent.new(
+      start_i: 1675123200,
+      end_i: 1675209601,
+      calendar: "test",
+      summary: "foo",
+      description: (Date.today.year - 2).to_s,
+    ).to_h
+
+    assert_equal("foo (2)", event[:summary])
+  end
 end
