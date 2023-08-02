@@ -125,7 +125,9 @@ class GoogleService
               event_json["summary"]
             end
 
-          events[google_account.email][event.id] = event_json.slice("id", "location").merge(
+          calendar_event = CalendarEvent.new(
+            id: event_json["id"],
+            location: event_json["location"],
             summary: summary,
             calendar: calendar.summary,
             icon: calendar_config["icon"],
@@ -134,7 +136,9 @@ class GoogleService
             end_i: end_i,
             multi_day: multi_day,
             all_day: event_json["start"].key?("date") || multi_day
-          ).symbolize_keys!
+          )
+
+          events[google_account.email][event.id] = calendar_event.to_h
         end
       end
 
