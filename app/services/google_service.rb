@@ -92,6 +92,11 @@ class GoogleService
           # exclude blank events
           next unless event.summary.present?
 
+          next if
+            event_json["description"].to_s.downcase.include?("timeframe-omit") || # hide timeframe-omit
+              event_json["summary"] == "." || # hide . marker
+              event_json["summary"] == "Out of office"
+
           event_json = event.as_json
 
           start_i =
@@ -108,11 +113,6 @@ class GoogleService
             else
               ActiveSupport::TimeZone[Timeframe::Application.config.local["timezone"]].parse(event_json["end"]["date_time"]).utc.to_i
             end
-
-          next if
-            event_json["description"].to_s.downcase.include?("timeframe-omit") || # hide timeframe-omit
-              event_json["summary"] == "." || # hide . marker
-              event_json["summary"] == "Out of office"
 
           summary =
             if (1900..2100).cover?(event_json["description"].to_s.to_i)
