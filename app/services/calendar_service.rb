@@ -32,7 +32,7 @@ class CalendarService
     end
 
     parsed_events = filtered_events.map do |event|
-      event['time'] = EventTimeService.call(event['start_i'], event['end_i'], Timeframe::Application.config.local["timezone"])
+      event['time'] = EventTimeService.call(event['start_i'], event['end_i'])
       event
     end
 

@@ -12,4 +12,4 @@ table style="width: 100%"
         td = log.globalid
         td = log.event
         td = log.message
-        td = log.created_at.in_time_zone(tz).strftime('%a %b %e %I:%M:%S %p')
+        td = log.created_at.in_time_zone(Timeframe::Application.config.local["timezone"]).strftime('%a %b %e %I:%M:%S %p')

@@ -1,22 +1,18 @@
 # frozen_string_literal: true
 
 module ApplicationHelper
-  def tz
-    Timeframe::Application.config.local["timezone"]
-  end
-
   def render_json_payload(at = DateTime.now)
-    current_time = at.utc.in_time_zone(tz)
+    current_time = at.utc.in_time_zone(Timeframe::Application.config.local["timezone"])
 
     day_groups =
       (0...5).each_with_object([]) do |day_index, memo|
-        date = Time.now.in_time_zone(tz) + day_index.day
+        date = Time.now.in_time_zone(Timeframe::Application.config.local["timezone"]) + day_index.day
 
         start_i =
           case day_index
           when 0
             # Add 180 seconds so that events ending at the top of the hour are not shown for the following half hour
-            Time.now.in_time_zone(tz).utc.to_i + 180
+            Time.now.in_time_zone(Timeframe::Application.config.local["timezone"]).utc.to_i + 180
           else
             date.beginning_of_day.utc.to_i
           end
@@ -129,7 +125,7 @@ module ApplicationHelper
       Value.weather['nws_hourly']
       .find do
         (_1['start_i'].._1['end_i'])
-      .cover?(DateTime.now.utc.in_time_zone(tz).to_i)
+      .cover?(DateTime.now.utc.in_time_zone(Timeframe::Application.config.local["timezone"]).to_i)
       end
     
     out =

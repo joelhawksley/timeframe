@@ -30,7 +30,7 @@ table border="1"
                 tr
                   - hour_keys.each do |hour_key|
                     - if hour_key.include?("_i")
-                      td = Time.at(hour[hour_key]).in_time_zone(tz).strftime('%a %b %e %I:%M:%S %p')
+                      td = Time.at(hour[hour_key]).in_time_zone(Timeframe::Application.config.local["timezone"]).strftime('%a %b %e %I:%M:%S %p')
                     - else
                       td = hour[hour_key]
           - else

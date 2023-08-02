@@ -3,7 +3,7 @@
 # Service for generating the date/time label for an event.
 # Such as "4p", "2 - 4a", "9a - 3p"
 class EventTimeService
-  def self.call(start_i, end_i, tz)
+  def self.call(start_i, end_i, tz = Timeframe::Application.config.local["timezone"])
     start = Time.at(start_i).in_time_zone(tz)
 
     if start_i == end_i
