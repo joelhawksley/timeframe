@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 module ApplicationHelper
-  def render_json_payload(at = DateTime.now)
-    current_time = at.utc.in_time_zone(Timeframe::Application.config.local["timezone"])
-
+  def render_json_payload
     day_groups =
       (0...5).each_with_object([]) do |day_index, memo|
         date = Time.now.in_time_zone(Timeframe::Application.config.local["timezone"]) + day_index.day
@@ -121,11 +119,13 @@ module ApplicationHelper
         memo << out
       end
 
+    current_time = DateTime.now.utc.in_time_zone(Timeframe::Application.config.local["timezone"])
+    
     current_nws_hour =
       Value.weather['nws_hourly']
       .find do
         (_1['start_i'].._1['end_i'])
-      .cover?(DateTime.now.utc.in_time_zone(Timeframe::Application.config.local["timezone"]).to_i)
+      .cover?(current_time.to_i)
       end
     
     out =
