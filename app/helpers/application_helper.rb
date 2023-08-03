@@ -48,9 +48,6 @@ module ApplicationHelper
             # if this result is -1 means x should come earlier relative to y
             # if this result is 0 means both are same so position doesn't matter
             if x['calendar'] != 'Dinner'
-              # if this result is 1 means x should come later relative to y
-              # if this result is -1 means x should come earlier relative to y
-              # if this result is 0 means both are same so position doesn't matter
               if !x['multi_day'] && y['multi_day']
                 -1
               elsif x['multi_day'] && !y['multi_day']
@@ -58,14 +55,6 @@ module ApplicationHelper
               else
                 0
               end
-            # elsif x['summary'].starts_with?('Dinner')
-            #   1
-            # elsif x['summary'].starts_with?('Lunch') && y['summary'].starts_with?('Dinner')
-            #   -1
-            # elsif x['summary'].starts_with?('Lunch') && y['summary'].starts_with?('Breakfast')
-            #   1
-            # elsif x['summary'].starts_with?('Breakfast')
-            #   -1
             else
               0
             end
