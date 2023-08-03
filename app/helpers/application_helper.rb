@@ -2,15 +2,16 @@
 
 module ApplicationHelper
   def render_json_payload
+    current_time = Time.now.utc.in_time_zone(Timeframe::Application.config.local["timezone"])
+
     day_groups =
       (0...5).each_with_object([]) do |day_index, memo|
-        date = Time.now.in_time_zone(Timeframe::Application.config.local["timezone"]) + day_index.day
+        date = current_time + day_index.day
 
         start_i =
           case day_index
           when 0
-            # Add 180 seconds so that events ending at the top of the hour are not shown for the following half hour
-            Time.now.in_time_zone(Timeframe::Application.config.local["timezone"]).utc.to_i + 180
+            current_time.utc.to_i
           else
             date.beginning_of_day.utc.to_i
           end
@@ -103,8 +104,6 @@ module ApplicationHelper
 
         memo << out
       end
-
-    current_time = DateTime.now.utc.in_time_zone(Timeframe::Application.config.local["timezone"])
     
     current_nws_hour =
       Value.weather['nws_hourly']
