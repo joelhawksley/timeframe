@@ -68,19 +68,6 @@ module ApplicationHelper
           mappings.index(pair[0])
         end.map!(&:last)
 
-        all_day_events.sort! do |x, y|
-          # if this result is 1 means x should come later relative to y
-          # if this result is -1 means x should come earlier relative to y
-          # if this result is 0 means both are same so position doesn't matter
-          if !x['multi_day'] && y['multi_day']
-            -1
-          elsif x['multi_day'] && !y['multi_day']
-            1
-          else
-            0
-          end
-        end
-
         out = {
           day_index: day_index,
           day_name: date.strftime('%A'),
