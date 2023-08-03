@@ -15,11 +15,7 @@ module ApplicationHelper
             date.beginning_of_day.utc.to_i
           end
 
-        end_i = date.end_of_day.utc.to_i
-
-        day_name = date.strftime('%A')
-
-        events = CalendarService.events_for(start_i, end_i)
+        events = CalendarService.events_for(start_i, date.end_of_day.utc.to_i)
         all_day_events = events.select { |event| event['all_day'] }
 
         mappings = [
@@ -86,7 +82,7 @@ module ApplicationHelper
 
         out = {
           day_index: day_index,
-          day_name: day_name,
+          day_name: date.strftime('%A'),
           show_all_day_events: day_index.zero? ? date.hour <= 19 : true,
           events: {
             all_day: pairs,
