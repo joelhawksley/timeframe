@@ -112,7 +112,7 @@ class GoogleService
               ActiveSupport::TimeZone[Timeframe::Application.config.local["timezone"]].parse(event_json["end"]["date_time"]).utc.to_i
             end
 
-          calendar_event = CalendarEvent.new(
+          events[google_account.email][event.id] = CalendarEvent.new(
             id: event_json["id"],
             location: event_json["location"],
             summary: event_json["summary"],
@@ -123,9 +123,7 @@ class GoogleService
             start_i: start_i,
             end_i: end_i,
             all_day: event_json["start"].key?("date") || ((end_i - start_i) > 86_400)
-          )
-
-          events[google_account.email][event.id] = calendar_event.to_h
+          ).to_h
         end
       end
 

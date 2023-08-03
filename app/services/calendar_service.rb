@@ -31,13 +31,8 @@ class CalendarService
       (event['start_i']..event['end_i']).overlaps?(beginning_i...ending_i)
     end
 
-    parsed_events = filtered_events.map do |event|
-      event['time'] = EventTimeService.call(event['start_i'], event['end_i'])
-      event
-    end
-
     # Merge duplicate events, merging the letter with a custom rule if so
-    parsed_events
+    filtered_events
       .group_by { _1['id'] }
       .map do |_k, v|
         if v.length > 1

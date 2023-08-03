@@ -179,13 +179,13 @@ class WeatherService
           alert['event']
         end
 
-      out << {
-        'start_i' => DateTime.parse(alert['onset']).to_i,
-        'end_i' => DateTime.parse(alert['ends'] || alert['expires']).to_i,
-        'calendar' => '_weather_alerts',
-        'summary' => summary,
-        'icon' => icon
-      }
+      out << CalendarEvent.new(
+        start_i: DateTime.parse(alert['onset']).to_i,
+        end_i: DateTime.parse(alert['ends'] || alert['expires']).to_i,
+        calendar: '_weather_alerts',
+        summary: summary,
+        icon: icon
+      ).to_h.with_indifferent_access
     end
 
     today = Date.today.in_time_zone(Timeframe::Application.config.local["timezone"])
@@ -196,14 +196,14 @@ class WeatherService
 
       if weather_hour.present?
         out <<
-          {
-            'id' => noon_i,
-            'start_i' => noon_i,
-            'end_i' => noon_i,
-            'calendar' => '_weather_alerts',
-            'icon' => weather_hour['icon_class'],
-            'summary' => "#{weather_hour['temperature'].round}°".html_safe
-          }
+          CalendarEvent.new(
+            id: noon_i,
+            start_i: noon_i,
+            end_i: noon_i,
+            calendar: '_weather_alerts',
+            icon: weather_hour['icon_class'],
+            summary: "#{weather_hour['temperature'].round}°".html_safe
+          ).to_h.with_indifferent_access
       end
 
       p_i = (twz.noon + 4.hours).to_i
@@ -211,14 +211,14 @@ class WeatherService
 
       if weather_hour.present?
         out <<
-          {
-            'id' => p_i,
-            'start_i' => p_i,
-            'end_i' => p_i,
-            'calendar' => '_weather_alerts',
-            'icon' => weather_hour['icon_class'],
-            'summary' => "#{weather_hour['temperature'].round}°".html_safe
-          }
+          CalendarEvent.new(
+            id: p_i,
+            start_i: p_i,
+            end_i: p_i,
+            calendar: '_weather_alerts',
+            icon: weather_hour['icon_class'],
+            summary: "#{weather_hour['temperature'].round}°".html_safe
+          ).to_h.with_indifferent_access
       end
     end
 
@@ -229,14 +229,14 @@ class WeatherService
       next unless weather_hour
 
       out <<
-        {
-          'id' => sunset_i,
-          'start_i' => sunset_i,
-          'end_i' => sunset_i,
-          'calendar' => '_weather_alerts',
-          'icon' => weather_hour['icon_class'],
-          'summary' => "#{weather_hour['temperature'].round}°".html_safe
-        }
+        CalendarEvent.new(
+          id: sunset_i,
+          start_i: sunset_i,
+          end_i: sunset_i,
+          calendar: '_weather_alerts',
+          icon: weather_hour['icon_class'],
+          summary: "#{weather_hour['temperature'].round}°".html_safe
+        ).to_h.with_indifferent_access
     end
 
     weather.dig('wunderground_forecast', 'sunriseTimeLocal').to_a.each do |sunrise_time|
@@ -246,14 +246,14 @@ class WeatherService
       next unless weather_hour
 
       out <<
-        {
-          'id' => sunrise_i,
-          'start_i' => sunrise_i,
-          'end_i' => sunrise_i,
-          'calendar' => '_weather_alerts',
-          'icon' => weather_hour['icon_class'],
-          'summary' => "#{weather_hour['temperature'].round}°".html_safe
-        }
+        CalendarEvent.new(
+          id: sunrise_i,
+          start_i: sunrise_i,
+          end_i: sunrise_i,
+          calendar: '_weather_alerts',
+          icon: weather_hour['icon_class'],
+          summary: "#{weather_hour['temperature'].round}°".html_safe
+        ).to_h.with_indifferent_access
     end
 
     precip_windows = []
@@ -277,14 +277,14 @@ class WeatherService
         precip_windows[existing_index]['end_i'] = hour['end_i']
       else
         precip_windows <<
-          {
-            'id' => "#{hour['start_i']}_window",
-            'start_i' => hour['start_i'],
-            'end_i' => hour['end_i'],
-            'calendar' => '_weather_alerts',
-            'icon' => icon,
-            'summary' => summary
-          }
+          CalendarEvent.new(
+            id: "#{hour['start_i']}_window",
+            start_i: hour['start_i'],
+            end_i: hour['end_i'],
+            calendar: '_weather_alerts',
+            icon: icon,
+            summary: summary
+          ).to_h.with_indifferent_access
       end
     end
 
