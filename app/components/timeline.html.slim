@@ -38,7 +38,7 @@
               - else
                 i.fa-fw.fa-solid class="fa-#{event['icon']}"
             td style="whitespace: nowrap; font-size: .75rem; padding: 0 .5rem; width: 5rem;"
-              = event["time"].html_safe
+              = event["time"].to_s.html_safe
             td style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;max-width: 0;"
               = event["summary"]
               - unless event["location"].to_s.start_with?("htt")
