@@ -23,10 +23,7 @@ class CalendarService
 
   # Returns calendar events for a given UTC integer time range,
   # adding a `time` key for the time formatted for the user's timezone
-  def self.events_for(
-    beginning_i = DateTime.now.in_time_zone(Timeframe::Application.config.local["timezone"]).tomorrow.beginning_of_day.to_i,
-    ending_i = DateTime.now.in_time_zone(Timeframe::Application.config.local["timezone"]).tomorrow.end_of_day.to_i
-  )
+  def self.events_for(beginning_i, ending_i)
     filtered_events = (WeatherService.calendar_events + sorted_calendar_events_array).select do |event|
       (event['start_i']..event['end_i']).overlaps?(beginning_i...ending_i)
     end
