@@ -92,17 +92,9 @@ module ApplicationHelper
         memo << out
       end
 
-    current_nws_hour =
-      HourlyWeatherService.
-        load["periods"]
-        .find do
-          (_1['start_i'].._1['end_i'])
-        .cover?(current_time.to_i)
-        end
-
     out =
       {
-        current_temperature: "#{current_nws_hour['temperature']}°",
+        current_temperature: "#{HourlyWeatherService.for(current_time.to_i)['temperature']}°",
         day_groups: day_groups,
         timestamp: current_time.strftime('%-l:%M %p')
       }

@@ -107,7 +107,7 @@ class WeatherService
 
     [today, today.tomorrow, today + 2.day, today + 3.day].each do |twz|
       noon_i = twz.noon.to_i
-      weather_hour = HourlyWeatherService.load["periods"].find { (_1['start_i'].._1['end_i']).cover?(noon_i) }
+      weather_hour = HourlyWeatherService.for(noon_i)
 
       if weather_hour.present?
         out <<
@@ -122,7 +122,7 @@ class WeatherService
       end
 
       p_i = (twz.noon + 4.hours).to_i
-      weather_hour = HourlyWeatherService.load["periods"].find { (_1['start_i'].._1['end_i']).cover?(p_i) }
+      weather_hour = HourlyWeatherService.for(p_i)
 
       if weather_hour.present?
         out <<
@@ -139,7 +139,7 @@ class WeatherService
 
     weather.dig('wunderground_forecast', 'sunsetTimeLocal').to_a.each do |sunset_time|
       sunset_i = DateTime.parse(sunset_time).to_i
-      weather_hour = HourlyWeatherService.load["periods"].find { (_1['start_i'].._1['end_i']).cover?(sunset_i) }
+      weather_hour = HourlyWeatherService.for(sunset_i)
 
       next unless weather_hour
 
@@ -156,7 +156,7 @@ class WeatherService
 
     weather.dig('wunderground_forecast', 'sunriseTimeLocal').to_a.each do |sunrise_time|
       sunrise_i = DateTime.parse(sunrise_time).to_i
-      weather_hour = HourlyWeatherService.load["periods"].find { (_1['start_i'].._1['end_i']).cover?(sunrise_i) }
+      weather_hour = HourlyWeatherService.for(sunrise_i)
 
       next unless weather_hour
 
@@ -173,7 +173,7 @@ class WeatherService
 
     precip_windows = []
 
-    HourlyWeatherService.load["periods"].each_with_index do |hour, _index|
+    HourlyWeatherService.periods.each_with_index do |hour, _index|
       next unless hour['icon'].split(',').length == 2
 
       summary, icon =

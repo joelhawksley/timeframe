@@ -1,4 +1,12 @@
 class HourlyWeatherService
+  def self.for(local_time_i)
+    load["periods"].find { (_1['start_i'].._1['end_i']).cover?(local_time_i) }
+  end
+
+  def self.periods
+    load["periods"]
+  end
+
   def self.load
     Value.find_or_create_by(key: "hourly_weather").value || {}
   end
