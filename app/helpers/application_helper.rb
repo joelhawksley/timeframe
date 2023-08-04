@@ -91,14 +91,15 @@ module ApplicationHelper
 
         memo << out
       end
-    
+
     current_nws_hour =
-      Value.weather['nws_hourly']
-      .find do
-        (_1['start_i'].._1['end_i'])
-      .cover?(current_time.to_i)
-      end
-    
+      HourlyWeatherService.
+        load["periods"]
+        .find do
+          (_1['start_i'].._1['end_i'])
+        .cover?(current_time.to_i)
+        end
+
     out =
       {
         current_temperature: "#{current_nws_hour['temperature']}°",

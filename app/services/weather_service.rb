@@ -27,39 +27,6 @@ class WeatherService
       )
     )
 
-    nws_hourly_response = JSON.parse(
-      HTTParty.get(
-        "https://api.weather.gov/gridpoints/#{ENV['NWS_GRIDPOINT']}/forecast/hourly",
-        {headers: {"User-Agent" => "joel@hawksley.org"}}
-      )
-    )
-
-    result["nws_hourly"] =
-      if nws_hourly_response["status"] == 503
-        Log.create(
-          globalid: "WeatherService",
-          event: "nws_hourly_error",
-          message: "NWS hourly API returned a 503"
-        )
-
-        # Just use old value
-        Value.weather["nws_hourly"]
-      else
-        nws_hourly_response["properties"]["periods"].map do |period|
-          icon, icon_class = icon_for_period(period["icon"])
-
-          {
-            start_i: Time.parse(period["startTime"]).to_i,
-            end_i: Time.parse(period["endTime"]).to_i,
-            temperature: period["temperature"],
-            wind: period["windSpeed"],
-            short_forecast: period["shortForecast"],
-            icon: icon,
-            icon_class: icon_class
-          }
-        end
-      end
-
     Value.find_or_create_by(key: "weather").update(value: result)
 
     Log.create(
@@ -73,58 +40,6 @@ class WeatherService
       event: "call_error",
       message: e.message + e.backtrace.join("\n")
     )
-  end
-
-  def self.icon_for_period(nws_url)
-    icon = nws_url.split("?").first.split("/").last
-
-    token =
-      nws_url.split("?").first.
-      split("land").last.
-      split(",").first
-
-    mappings = {
-      "/day/ovc" => "clouds",
-      "/day/bkn" => "clouds-sun",
-      "/day/sct" => "cloud-sun",
-      "/day/few" => "sun",
-      "/day/wind_bkn" => "wind",
-      "/day/wind_few" => "wind",
-      "/day/wind_sct" => "wind",
-      "/day/rain" => "raindrops",
-      "/day/tsra_hi" => "raindrops",
-      "/day/tsra_sct" => "raindrops",
-      "/day/tsra" => "raindrops",
-      "/day/rain_showers" => "raindrops",
-      "/day/snow" => "snowflake",
-      "/day/blizzard" => "snowflake",
-      "/day/cold" => "hat-winter",
-      "/day/fog" => "cloud-fog",
-      "/day/skc" => "sun",
-      "/day/smoke" => "smoke",
-      "/day/hot" => "temperature-high",
-      "/night/ovc" => "clouds",
-      "/night/bkn" => "clouds-moon",
-      "/night/sct" => "cloud-moon",
-      "/night/few" => "moon",
-      "/night/skc" => "moon",
-      "/night/wind_bkn" => "wind",
-      "/night/wind_few" => "wind",
-      "/night/wind_sct" => "wind",
-      "/night/rain" => "raindrops",
-      "/night/tsra_hi" => "raindrops",
-      "/night/tsra_sct" => "raindrops",
-      "/night/tsra" => "raindrops",
-      "/night/rain_showers" => "raindrops",
-      "/night/snow" => "snowflake",
-      "/night/blizzard" => "snowflake",
-      "/night/cold" => "hat-winter",
-      "/night/fog" => "cloud-fog",
-      "/night/smoke" => "smoke",
-      "/night/hot" => "temperature-high"
-    }
-
-    [icon, mappings[token] || "question"]
   end
 
   def self.healthy?(log = Log.where(globalid: 'WeatherService', event: 'call_success').last)
@@ -192,7 +107,7 @@ class WeatherService
 
     [today, today.tomorrow, today + 2.day, today + 3.day].each do |twz|
       noon_i = twz.noon.to_i
-      weather_hour = weather['nws_hourly'].find { (_1['start_i'].._1['end_i']).cover?(noon_i) }
+      weather_hour = HourlyWeatherService.load["periods"].find { (_1['start_i'].._1['end_i']).cover?(noon_i) }
 
       if weather_hour.present?
         out <<
@@ -207,7 +122,7 @@ class WeatherService
       end
 
       p_i = (twz.noon + 4.hours).to_i
-      weather_hour = weather['nws_hourly'].find { (_1['start_i'].._1['end_i']).cover?(p_i) }
+      weather_hour = HourlyWeatherService.load["periods"].find { (_1['start_i'].._1['end_i']).cover?(p_i) }
 
       if weather_hour.present?
         out <<
@@ -224,7 +139,7 @@ class WeatherService
 
     weather.dig('wunderground_forecast', 'sunsetTimeLocal').to_a.each do |sunset_time|
       sunset_i = DateTime.parse(sunset_time).to_i
-      weather_hour = weather['nws_hourly'].find { (_1['start_i'].._1['end_i']).cover?(sunset_i) }
+      weather_hour = HourlyWeatherService.load["periods"].find { (_1['start_i'].._1['end_i']).cover?(sunset_i) }
 
       next unless weather_hour
 
@@ -241,7 +156,7 @@ class WeatherService
 
     weather.dig('wunderground_forecast', 'sunriseTimeLocal').to_a.each do |sunrise_time|
       sunrise_i = DateTime.parse(sunrise_time).to_i
-      weather_hour = weather['nws_hourly'].find { (_1['start_i'].._1['end_i']).cover?(sunrise_i) }
+      weather_hour = HourlyWeatherService.load["periods"].find { (_1['start_i'].._1['end_i']).cover?(sunrise_i) }
 
       next unless weather_hour
 
@@ -258,7 +173,7 @@ class WeatherService
 
     precip_windows = []
 
-    weather['nws_hourly'].each_with_index do |hour, _index|
+    HourlyWeatherService.load["periods"].each_with_index do |hour, _index|
       next unless hour['icon'].split(',').length == 2
 
       summary, icon =

@@ -7,6 +7,7 @@ namespace :fetch do
 
   task weather: :environment do
     WeatherService.call
+    HourlyWeatherService.fetch
   end
 
   task google: :environment do
