@@ -4,11 +4,6 @@ class WeatherService
   def self.call
     result = {}
 
-    result["nearby"] = HTTParty.get(
-      "https://api.weather.com/v2/pws/observations/current?apiKey=" \
-      "#{ENV["WUNDERGROUND_TOKEN"]}&format=json&units=e&stationId=#{ENV['WUNDERGROUND_STATION_ID']}"
-    )["observations"].first
-
     result["wunderground_forecast"] = HTTParty.get(
       "https://api.weather.com/v3/wx/forecast/daily/5day?geocode=#{ENV["LAT_LONG"]}" \
       "&format=json&units=e&language=en-US&apiKey=#{ENV["WUNDERGROUND_TOKEN"]}"
