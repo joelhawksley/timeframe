@@ -6,7 +6,7 @@ namespace :fetch do
   end
 
   task weather: :environment do
-    WeatherService.call
+    WundergroundService.call
     HourlyWeatherService.fetch
     WeatherAlertService.fetch
   end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class WeatherService
+class WundergroundService
   def self.call
     result = {}
 
@@ -12,19 +12,19 @@ class WeatherService
     Value.find_or_create_by(key: "weather").update(value: result)
 
     Log.create(
-      globalid: "WeatherService",
+      globalid: "WundergroundService",
       event: "call_success",
       message: ""
     )
   rescue => e
     Log.create(
-      globalid: "WeatherService",
+      globalid: "WundergroundService",
       event: "call_error",
       message: e.message + e.backtrace.join("\n")
     )
   end
 
-  def self.healthy?(log = Log.where(globalid: 'WeatherService', event: 'call_success').last)
+  def self.healthy?(log = Log.where(globalid: 'WundergroundService', event: 'call_success').last)
     return false unless log
 
     log.created_at > DateTime.now - 1.hour
