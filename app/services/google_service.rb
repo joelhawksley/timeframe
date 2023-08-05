@@ -32,7 +32,7 @@ class GoogleService
   private
 
   def calendar_events
-    events = Value.calendar_events
+    events = CalendarService.calendar_events
 
     GoogleAccount.all.each do |google_account|
       client = GoogleAccount.client

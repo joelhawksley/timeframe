@@ -1,15 +1,13 @@
 # frozen_string_literal: true
 
 class WundergroundService
-  def self.call
-    result = {}
-
-    result["wunderground_forecast"] = HTTParty.get(
-      "https://api.weather.com/v3/wx/forecast/daily/5day?geocode=#{ENV["LAT_LONG"]}" \
-      "&format=json&units=e&language=en-US&apiKey=#{ENV["WUNDERGROUND_TOKEN"]}"
+  def self.fetch
+    Value.find_or_create_by(key: "wunderground").update(value:
+      HTTParty.get(
+        "https://api.weather.com/v3/wx/forecast/daily/5day?geocode=#{ENV["LAT_LONG"]}" \
+        "&format=json&units=e&language=en-US&apiKey=#{ENV["WUNDERGROUND_TOKEN"]}"
+      )
     )
-
-    Value.find_or_create_by(key: "weather").update(value: result)
 
     Log.create(
       globalid: "WundergroundService",

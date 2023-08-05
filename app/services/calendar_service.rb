@@ -17,8 +17,8 @@ class CalendarService
     end
   end
 
-  def self.sorted_calendar_events_array
-    @sorted_calendar_events_array ||= Value.sorted_calendar_events_array
+  def self.calendar_events
+    Value.find_or_create_by(key: "calendar_events").value
   end
 
   # Returns calendar events for a given UTC integer time range,
@@ -28,7 +28,7 @@ class CalendarService
       HourlyWeatherService.calendar_events +
       HourlyWeatherService.precip_calendar_events +
       [WeatherAlertService.weather_alert_calendar_event] +
-      sorted_calendar_events_array
+      calendar_events.values.flatten.map(&:values).flatten.sort_by { |event| event[:start_i] }
     ).compact.select do |event|
       (event['start_i']..event['end_i']).overlaps?(beginning_i...ending_i)
     end
