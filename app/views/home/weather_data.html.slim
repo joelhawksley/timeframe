@@ -6,7 +6,7 @@ table border="1"
   tbody
     - Value.weather.keys.each do |key|
       tr
-        td 
+        td
           strong = key
         td
           - case key
@@ -37,15 +37,15 @@ table border="1"
             - if Value.weather[key].is_a?(Array)
               table
                 - Value.weather[key].each do |row|
-                  tr 
+                  tr
                     td = row
             - else
               table
                 - Value.weather[key].keys.each do |key_2|
                   tr
-                    td 
+                    td
                       strong = key_2
                     td = Value.weather[key][key_2]
 
-                  
+
 

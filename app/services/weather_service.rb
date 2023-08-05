@@ -15,13 +15,6 @@ class WeatherService
       "&token=#{ENV["WEATHERFLOW_TOKEN"]}"
     )
 
-    result["nws_alerts"] = JSON.parse(
-      HTTParty.get(
-        "https://api.weather.gov/alerts/active/zone/#{ENV['NWS_ZONE']}",
-        {headers: {"User-Agent" => "joel@hawksley.org"}}
-      )
-    )
-
     Value.find_or_create_by(key: "weather").update(value: result)
 
     Log.create(
@@ -44,59 +37,7 @@ class WeatherService
   end
 
   def self.calendar_events
-    alert = most_important_weather_alert
-
     out = []
-
-    if alert
-      icon =
-        if String(alert['event']).include?('Winter')
-          'snowflake'
-        else
-          'warning'
-        end
-
-      summary =
-        if String(alert['event']).include?('Winter')
-          if alert['description'].include?('Additional snow')
-            alert['description']
-              .tr("\n", ' ')
-              .split('Additional snow accumulations')
-              .last
-              .split('.')
-              .first
-              .strip
-              .gsub(' inches', '"')
-          else
-            desc = alert['description']
-                   .tr("\n", ' ')
-                   .split('accumulations between')
-                   .last
-                   .split('.')
-                   .first
-                   .strip
-                   .gsub(' and ', '-')
-                   .gsub(' inches', '"')
-                   .gsub(' possible', '')
-                   .split(', with')
-                   .first
-                   .split('"')
-                   .first
-
-            "NWS #{alert['event'].split(' ').last}: ~#{desc}\""
-          end
-        else
-          alert['event']
-        end
-
-      out << CalendarEvent.new(
-        start_i: DateTime.parse(alert['onset']).to_i,
-        end_i: DateTime.parse(alert['ends'] || alert['expires']).to_i,
-        calendar: '_weather_alerts',
-        summary: summary,
-        icon: icon
-      ).to_h.with_indifferent_access
-    end
 
     today = Date.today.in_time_zone(Timeframe::Application.config.local["timezone"])
 
@@ -199,24 +140,6 @@ class WeatherService
     end
 
     out.concat(precip_windows)
-  end
-
-  def self.most_important_weather_alert
-    return nil unless weather.to_h.dig('nws_alerts', 'features').to_a.any?
-
-    alerts = weather['nws_alerts']['features']
-
-    alert_severity_mappings = {
-      'Severe' => 0,
-      'Moderate' => 1
-    }
-
-    alerts
-      .reject { |alert| alert.dig('properties', 'urgency') == 'Past' }
-      .sort_by { |alert| alert_severity_mappings[alert['properties']['severity']] }
-      .uniq { |alert| alert['properties']['event'] }
-      .reject { |alert| alert['properties']['areaDesc'].to_s.include?('OZONE ACTION DAY') }
-      .first['properties']
   end
 
   def self.weather

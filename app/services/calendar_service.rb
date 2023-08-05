@@ -24,7 +24,11 @@ class CalendarService
   # Returns calendar events for a given UTC integer time range,
   # adding a `time` key for the time formatted for the user's timezone
   def self.events_for(beginning_i, ending_i)
-    filtered_events = (WeatherService.calendar_events + sorted_calendar_events_array).select do |event|
+    filtered_events = (
+      WeatherService.calendar_events +
+      [WeatherAlertService.weather_alert_calendar_event] +
+      sorted_calendar_events_array
+    ).compact.select do |event|
       (event['start_i']..event['end_i']).overlaps?(beginning_i...ending_i)
     end
 
