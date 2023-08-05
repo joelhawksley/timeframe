@@ -20,26 +20,16 @@ module ApplicationHelper
           day_index: day_index,
           day_name: date.strftime('%A'),
           show_all_day_events: day_index.zero? ? date.hour <= 19 : true,
-          events: CalendarService.events_for(start_i, date.end_of_day.utc.to_i)
+          events: CalendarService.events_for(start_i, date.end_of_day.utc.to_i),
+          temperature_range: PirateWeatherService.temperature_range_for(date.to_date)
         }
-
-        high = Value.weather['wunderground_forecast']['calendarDayTemperatureMax'][day_index]
-        low = Value.weather['wunderground_forecast']['calendarDayTemperatureMin'][day_index]
-
-        out[:precip_label] = if Value.weather['wunderground_forecast']['qpfSnow'][day_index] > 0
-                               " <i class='fa-regular fa-snowflake'></i> #{Value.weather['wunderground_forecast']['qpfSnow'][day_index].round}\""
-                             else
-                               " #{Value.weather['wunderground_forecast']['qpf'][day_index].round}%"
-                             end
-        out[:temperature_range] = "&#8593;#{high} &#8595;#{low}".html_safe
-        out[:precip_probability] = Value.weather['wunderground_forecast']['qpf'][day_index]
 
         memo << out
       end
 
     out =
       {
-        current_temperature: "#{HourlyWeatherService.for(current_time.to_i)['temperature']}°",
+        current_temperature: "#{PirateWeatherService.current_temperature.to_i}°",
         day_groups: day_groups,
         timestamp: current_time.strftime('%-l:%M %p')
       }

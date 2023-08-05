@@ -2,17 +2,17 @@
 
 require "test_helper"
 
-class WundergroundServiceTest < Minitest::Test
+class PirateWeatherServiceTest < Minitest::Test
   def test_healthy_false_without_log
-    assert_equal(false, WundergroundService.healthy?)
+    assert_equal(false, PirateWeatherService.healthy?)
   end
 
   def test_healthy_false_with_old_log
     assert_equal(
       false,
-      WundergroundService.healthy?(
+      PirateWeatherService.healthy?(
         Log.new(
-          globalid: 'WundergroundService',
+          globalid: 'PirateWeatherService',
           event: 'call_success',
           message: "foo",
           created_at: DateTime.now - 2.hours
@@ -24,9 +24,9 @@ class WundergroundServiceTest < Minitest::Test
   def test_healthy_with_log
     assert_equal(
       true,
-      WundergroundService.healthy?(
+      PirateWeatherService.healthy?(
         Log.new(
-          globalid: 'WundergroundService',
+          globalid: 'PirateWeatherService',
           event: 'call_success',
           message: "foo",
           created_at: DateTime.now

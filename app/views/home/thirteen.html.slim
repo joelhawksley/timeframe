@@ -5,7 +5,7 @@ javascript:
 
 .timestamp style="position: absolute; bottom: .25rem; right: .25rem; font-size: .4rem; color: #777; z-index: 10" = view_object[:timestamp]
 div
-  - if !WundergroundService.healthy?
+  - if !PirateWeatherService.healthy?
     span
       i.fa-solid.fa-cloud-exclamation style="font-size: 1rem"
   - unless GoogleAccount.all.all?(&:healthy?)
