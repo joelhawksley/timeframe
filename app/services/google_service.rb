@@ -69,7 +69,7 @@ class GoogleService
       events[google_account.email] = {}
 
       calendars.each_with_index do |calendar, _index|
-        calendar_config = 
+        calendar_config =
           Timeframe::Application.config.local["calendars"].find { _1["id"] == calendar.id }
 
         next unless calendar_config.present?

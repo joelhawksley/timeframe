@@ -16,66 +16,11 @@ module ApplicationHelper
             date.beginning_of_day.utc.to_i
           end
 
-        events = CalendarService.events_for(start_i, date.end_of_day.utc.to_i)
-        all_day_events = events.select { |event| event['all_day'] }
-
-        mappings = [
-          "Birthdays",
-          "Us",
-          "Caitlin",
-          "Caitlin Exercise Log",
-          "Captain",
-          "Dinner",
-          "Friends & Family",
-          "HelloFresh",
-          "Holidays in United States",
-          "Home",
-          "Joel",
-          "Joel Health",
-          "On Call Schedule for joelhawksley",
-          "joelhawksley@github.com",
-          "Work",
-        ]
-
-        groupings = all_day_events.group_by { |event| event['calendar'] }
-
-        groupings.transform_values! do |arr|
-          arr.sort! do |x, y|
-            # if this result is 1 means x should come later relative to y
-            # if this result is -1 means x should come earlier relative to y
-            # if this result is 0 means both are same so position doesn't matter
-            if x['calendar'] != 'Dinner'
-              if !x['multi_day'] && y['multi_day']
-                -1
-              elsif x['multi_day'] && !y['multi_day']
-                1
-              else
-                0
-              end
-            else
-              0
-            end
-          end
-        end
-
-        pairs = groupings.flat_map do |calendar, events|
-          events.map do |event|
-            [calendar, event]
-          end
-        end
-
-        pairs.sort_by! do |pair|
-          mappings.index(pair[0])
-        end.map!(&:last)
-
         out = {
           day_index: day_index,
           day_name: date.strftime('%A'),
           show_all_day_events: day_index.zero? ? date.hour <= 19 : true,
-          events: {
-            all_day: pairs,
-            periodic: events.reject { |event| event['all_day'] }
-          }
+          events: CalendarService.events_for(start_i, date.end_of_day.utc.to_i)
         }
 
         high = Value.weather['wunderground_forecast']['calendarDayTemperatureMax'][day_index]
