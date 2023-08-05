@@ -28,14 +28,10 @@ class CalendarService
       HourlyWeatherService.calendar_events +
       HourlyWeatherService.precip_calendar_events +
       [WeatherAlertService.weather_alert_calendar_event] +
-      calendar_events.values.flatten.map(&:values).flatten.sort_by { |event| event[:start_i] }
+      calendar_events.values.flatten.map(&:values).flatten
     ).compact.select do |event|
       (event['start_i']..event['end_i']).overlaps?(beginning_i...ending_i)
-    end
-
-    # Merge duplicate events, merging the letter with a custom rule if so
-    filtered_events
-      .group_by { _1['id'] }
+    end.group_by { _1['id'] } # Merge duplicate events, merging the letter with a custom rule if so
       .map do |_k, v|
         if v.length > 1
           letters = v.map { |iv| iv['letter'] }
