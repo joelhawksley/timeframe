@@ -9,12 +9,6 @@ class WeatherService
       "&format=json&units=e&language=en-US&apiKey=#{ENV["WUNDERGROUND_TOKEN"]}"
     )
 
-    result["weatherflow_forecast"] = HTTParty.get(
-      "https://swd.weatherflow.com/swd/rest/better_forecast?station_id=#{ENV['WEATHERFLOW_STATION_ID']}" \
-      "&units_temp=f&units_wind=mph&units_pressure=mb&units_precip=in&units_distance=mi" \
-      "&token=#{ENV["WEATHERFLOW_TOKEN"]}"
-    )
-
     Value.find_or_create_by(key: "weather").update(value: result)
 
     Log.create(
