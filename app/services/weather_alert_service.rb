@@ -19,7 +19,7 @@ class WeatherAlertService
   def self.weather_alert_calendar_event
     return nil unless load.dig('response', 'features').to_a.any?
 
-    alerts = weather['nws_alerts']['features']
+    alerts = load['response']['features']
 
     alert_severity_mappings = {
       'Severe' => 0,
