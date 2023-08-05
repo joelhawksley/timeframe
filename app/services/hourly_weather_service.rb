@@ -1,6 +1,6 @@
 class HourlyWeatherService
   def self.for(local_time_i)
-    load["periods"].find { (_1['start_i'].._1['end_i']).cover?(local_time_i) }
+    periods.find { (_1['start_i'].._1['end_i']).cover?(local_time_i) }
   end
 
   def self.periods
@@ -12,34 +12,29 @@ class HourlyWeatherService
   end
 
   def self.calendar_events
-    out = []
-
     today = Date.today.in_time_zone(Timeframe::Application.config.local["timezone"])
 
-    [today, today.tomorrow, today + 2.day, today + 3.day].each do |twz|
+    [today, today.tomorrow, today + 2.day, today + 3.day].flat_map do |twz|
       [
         (twz.noon - 4.hours).to_i,
         twz.noon.to_i,
         (twz.noon + 4.hours).to_i,
         (twz.noon + 8.hours).to_i
-      ].each do |hour_i|
+      ].map do |hour_i|
         weather_hour = HourlyWeatherService.for(hour_i)
 
-        if weather_hour.present?
-          out <<
-            CalendarEvent.new(
-              id: hour_i,
-              start_i: hour_i,
-              end_i: hour_i,
-              calendar: '_weather_alerts',
-              icon: weather_hour['icon_class'],
-              summary: "#{weather_hour['temperature'].round}°".html_safe
-            )
-        end
-      end
-    end
+        next if !weather_hour.present?
 
-    out
+        CalendarEvent.new(
+          id: hour_i,
+          start_i: hour_i,
+          end_i: hour_i,
+          calendar: '_weather_alerts',
+          icon: weather_hour['icon_class'],
+          summary: "#{weather_hour['temperature'].round}°".html_safe
+        )
+      end.compact
+    end
   end
 
   def self.precip_calendar_events
