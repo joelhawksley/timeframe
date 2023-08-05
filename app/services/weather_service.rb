@@ -168,7 +168,7 @@ class WeatherService
 
     precip_windows = []
 
-    HourlyWeatherService.periods.each_with_index do |hour, _index|
+    HourlyWeatherService.periods.each do |hour|
       next unless hour['icon'].split(',').length == 2
 
       summary, icon =
