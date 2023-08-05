@@ -11,13 +11,17 @@ class HomeController < ApplicationController
     render "weather_data", layout: false
   end
 
+  def calendar_data
+    render "calendar_data", layout: false
+  end
+
   def thirteen
     render "thirteen", locals: {view_object: render_json_payload}, layout: "display"
   end
 
   def mira
     @refresh = true
-    
+
     render "mira", locals: {view_object: render_json_payload}, layout: "display"
   end
 
