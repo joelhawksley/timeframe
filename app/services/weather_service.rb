@@ -54,7 +54,7 @@ class WeatherService
             calendar: '_weather_alerts',
             icon: weather_hour['icon_class'],
             summary: "#{weather_hour['temperature'].round}°".html_safe
-          ).to_h.with_indifferent_access
+          )
       end
 
       p_i = (twz.noon + 4.hours).to_i
@@ -69,7 +69,7 @@ class WeatherService
             calendar: '_weather_alerts',
             icon: weather_hour['icon_class'],
             summary: "#{weather_hour['temperature'].round}°".html_safe
-          ).to_h.with_indifferent_access
+          )
       end
     end
 
@@ -87,7 +87,7 @@ class WeatherService
           calendar: '_weather_alerts',
           icon: weather_hour['icon_class'],
           summary: "#{weather_hour['temperature'].round}°".html_safe
-        ).to_h.with_indifferent_access
+        )
     end
 
     weather.dig('wunderground_forecast', 'sunriseTimeLocal').to_a.each do |sunrise_time|
@@ -104,42 +104,10 @@ class WeatherService
           calendar: '_weather_alerts',
           icon: weather_hour['icon_class'],
           summary: "#{weather_hour['temperature'].round}°".html_safe
-        ).to_h.with_indifferent_access
+        )
     end
 
-    precip_windows = []
-
-    HourlyWeatherService.periods.each do |hour|
-      next unless hour['icon'].split(',').length == 2
-
-      summary, icon =
-        case hour['icon'].split(',').first
-        when 'snow', 'blizzard'
-          %w[Snow snowflake]
-        when 'rain', 'rain_showers', 'tsra', 'tsra_sct', 'tsra_hi'
-          %w[Rain raindrops]
-        when 'smoke'
-          %w[Smoke smoke]
-        end
-
-      next unless summary
-
-      if (existing_index = precip_windows.find_index { _1['summary'] == summary && _1['end_i'] == hour['start_i'] })
-        precip_windows[existing_index]['end_i'] = hour['end_i']
-      else
-        precip_windows <<
-          CalendarEvent.new(
-            id: "#{hour['start_i']}_window",
-            start_i: hour['start_i'],
-            end_i: hour['end_i'],
-            calendar: '_weather_alerts',
-            icon: icon,
-            summary: summary
-          ).to_h.with_indifferent_access
-      end
-    end
-
-    out.concat(precip_windows)
+    out
   end
 
   def self.weather

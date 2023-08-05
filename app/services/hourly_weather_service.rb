@@ -11,6 +11,42 @@ class HourlyWeatherService
     Value.find_or_create_by(key: "hourly_weather").value || {}
   end
 
+  def self.precip_calendar_events
+    events = []
+
+    periods.each do |hour|
+      next unless hour['icon'].split(',').length == 2
+
+      summary, icon =
+        case hour['icon'].split(',').first
+        when 'snow', 'blizzard'
+          %w[Snow snowflake]
+        when 'rain', 'rain_showers', 'tsra', 'tsra_sct', 'tsra_hi'
+          %w[Rain raindrops]
+        when 'smoke'
+          %w[Smoke smoke]
+        end
+
+      next unless summary
+
+      if (existing_index = events.find_index { _1['summary'] == summary && _1['end_i'] == hour['start_i'] })
+        events[existing_index]['end_i'] = hour['end_i']
+      else
+        events <<
+          CalendarEvent.new(
+            id: "#{hour['start_i']}_window",
+            start_i: hour['start_i'],
+            end_i: hour['end_i'],
+            calendar: '_weather_alerts',
+            icon: icon,
+            summary: summary
+          )
+      end
+    end
+
+    events
+  end
+
   def self.fetch
     result = load
 

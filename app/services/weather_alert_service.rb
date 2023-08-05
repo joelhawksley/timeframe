@@ -82,6 +82,6 @@ class WeatherAlertService
       calendar: '_weather_alerts',
       summary: summary,
       icon: icon
-    ).to_h.with_indifferent_access
+    )
   end
 end

@@ -2,8 +2,8 @@ class CalendarEvent
   DAY_IN_SECONDS = 86_400
 
   def initialize(
-    start_i:, 
-    end_i:, 
+    start_i:,
+    end_i:,
     calendar:,
     summary:,
     description: nil,
@@ -13,7 +13,7 @@ class CalendarEvent
     all_day: false,
     id: SecureRandom.hex
   )
-    @id, @start_i, @end_i, @calendar, @icon, @letter, @summary, @description, @location, @all_day = 
+    @id, @start_i, @end_i, @calendar, @icon, @letter, @summary, @description, @location, @all_day =
       id, start_i, end_i, calendar, icon, letter, summary, description, location, all_day
   end
 
@@ -31,6 +31,14 @@ class CalendarEvent
       all_day: @all_day,
       time: EventTimeService.call(@start_i, @end_i)
     }
+  end
+
+  def [](index)
+    to_h[index.to_sym]
+  end
+
+  def []=(index, value)
+    instance_variable_set(:"@#{index}", value)
   end
 
   private
