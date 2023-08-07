@@ -13,6 +13,7 @@ gem "puma", "~> 4.3"
 gem "rails", "~> 7"
 gem "sass-rails", "~> 5.0"
 gem "slim"
+gem "tenkit"
 gem "view_component", "3.0.0.rc2"
 
 group :development, :test do

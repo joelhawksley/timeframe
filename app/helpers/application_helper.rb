@@ -29,7 +29,7 @@ module ApplicationHelper
 
     out =
       {
-        current_temperature: "#{PirateWeatherService.current_temperature.to_i}°",
+        current_temperature: "#{WeatherKitService.current_temperature}°",
         day_groups: day_groups,
         timestamp: current_time.strftime('%-l:%M %p')
       }

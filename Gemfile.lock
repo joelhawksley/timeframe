@@ -283,6 +283,9 @@ GEM
       lint_roller (~> 1.0)
       rubocop-performance (~> 1.18.0)
     temple (0.10.2)
+    tenkit (0.0.5)
+      httparty (~> 0.21.0)
+      jwt (~> 2.7.0)
     thor (1.2.2)
     tilt (2.2.0)
     timeout (0.4.0)
@@ -319,6 +322,7 @@ DEPENDENCIES
   simplecov
   slim
   standard
+  tenkit
   view_component (= 3.0.0.rc2)
 
 RUBY VERSION
