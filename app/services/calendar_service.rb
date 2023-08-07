@@ -26,7 +26,7 @@ class CalendarService
   def self.events_for(beginning_i, ending_i)
     filtered_events = (
       WeatherKitService.calendar_events +
-      HourlyWeatherService.precip_calendar_events +
+      WeatherKitService.precip_calendar_events +
       [WeatherAlertService.weather_alert_calendar_event] +
       calendar_events.values.flatten.map(&:values).flatten
     ).compact.select do |event|

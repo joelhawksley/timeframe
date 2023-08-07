@@ -7,7 +7,6 @@ namespace :fetch do
 
   task weather: :environment do
     WeatherKitService.fetch
-    HourlyWeatherService.fetch
     WeatherAlertService.fetch
   end
 

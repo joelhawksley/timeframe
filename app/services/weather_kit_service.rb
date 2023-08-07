@@ -80,41 +80,7 @@ class WeatherKitService
       "MostlyCloudy" => "clouds",
       "PartlyCloudy" => "clouds-sun",
       "MostlyClear" => "cloud-sun",
-      "Clear" => "sun",
-      "/day/wind_bkn" => "wind",
-      "/day/wind_few" => "wind",
-      "/day/wind_sct" => "wind",
-      "/day/rain" => "raindrops",
-      "/day/tsra_hi" => "raindrops",
-      "/day/tsra_sct" => "raindrops",
-      "/day/tsra" => "raindrops",
-      "/day/rain_showers" => "raindrops",
-      "/day/snow" => "snowflake",
-      "/day/blizzard" => "snowflake",
-      "/day/cold" => "hat-winter",
-      "/day/fog" => "cloud-fog",
-      "/day/skc" => "sun",
-      "/day/smoke" => "smoke",
-      "/day/hot" => "temperature-high",
-      "/night/ovc" => "clouds",
-      "/night/bkn" => "clouds-moon",
-      "/night/sct" => "cloud-moon",
-      "/night/few" => "moon",
-      "/night/skc" => "moon",
-      "/night/wind_bkn" => "wind",
-      "/night/wind_few" => "wind",
-      "/night/wind_sct" => "wind",
-      "/night/rain" => "raindrops",
-      "/night/tsra_hi" => "raindrops",
-      "/night/tsra_sct" => "raindrops",
-      "/night/tsra" => "raindrops",
-      "/night/rain_showers" => "raindrops",
-      "/night/snow" => "snowflake",
-      "/night/blizzard" => "snowflake",
-      "/night/cold" => "hat-winter",
-      "/night/fog" => "cloud-fog",
-      "/night/smoke" => "smoke",
-      "/night/hot" => "temperature-high"
+      "Clear" => "sun"
     }
 
     mappings[condition_code] || "question"
@@ -123,32 +89,21 @@ class WeatherKitService
   def self.precip_calendar_events
     events = []
 
-    periods.each do |hour|
-      next unless hour['icon'].split(',').length == 2
+    weather["forecastHourly"]["hours"].each do |hour|
+      next unless hour["precipitationType"] == "rain"
 
-      summary, icon =
-        case hour['icon'].split(',').first
-        when 'snow', 'blizzard'
-          %w[Snow snowflake]
-        when 'rain', 'rain_showers', 'tsra', 'tsra_sct', 'tsra_hi'
-          %w[Rain raindrops]
-        when 'smoke'
-          %w[Smoke smoke]
-        end
-
-      next unless summary
-
-      if (existing_index = events.find_index { _1['summary'] == summary && _1['end_i'] == hour['start_i'] })
-        events[existing_index]['end_i'] = hour['end_i']
+      if (existing_index = events.find_index { _1['summary'] == "rain" && _1['end_i'] == hour['start_i'] })
+        events[existing_index]['end_i'] =
+          (DateTime.parse(hour["forecastStart"]) + 1.hour).to_i
       else
         events <<
           CalendarEvent.new(
             id: "#{hour['start_i']}_window",
-            start_i: hour['start_i'],
-            end_i: hour['end_i'],
-            calendar: '_weather_alerts',
-            icon: icon,
-            summary: summary
+            start_i: DateTime.parse(hour["forecastStart"]).to_i,
+            end_i: (DateTime.parse(hour["forecastStart"]) + 1.hour).to_i,
+            calendar: '_precip_windows',
+            icon: "raindrops",
+            summary: "rain"
           )
       end
     end
