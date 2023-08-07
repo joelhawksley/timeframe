@@ -15,16 +15,16 @@ table
 
 table style="width: 100%;"
   thead
-    - hour_keys = HourlyWeatherService.periods[0].keys
+    - hour_keys = WeatherKitService.calendar_events[0].to_h.keys
     - hour_keys.each do |hour_key|
       th = hour_key
-  - HourlyWeatherService.periods.each do |hour|
+  - WeatherKitService.calendar_events.each do |hour|
     tr
       - hour_keys.each do |hour_key|
-        - if hour_key.include?("_i")
-          td = Time.at(hour[hour_key]).in_time_zone(Timeframe::Application.config.local["timezone"]).strftime('%a %b %e %I:%M:%S %p')
+        - if hour_key.to_s.include?("_i")
+          td = Time.at(hour.to_h[hour_key]).in_time_zone(Timeframe::Application.config.local["timezone"]).strftime('%a %b %e %I:%M:%S %p')
         - else
-          td = hour[hour_key]
+          td = hour.to_h[hour_key]
 
 
 
