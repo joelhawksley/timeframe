@@ -21,7 +21,7 @@ module ApplicationHelper
           day_name: date.strftime('%A'),
           show_all_day_events: day_index.zero? ? date.hour <= 19 : true,
           events: CalendarService.events_for(start_i, date.end_of_day.utc.to_i),
-          temperature_range: PirateWeatherService.temperature_range_for(date.to_date)
+          temperature_range: WeatherKitService.temperature_range_for(date.to_date)
         }
 
         memo << out

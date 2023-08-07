@@ -3,8 +3,14 @@ class WeatherKitService
     Value.find_or_create_by(key: "weatherkit").value["data"]
   end
 
+  def self.temperature_range_for(date)
+    forecast = weather["forecastDaily"]["days"].find{ _1["forecastStart"].to_date == date }
+
+    "&#8593;#{celsius_fahrenheit(forecast["temperatureMax"])} &#8595;#{celsius_fahrenheit(forecast["temperatureMin"])}".html_safe
+  end
+
   def self.current_temperature
-    celsius_fahrenheit(weather["current_weather"]["temperature"]).round
+    celsius_fahrenheit(weather["currentWeather"]["temperature"])
   end
 
   def self.fetch
@@ -13,7 +19,7 @@ class WeatherKitService
     Value.find_or_create_by(key: "weatherkit").update(value:
       {
         data:
-          JSON.parse(client.weather(
+          client.weather(
             local_config["latitude"],
             local_config["longitude"],
             data_sets: [
@@ -22,7 +28,7 @@ class WeatherKitService
               :forecast_hourly,
               :weather_alerts
             ]
-          ).weather.to_json),
+          ).raw,
         last_fetched_at: Time.now.utc.in_time_zone(Timeframe::Application.config.local["timezone"]).to_s
       }
     )
@@ -35,6 +41,6 @@ class WeatherKitService
   end
 
   def self.celsius_fahrenheit(c)
-    c * 9 / 5 + 32
+    (c * 9 / 5 + 32).round
   end
 end
