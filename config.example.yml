@@ -1,6 +1,5 @@
 timezone: America/Denver
 birthdate: "2023-2-11"
-pirate_weather_api_key: foo
 apple_developer_team_id: bar
 apple_developer_service_id: baz
 apple_developer_key_id: 123

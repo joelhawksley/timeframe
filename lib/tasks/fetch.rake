@@ -6,7 +6,7 @@ namespace :fetch do
   end
 
   task weather: :environment do
-    PirateWeatherService.fetch
+    WeatherKitService.fetch
     HourlyWeatherService.fetch
     WeatherAlertService.fetch
   end
