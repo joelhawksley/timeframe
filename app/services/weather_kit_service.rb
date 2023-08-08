@@ -16,7 +16,7 @@ class WeatherKitService
   def self.healthy?
     DateTime.parse(
       Value.find_or_create_by(key: "weatherkit").value["last_fetched_at"]
-    ) < DateTime.now - 1.hour
+    ) > DateTime.now - 1.hour
   end
 
   def self.fetch
