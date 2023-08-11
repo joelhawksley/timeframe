@@ -77,6 +77,7 @@ class WeatherKitService
 
   def self.icon_for(condition_code)
     mappings = {
+      "Cloudy" => "clouds",
       "MostlyCloudy" => "clouds",
       "PartlyCloudy" => "clouds-sun",
       "MostlyClear" => "cloud-sun",
