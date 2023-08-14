@@ -1,22 +1,32 @@
 class WeatherKitService
   def self.weather
-    Value.find_or_create_by(key: "weatherkit").value["data"]
+    Value.find_or_create_by(key: "weatherkit").value["data"] || {}
   end
 
   def self.temperature_range_for(date)
-    forecast = weather["forecastDaily"]["days"].find{ _1["forecastStart"].to_date == date }
+    days = weather.dig("forecastDaily", "days")
+
+    return nil unless days
+
+    forecast = weather.dig("forecastDaily", "days").find{ _1["forecastStart"].to_date == date }
 
     "&#8593;#{celsius_fahrenheit(forecast["temperatureMax"])} &#8595;#{celsius_fahrenheit(forecast["temperatureMin"])}".html_safe
   end
 
   def self.current_temperature
-    celsius_fahrenheit(weather["currentWeather"]["temperature"])
+    raw_temp = weather.dig("currentWeather", "temperature")
+
+    return nil unless raw_temp
+
+    celsius_fahrenheit(weather.dig("currentWeather", "temperature"))
   end
 
   def self.healthy?
-    DateTime.parse(
-      Value.find_or_create_by(key: "weatherkit").value["last_fetched_at"]
-    ) > DateTime.now - 1.hour
+    last_fetched_at = Value.find_or_create_by(key: "weatherkit").value["last_fetched_at"]
+
+    return true unless last_fetched_at
+
+    DateTime.parse(last_fetched_at) > DateTime.now - 1.hour
   end
 
   def self.fetch
@@ -49,6 +59,18 @@ class WeatherKitService
   def self.calendar_events
     today = Date.today.in_time_zone(Timeframe::Application.config.local["timezone"])
 
+    icon_mappings = {
+      "Cloudy" => "clouds",
+      "MostlyCloudy" => "clouds",
+      "PartlyCloudy" => "clouds-sun",
+      "MostlyClear" => "cloud-sun",
+      "Clear" => "sun"
+    }
+
+    hours_forecast = weather.dig("forecastHourly", "hours")
+
+    return [] unless hours_forecast.present?
+
     [today, today.tomorrow, today + 2.day, today + 3.day].flat_map do |twz|
       [
         (twz.noon - 4.hours),
@@ -57,7 +79,7 @@ class WeatherKitService
         (twz.noon + 8.hours)
       ].map do |hour|
         weather_hour =
-          weather["forecastHourly"]["hours"].find do
+          hours_forecast.find do
             DateTime.parse(_1["forecastStart"]) == hour
           end
 
@@ -68,27 +90,19 @@ class WeatherKitService
           start_i: hour.to_i,
           end_i: hour.to_i,
           calendar: '_weather_hours',
-          icon: icon_for(weather_hour['conditionCode']),
+          icon: icon_mappings[condition_code] || "question",
           summary: "#{celsius_fahrenheit(weather_hour['temperature'])}°".html_safe
         )
       end.compact
     end
   end
 
-  def self.icon_for(condition_code)
-    mappings = {
-      "Cloudy" => "clouds",
-      "MostlyCloudy" => "clouds",
-      "PartlyCloudy" => "clouds-sun",
-      "MostlyClear" => "cloud-sun",
-      "Clear" => "sun"
-    }
-
-    mappings[condition_code] || "question"
-  end
-
   def self.precip_calendar_events
     events = []
+
+    hours_forecast = weather.dig("forecastHourly", "hours")
+
+    return events unless hours_forecast.present?
 
     weather["forecastHourly"]["hours"].each do |hour|
       next unless hour["precipitationType"] == "rain"
