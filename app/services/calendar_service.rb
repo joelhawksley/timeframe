@@ -23,14 +23,14 @@ class CalendarService
 
   # Returns calendar events for a given UTC integer time range,
   # adding a `time` key for the time formatted for the user's timezone
-  def self.events_for(beginning_i, ending_i)
+  def self.events_for(starts_at, ends_at)
     filtered_events = (
       WeatherKitService.calendar_events +
       WeatherKitService.precip_calendar_events +
       [WeatherAlertService.weather_alert_calendar_event] +
       calendar_events.values.flatten.map(&:values).flatten
     ).compact.select do |event|
-      (event['start_i']..event['end_i']).overlaps?(beginning_i...ending_i)
+      (event['start_i']..event['end_i']).overlaps?(starts_at.to_i...ends_at.to_i)
     end.group_by { _1['id'] } # Merge duplicate events, merging the letter with a custom rule if so
       .map do |_k, v|
         if v.length > 1

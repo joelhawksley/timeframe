@@ -87,8 +87,8 @@ class WeatherKitService
 
         CalendarEvent.new(
           id: "_weather_hour_#{hour.to_i}",
-          start_i: hour.to_i,
-          end_i: hour.to_i,
+          starts_at: hour,
+          ends_at: hour,
           icon: icon_mappings[weather_hour["conditionCode"]] || "question",
           summary: "#{celsius_fahrenheit(weather_hour['temperature'])}°".html_safe
         )
@@ -113,8 +113,8 @@ class WeatherKitService
         events <<
           CalendarEvent.new(
             id: "#{hour['start_i']}_window",
-            start_i: DateTime.parse(hour["forecastStart"]).to_i,
-            end_i: (DateTime.parse(hour["forecastStart"]) + 1.hour).to_i,
+            starts_at: DateTime.parse(hour["forecastStart"]).to_i,
+            ends_at: (DateTime.parse(hour["forecastStart"]) + 1.hour).to_i,
             icon: "raindrops",
             summary: "rain"
           )

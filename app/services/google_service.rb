@@ -101,8 +101,8 @@ class GoogleService
             description: event_json["description"],
             icon: calendar_config["icon"],
             letter: calendar_config["letter"],
-            start_i: start_i,
-            end_i: end_i,
+            starts_at: start_i,
+            ends_at: end_i,
             all_day: event_json["start"].key?("date") || ((end_i - start_i) > 86_400)
           ).to_h
         end
