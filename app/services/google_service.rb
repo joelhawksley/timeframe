@@ -67,17 +67,12 @@ class GoogleService
         ).items.each do |event|
           event_json = event.as_json
 
-          # exclude declined events
-          next if event_json["attendees"].to_a.any? do |attendee|
-            attendee["self"] && attendee["response_status"] == "declined"
-          end
-
-          next unless event_json["summary"].present?
-
           next if
             event_json["description"].to_s.downcase.include?("timeframe-omit") || # hide timeframe-omit
               event_json["summary"] == "." || # hide . marker
-              event_json["summary"] == "Out of office"
+              event_json["summary"] == "Out of office" ||
+              event_json["attendees"].to_a.any? { _1["self"] && _1["response_status"] == "declined" } ||
+              !event_json["summary"].present?
 
           start_i =
             ActiveSupport::TimeZone[Timeframe::Application.config.local["timezone"]].parse(
