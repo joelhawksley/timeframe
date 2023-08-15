@@ -7,7 +7,6 @@ class CalendarEventTest < Minitest::Test
     event = CalendarEvent.new(
       start_i: 1675123200,
       end_i: 1675126800,
-      calendar: "test",
       summary: "foo",
     ).to_h
 
@@ -18,7 +17,6 @@ class CalendarEventTest < Minitest::Test
     event = CalendarEvent.new(
       start_i: 1675123200,
       end_i: 1675209601,
-      calendar: "test",
       summary: "foo",
     ).to_h
 
@@ -29,7 +27,6 @@ class CalendarEventTest < Minitest::Test
     event = CalendarEvent.new(
       start_i: 1675123200,
       end_i: 1675209601,
-      calendar: "test",
       summary: "foo",
       description: (Date.today.year - 2).to_s,
     ).to_h

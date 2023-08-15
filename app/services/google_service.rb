@@ -54,35 +54,18 @@ class GoogleService
       service = Google::Apis::CalendarV3::CalendarService.new
       service.authorization = client
 
-      begin
-        calendars = service.list_calendar_lists.items
-      rescue => e
-        Log.create(
-          globalid: google_account.to_global_id,
-          event: "list_calendar_lists",
-          message: e.message
-        )
-      end
-
-      next unless calendars.present?
-
       events[google_account.email] = {}
 
-      calendars.each_with_index do |calendar, _index|
-        calendar_config =
-          Timeframe::Application.config.local["calendars"].find { _1["id"] == calendar.id }
-
-        next unless calendar_config.present?
-
+      Timeframe::Application.config.local["calendars"].each do |calendar_config|
         service.list_events(
-          calendar.id,
+          calendar_config["id"],
           single_events: true,
           order_by: "startTime",
           fields: "items/id,items/start,items/end,items/description,items/summary,items/location",
           time_min: (DateTime.now - 2.days).iso8601,
           time_max: (DateTime.now + 1.weeks).iso8601
         ).items.each do |event|
-          own_attendee = event.attendees.to_a.find { |attendee| attendee.email == calendar.id }
+          own_attendee = event.attendees.to_a.find { |attendee| attendee.email == calendar_config["id"] }
 
           # exclude declined events
           next if own_attendee && own_attendee.response_status == "declined"
@@ -117,7 +100,6 @@ class GoogleService
             location: event_json["location"],
             summary: event_json["summary"],
             description: event_json["description"],
-            calendar: calendar.summary,
             icon: calendar_config["icon"],
             letter: calendar_config["letter"],
             start_i: start_i,

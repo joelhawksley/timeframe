@@ -4,7 +4,6 @@ class CalendarEvent
   def initialize(
     start_i:,
     end_i:,
-    calendar:,
     summary:,
     description: nil,
     icon: nil,
@@ -13,8 +12,8 @@ class CalendarEvent
     all_day: false,
     id: SecureRandom.hex
   )
-    @id, @start_i, @end_i, @calendar, @icon, @letter, @summary, @description, @location, @all_day =
-      id, start_i, end_i, calendar, icon, letter, summary, description, location, all_day
+    @id, @start_i, @end_i, @icon, @letter, @summary, @description, @location, @all_day =
+      id, start_i, end_i, icon, letter, summary, description, location, all_day
   end
 
   def to_h
@@ -22,7 +21,6 @@ class CalendarEvent
       id: @id,
       start_i: @start_i,
       end_i: @end_i,
-      calendar: @calendar,
       icon: @icon,
       letter: @letter,
       summary: summary,

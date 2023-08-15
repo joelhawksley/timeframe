@@ -79,7 +79,6 @@ class WeatherAlertService
     CalendarEvent.new(
       start_i: DateTime.parse(alert['onset']).to_i,
       end_i: DateTime.parse(alert['ends'] || alert['expires']).to_i,
-      calendar: '_weather_alerts',
       summary: summary,
       icon: icon
     )

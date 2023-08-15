@@ -89,8 +89,7 @@ class WeatherKitService
           id: "_weather_hour_#{hour.to_i}",
           start_i: hour.to_i,
           end_i: hour.to_i,
-          calendar: '_weather_hours',
-          icon: icon_mappings[condition_code] || "question",
+          icon: icon_mappings[weather_hour["conditionCode"]] || "question",
           summary: "#{celsius_fahrenheit(weather_hour['temperature'])}°".html_safe
         )
       end.compact
@@ -116,7 +115,6 @@ class WeatherKitService
             id: "#{hour['start_i']}_window",
             start_i: DateTime.parse(hour["forecastStart"]).to_i,
             end_i: (DateTime.parse(hour["forecastStart"]) + 1.hour).to_i,
-            calendar: '_precip_windows',
             icon: "raindrops",
             summary: "rain"
           )
