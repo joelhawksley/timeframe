@@ -30,7 +30,7 @@ class CalendarEventTest < Minitest::Test
       summary: "foo",
     ).to_h
 
-    assert_equal("5 - 6p", event[:time])
+    assert_equal("11:30a - 12:30p", event[:time])
   end
 
   def test_sets_multi_day

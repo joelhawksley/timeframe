@@ -18,6 +18,11 @@ class CalendarEvent
     case starts_at
     when Integer
       @starts_at = Time.at(starts_at).in_time_zone(Timeframe::Application.config.local["timezone"])
+    when String
+      @starts_at =
+        ActiveSupport::TimeZone[
+          Timeframe::Application.config.local["timezone"]
+        ].parse(starts_at)
     else
       @starts_at = starts_at
     end
@@ -25,6 +30,11 @@ class CalendarEvent
     case ends_at
     when Integer
       @ends_at = Time.at(ends_at).in_time_zone(Timeframe::Application.config.local["timezone"])
+    when String
+      @ends_at =
+        ActiveSupport::TimeZone[
+          Timeframe::Application.config.local["timezone"]
+        ].parse(ends_at)
     else
       @ends_at = ends_at
     end
