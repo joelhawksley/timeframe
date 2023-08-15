@@ -57,43 +57,41 @@ class GoogleService
       events[google_account.email] = {}
 
       Timeframe::Application.config.local["calendars"].each do |calendar_config|
-        service.list_events(
-          calendar_config["id"],
-          single_events: true,
-          order_by: "startTime",
-          fields: "items/attendees,items/id,items/start,items/end,items/description,items/summary,items/location",
-          time_min: (DateTime.now - 2.days).iso8601,
-          time_max: (DateTime.now + 1.week).iso8601
-        ).items.each do |event|
-          event_json = event.as_json
+        begin
+          service.list_events(
+            calendar_config["id"],
+            single_events: true,
+            order_by: "startTime",
+            fields: "items/attendees,items/id,items/start,items/end,items/description,items/summary,items/location",
+            time_min: (DateTime.now - 2.days).iso8601,
+            time_max: (DateTime.now + 1.week).iso8601
+          ).items.each do |event|
+            event_json = event.as_json
 
-          next if
-            event_json["description"].to_s.downcase.include?("timeframe-omit") || # hide timeframe-omit
-              event_json["summary"] == "." || # hide . marker
-              event_json["summary"] == "Out of office" ||
-              event_json["attendees"].to_a.any? { _1["self"] && _1["response_status"] == "declined" } ||
-              !event_json["summary"].present?
+            next if
+              event_json["description"].to_s.downcase.include?("timeframe-omit") || # hide timeframe-omit
+                event_json["summary"] == "." || # hide . marker
+                event_json["summary"] == "Out of office" ||
+                event_json["attendees"].to_a.any? { _1["self"] && _1["response_status"] == "declined" } ||
+                !event_json["summary"].present?
 
-          start_i =
-            ActiveSupport::TimeZone[Timeframe::Application.config.local["timezone"]].parse(
-              event_json["start"]["date"] || event_json["start"]["date_time"]
-            ).utc.to_i
-
-          end_i =
-            ActiveSupport::TimeZone[Timeframe::Application.config.local["timezone"]].parse(
-              event_json["end"]["date"] || event_json["end"]["date_time"]
-            ).utc.to_i
-
-          events[google_account.email][event.id] = CalendarEvent.new(
-            id: event_json["id"],
-            location: event_json["location"],
-            summary: event_json["summary"],
-            description: event_json["description"],
-            icon: calendar_config["icon"],
-            letter: calendar_config["letter"],
-            starts_at: start_i,
-            ends_at: end_i
-          ).to_h
+            events[google_account.email][event.id] = CalendarEvent.new(
+              id: event_json["id"],
+              location: event_json["location"],
+              summary: event_json["summary"],
+              description: event_json["description"],
+              icon: calendar_config["icon"],
+              letter: calendar_config["letter"],
+              starts_at: event_json["start"]["date"] || event_json["start"]["date_time"],
+              ends_at: event_json["end"]["date"] || event_json["end"]["date_time"]
+            ).to_h
+          end
+        rescue => e
+          Log.create(
+            globalid: "GoogleService",
+            event: "list_events_error",
+            message: e.message + e.backtrace.join("\n") + calendar_config.to_json
+          )
         end
       end
 
