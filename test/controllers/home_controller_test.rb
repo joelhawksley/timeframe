@@ -20,4 +20,22 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
   end
+
+  test "should get #logs with no data" do
+    get "/logs"
+
+    assert_response :success
+  end
+
+  test "should get #weather_data with no data" do
+    get "/weather_data"
+
+    assert_response :success
+  end
+
+  test "should get #calendar_data with no data" do
+    get "/calendar_data"
+
+    assert_response :success
+  end
 end
