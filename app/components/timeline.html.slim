@@ -1,6 +1,6 @@
 - shown_days = 0
 - view_object[:day_groups].each do |event_day|
-  - next if !event_day[:show_all_day_events] && event_day[:events][:periodic].empty?
+  - next if !event_day[:show_daily_events] && event_day[:events][:periodic].empty?
   - shown_days += 1
   - if shown_days > 1
     hr style="margin: 1rem 0; border: none;background-color: #ccc;color: #ccc;height: 2px;"
@@ -12,7 +12,7 @@
           div style="margin-bottom: 1rem;" = event_day[:temperature_range]
         div
           table
-            - event_day[:events][:all_day].each do |event|
+            - event_day[:events][:daily].each do |event|
               tr
                 td style="width: 1%; text-align: center; font-size: 1.25rem; font-weight: bold; padding-right: 0.25rem;"
                   - if event["letter"].present?

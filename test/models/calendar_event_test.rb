@@ -43,4 +43,34 @@ class CalendarEventTest < Minitest::Test
 
     assert_equal("foo (2)", event[:summary])
   end
+
+  def test_daily_true
+    event = CalendarEvent.new(
+      starts_at: DateTime.new(2023,1,23),
+      ends_at: DateTime.new(2023,1,25),
+      summary: "foo",
+    ).to_h
+
+    assert(event[:daily])
+  end
+
+  def test_daily_false
+    event = CalendarEvent.new(
+      starts_at: Time.at(1675123200),
+      ends_at: Time.at(1675126800),
+      summary: "foo",
+    ).to_h
+
+    refute(event[:daily])
+  end
+
+  def test_daily_same_start_end
+    event = CalendarEvent.new(
+      starts_at: 1675123200,
+      ends_at: 1675123200,
+      summary: "foo",
+    ).to_h
+
+    refute(event[:daily])
+  end
 end

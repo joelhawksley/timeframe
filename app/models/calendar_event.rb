@@ -9,11 +9,11 @@ class CalendarEvent
     icon: nil,
     letter: nil,
     location: nil,
-    all_day: false,
+    daily: false,
     id: SecureRandom.hex
   )
-    @id, @icon, @letter, @summary, @description, @location, @all_day =
-      id, icon, letter, summary, description, location, all_day
+    @id, @icon, @letter, @summary, @description, @location, @daily =
+      id, icon, letter, summary, description, location, daily
 
     case starts_at
     when Integer
@@ -42,9 +42,18 @@ class CalendarEvent
       summary: summary,
       location: @location,
       multi_day: ((end_i - start_i) > DAY_IN_SECONDS),
-      all_day: @all_day,
-      time: EventTimeService.call(start_i, end_i)
+      daily: @daily,
+      time: EventTimeService.call(start_i, end_i),
+      daily: daily
     }
+  end
+
+  def daily
+    length_in_seconds = end_i - start_i
+
+    return false if length_in_seconds == 0
+
+    length_in_seconds % DAY_IN_SECONDS == 0
   end
 
   def start_i

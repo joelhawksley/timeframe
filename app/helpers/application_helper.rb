@@ -19,7 +19,7 @@ module ApplicationHelper
         out = {
           day_index: day_index,
           day_name: date.strftime('%A'),
-          show_all_day_events: day_index.zero? ? date.hour <= 19 : true,
+          show_daily_events: day_index.zero? ? date.hour <= 19 : true,
           events: CalendarService.events_for(starts_at, date.end_of_day.utc),
           temperature_range: WeatherKitService.temperature_range_for(date.to_date)
         }

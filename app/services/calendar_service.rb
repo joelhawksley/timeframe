@@ -53,9 +53,9 @@ class CalendarService
       end
 
     {
-      all_day: filtered_events.select { |event| event['all_day'] },
+      daily: filtered_events.select { |event| event['daily'] },
       periodic: filtered_events.
-        reject { |event| event['all_day'] }.
+        reject { |event| event['daily'] }.
         sort_by { |event| event['start_i'] }
     }
   end

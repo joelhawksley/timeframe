@@ -97,8 +97,7 @@ class GoogleService
             icon: calendar_config["icon"],
             letter: calendar_config["letter"],
             starts_at: start_i,
-            ends_at: end_i,
-            all_day: event_json["start"].key?("date") || ((end_i - start_i) > 86_400)
+            ends_at: end_i
           ).to_h
         end
       end
