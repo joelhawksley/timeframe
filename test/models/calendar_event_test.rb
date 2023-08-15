@@ -23,6 +23,16 @@ class CalendarEventTest < Minitest::Test
     assert_equal("5 - 6p", event[:time])
   end
 
+  def test_assigns_time_from_string
+    event = CalendarEvent.new(
+      starts_at: "2023-08-16T11:30:00.000-06:00",
+      ends_at: "2023-08-16T12:30:00.000-06:00",
+      summary: "foo",
+    ).to_h
+
+    assert_equal("5 - 6p", event[:time])
+  end
+
   def test_sets_multi_day
     event = CalendarEvent.new(
       starts_at: 1675123200,
