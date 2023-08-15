@@ -61,19 +61,18 @@ class GoogleService
           calendar_config["id"],
           single_events: true,
           order_by: "startTime",
-          fields: "items/id,items/start,items/end,items/description,items/summary,items/location",
+          fields: "items/attendees,items/id,items/start,items/end,items/description,items/summary,items/location",
           time_min: (DateTime.now - 2.days).iso8601,
-          time_max: (DateTime.now + 1.weeks).iso8601
+          time_max: (DateTime.now + 1.week).iso8601
         ).items.each do |event|
-          own_attendee = event.attendees.to_a.find { |attendee| attendee.email == calendar_config["id"] }
+          event_json = event.as_json
 
           # exclude declined events
-          next if own_attendee && own_attendee.response_status == "declined"
+          next if event_json["attendees"].to_a.any? do |attendee|
+            attendee["self"] && attendee["response_status"] == "declined"
+          end
 
-          # exclude blank events
-          next unless event.summary.present?
-
-          event_json = event.as_json
+          next unless event_json["summary"].present?
 
           next if
             event_json["description"].to_s.downcase.include?("timeframe-omit") || # hide timeframe-omit
