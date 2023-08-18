@@ -54,6 +54,18 @@ class GoogleService
       service = Google::Apis::CalendarV3::CalendarService.new
       service.authorization = client
 
+      begin
+        calendars = service.list_calendar_lists.items
+      rescue => e
+        Log.create(
+          globalid: google_account.to_global_id,
+          event: "list_calendar_lists",
+          message: e.message
+        )
+      end
+
+      next unless calendars.present?
+
       events[google_account.email] = {}
 
       Timeframe::Application.config.local["calendars"].each do |calendar_config|
