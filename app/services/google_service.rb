@@ -94,12 +94,6 @@ class GoogleService
           )
         end
       end
-
-      Log.create(
-        globalid: google_account.to_global_id,
-        event: "fetch_success",
-        message: ""
-      )
     end
 
     events

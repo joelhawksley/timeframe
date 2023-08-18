@@ -52,7 +52,6 @@ class CalendarEvent
       summary: summary,
       location: @location,
       multi_day: ((end_i - start_i) > DAY_IN_SECONDS),
-      daily: @daily,
       time: EventTimeService.call(start_i, end_i),
       daily: daily
     }
