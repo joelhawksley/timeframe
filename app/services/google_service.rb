@@ -90,7 +90,7 @@ class GoogleService
           Log.create(
             globalid: "GoogleService",
             event: "list_events_error",
-            message: e.message + e.backtrace.join("\n") + calendar_config.to_json
+            message: e.class.to_s + e.message + e.backtrace.join("\n") + calendar_config.to_json
           )
         end
       end
