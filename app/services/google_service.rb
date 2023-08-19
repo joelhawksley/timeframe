@@ -66,18 +66,22 @@ class GoogleService
 
       next unless calendars.present?
 
-      events[google_account.email] = {}
-
       Timeframe::Application.config.local["calendars"].each do |calendar_config|
         begin
-          service.list_events(
+          items = service.list_events(
             calendar_config["id"],
             single_events: true,
             order_by: "startTime",
             fields: "items/attendees,items/id,items/start,items/end,items/description,items/summary,items/location",
             time_min: (DateTime.now - 2.days).iso8601,
             time_max: (DateTime.now + 1.week).iso8601
-          ).items.each do |event|
+          ).items
+
+          events[google_account.email] ||= {}
+
+          events[google_account.email][calendar_config["id"]] = {}
+
+          items.each do |event|
             event_json = event.as_json
 
             next if
@@ -87,7 +91,7 @@ class GoogleService
                 event_json["attendees"].to_a.any? { _1["self"] && _1["response_status"] == "declined" } ||
                 !event_json["summary"].present?
 
-            events[google_account.email][event.id] = CalendarEvent.new(
+            events[google_account.email][calendar_config["id"]][event.id] = CalendarEvent.new(
               id: event_json["id"],
               location: event_json["location"],
               summary: event_json["summary"],
