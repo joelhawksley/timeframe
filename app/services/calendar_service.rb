@@ -30,7 +30,7 @@ class CalendarService
       [WeatherAlertService.weather_alert_calendar_event] +
       calendar_events
     ).compact.select do |event|
-      (event['start_i']..event['end_i']).overlaps?(starts_at.to_i...ends_at.to_i)
+      (event['start_i']...event['end_i']).overlaps?(starts_at.to_i...ends_at.to_i)
     end.group_by { _1['id'] } # Merge duplicate events, merging the letter with a custom rule if so
       .map do |_k, v|
         if v.length > 1
