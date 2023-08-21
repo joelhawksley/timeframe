@@ -64,7 +64,9 @@ class WeatherKitService
       "MostlyCloudy" => "clouds",
       "PartlyCloudy" => "clouds-sun",
       "MostlyClear" => "cloud-sun",
-      "Clear" => "sun"
+      "Clear" => "sun",
+      "Windy" => "wind",
+      "Drizzle" => "raindrops"
     }
 
     hours_forecast = weather.dig("forecastHourly", "hours")
