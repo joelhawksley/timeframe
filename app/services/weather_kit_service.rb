@@ -10,6 +10,8 @@ class WeatherKitService
 
     forecast = weather.dig("forecastDaily", "days").find{ _1["forecastStart"].to_date == date }
 
+    return nil unless forecast
+
     "&#8593;#{celsius_fahrenheit(forecast["temperatureMax"])} &#8595;#{celsius_fahrenheit(forecast["temperatureMin"])}".html_safe
   end
 

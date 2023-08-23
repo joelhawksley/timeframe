@@ -1,20 +1,29 @@
 # frozen_string_literal: true
 
 class CalendarService
-  def self.baby_age_string(birthdate = Date.parse(Timeframe::Application.config.local["birthdate"]))
+  def self.baby_age_event(birthdate = Date.parse(Timeframe::Application.config.local["birthdate"]))
     day_count = Date.today - birthdate
     week_count = (day_count / 7).to_i
     remainder = (day_count % 7).to_i
 
-    if remainder > 0
-      if week_count > 0
-        "#{week_count}w#{remainder}d"
+    summary =
+      if remainder > 0
+        if week_count > 0
+          "#{week_count}w#{remainder}d"
+        else
+          "#{remainder}d"
+        end
       else
-        "#{remainder}d"
+        "#{week_count}w"
       end
-    else
-      "#{week_count}w"
-    end
+
+    CalendarEvent.new(
+      id: "_baby_age",
+      starts_at: Date.today.to_time,
+      ends_at: Date.tomorrow.to_time,
+      icon: "baby-carriage",
+      summary: summary
+    )
   end
 
   def self.calendar_events
@@ -25,6 +34,7 @@ class CalendarService
   # adding a `time` key for the time formatted for the user's timezone
   def self.events_for(starts_at, ends_at)
     filtered_events = (
+      [baby_age_event] +
       WeatherKitService.calendar_events +
       WeatherKitService.precip_calendar_events +
       [WeatherAlertService.weather_alert_calendar_event] +
