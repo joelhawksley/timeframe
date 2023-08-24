@@ -7,7 +7,7 @@ gem "dotenv-rails"
 gem "google-api-client", "~> 0.11", require: ["google/apis/calendar_v3", "google/apis/people_v1"]
 gem "httparty"
 gem "pg", "~> 1.1"
-gem "puma", "~> 4.3"
+gem "puma", "~> 5.6"
 gem "rails", "~> 7"
 gem "sass-rails", "~> 6.0"
 gem "slim"
