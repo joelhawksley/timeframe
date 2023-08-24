@@ -35,5 +35,7 @@ module Timeframe
 
     config.hosts << "hawksley-server.local"
     config.hosts << "timeframetesting.com"
+
+    config.active_record.legacy_connection_handling = false
   end
 end
