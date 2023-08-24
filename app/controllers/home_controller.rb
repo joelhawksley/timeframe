@@ -28,7 +28,7 @@ class HomeController < ApplicationController
   def redirect
     client = GoogleAccount.client
 
-    redirect_to(client.authorization_uri.to_s)
+    redirect_to(client.authorization_uri.to_s, allow_other_host: true)
   end
 
   def callback
