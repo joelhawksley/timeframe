@@ -6,7 +6,6 @@ ruby "3.0.3"
 gem "dotenv-rails"
 gem "google-api-client", "~> 0.11", require: ["google/apis/calendar_v3", "google/apis/people_v1"]
 gem "httparty"
-gem "mime-types-data", "3.2021.1115" # TODO: See https://github.com/mime-types/mime-types-data/pull/50
 gem "pg", "~> 1.1"
 gem "puma", "~> 4.3"
 gem "rails", "~> 7"
