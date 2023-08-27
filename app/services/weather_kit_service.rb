@@ -3,6 +3,10 @@ class WeatherKitService
     Value.find_or_create_by(key: "weatherkit").value["data"] || {}
   end
 
+  def self.last_fetched_at
+    Value.find_or_create_by(key: "weatherkit").value["last_fetched_at"]
+  end
+
   def self.temperature_range_for(date)
     days = weather.dig("forecastDaily", "days")
 
@@ -24,8 +28,6 @@ class WeatherKitService
   end
 
   def self.healthy?
-    last_fetched_at = Value.find_or_create_by(key: "weatherkit").value["last_fetched_at"]
-
     return true unless last_fetched_at
 
     DateTime.parse(last_fetched_at) > DateTime.now - 1.hour

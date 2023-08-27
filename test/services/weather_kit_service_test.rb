@@ -1,8 +1,11 @@
 # frozen_string_literal: true
 
 require "test_helper"
+require "active_support/testing/time_helpers"
 
 class WeatherKitServiceTest < Minitest::Test
+  include ActiveSupport::Testing::TimeHelpers
+
   def test_weather_no_data
     assert_equal({}, WeatherKitService.weather)
   end
@@ -47,12 +50,28 @@ class WeatherKitServiceTest < Minitest::Test
     }
 
     WeatherKitService.stub :weather, weather do
-      assert_equal("86", WeatherKitService.current_temperature)
+      assert_equal("86°", WeatherKitService.current_temperature)
     end
   end
 
-  def test_health_no_data?
+  def test_health_no_data
     assert(WeatherKitService.healthy?)
+  end
+
+  def test_health_current_data
+    WeatherKitService.stub :last_fetched_at, "2023-08-27 15:14:59 -0600" do
+      travel_to DateTime.new(2023,8,27,15,20,0, "-0600") do
+        assert(WeatherKitService.healthy?)
+      end
+    end
+  end
+
+  def test_health_stale_data
+    WeatherKitService.stub :last_fetched_at, "2023-08-27 15:14:59 -0600" do
+      travel_to DateTime.new(2023,8,27,16,20,0,"-0600") do
+        refute(WeatherKitService.healthy?)
+      end
+    end
   end
 
   def test_calendar_events_no_data
