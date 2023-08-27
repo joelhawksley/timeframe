@@ -1,0 +1,27 @@
+css:
+  html { font-size: 46px }
+  body { padding: 0 2rem }
+
+div style="margin: 0 -2rem; background-color: black; color: white; padding: 0 2rem" class="clearfix"
+  - res = JSON.parse(HTTParty.get("http://hawksley-server.local:5005/Sonos%20Move/state").body)
+  - if res["playbackState"] == "PLAYING"
+    div style="font-size: 1.25rem; line-height: 1.3rem; float: left; padding: 1.5rem 0"
+      i.fa-solid.fa-music.fa-fw
+      strong =< res["currentTrack"]["artist"]
+      |  :
+      =< res["currentTrack"]["title"]
+  - if !WeatherKitService.healthy? || !GoogleAccount.all.all?(&:healthy?)
+    div style="float: right; text-align: right; padding: 1.5rem 0"
+      - if !WeatherKitService.healthy?
+        span
+          i.fa-solid.fa-cloud-exclamation style="font-size: 1.5rem"
+      - if !GoogleAccount.all.all?(&:healthy?)
+        span
+          i.fa-regular.fa-calendar-exclamation style="font-size: 1.5rem; padding: 0 0.1rem 0 0.5rem;"
+div class="clearfix" style="margin: 1.5rem 0 -1rem;"
+  div style="float: left; font-size: 8rem; line-height: 7rem;" = view_object[:current_temperature]
+  div style="text-align: right; float: right; margin-top: 0.5rem;"
+    div style="font-size: 2rem" = Date.today.strftime("%A, %B %-d")
+    div style="font-size: 4rem; line-height: 4rem;" = DateTime.now.strftime("%l:%M%P").strip
+hr style="margin: 2rem 0 1rem; border: none; background-color: #ccc; color: #ccc; height: 2px;"
+= render Timeline.new(view_object: view_object)

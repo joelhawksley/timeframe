@@ -1,0 +1,15 @@
+table style="width: 100%"
+  thead
+    th id
+    th globalID
+    th event
+    th message
+    th timestamp
+  tbody
+    - Log.all.order(created_at: :desc).first(500).each do |log|
+      tr
+        td = log.id
+        td = log.globalid
+        td = log.event
+        td = log.message
+        td = log.created_at.in_time_zone(Timeframe::Application.config.local["timezone"]).strftime('%a %b %e %I:%M:%S %p')
