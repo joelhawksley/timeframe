@@ -38,6 +38,19 @@ class WeatherKitServiceTest < Minitest::Test
     assert_nil(WeatherKitService.current_temperature)
   end
 
+  def test_current_temperature
+    weather = {
+      "currentWeather" =>
+        {
+          "temperature" => 30.06
+        }
+    }
+
+    WeatherKitService.stub :weather, weather do
+      assert_equal("86", WeatherKitService.current_temperature)
+    end
+  end
+
   def test_health_no_data?
     assert(WeatherKitService.healthy?)
   end

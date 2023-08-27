@@ -33,7 +33,7 @@ class DisplaysController < ApplicationController
 
     out =
       {
-        current_temperature: "#{WeatherKitService.current_temperature}°",
+        current_temperature: WeatherKitService.current_temperature,
         day_groups: day_groups,
         timestamp: current_time.strftime('%-l:%M %p')
       }

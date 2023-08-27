@@ -20,7 +20,7 @@ class WeatherKitService
 
     return nil unless raw_temp
 
-    celsius_fahrenheit(weather.dig("currentWeather", "temperature"))
+    "#{celsius_fahrenheit(weather.dig("currentWeather", "temperature"))}°"
   end
 
   def self.healthy?
