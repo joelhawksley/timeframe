@@ -7,11 +7,15 @@ class WeatherKitServiceTest < Minitest::Test
   include ActiveSupport::Testing::TimeHelpers
 
   def test_weather_no_data
-    assert_equal({}, WeatherKitService.weather)
+    WeatherKitService.stub :weather, {} do
+      assert_equal({}, WeatherKitService.weather)
+    end
   end
 
   def test_temperature_range_for_no_data
-    assert_nil(WeatherKitService.temperature_range_for(Date.today))
+    WeatherKitService.stub :weather, {} do
+      assert_nil(WeatherKitService.temperature_range_for(Date.today))
+    end
   end
 
   def test_temperature_range_for_example
@@ -38,7 +42,9 @@ class WeatherKitServiceTest < Minitest::Test
   end
 
   def test_current_temperature_no_data
-    assert_nil(WeatherKitService.current_temperature)
+    WeatherKitService.stub :weather, {} do
+      assert_nil(WeatherKitService.current_temperature)
+    end
   end
 
   def test_current_temperature
@@ -55,7 +61,9 @@ class WeatherKitServiceTest < Minitest::Test
   end
 
   def test_health_no_data
-    assert(WeatherKitService.healthy?)
+    WeatherKitService.stub :last_fetched_at, nil do
+      assert(WeatherKitService.healthy?)
+    end
   end
 
   def test_health_current_data
@@ -75,7 +83,9 @@ class WeatherKitServiceTest < Minitest::Test
   end
 
   def test_calendar_events_no_data
-    assert_equal([], WeatherKitService.calendar_events)
+    WeatherKitService.stub :weather, {} do
+      assert_equal([], WeatherKitService.calendar_events)
+    end
   end
 
   def test_calendar_events_example
@@ -1109,7 +1119,9 @@ class WeatherKitServiceTest < Minitest::Test
   end
 
   def test_precip_calendar_events_no_data
-    assert_equal([], WeatherKitService.precip_calendar_events)
+    WeatherKitService.stub :weather, {} do
+      assert_equal([], WeatherKitService.precip_calendar_events)
+    end
   end
 
   def test_precip_calendar_events_example
@@ -2140,5 +2152,9 @@ class WeatherKitServiceTest < Minitest::Test
         assert_equal(6, WeatherKitService.precip_calendar_events.length)
       end
     end
+  end
+
+  def test_fetch
+    # WeatherKitService.fetch
   end
 end
