@@ -110,25 +110,36 @@ class WeatherKitService
 
     return events unless hours_forecast.present?
 
-    weather["forecastHourly"]["hours"].each do |hour|
-      next unless hour["precipitationType"] == "rain"
+    hours = weather["forecastHourly"]["hours"]
 
-      if (existing_index = events.find_index { _1['summary'] == "Rain" && _1['end_i'] == hour['start_i'] })
-        events[existing_index]['end_i'] =
-          (DateTime.parse(hour["forecastStart"]) + 1.hour).to_i
+    hours.each_with_index do |hour, index|
+      existing_event =
+        events.find do
+          _1[:end_i] == DateTime.parse(hour["forecastStart"]).to_i &&
+          _1[:precipitation_type] == hour["precipitationType"]
+        end
+
+      if existing_event
+        existing_event[:end_i] += 3600
       else
         events <<
-          CalendarEvent.new(
-            id: "#{hour['start_i']}_window",
-            starts_at: DateTime.parse(hour["forecastStart"]).to_i,
-            ends_at: (DateTime.parse(hour["forecastStart"]) + 1.hour).to_i,
-            icon: "raindrops",
-            summary: "Rain"
-          )
+          {
+            start_i: DateTime.parse(hour["forecastStart"]).to_i,
+            end_i: (DateTime.parse(hour["forecastStart"]) + 1.hour).to_i,
+            precipitation_type: hour["precipitationType"]
+          }
       end
     end
 
-    events
+    events.select { _1[:precipitation_type] != "clear" }.map do
+      CalendarEvent.new(
+        id: "#{_1[:start_i]}_window",
+        starts_at: _1[:start_i],
+        ends_at:_1[:end_i],
+        icon: "raindrops",
+        summary: _1[:precipitation_type].capitalize
+      )
+    end
   end
 
   def self.celsius_fahrenheit(c)
