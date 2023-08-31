@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "test_helper"
-require "active_support/testing/time_helpers"
 
 class WeatherKitServiceTest < Minitest::Test
   include ActiveSupport::Testing::TimeHelpers

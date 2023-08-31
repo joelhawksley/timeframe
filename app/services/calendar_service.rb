@@ -20,7 +20,7 @@ class CalendarService
     CalendarEvent.new(
       id: "_baby_age",
       starts_at: Date.today.to_time,
-      ends_at: Date.tomorrow.to_time,
+      ends_at: (Date.today + 1.day).to_time,
       icon: "baby-carriage",
       summary: summary
     )

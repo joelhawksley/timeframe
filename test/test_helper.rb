@@ -7,6 +7,7 @@ ENV["RAILS_ENV"] = "test"
 require File.expand_path("../../config/environment", __FILE__)
 require "minitest/autorun"
 require "minitest/unit"
+require "active_support/testing/time_helpers"
 
 # Checks for pending migrations before tests are run.
 # If you are not using ActiveRecord, you can remove this line.
