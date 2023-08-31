@@ -1,8 +1,8 @@
 - view_object[:day_groups].each_with_index do |event_day, index|
   - next if !event_day[:show_daily_events] && event_day[:events][:periodic].empty?
   - if index > 0
-    hr style="margin: 1rem 0; border: none;background-color: #ccc;color: #ccc;height: 2px;"
-  div style="display: flex;"
+    hr style="margin: 0 0 1rem; border: none;background-color: #ccc;color: #ccc;height: 2px;"
+  div style="display: flex; margin-bottom: 1rem"
     div.daily style="width: 16rem; vertical-align: top; padding-right: 1rem; border-right: 2px solid #ccc;"
       div style="display: flex; justify-content: space-between; flex-direction: column; height: 100%;"
         div
