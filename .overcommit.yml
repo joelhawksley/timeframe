@@ -31,3 +31,8 @@
 #
 #  IndexTags:
 #    enabled: true # Generate a tags file with `ctags` each time HEAD changes
+
+PreCommit:
+  Testing:
+    enabled: true
+    command: ['bundle', 'exec', 'rake'] # Invoke within Bundler context
