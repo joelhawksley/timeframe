@@ -44,6 +44,7 @@ class WeatherKitService
             local_config["longitude"],
             data_sets: [
               :current_weather,
+              :forecast_next_hour,
               :forecast_daily,
               :forecast_hourly,
               :weather_alerts
