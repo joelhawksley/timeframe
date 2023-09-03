@@ -1,0 +1,183 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://api.weather.gov/alerts/active/zone/COZ040
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - joel@hawksley.org
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx/1.20.1
+      Content-Type:
+      - application/geo+json
+      Last-Modified:
+      - Sun, 03 Sep 2023 20:03:34 GMT
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Expose-Headers:
+      - X-Correlation-Id, X-Request-Id, X-Server-Id
+      X-Request-Id:
+      - a5d80b2b-6a26-40ef-be40-7cba4f2fbaed
+      X-Correlation-Id:
+      - 19db68d8
+      X-Server-Id:
+      - vm-lnx-nids-apiapp7.ncep.noaa.gov
+      Vary:
+      - Accept,Feature-Flags,Accept-Language
+      - Accept-Encoding
+      Cache-Control:
+      - public, max-age=30, s-maxage=30
+      Expires:
+      - Sun, 03 Sep 2023 20:20:35 GMT
+      Date:
+      - Sun, 03 Sep 2023 20:20:05 GMT
+      Content-Length:
+      - '5836'
+      Connection:
+      - keep-alive
+      X-Edge-Request-Id:
+      - 32a25961
+      Strict-Transport-Security:
+      - max-age=31536000 ; includeSubDomains ; preload
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+            "@context": [
+                "https://geojson.org/geojson-ld/geojson-context.jsonld",
+                {
+                    "@version": "1.1",
+                    "wx": "https://api.weather.gov/ontology#",
+                    "@vocab": "https://api.weather.gov/ontology#"
+                }
+            ],
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "id": "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.0fe6c1e5724eecc73c914e9363060385a5d0c6ed.001.1",
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
+                            [
+                                [
+                                    -105.08,
+                                    39.670000000000002
+                                ],
+                                [
+                                    -105.05,
+                                    39.670000000000002
+                                ],
+                                [
+                                    -105.06,
+                                    39.68
+                                ],
+                                [
+                                    -104.75,
+                                    39.780000000000001
+                                ],
+                                [
+                                    -104.44,
+                                    39.280000000000001
+                                ],
+                                [
+                                    -104.77,
+                                    39.130000000000003
+                                ],
+                                [
+                                    -105.08,
+                                    39.670000000000002
+                                ]
+                            ]
+                        ]
+                    },
+                    "properties": {
+                        "@id": "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.0fe6c1e5724eecc73c914e9363060385a5d0c6ed.001.1",
+                        "@type": "wx:Alert",
+                        "id": "urn:oid:2.49.0.1.840.0.0fe6c1e5724eecc73c914e9363060385a5d0c6ed.001.1",
+                        "areaDesc": "North Douglas County Below 6000 Feet/Denver/West Adams and Arapahoe Counties/East Broomfield County; Elbert/Central and East Douglas Counties Above 6000 Feet",
+                        "geocode": {
+                            "SAME": [
+                                "008001",
+                                "008005",
+                                "008014",
+                                "008031",
+                                "008035",
+                                "008039"
+                            ],
+                            "UGC": [
+                                "COZ040",
+                                "COZ041"
+                            ]
+                        },
+                        "affectedZones": [
+                            "https://api.weather.gov/zones/forecast/COZ040",
+                            "https://api.weather.gov/zones/forecast/COZ041"
+                        ],
+                        "references": [],
+                        "sent": "2023-09-03T14:03:00-06:00",
+                        "effective": "2023-09-03T14:03:00-06:00",
+                        "onset": "2023-09-03T14:03:00-06:00",
+                        "expires": "2023-09-03T14:30:00-06:00",
+                        "ends": null,
+                        "status": "Actual",
+                        "messageType": "Alert",
+                        "category": "Met",
+                        "severity": "Moderate",
+                        "certainty": "Observed",
+                        "urgency": "Expected",
+                        "event": "Special Weather Statement",
+                        "sender": "w-nws.webmaster@noaa.gov",
+                        "senderName": "NWS Denver CO",
+                        "headline": "Special Weather Statement issued September 3 at 2:03PM MDT by NWS Denver CO",
+                        "description": "At 203 PM MDT, Doppler radar was tracking strong thunderstorms along\na line extending from Denver to 5 miles east of Greenland, or along a\nline extending from 54 miles south of Greeley to 22 miles north of\nColorado Springs. Movement was northeast at 35 mph.\n\nHAZARD...Wind gusts up to 50 mph and half inch hail.\n\nSOURCE...Radar indicated.\n\nIMPACT...Gusty winds could knock down tree limbs and blow around\nunsecured objects. Minor damage to outdoor objects is\npossible.\n\nLocations impacted include...\nDenver, southwestern Aurora, Centennial, Highlands Ranch, Castle\nRock, Parker, Littleton, Englewood, Greenwood Village, Lone Tree,\nSheridan, Elizabeth, The Pinery, Arapahoe Park, Franktown, Ponderosa\nPark, Castle Pines, Buckley SFB, and Sedalia.",
+                        "instruction": "Prepare for sudden gusty winds. Secure loose objects and move to a\nsafe shelter inside a building or vehicle.\n\nIf outdoors, consider seeking shelter inside a building.",
+                        "response": "Execute",
+                        "parameters": {
+                            "AWIPSidentifier": [
+                                "SPSBOU"
+                            ],
+                            "WMOidentifier": [
+                                "WWUS85 KBOU 032003"
+                            ],
+                            "NWSheadline": [
+                                "Strong thunderstorms will impact portions of eastern Douglas, northwestern Elbert, western Arapahoe and southwestern Denver Counties through 230 PM MDT"
+                            ],
+                            "eventMotionDescription": [
+                                "2023-09-03T20:03:00-00:00...storm...225DEG...29KT...39.67,-105.05 39.19,-104.74"
+                            ],
+                            "maxWindGust": [
+                                "50 MPH"
+                            ],
+                            "maxHailSize": [
+                                "0.50"
+                            ],
+                            "BLOCKCHANNEL": [
+                                "EAS",
+                                "NWEM",
+                                "CMAS"
+                            ],
+                            "EAS-ORG": [
+                                "WXR"
+                            ]
+                        }
+                    }
+                }
+            ],
+            "title": "Current watches, warnings, and advisories for North Douglas County Below 6000 Feet/Denver/West Adams and Arapahoe Counties/East Broomfield County (COZ040) CO",
+            "updated": "2023-09-03T20:03:34+00:00"
+        }
+  recorded_at: Sun, 03 Sep 2023 20:20:05 GMT
+recorded_with: VCR 6.2.0

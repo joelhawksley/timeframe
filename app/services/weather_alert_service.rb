@@ -4,12 +4,15 @@ class WeatherAlertService
   end
 
   def self.fetch
-    result[:response] = JSON.parse(
-      HTTParty.get(
-        "https://api.weather.gov/alerts/active/zone/#{ENV['NWS_ZONE']}",
-        {headers: {"User-Agent" => "joel@hawksley.org"}}
-      )
-    )
+    result = {
+      response:
+        JSON.parse(
+          HTTParty.get(
+            "https://api.weather.gov/alerts/active/zone/#{ENV['NWS_ZONE']}",
+            {headers: {"User-Agent" => "joel@hawksley.org"}}
+          )
+        )
+    }
 
     result[:last_fetched_at] = Time.now.utc.in_time_zone(Timeframe::Application.config.local["timezone"]).to_s
 
