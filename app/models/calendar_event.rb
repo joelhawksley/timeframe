@@ -73,14 +73,6 @@ class CalendarEvent
     @ends_at.to_i
   end
 
-  def [](index)
-    to_h[index.to_sym]
-  end
-
-  def []=(index, value)
-    instance_variable_set(:"@#{index}", value)
-  end
-
   private
 
   def summary
