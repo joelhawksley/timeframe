@@ -4,12 +4,14 @@ require "test_helper"
 
 class HomeControllerTest < ActionDispatch::IntegrationTest
   test "should get #mira with no data" do
-    get "/mira"
+    VCR.use_cassette("sonos_fetch", match_requests_on: [:method]) do
+      get "/mira"
 
-    # look for tomorrow's day name, as current day is not always shown
-    assert_includes response.body, Date.tomorrow.strftime("%A")
+      # look for tomorrow's day name, as current day is not always shown
+      assert_includes response.body, Date.tomorrow.strftime("%A")
 
-    assert_response :success
+      assert_response :success
+    end
   end
 
   test "should get #thirteen with no data" do

@@ -16,6 +16,7 @@ gem "view_component"
 
 group :development, :test do
   gem "overcommit"
+  gem "m"
   gem "minitest"
   gem "standard"
   gem "pry-rails"
@@ -23,4 +24,6 @@ end
 
 group :test do
   gem "simplecov", require: false
+  gem "vcr"
+  gem "webmock"
 end

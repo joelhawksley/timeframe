@@ -2153,7 +2153,9 @@ class WeatherKitServiceTest < Minitest::Test
     end
   end
 
-  def test_fetch
-    # WeatherKitService.fetch
+  def test_fetch_raises_no_errors
+    VCR.use_cassette("weatherkit_fetch") do
+      WeatherKitService.fetch
+    end
   end
 end

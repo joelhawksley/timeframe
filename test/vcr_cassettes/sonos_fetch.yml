@@ -1,0 +1,42 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: "*"
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Access-Control-Allow-Methods:
+      - POST, GET, OPTIONS
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Length:
+      - '1395'
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Sun, 03 Sep 2023 17:14:42 GMT
+      Connection:
+      - keep-alive
+      Keep-Alive:
+      - timeout=5
+    body:
+      encoding: UTF-8
+      string: '{"volume":11,"mute":false,"equalizer":{"bass":0,"treble":0,"loudness":true},"currentTrack":{"artist":"Allen
+        Toussaint","title":"Southern Nights","album":"American Tunes","albumArtUri":"/getaa?s=1&u=x-sonos-spotify%3aspotify%253atrack%253a4OHJmCwMAexvmRsBWToZMP%3fsid%3d12%26flags%3d8232%26sn%3d2","duration":210,"uri":"x-sonos-spotify:spotify%3atrack%3a4OHJmCwMAexvmRsBWToZMP?sid=12&flags=8232&sn=2","trackUri":"x-sonos-spotify:spotify%3atrack%3a4OHJmCwMAexvmRsBWToZMP?sid=12&flags=8232&sn=2","type":"track","stationName":"","absoluteAlbumArtUri":"https://seed-mix-image.spotifycdn.com/v6/img/desc/Afternoon%20Classical%20Piano/en/large"},"nextTrack":{"artist":"Hailu
+        Mergia","title":"Yefkir Engurguro - Mixed","album":"fabric presents Maribou
+        State (DJ Mix)","albumArtUri":"/getaa?s=1&u=x-sonos-spotify%3aspotify%253atrack%253a0feAWJwUTkLVcTIhYx473T%3fsid%3d12%26flags%3d8232%26sn%3d2","duration":224,"uri":"x-sonos-spotify:spotify%3atrack%3a0feAWJwUTkLVcTIhYx473T?sid=12&flags=8232&sn=2","trackUri":"x-sonos-spotify:spotify%3atrack%3a0feAWJwUTkLVcTIhYx473T?sid=12&flags=8232&sn=2","absoluteAlbumArtUri":"http://192.168.1.189:1400/getaa?s=1&u=x-sonos-spotify%3aspotify%253atrack%253a0feAWJwUTkLVcTIhYx473T%3fsid%3d12%26flags%3d8232%26sn%3d2"},"trackNo":1,"elapsedTime":0,"elapsedTimeFormatted":"00:00:00","playbackState":"STOPPED","playMode":{"repeat":"none","shuffle":false,"crossfade":false}}'
+  recorded_at: Sun, 03 Sep 2023 17:14:42 GMT
+recorded_with: VCR 6.2.0
