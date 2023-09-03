@@ -32,49 +32,14 @@ class WeatherAlertService
     alert = alerts
       .reject { |alert| alert.dig('properties', 'urgency') == 'Past' }
       .sort_by { |alert| alert_severity_mappings[alert['properties']['severity']] }
-      .uniq { |alert| alert['properties']['event'] }
       .reject { |alert| alert['properties']['areaDesc'].to_s.include?('OZONE ACTION DAY') }
       .first['properties']
 
-
     return unless alert
 
-    icon =
-      if String(alert['event']).include?('Winter')
-        'snowflake'
-      else
-        'warning'
-      end
-
     summary =
-      if String(alert['event']).include?('Winter')
-        if alert['description'].include?('Additional snow')
-          alert['description']
-            .tr("\n", ' ')
-            .split('Additional snow accumulations')
-            .last
-            .split('.')
-            .first
-            .strip
-            .gsub(' inches', '"')
-        else
-          desc = alert['description']
-                  .tr("\n", ' ')
-                  .split('accumulations between')
-                  .last
-                  .split('.')
-                  .first
-                  .strip
-                  .gsub(' and ', '-')
-                  .gsub(' inches', '"')
-                  .gsub(' possible', '')
-                  .split(', with')
-                  .first
-                  .split('"')
-                  .first
-
-          "NWS #{alert['event'].split(' ').last}: ~#{desc}\""
-        end
+      if alert['event'].include?('Special Weather Statement')
+        alert["parameters"]["NWSheadline"][0]
       else
         alert['event']
       end
@@ -83,7 +48,7 @@ class WeatherAlertService
       starts_at: DateTime.parse(alert['onset']).to_i,
       ends_at: DateTime.parse(alert['ends'] || alert['expires']).to_i,
       summary: summary,
-      icon: icon
+      icon: 'warning'
     )
   end
 end
