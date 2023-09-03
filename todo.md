@@ -7,3 +7,4 @@
 - Better wrap sonos API
 - 100% test coverage
 - wrap exceptions to ensure 100% response uptime
+- automate deploys to local server
