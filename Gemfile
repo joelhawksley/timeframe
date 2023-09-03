@@ -15,6 +15,7 @@ gem "tenkit"
 gem "view_component"
 
 group :development, :test do
+  gem "overcommit"
   gem "minitest"
   gem "standard"
   gem "pry-rails"
