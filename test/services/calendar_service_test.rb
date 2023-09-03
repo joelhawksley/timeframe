@@ -32,6 +32,31 @@ class CalendarServiceTest < Minitest::Test
     end
   end
 
+  # CalendarEvents coming from the DB look different than those
+  # constructed on the fly. DB events have string keys, for example.
+  # This is not ideal and we should probably move to a standard value
+  # object that has a consistent API.
+  def test_events_for_stringified_key_from_db
+    calendar_events = [
+      CalendarEvent.new(
+        id: "foo",
+        starts_at: DateTime.new(2023,8,27,20,20,0,"-0600"),
+        ends_at: DateTime.new(2023,8,27,23,0,0,"-0600"),
+        summary: "dupe",
+        letter: "+"
+      ).to_h.stringify_keys
+    ]
+
+    CalendarService.stub :calendar_events, calendar_events do
+      travel_to DateTime.new(2023,8,27,22,20,0,"-0600") do
+        start_time_utc = DateTime.new(2023,8,27,20,20,0,"-0600").utc.to_time
+        end_time_utc = DateTime.new(2023,8,28,0,0,0,"-0600").utc.to_time
+
+        CalendarService.events_for(start_time_utc, end_time_utc)
+      end
+    end
+  end
+
   def test_events_for_duplicate_plus
     calendar_events = [
       CalendarEvent.new(
@@ -40,14 +65,14 @@ class CalendarServiceTest < Minitest::Test
         ends_at: DateTime.new(2023,8,27,23,0,0,"-0600"),
         summary: "dupe",
         letter: "+"
-      ),
+      ).to_h,
       CalendarEvent.new(
         id: "foo",
         starts_at: DateTime.new(2023,8,27,20,20,0,"-0600"),
         ends_at: DateTime.new(2023,8,27,23,0,0,"-0600"),
         summary: "dupe",
         letter: "J"
-      )
+      ).to_h
     ]
 
     CalendarService.stub :calendar_events, calendar_events do
@@ -72,14 +97,14 @@ class CalendarServiceTest < Minitest::Test
         ends_at: DateTime.new(2023,8,27,23,0,0,"-0600"),
         summary: "dupe",
         letter: "J"
-      ),
+      ).to_h,
       CalendarEvent.new(
         id: "foo",
         starts_at: DateTime.new(2023,8,27,20,20,0,"-0600"),
         ends_at: DateTime.new(2023,8,27,23,0,0,"-0600"),
         summary: "dupe",
         letter: "J"
-      )
+      ).to_h
     ]
 
     CalendarService.stub :calendar_events, calendar_events do
@@ -104,14 +129,14 @@ class CalendarServiceTest < Minitest::Test
         ends_at: DateTime.new(2023,8,27,23,0,0,"-0600"),
         summary: "dupe",
         letter: "C"
-      ),
+      ).to_h,
       CalendarEvent.new(
         id: "foo",
         starts_at: DateTime.new(2023,8,27,20,20,0,"-0600"),
         ends_at: DateTime.new(2023,8,27,23,0,0,"-0600"),
         summary: "dupe",
         letter: "J"
-      )
+      ).to_h
     ]
 
     CalendarService.stub :calendar_events, calendar_events do

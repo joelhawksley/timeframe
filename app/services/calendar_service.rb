@@ -41,7 +41,7 @@ class CalendarService
       calendar_events
     )
 
-    filtered_events = filtered_events.compact.map(&:to_h).select do |event|
+    filtered_events = filtered_events.compact.map(&:to_h).map(&:with_indifferent_access).select do |event|
       (event[:start_i]...event[:end_i]).overlaps?(starts_at.to_i...ends_at.to_i)
     end
 
