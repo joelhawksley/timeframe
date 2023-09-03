@@ -39,12 +39,16 @@ class CalendarService
       WeatherKitService.precip_calendar_events +
       [WeatherAlertService.weather_alert_calendar_event] +
       calendar_events
-    ).compact.map(&:to_h).select do |event|
-      (event['start_i']...event['end_i']).overlaps?(starts_at.to_i...ends_at.to_i)
-    end.group_by { _1['id'] } # Merge duplicate events, merging the letter with a custom rule if so
+    )
+
+    filtered_events = filtered_events.compact.map(&:to_h).select do |event|
+      (event[:start_i]...event[:end_i]).overlaps?(starts_at.to_i...ends_at.to_i)
+    end
+
+    filtered_events = filtered_events.group_by { _1[:id] } # Merge duplicate events, merging the letter with a custom rule if so
       .map do |_k, v|
         if v.length > 1
-          letters = v.map { |iv| iv['letter'] }
+          letters = v.map { |iv| iv[:letter] }
           letter =
             if letters.uniq.length == 1
               letters[0]
@@ -55,7 +59,7 @@ class CalendarService
             end
 
           out = v[0]
-          out['letter'] = letter
+          out[:letter] = letter
           out
         else
           v[0]
