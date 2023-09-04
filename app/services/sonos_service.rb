@@ -19,12 +19,12 @@ class SonosService
   end
 
   def self.fetch
-    Value.find_or_create_by(key: "sonos").update(value:
+    Value.upsert({ key: "sonos", value:
       {
         data: JSON.parse(HTTParty.get(Timeframe::Application.config.local["node_sonos_http_api_url"]).body),
         last_fetched_at: Time.now.utc.in_time_zone(Timeframe::Application.config.local["timezone"]).to_s
       }
-    )
+    }, unique_by: :key)
   rescue => e
     Log.create(
       globalid: "SonosService",

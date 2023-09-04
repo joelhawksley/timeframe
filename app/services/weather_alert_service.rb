@@ -1,6 +1,7 @@
 class WeatherAlertService
   def self.load
-    Value.find_or_create_by(key: "weather_alerts").value || {}
+    Current.weather_alerts ||=
+      Value.find_or_create_by(key: "weather_alerts").value || {}
   end
 
   def self.fetch

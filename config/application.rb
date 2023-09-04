@@ -37,5 +37,17 @@ module Timeframe
     config.hosts << "timeframetesting.com"
 
     config.active_record.legacy_connection_handling = false
+
+    config.after_initialize do
+      if ENV["RUN_BG"]
+        Thread.new do
+          while true do
+            sleep(2)
+
+            SonosService.fetch
+          end
+        end
+      end
+    end
   end
 end

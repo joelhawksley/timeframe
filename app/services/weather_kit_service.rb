@@ -1,10 +1,12 @@
 class WeatherKitService
   def self.weather
-    Value.find_or_create_by(key: "weatherkit").value["data"] || {}
+    Current.weatherkit ||=
+      Value.find_or_create_by(key: "weatherkit").value["data"] || {}
   end
 
   def self.last_fetched_at
-    Value.find_or_create_by(key: "weatherkit").value["last_fetched_at"]
+    Current.weatherkit_fetched_at ||=
+      Value.find_or_create_by(key: "weatherkit").value["last_fetched_at"]
   end
 
   def self.temperature_range_for(date)

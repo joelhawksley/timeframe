@@ -3,13 +3,12 @@ css:
   body { padding: 0 2rem }
 
 div style="margin: 0 -2rem; background-color: black; color: white; padding: 0 2rem" class="clearfix"
-  - res = JSON.parse(HTTParty.get("http://hawksley-server.local:5005/Sonos%20Move/state").body)
-  - if res["playbackState"] == "PLAYING"
+  - if status = SonosService.status
     div style="font-size: 1.25rem; line-height: 1.3rem; float: left; padding: 1.5rem 0"
       i.fa-solid.fa-music.fa-fw
-      strong =< res["currentTrack"]["artist"]
+      strong =< status[:artist]
       |  :
-      =< res["currentTrack"]["title"]
+      =< status[:track]
   - if !WeatherKitService.healthy? || !GoogleAccount.all.all?(&:healthy?)
     div style="float: right; text-align: right; padding: 1.5rem 0"
       - if !WeatherKitService.healthy?
