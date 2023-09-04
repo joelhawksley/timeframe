@@ -12,4 +12,5 @@ test:
   database: timeframe_test
 
 production:
-  url: <%= ENV['DATABASE_URL'] %>
+  <<: *default
+  database: timeframe_production
