@@ -1,16 +1,6 @@
 # frozen_string_literal: true
 
 class GoogleAccount < ApplicationRecord
-  def healthy?
-    log = Log.where(globalid: to_global_id.to_s, event: "fetch_success").last
-
-    if log
-      Log.where(globalid: to_global_id.to_s, event: "fetch_success").last.created_at > DateTime.now - 2.hours
-    else
-      true
-    end
-  end
-
   def self.refresh_all
     all.each(&:refresh!)
   end

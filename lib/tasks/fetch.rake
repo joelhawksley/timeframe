@@ -5,10 +5,6 @@ namespace :fetch do
     GoogleAccount.refresh_all
   end
 
-  task weather: :environment do
-  end
-
   task google: :environment do
-    GoogleService.call
   end
 end

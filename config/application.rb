@@ -65,6 +65,14 @@ module Timeframe
             sleep(300)
           end
         end
+
+        Thread.new do
+          while true do
+            GoogleService.call
+
+            sleep(60)
+          end
+        end
       end
     end
   end
