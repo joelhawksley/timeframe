@@ -6,7 +6,7 @@ Rails.application.routes.draw do
 
   root to: "home#index"
   get :redirect, to: "home#redirect"
-  get :google_callback, to: "home#callback"
+  get :google_callback, to: "home#google_callback"
 
   get :logs, to: "home#logs"
   get :calendar_data, to: "home#calendar_data"

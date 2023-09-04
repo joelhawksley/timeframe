@@ -19,7 +19,7 @@ class HomeController < ApplicationController
     redirect_to(client.authorization_uri.to_s, allow_other_host: true)
   end
 
-  def callback
+  def google_callback
     client = GoogleAccount.client
     client.code = params[:code]
 

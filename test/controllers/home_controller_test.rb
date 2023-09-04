@@ -40,4 +40,10 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
   end
+
+  test "should get #redirect with no data" do
+    get "/redirect"
+
+    assert_response 302
+  end
 end
