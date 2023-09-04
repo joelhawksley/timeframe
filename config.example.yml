@@ -1,3 +1,4 @@
+node_sonos_http_api_url: foo
 timezone: America/Denver
 birthdate: "2023-2-11"
 apple_developer_team_id: bar
