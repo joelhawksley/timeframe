@@ -42,9 +42,25 @@ module Timeframe
       if ENV["RUN_BG"]
         Thread.new do
           while true do
-            sleep(2)
-
             SonosService.fetch
+
+            sleep(2)
+          end
+        end
+
+        Thread.new do
+          while true do
+            WeatherKitService.fetch
+
+            sleep(60)
+          end
+        end
+
+        Thread.new do
+          while true do
+            WeatherAlertService.fetch
+
+            sleep(300)
           end
         end
       end

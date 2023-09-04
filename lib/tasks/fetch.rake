@@ -6,8 +6,6 @@ namespace :fetch do
   end
 
   task weather: :environment do
-    WeatherKitService.fetch
-    WeatherAlertService.fetch
   end
 
   task google: :environment do
