@@ -38,17 +38,12 @@ class WeatherAlertService
 
     return unless alert
 
-    summary =
-      if alert['event'].include?('Special Weather Statement')
-        alert["parameters"]["NWSheadline"][0]
-      else
-        alert['event']
-      end
+    return unless alert['event'].include?('Special Weather Statement')
 
     CalendarEvent.new(
       starts_at: DateTime.parse(alert['onset']).to_i,
       ends_at: DateTime.parse(alert['ends'] || alert['expires']).to_i,
-      summary: summary,
+      summary: alert["parameters"]["NWSheadline"][0],
       icon: 'warning'
     )
   end
