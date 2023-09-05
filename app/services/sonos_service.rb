@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
 class SonosService
+  def self.healthy?
+    return true unless last_fetched_at
+
+    DateTime.parse(last_fetched_at) > DateTime.now - 1.minute
+  end
+
   def self.data
     Value.find_or_create_by(key: "sonos").value["data"] || {}
   end

@@ -11,6 +11,28 @@ class SonosServiceTest < Minitest::Test
     end
   end
 
+  def test_health_no_data
+    SonosService.stub :last_fetched_at, nil do
+      assert(SonosService.healthy?)
+    end
+  end
+
+  def test_health_current_data
+    SonosService.stub :last_fetched_at, "2023-08-27 15:14:59 -0600" do
+      travel_to DateTime.new(2023,8,27,15,15,0, "-0600") do
+        assert(SonosService.healthy?)
+      end
+    end
+  end
+
+  def test_health_stale_data
+    SonosService.stub :last_fetched_at, "2023-08-27 15:14:59 -0600" do
+      travel_to DateTime.new(2023,8,27,16,20,0,"-0600") do
+        refute(SonosService.healthy?)
+      end
+    end
+  end
+
   def test_status
     data = {
       "mute"=>false,
