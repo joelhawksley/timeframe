@@ -45,12 +45,6 @@ class GoogleAccount < ApplicationRecord
       expires_at: Time.now + response["expires_in"].to_i.seconds
     )
     save
-
-    Log.create(
-      globalid: to_global_id,
-      event: "refresh_success",
-      message: ""
-    )
   rescue => e
     Log.create(
       globalid: to_global_id,

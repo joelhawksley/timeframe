@@ -44,7 +44,9 @@ module Timeframe
       if ENV["RUN_BG"]
         Thread.new do
           while true do
-            SonosService.fetch
+            ActiveRecord::Base.connection_pool.with_connection do
+              SonosService.fetch
+            end
 
             sleep(2)
           end
@@ -52,7 +54,9 @@ module Timeframe
 
         Thread.new do
           while true do
-            WeatherKitService.fetch
+            ActiveRecord::Base.connection_pool.with_connection do
+              WeatherKitService.fetch
+            end
 
             sleep(60)
           end
@@ -60,7 +64,9 @@ module Timeframe
 
         Thread.new do
           while true do
-            WeatherAlertService.fetch
+            ActiveRecord::Base.connection_pool.with_connection do
+              WeatherAlertService.fetch
+            end
 
             sleep(300)
           end
@@ -68,7 +74,19 @@ module Timeframe
 
         Thread.new do
           while true do
-            GoogleService.call
+            ActiveRecord::Base.connection_pool.with_connection do
+              GoogleService.call
+            end
+
+            sleep(60)
+          end
+        end
+
+        Thread.new do
+          while true do
+            ActiveRecord::Base.connection_pool.with_connection do
+              GoogleAccount.refresh_all
+            end
 
             sleep(60)
           end
