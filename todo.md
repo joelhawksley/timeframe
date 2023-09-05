@@ -1,7 +1,6 @@
 # Things to do
 
 - Move all config into config.yml
-- Remove dependency on cron
 - Add minutely weather
 - Use WeatherKit for alerts
 - 100% test coverage
