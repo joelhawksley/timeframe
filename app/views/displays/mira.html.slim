@@ -2,25 +2,21 @@ css:
   html { font-size: 46px }
   body { padding: 0 2rem }
 
-div style="margin: 0 -2rem; background-color: black; color: white; padding: 0 2rem" class="clearfix"
+div style="font-size: 1.75rem; position:absolute; left: 2rem; right: 2rem; top: 0; padding: 1.5rem 0" class="clearfix"
   - if status = SonosService.status
-    div style="font-size: 1.25rem; line-height: 1.3rem; float: left; padding: 1.5rem 0"
+    div style="line-height: 1.3rem; float: left"
       i.fa-solid.fa-music.fa-fw
       strong =< status[:artist]
       |  :
       =< status[:track]
-  - if !WeatherKitService.healthy? || !SonosService.healthy?
-    div style="float: right; text-align: right; padding: 1.5rem 0"
-      - if !WeatherKitService.healthy?
-        span
-          i.fa-solid.fa-cloud-slash style="font-size: 1.5rem"
-      - if !SonosService.healthy?
-        span
-          i.fa-solid.fa-music-slash style="font-size: 1.5rem"
-div class="clearfix" style="margin: 1.5rem 0 -1rem;"
-  div style="float: left; font-size: 8rem; line-height: 7rem;" = view_object[:current_temperature]
-  div style="text-align: right; float: right; margin-top: 0.5rem;"
-    div style="font-size: 2rem" = Date.today.strftime("%A, %B %-d")
-    div style="font-size: 4rem; line-height: 4rem;" = DateTime.now.strftime("%l:%M%P").strip
+  div style="float: right;"
+    - if !WeatherKitService.healthy?
+      i.fa-solid.fa-cloud-slash
+    - if !SonosService.healthy?
+      i.fa-solid.fa-music-slash
+div class="clearfix" style="margin: 4rem 0 -1rem;"
+  div style="float: left; font-size: 7rem; line-height: 7rem;" = view_object[:current_temperature]
+  div style="text-align: right; float: right;"
+    div style="font-size: 7rem; line-height: 7rem;" = DateTime.now.strftime("%l:%M")
 hr style="margin: 2rem 0 1rem; border: none; background-color: #ccc; color: #ccc; height: 2px;"
 = render Timeline.new(view_object: view_object)
