@@ -42,7 +42,7 @@ class GoogleAccount < ApplicationRecord
       refresh_token! if expires_at < Time.now
     rescue => e
       Log.create(
-        globalid: to_global_id,
+        globalid: key,
         event: "refresh_token_error",
         message: e.message + e.backtrace.join("\n")
       )
@@ -58,7 +58,7 @@ class GoogleAccount < ApplicationRecord
       )
     rescue => e
       Log.create(
-        globalid: to_global_id,
+        globalid: key,
         event: "client_refresh_error",
         message: e.message + e.backtrace.join("\n")
       )
@@ -71,7 +71,7 @@ class GoogleAccount < ApplicationRecord
       calendars = service.list_calendar_lists.items
     rescue => e
       Log.create(
-        globalid: to_global_id,
+        globalid: key,
         event: "list_calendar_lists",
         message: e.message
       )
@@ -117,14 +117,14 @@ class GoogleAccount < ApplicationRecord
         end
       rescue => e
         Log.create(
-          globalid: to_global_id,
+          globalid: key,
           event: "list_events_error",
           message: e.class.to_s + e.message + e.backtrace.join("\n") + calendar_config.to_json
         )
       end
     end
 
-    Value.upsert({ key: to_global_id, value:
+    Value.upsert({ key: key, value:
       {
         data: events,
         last_fetched_at: Time.now.utc.in_time_zone(Timeframe::Application.config.local["timezone"]).to_s
@@ -158,7 +158,7 @@ class GoogleAccount < ApplicationRecord
     save
   rescue => e
     Log.create(
-      globalid: to_global_id,
+      globalid: key,
       event: "refresh_error",
       message: e.message + response.to_s
     )
