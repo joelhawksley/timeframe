@@ -7,3 +7,4 @@
 - wrap exceptions to ensure 100% response uptime
 - automate deploys to local server
 - Integrate home assistant data
+- Add CPR classical to home assistant

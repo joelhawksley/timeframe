@@ -72,4 +72,17 @@ class SonosServiceTest < Minitest::Test
       assert_equal({ artist: "Allen Toussaint", track: "Southern Nights" }, SonosService.status)
     end
   end
+
+  def test_folk_alley_status
+    data = {
+       "currentTrack"=>
+        {"album"=>"American Tunes",
+         "title"=>"Masterfade - Andrew Bird - The Mysterious Production of Eggs",
+         "artist"=>"Folk Alley - WKSU-HD2"},
+       "playbackState"=>"PLAYING" }
+
+    SonosService.stub :data, data do
+      assert_equal({ artist: "Andrew Bird", track: "Masterfade" }, SonosService.status)
+    end
+  end
 end

@@ -18,10 +18,19 @@ class SonosService
   def self.status
     return nil unless data["playbackState"] == "PLAYING"
 
-    {
-      artist: data["currentTrack"]["artist"],
-      track: data["currentTrack"]["title"]
-    }
+    if data["currentTrack"]["title"].split(" - ").length == 3 # if title is track/artist/album
+      title_parts = data["currentTrack"]["title"].split(" - ")
+
+      {
+        artist: title_parts[1],
+        track: title_parts[0]
+      }
+    else
+      {
+        artist: data["currentTrack"]["artist"],
+        track: data["currentTrack"]["title"]
+      }
+    end
   end
 
   def self.fetch
