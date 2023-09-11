@@ -61,7 +61,7 @@ class WeatherKitServiceTest < Minitest::Test
 
   def test_health_no_data
     WeatherKitService.stub :last_fetched_at, nil do
-      assert(WeatherKitService.healthy?)
+      assert(!WeatherKitService.healthy?)
     end
   end
 

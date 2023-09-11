@@ -11,9 +11,11 @@ div style="font-size: 1.75rem; position:absolute; left: 2rem; right: 2rem; top: 
       =< status[:track]
   div style="float: right;"
     - if !WeatherKitService.healthy?
-      i.fa-solid.fa-cloud-slash
+      i.fa-solid.fa-cloud-slash style="margin-left: 1rem"
     - if !SonosService.healthy?
-      i.fa-solid.fa-music-slash
+      i.fa-solid.fa-music-slash style="margin-left: 1rem"
+    - if !GoogleAccount.all.all?(&:healthy?)
+      i.fa-solid.fa-calendar-circle-exclamation style="margin-left: 1rem"
 div class="clearfix" style="margin: 4rem 0 -1rem;"
   div style="float: left; font-size: 7rem; line-height: 7rem;" = view_object[:current_temperature]
   div style="text-align: right; float: right;"

@@ -75,17 +75,7 @@ module Timeframe
         Thread.new do
           while true do
             ActiveRecord::Base.connection_pool.with_connection do
-              GoogleService.call
-            end
-
-            sleep(60)
-          end
-        end
-
-        Thread.new do
-          while true do
-            ActiveRecord::Base.connection_pool.with_connection do
-              GoogleAccount.refresh_all
+              GoogleAccount.all.each(&:fetch)
             end
 
             sleep(60)

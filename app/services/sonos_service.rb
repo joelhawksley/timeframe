@@ -2,7 +2,7 @@
 
 class SonosService
   def self.healthy?
-    return true unless last_fetched_at
+    return false unless last_fetched_at
 
     DateTime.parse(last_fetched_at) > DateTime.now - 1.minute
   end

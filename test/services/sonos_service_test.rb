@@ -13,7 +13,7 @@ class SonosServiceTest < Minitest::Test
 
   def test_health_no_data
     SonosService.stub :last_fetched_at, nil do
-      assert(SonosService.healthy?)
+      assert(!SonosService.healthy?)
     end
   end
 

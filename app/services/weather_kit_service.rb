@@ -30,9 +30,9 @@ class WeatherKitService
   end
 
   def self.healthy?
-    return true unless last_fetched_at
+    return false unless last_fetched_at
 
-    DateTime.parse(last_fetched_at) > DateTime.now - 1.hour
+    DateTime.parse(last_fetched_at) > DateTime.now - 10.minutes
   end
 
   def self.fetch
