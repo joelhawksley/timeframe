@@ -40,11 +40,5 @@ class SonosService
         last_fetched_at: Time.now.utc.in_time_zone(Timeframe::Application.config.local["timezone"]).to_s
       }
     }, unique_by: :key)
-  rescue => e
-    Log.create(
-      globalid: "SonosService",
-      event: "call_error",
-      message: e.message + e.backtrace.join("\n")
-    )
   end
 end

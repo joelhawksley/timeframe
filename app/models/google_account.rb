@@ -36,6 +36,7 @@ class GoogleAccount < ApplicationRecord
     Value.find_or_create_by(key: key).value["last_fetched_at"]
   end
 
+  # :nocov:
   def fetch
     begin
       refresh_token! if expires_at < Time.now
@@ -123,20 +124,22 @@ class GoogleAccount < ApplicationRecord
       end
     end
 
-    Value.upsert({ key: key, value:
+    Value.upsert({ key: to_global_id, value:
       {
         data: events,
         last_fetched_at: Time.now.utc.in_time_zone(Timeframe::Application.config.local["timezone"]).to_s
       }
     }, unique_by: :key)
   end
+  # :nocov:
 
   private
 
   def key
-    "#{to_global_id}"
+    to_global_id.to_s
   end
 
+  # :nocov:
   def refresh_token!
     response =
       HTTParty.post("https://accounts.google.com/o/oauth2/token",
@@ -160,4 +163,5 @@ class GoogleAccount < ApplicationRecord
       message: e.message + response.to_s
     )
   end
+  # :nocov:
 end

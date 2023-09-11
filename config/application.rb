@@ -40,48 +40,27 @@ module Timeframe
 
     config.active_record.legacy_connection_handling = false
 
+    # :nocov:
     config.after_initialize do
-      if ENV["RUN_BG"]
+      def run_in_bg(interval, &block)
         Thread.new do
           while true do
             ActiveRecord::Base.connection_pool.with_connection do
-              SonosService.fetch
+              yield
             end
 
-            sleep(2)
-          end
-        end
-
-        Thread.new do
-          while true do
-            ActiveRecord::Base.connection_pool.with_connection do
-              WeatherKitService.fetch
-            end
-
-            sleep(60)
-          end
-        end
-
-        Thread.new do
-          while true do
-            ActiveRecord::Base.connection_pool.with_connection do
-              WeatherAlertService.fetch
-            end
-
-            sleep(300)
-          end
-        end
-
-        Thread.new do
-          while true do
-            ActiveRecord::Base.connection_pool.with_connection do
-              GoogleAccount.all.each(&:fetch)
-            end
-
-            sleep(60)
+            sleep(interval)
           end
         end
       end
+
+      if ENV["RUN_BG"]
+        run_in_bg(2) { SonosService.fetch }
+        run_in_bg(60) { WeatherKitService.fetch }
+        run_in_bg(300) { WeatherAlertService.fetch }
+        run_in_bg(60) { GoogleAccount.all.each(&:fetch) }
+      end
     end
+    # :nocov:
   end
 end

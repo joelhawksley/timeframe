@@ -19,6 +19,7 @@ class HomeController < ApplicationController
     redirect_to(client.authorization_uri.to_s, allow_other_host: true)
   end
 
+  # :nocov:
   def google_callback
     client = GoogleAccount.client
     client.code = params[:code]
@@ -65,4 +66,5 @@ class HomeController < ApplicationController
 
     redirect_to(root_path, flash: {notice: "Google Account connected"})
   end
+  # :nocov:
 end

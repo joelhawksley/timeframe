@@ -67,7 +67,7 @@ class WeatherKitServiceTest < Minitest::Test
 
   def test_health_current_data
     WeatherKitService.stub :last_fetched_at, "2023-08-27 15:14:59 -0600" do
-      travel_to DateTime.new(2023,8,27,15,20,0, "-0600") do
+      travel_to DateTime.new(2023,8,27,15,16,0, "-0600") do
         assert(WeatherKitService.healthy?)
       end
     end
