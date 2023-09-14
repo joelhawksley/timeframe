@@ -46,7 +46,15 @@ module Timeframe
         Thread.new do
           while true do
             ActiveRecord::Base.connection_pool.with_connection do
-              yield
+              begin
+                yield
+              rescue => e
+                Log.create(
+                  globalid: "Timeframe.after_initialize",
+                  event: "background thread error",
+                  message: e.message + e.backtrace.join("\n")
+                )
+              end
             end
 
             sleep(interval)
