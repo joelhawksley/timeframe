@@ -85,4 +85,16 @@ class SonosServiceTest < Minitest::Test
       assert_equal({ artist: "Andrew Bird", track: "Masterfade" }, SonosService.status)
     end
   end
+
+  def test_status_no_title
+    data = {
+       "currentTrack"=>
+        {"album"=>"American Tunes",
+         "artist"=>"Folk Alley - WKSU-HD2"},
+       "playbackState"=>"PLAYING" }
+
+    SonosService.stub :data, data do
+      assert_nil(SonosService.status)
+    end
+  end
 end
