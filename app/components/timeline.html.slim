@@ -4,23 +4,19 @@
     hr style="margin: 0 0 1rem; border: none;background-color: #ccc;color: #ccc;height: 2px;"
   div style="display: flex; margin-bottom: 1rem"
     div.daily style="width: 16rem; vertical-align: top; padding-right: 1rem; border-right: 2px solid #ccc;"
-      div style="display: flex; justify-content: space-between; flex-direction: column; height: 100%;"
-        div
-          div style="font-size: 2rem; font-weight: 700" = event_day[:day_name]
-          div style="margin-bottom: 1rem;" = event_day[:temperature_range]
-        div
-          table
-            - event_day[:events][:daily].each do |event|
-              tr
-                td style="width: 1%; text-align: center; font-size: 1.25rem; font-weight: bold; padding-right: 0.25rem;"
-                  - if event["letter"].present?
-                    = event["letter"]
-                  - else
-                    i.fa-fw.fa-solid class="fa-#{event['icon']}"
-                td
-                  div
-                    = event["summary"]
-                    div style="font-size: .5rem;" = event["location"]
+      div style="font-size: 2rem; font-weight: 700" = event_day[:day_name]
+      table
+        - event_day[:events][:daily].each do |event|
+          tr
+            td style="width: 1%; text-align: center; font-size: 1.25rem; font-weight: bold; padding-right: 0.25rem;"
+              - if event["letter"].present?
+                = event["letter"]
+              - else
+                i.fa-fw.fa-solid class="fa-#{event['icon']}"
+            td
+              div
+                = event["summary"]
+                div style="font-size: .5rem;" = event["location"]
     div.periodic style="width: 30rem;"
       table style="width: 100%"
         - event_day[:events][:periodic].each do |event|

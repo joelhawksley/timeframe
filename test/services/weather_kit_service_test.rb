@@ -11,35 +11,6 @@ class WeatherKitServiceTest < Minitest::Test
     end
   end
 
-  def test_temperature_range_for_no_data
-    WeatherKitService.stub :weather, {} do
-      assert_nil(WeatherKitService.temperature_range_for(Date.today))
-    end
-  end
-
-  def test_temperature_range_for_example
-    weather = {
-      "forecastDaily" => {
-        "days" => [
-          {
-            "forecastStart"=>"2023-08-27T06:00:00Z",
-            "temperatureMax"=>30.38,
-            "temperatureMin"=>14.47,
-          },
-          {
-            "forecastStart"=>"2023-08-28T06:00:00Z",
-            "temperatureMax"=>25.32,
-            "temperatureMin"=>15.16,
-          }
-        ]
-      }
-    }
-
-    WeatherKitService.stub :weather, weather do
-      assert_equal("&#8593;87 &#8595;58", WeatherKitService.temperature_range_for(Date.new(2023,8,27)))
-    end
-  end
-
   def test_current_temperature_no_data
     WeatherKitService.stub :weather, {} do
       assert_nil(WeatherKitService.current_temperature)
@@ -2156,6 +2127,182 @@ class WeatherKitServiceTest < Minitest::Test
   def test_fetch_raises_no_errors
     VCR.use_cassette("weatherkit_fetch") do
       WeatherKitService.fetch
+    end
+  end
+
+  def test_daily_calendar_events
+    weather = {
+      "forecastDaily" => {"days"=>
+        [{"sunset"=>"2023-09-16T01:09:01Z",
+          "sunrise"=>"2023-09-15T12:41:05Z",
+          "moonrise"=>"2023-09-15T13:08:37Z",
+          "forecastEnd"=>"2023-09-16T06:00:00Z",
+          "conditionCode"=>"MostlyCloudy",
+          "forecastStart"=>"2023-09-15T06:00:00Z",
+          "snowfallAmount"=>0.0,
+          "temperatureMax"=>18.86,
+          "temperatureMin"=>11.1,
+          "precipitationType"=>"clear",
+          "precipitationAmount"=>0.2,
+          "precipitationChance"=>0.0,
+          "sunriseAstronomical"=>"2023-09-15T11:09:07Z",
+          "precipitationAmountByType"=>{}},
+         {"sunset"=>"2023-09-17T01:07:22Z",
+          "sunrise"=>"2023-09-16T12:42:01Z",
+          "moonrise"=>"2023-09-16T14:08:46Z",
+          "forecastEnd"=>"2023-09-17T06:00:00Z",
+          "conditionCode"=>"Clear",
+          "forecastStart"=>"2023-09-16T06:00:00Z",
+          "snowfallAmount"=>0.0,
+          "temperatureMax"=>24.23,
+          "temperatureMin"=>8.49,
+          "precipitationType"=>"clear",
+          "sunsetAstronomical"=>"2023-09-17T02:38:56Z",
+          "precipitationAmount"=>0.0,
+          "precipitationChance"=>0.0,
+          "sunriseAstronomical"=>"2023-09-16T11:10:15Z",
+          "precipitationAmountByType"=>{}},
+         {"sunset"=>"2023-09-18T01:05:42Z",
+          "sunrise"=>"2023-09-17T12:42:57Z",
+          "moonrise"=>"2023-09-17T15:10:06Z",
+          "forecastEnd"=>"2023-09-18T06:00:00Z",
+          "conditionCode"=>"MostlyClear",
+          "forecastStart"=>"2023-09-17T06:00:00Z",
+          "snowfallAmount"=>0.0,
+          "temperatureMax"=>28.16,
+          "temperatureMin"=>10.03,
+          "precipitationType"=>"clear",
+          "sunsetAstronomical"=>"2023-09-18T02:37:07Z",
+          "precipitationAmount"=>0.0,
+          "precipitationChance"=>0.0,
+          "sunriseAstronomical"=>"2023-09-17T11:11:22Z",
+          "precipitationAmountByType"=>{}},
+         {"sunset"=>"2023-09-19T01:04:02Z",
+          "sunrise"=>"2023-09-18T12:43:54Z",
+          "moonrise"=>"2023-09-18T16:13:33Z",
+          "forecastEnd"=>"2023-09-19T06:00:00Z",
+          "conditionCode"=>"PartlyCloudy",
+          "forecastStart"=>"2023-09-18T06:00:00Z",
+          "snowfallAmount"=>0.0,
+          "temperatureMax"=>28.6,
+          "temperatureMin"=>13.7,
+          "precipitationType"=>"clear",
+          "sunsetAstronomical"=>"2023-09-19T02:35:18Z",
+          "precipitationAmount"=>0.0,
+          "precipitationChance"=>0.0,
+          "sunriseAstronomical"=>"2023-09-18T11:12:29Z",
+          "precipitationAmountByType"=>{}},
+         {"sunset"=>"2023-09-20T01:02:23Z",
+          "sunrise"=>"2023-09-19T12:44:50Z",
+          "moonrise"=>"2023-09-19T17:19:38Z",
+          "forecastEnd"=>"2023-09-20T06:00:00Z",
+          "conditionCode"=>"PartlyCloudy",
+          "forecastStart"=>"2023-09-19T06:00:00Z",
+          "snowfallAmount"=>0.0,
+          "temperatureMax"=>26.74,
+          "temperatureMin"=>13.54,
+          "precipitationType"=>"clear",
+          "sunsetAstronomical"=>"2023-09-20T02:33:30Z",
+          "precipitationAmount"=>0.0,
+          "precipitationChance"=>0.0,
+          "sunriseAstronomical"=>"2023-09-19T11:13:35Z",
+          "precipitationAmountByType"=>{}},
+         {"sunset"=>"2023-09-21T01:00:43Z",
+          "sunrise"=>"2023-09-20T12:45:46Z",
+          "moonrise"=>"2023-09-20T18:28:01Z",
+          "forecastEnd"=>"2023-09-21T06:00:00Z",
+          "conditionCode"=>"PartlyCloudy",
+          "forecastStart"=>"2023-09-20T06:00:00Z",
+          "snowfallAmount"=>0.0,
+          "temperatureMax"=>27.22,
+          "temperatureMin"=>11.76,
+          "precipitationType"=>"clear",
+          "sunsetAstronomical"=>"2023-09-21T02:31:42Z",
+          "precipitationAmount"=>0.0,
+          "precipitationChance"=>0.0,
+          "sunriseAstronomical"=>"2023-09-20T11:14:41Z",
+          "precipitationAmountByType"=>{}},
+         {"sunset"=>"2023-09-22T00:59:04Z",
+          "sunrise"=>"2023-09-21T12:46:43Z",
+          "moonrise"=>"2023-09-21T19:36:52Z",
+          "forecastEnd"=>"2023-09-22T06:00:00Z",
+          "conditionCode"=>"MostlyClear",
+          "forecastStart"=>"2023-09-21T06:00:00Z",
+          "snowfallAmount"=>0.0,
+          "temperatureMax"=>27.29,
+          "temperatureMin"=>11.82,
+          "precipitationType"=>"clear",
+          "sunsetAstronomical"=>"2023-09-22T02:29:54Z",
+          "precipitationAmount"=>0.0,
+          "precipitationChance"=>0.0,
+          "sunriseAstronomical"=>"2023-09-21T11:15:46Z",
+          "precipitationAmountByType"=>{}},
+         {"sunset"=>"2023-09-23T00:57:26Z",
+          "sunrise"=>"2023-09-22T12:47:40Z",
+          "moonrise"=>"2023-09-22T20:42:47Z",
+          "forecastEnd"=>"2023-09-23T06:00:00Z",
+          "conditionCode"=>"MostlyClear",
+          "forecastStart"=>"2023-09-22T06:00:00Z",
+          "snowfallAmount"=>0.0,
+          "temperatureMax"=>24.36,
+          "temperatureMin"=>11.23,
+          "precipitationType"=>"rain",
+          "sunsetAstronomical"=>"2023-09-23T02:28:07Z",
+          "precipitationAmount"=>0.5,
+          "precipitationChance"=>0.13,
+          "sunriseAstronomical"=>"2023-09-22T11:16:52Z",
+          "precipitationAmountByType"=>{}},
+         {"sunset"=>"2023-09-24T00:55:47Z",
+          "sunrise"=>"2023-09-23T12:48:36Z",
+          "moonrise"=>"2023-09-23T21:41:52Z",
+          "forecastEnd"=>"2023-09-24T06:00:00Z",
+          "conditionCode"=>"MostlyClear",
+          "forecastStart"=>"2023-09-23T06:00:00Z",
+          "snowfallAmount"=>0.0,
+          "temperatureMax"=>21.08,
+          "temperatureMin"=>10.76,
+          "precipitationType"=>"rain",
+          "sunsetAstronomical"=>"2023-09-24T02:26:21Z",
+          "precipitationAmount"=>0.5,
+          "precipitationChance"=>0.35,
+          "sunriseAstronomical"=>"2023-09-23T11:17:56Z",
+          "precipitationAmountByType"=>{}},
+         {"sunset"=>"2023-09-25T00:54:09Z",
+          "sunrise"=>"2023-09-24T12:49:33Z",
+          "moonrise"=>"2023-09-24T22:31:46Z",
+          "forecastEnd"=>"2023-09-25T06:00:00Z",
+          "conditionCode"=>"MostlyClear",
+          "forecastStart"=>"2023-09-24T06:00:00Z",
+          "snowfallAmount"=>0.0,
+          "temperatureMax"=>21.58,
+          "temperatureMin"=>8.74,
+          "precipitationType"=>"clear",
+          "sunsetAstronomical"=>"2023-09-25T02:24:35Z",
+          "precipitationAmount"=>0.0,
+          "precipitationChance"=>0.0,
+          "sunriseAstronomical"=>"2023-09-24T11:19:01Z",
+          "precipitationAmountByType"=>{}}],
+       "name"=>"DailyForecast",
+       "metadata"=>
+        {"units"=>"m",
+         "version"=>1,
+         "latitude"=>39.915,
+         "readTime"=>"2023-09-15T15:44:28Z",
+         "longitude"=>-105.022,
+         "expireTime"=>"2023-09-15T16:44:28Z",
+         "reportedTime"=>"2023-09-15T15:00:00Z",
+         "attributionURL"=>
+          "https://developer.apple.com/weatherkit/data-source-attribution/"}}
+    }
+
+    WeatherKitService.stub :weather, weather do
+      assert_equal(10, WeatherKitService.daily_calendar_events.length)
+    end
+  end
+
+  def test_daily_calendar_events_no_data
+    WeatherKitService.stub :weather, {} do
+      assert_equal([], WeatherKitService.daily_calendar_events)
     end
   end
 end

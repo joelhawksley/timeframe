@@ -9,18 +9,6 @@ class WeatherKitService
       Value.find_or_create_by(key: "weatherkit").value["last_fetched_at"]
   end
 
-  def self.temperature_range_for(date)
-    days = weather.dig("forecastDaily", "days")
-
-    return nil unless days
-
-    forecast = weather.dig("forecastDaily", "days").find{ _1["forecastStart"].to_date == date }
-
-    return nil unless forecast
-
-    "&#8593;#{celsius_fahrenheit(forecast["temperatureMax"])} &#8595;#{celsius_fahrenheit(forecast["temperatureMin"])}".html_safe
-  end
-
   def self.current_temperature
     raw_temp = weather.dig("currentWeather", "temperature")
 
@@ -66,17 +54,6 @@ class WeatherKitService
   def self.hourly_calendar_events
     today = Date.today.in_time_zone(Timeframe::Application.config.local["timezone"])
 
-    icon_mappings = {
-      "Cloudy" => "clouds",
-      "MostlyCloudy" => "clouds",
-      "PartlyCloudy" => "clouds-sun",
-      "MostlyClear" => "cloud-sun",
-      "Clear" => "sun",
-      "Windy" => "wind",
-      "Drizzle" => "raindrops",
-      "Rain" => "raindrops"
-    }
-
     hours_forecast = weather.dig("forecastHourly", "hours")
 
     return [] unless hours_forecast.present?
@@ -99,7 +76,7 @@ class WeatherKitService
           id: "_weather_hour_#{hour.to_i}",
           starts_at: hour,
           ends_at: hour,
-          icon: icon_mappings[weather_hour["conditionCode"]] || "question",
+          icon: icon_for(weather_hour["conditionCode"]),
           summary: "#{celsius_fahrenheit(weather_hour['temperature'])}°".html_safe
         )
       end.compact
@@ -141,6 +118,35 @@ class WeatherKitService
         ends_at:_1[:end_i],
         icon: "raindrops",
         summary: _1[:precipitation_type].capitalize
+      )
+    end
+  end
+
+  def self.icon_for(condition_code)
+    icon_mappings = {
+      "Cloudy" => "clouds",
+      "MostlyCloudy" => "clouds",
+      "PartlyCloudy" => "clouds-sun",
+      "MostlyClear" => "cloud-sun",
+      "Clear" => "sun",
+      "Windy" => "wind",
+      "Drizzle" => "raindrops",
+      "Rain" => "raindrops"
+    }
+
+    icon_mappings[condition_code] || "question"
+  end
+
+  def self.daily_calendar_events
+    return [] unless days = weather.dig("forecastDaily", "days")
+
+    days.map do |day|
+      CalendarEvent.new(
+        id: "_weather_day_#{day['forecastStart']}",
+        starts_at: DateTime.parse(day['forecastStart']).to_i,
+        ends_at:  DateTime.parse(day['forecastEnd']).to_i,
+        icon: icon_for(day["conditionCode"]),
+        summary: "#{celsius_fahrenheit(day['temperatureMax'])}° / #{celsius_fahrenheit(day['temperatureMin'])}°".html_safe
       )
     end
   end

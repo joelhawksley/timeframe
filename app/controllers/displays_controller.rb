@@ -26,8 +26,7 @@ class DisplaysController < ApplicationController
           events: CalendarService.events_for(
             (day_index.zero? ? current_time : date.beginning_of_day).utc,
             date.end_of_day.utc
-          ),
-          temperature_range: WeatherKitService.temperature_range_for(date.to_date)
+          )
         }
       end
 
