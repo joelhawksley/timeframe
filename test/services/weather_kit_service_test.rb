@@ -81,9 +81,9 @@ class WeatherKitServiceTest < Minitest::Test
     end
   end
 
-  def test_calendar_events_no_data
+  def test_hourly_calendar_events_no_data
     WeatherKitService.stub :weather, {} do
-      assert_equal([], WeatherKitService.calendar_events)
+      assert_equal([], WeatherKitService.hourly_calendar_events)
     end
   end
 
@@ -1112,7 +1112,7 @@ class WeatherKitServiceTest < Minitest::Test
 
     WeatherKitService.stub :weather, weather do
       travel_to DateTime.new(2023,8,27,16,20,0,"-0600") do
-        assert_equal(16, WeatherKitService.calendar_events.length)
+        assert_equal(16, WeatherKitService.hourly_calendar_events.length)
       end
     end
   end

@@ -63,7 +63,7 @@ class WeatherKitService
     )
   end
 
-  def self.calendar_events
+  def self.hourly_calendar_events
     today = Date.today.in_time_zone(Timeframe::Application.config.local["timezone"])
 
     icon_mappings = {

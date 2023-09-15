@@ -35,7 +35,7 @@ class CalendarService
   def self.events_for(starts_at, ends_at)
     filtered_events = (
       [baby_age_event] +
-      WeatherKitService.calendar_events +
+      WeatherKitService.hourly_calendar_events +
       WeatherKitService.precip_calendar_events +
       [WeatherAlertService.weather_alert_calendar_event] +
       calendar_events
