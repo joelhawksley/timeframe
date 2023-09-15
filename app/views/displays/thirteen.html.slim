@@ -4,8 +4,11 @@ javascript:
   }
 
 .timestamp style="position: absolute; bottom: .25rem; right: .25rem; font-size: .4rem; color: #777; z-index: 10" = view_object[:timestamp]
-div
+div style="font-size: 1rem"
   - if !WeatherKitService.healthy?
-    span
-      i.fa-solid.fa-cloud-exclamation style="font-size: 1rem"
+    i.fa-solid.fa-cloud-slash style="margin-right: 1rem"
+  - if !GoogleAccount.all.all?(&:healthy?)
+    i.fa-solid.fa-calendar-circle-exclamation style="margin-right: 1rem"
+  - if !HomeAssistantHome.healthy?
+    i.fa-solid.fa-house-circle-exclamation style="margin-right: 1rem"
 = render Timeline.new(view_object: view_object)
