@@ -4,10 +4,10 @@ css:
   }
 table style="width: 100%;"
   thead
-    - hour_keys = WeatherKitService.hourly_calendar_events[0].to_h.keys
+    - hour_keys = WeatherKitAccount.hourly_calendar_events[0].to_h.keys
     - hour_keys.each do |hour_key|
       th = hour_key
-  - WeatherKitService.hourly_calendar_events.each do |hour|
+  - WeatherKitAccount.hourly_calendar_events.each do |hour|
     tr
       - hour_keys.each do |hour_key|
         - if hour_key.to_s.include?("_i")

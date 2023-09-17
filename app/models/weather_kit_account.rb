@@ -1,4 +1,4 @@
-class WeatherKitService
+class WeatherKitAccount
   def self.weather
     Current.weatherkit ||=
       Value.find_or_create_by(key: "weatherkit").value["data"] || {}
@@ -45,7 +45,7 @@ class WeatherKitService
     )
   rescue => e
     Log.create(
-      globalid: "WeatherKitService",
+      globalid: "WeatherKitAccount",
       event: "call_error",
       message: e.message + e.backtrace.join("\n")
     )

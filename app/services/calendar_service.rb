@@ -34,10 +34,10 @@ class CalendarService
   # adding a `time` key for the time formatted for the user's timezone
   def self.events_for(starts_at, ends_at)
     filtered_events = (
-      WeatherKitService.daily_calendar_events +
+      WeatherKitAccount.daily_calendar_events +
       [baby_age_event] +
-      WeatherKitService.hourly_calendar_events +
-      WeatherKitService.precip_calendar_events +
+      WeatherKitAccount.hourly_calendar_events +
+      WeatherKitAccount.precip_calendar_events +
       [WeatherAlertService.weather_alert_calendar_event] +
       calendar_events
     )
