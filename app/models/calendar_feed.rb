@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class CalendarService
+class CalendarFeed
   def self.baby_age_event(birthdate = Date.parse(Timeframe::Application.config.local["birthdate"]))
     day_count = Date.today - birthdate
     week_count = (day_count / 7).to_i

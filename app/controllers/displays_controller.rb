@@ -23,7 +23,7 @@ class DisplaysController < ApplicationController
         {
           day_name: date.strftime('%A'),
           show_daily_events: day_index.zero? ? date.hour <= 19 : true,
-          events: CalendarService.events_for(
+          events: CalendarFeed.events_for(
             (day_index.zero? ? current_time : date.beginning_of_day).utc,
             date.end_of_day.utc
           )

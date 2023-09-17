@@ -64,7 +64,7 @@ class GoogleAccount < ApplicationRecord
       )
     end
 
-    service = Google::Apis::CalendarV3::CalendarService.new
+    service = Google::Apis::CalendarV3::CalendarFeed.new
     service.authorization = client
 
     begin

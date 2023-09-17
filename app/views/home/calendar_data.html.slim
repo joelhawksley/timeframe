@@ -4,7 +4,7 @@ css:
   }
 table style="width: 100%"
   - current_date = Time.now.utc.in_time_zone(Timeframe::Application.config.local["timezone"])
-  - results = CalendarService.events_for((current_date - 2.days).utc.to_i, (current_date + 5.days).utc.to_i)
+  - results = CalendarFeed.events_for((current_date - 2.days).utc.to_i, (current_date + 5.days).utc.to_i)
   - if results.values.any?(&:any?)
     thead
       - keys = results[:daily][0].to_h.keys
