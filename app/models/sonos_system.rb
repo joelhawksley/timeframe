@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class SonosService
+class SonosSystem
   def self.healthy?
     return false unless last_fetched_at
 

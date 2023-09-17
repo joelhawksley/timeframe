@@ -3,7 +3,7 @@ css:
   body { padding: 0 2rem }
 
 div style="font-size: 1.75rem; position:absolute; left: 2rem; right: 2rem; top: 0; padding: 1.5rem 0" class="clearfix"
-  - if status = SonosService.status
+  - if status = SonosSystem.status
     div style="line-height: 1.3rem; float: left"
       i.fa-solid.fa-music.fa-fw
       strong =< status[:artist]
@@ -14,7 +14,7 @@ div style="font-size: 1.75rem; position:absolute; left: 2rem; right: 2rem; top: 
       i.fa-solid.fa-garage-open style="margin-left: 1rem"
     - if !WeatherKitService.healthy?
       i.fa-solid.fa-cloud-slash style="margin-left: 1rem"
-    - if !SonosService.healthy?
+    - if !SonosSystem.healthy?
       i.fa-solid.fa-music-slash style="margin-left: 1rem"
     - if !GoogleAccount.all.all?(&:healthy?)
       i.fa-solid.fa-calendar-circle-exclamation style="margin-left: 1rem"
