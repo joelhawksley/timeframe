@@ -83,4 +83,92 @@ class CalendarEventTest < Minitest::Test
 
     refute(event[:daily])
   end
+
+  def test_start_only
+    start = 1621288800 # 4pm
+    finish = 1621288800
+
+    event = CalendarEvent.new(starts_at: start, ends_at: finish, summary: "foo").to_h
+
+    assert_equal("4p", event[:time])
+  end
+
+  def test_start_only_minutes
+    start = 1621288860 # 4pm
+    finish = 1621288860
+
+    event = CalendarEvent.new(starts_at: start, ends_at: finish, summary: "foo").to_h
+
+    assert_equal("4:01p", event[:time])
+  end
+
+  def test_one_hour_event_in_afternoon_at_top_of_hour
+    start = 1621288800 # 4pm
+    finish = 1621292400 # 5pm
+
+    event = CalendarEvent.new(starts_at: start, ends_at: finish, summary: "foo").to_h
+
+    assert_equal("4 - 5p", event[:time])
+  end
+
+  def test_one_hour_event_in_afternoon_at_minute_past_hour
+    start = 1621288860 # 4:01pm
+    finish = 1621292460 # 5:01pm
+
+    event = CalendarEvent.new(starts_at: start, ends_at: finish, summary: "foo").to_h
+
+    assert_equal("4:01 - 5:01p", event[:time])
+  end
+
+  def test_event_with_same_start_and_end_at_top_of_hour
+    start = 1621288800 # 4pm
+
+    event = CalendarEvent.new(starts_at: start, ends_at: start, summary: "foo").to_h
+
+    assert_equal("4p", event[:time])
+  end
+
+  def test_event_with_same_start_and_end_at_minute_past
+    start = 1621288860 # 4:01pm
+
+    event = CalendarEvent.new(starts_at: start, ends_at: start, summary: "foo").to_h
+
+    assert_equal("4:01p", event[:time])
+  end
+
+  def test_event_morning_to_afternoon
+    start = 1621260000 # 8am
+    finish = 1621288800 # 4pm
+
+    event = CalendarEvent.new(starts_at: start, ends_at: finish, summary: "foo").to_h
+
+    assert_equal("8a - 4p", event[:time])
+  end
+
+  def test_event_morning_to_afternoon_off_minute
+    start = 1621260060 # 8:01am
+    finish = 1621288860 # 4:01pm
+
+    event = CalendarEvent.new(starts_at: start, ends_at: finish, summary: "foo").to_h
+
+    assert_equal("8:01a - 4:01p", event[:time])
+  end
+
+  def test_event_different_days_off_by_minutes
+    start = 1621220000 # 8:53am 5/16/21
+    finish = 1621288800 # 4pm 5/17
+
+    event = CalendarEvent.new(starts_at: start, ends_at: finish, summary: "foo").to_h
+
+    assert_equal("Sun 8:53p -<br />Mon 4p", event[:time])
+  end
+
+  def test_event_different_days
+    start = 1621216820 # 8am 5/16/21
+    finish = 1621288800 # 4pm 5/17
+
+    event = CalendarEvent.new(starts_at: start, ends_at: finish, summary: "foo").to_h
+
+    assert_equal("Sun 8p -<br />Mon 4p", event[:time])
+  end
 end
