@@ -2,16 +2,16 @@
 
 require "test_helper"
 
-class WeatherAlertServiceTest < Minitest::Test
+class WeatherAlertTest < Minitest::Test
   include ActiveSupport::Testing::TimeHelpers
 
   def test_fetch_does_not_error
-    VCR.use_cassette("WeatherAlertService.fetch") do
-      WeatherAlertService.fetch
+    VCR.use_cassette("WeatherAlert.fetch") do
+      WeatherAlert.fetch
     end
   end
 
-  def test_weather_alert_calendar_event_does_not_error
+  def test_calendar_event_does_not_error
     data = {
       "response"=>
       {"type"=>"FeatureCollection",
@@ -85,8 +85,8 @@ class WeatherAlertServiceTest < Minitest::Test
      "last_fetched_at"=>"2023-09-03 14:23:44 -0600"
     }
 
-    WeatherAlertService.stub :load, data do
-      event = WeatherAlertService.weather_alert_calendar_event
+    WeatherAlert.stub :load, data do
+      event = WeatherAlert.calendar_event
 
       assert(event.to_h[:summary].include?("Strong thunderstorms"))
     end

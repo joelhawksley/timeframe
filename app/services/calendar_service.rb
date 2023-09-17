@@ -38,7 +38,7 @@ class CalendarService
       [baby_age_event] +
       WeatherKitAccount.hourly_calendar_events +
       WeatherKitAccount.precip_calendar_events +
-      [WeatherAlertService.weather_alert_calendar_event] +
+      [WeatherAlert.calendar_event] +
       calendar_events
     )
 

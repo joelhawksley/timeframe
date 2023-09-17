@@ -1,4 +1,4 @@
-class WeatherAlertService
+class WeatherAlert
   def self.load
     Current.weather_alerts ||=
       Value.find_or_create_by(key: "weather_alerts").value || {}
@@ -20,7 +20,7 @@ class WeatherAlertService
     Value.find_or_create_by(key: "weather_alerts").update(value: result)
   end
 
-  def self.weather_alert_calendar_event
+  def self.calendar_event
     return nil unless load.dig('response', 'features').to_a.any?
 
     alerts = load['response']['features']
