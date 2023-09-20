@@ -11,12 +11,6 @@
 
   <body class='<%= "#{'flash' if @refresh && DateTime.now.hour == 3 && [0,2,4,6,8].include?(DateTime.now.minute)}" %>'>
     <div class="fade-bottom"></div>
-    <% begin %>
-      <%= yield %>
-    <% rescue => e %>
-      <% Log.create(globalid: "Timeframe.display", event: "render error", message: e.message + e.backtrace.join("\n"))%>
-      <h1><%= e.class %></h1>
-      <h3><%= e.message %></h3>
-    <% end %>
+    <%= yield %>
   </body>
 </html>

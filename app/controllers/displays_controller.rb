@@ -8,7 +8,19 @@ class DisplaysController < ApplicationController
   def mira
     @refresh = true
 
-    render "mira", locals: {view_object: view_object}
+    begin
+      render "mira", locals: {view_object: view_object}
+    rescue => e
+      # :nocov:
+      Log.create(
+        globalid: "Timeframe.display",
+        event: "render error",
+        message: e.message + e.backtrace.join("\n")
+      )
+
+      render "error", locals: { klass: e.class.to_s, message: e.message }
+      # :nocov:
+    end
   end
 
   private
