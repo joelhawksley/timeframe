@@ -10,6 +10,8 @@ div style="font-size: 1.75rem; position:absolute; left: 2rem; right: 2rem; top: 
       |  :
       =< status[:track]
   div style="float: right;"
+    - if HomeAssistantHome.package_present?
+      i.fa-solid.fa-box-open style="margin-left: 1rem"
     - if HomeAssistantHome.garage_door_open?
       i.fa-solid.fa-garage-open style="margin-left: 1rem"
     - if !WeatherKitAccount.healthy?

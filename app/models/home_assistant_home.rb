@@ -39,4 +39,12 @@ class HomeAssistantHome
 
     entity["state"] != "closed"
   end
+
+  def self.package_present?
+    entity = states.find { _1["entity_id"] == Timeframe::Application.config.local["home_assistant_package_box_entity_id"] }
+
+    return false unless entity.present?
+
+    entity["state"] == "on"
+  end
 end

@@ -23,6 +23,24 @@ class HomeAssistantHomeTest < Minitest::Test
     end
   end
 
+  def test_package_present_no_states
+    HomeAssistantHome.stub :states, [] do
+      refute(HomeAssistantHome.garage_door_open?)
+    end
+  end
+
+  def test_package_present_with_state_off
+    HomeAssistantHome.stub :states, [{ "entity_id" =>  Timeframe::Application.config.local["home_assistant_package_box_entity_id"], "state" => "off"}] do
+      refute(HomeAssistantHome.package_present?)
+    end
+  end
+
+  def test_package_present_with_state_on
+    HomeAssistantHome.stub :states, [{ "entity_id" =>  Timeframe::Application.config.local["home_assistant_package_box_entity_id"], "state" => "on"}] do
+      assert(HomeAssistantHome.package_present?)
+    end
+  end
+
   def test_fetch
     VCR.use_cassette(:home_assistant_states) do
       HomeAssistantHome.fetch
