@@ -124,6 +124,7 @@ class WeatherKitAccount
 
   def self.icon_for(condition_code)
     icon_mappings = {
+      "Thunderstorms" => "cloud-bolt",
       "Cloudy" => "clouds",
       "MostlyCloudy" => "clouds",
       "PartlyCloudy" => "clouds-sun",
