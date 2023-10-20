@@ -13,9 +13,9 @@ div.hide-if-empty style="font-size: 1.75rem; position:absolute; left: 0; right: 
       |  :
       =< status[:track]
 div class="clearfix" style="margin: 2rem 0 0rem"
-  div style="float: left; font-size: 7rem; line-height: .7;" = view_object[:current_temperature]
+  div style="float: left; font-size: 7rem; line-height: .7; margin-bottom: 1rem;" = view_object[:current_temperature]
   div style="text-align: right; float: right;"
-    div style="font-size: 1.5rem;margin-bottom: .25rem"
+    div style="font-size: 1.5rem;"
       - if HomeAssistantHome.package_present?
         i.fa-solid.fa-box-open style="margin-left: 1rem"
       - if HomeAssistantHome.garage_door_open?
@@ -42,5 +42,5 @@ div class="clearfix" style="margin: 2rem 0 0rem"
         td style="border-left: 2px solid #ccc; padding-left: .25rem;" colspan="10" Now
         td style="border-left: 2px solid #ccc; padding-left: .25rem;" colspan="10" 20m
         td style="border-left: 2px solid #ccc; padding-left: .25rem;" colspan="10" 40m
-hr style="margin: 2rem 0 1rem; border: none; background-color: #ccc; color: #ccc; height: 2px;"
+hr style="margin: 1rem 0 1rem; border: none; background-color: #ccc; color: #ccc; height: 2px;"
 = render Timeline.new(view_object: view_object)
