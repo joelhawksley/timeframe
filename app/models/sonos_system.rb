@@ -18,7 +18,7 @@ class SonosSystem
   def self.status
     return nil unless data["playbackState"] == "PLAYING" && data["currentTrack"]["title"].present?
 
-    if data["currentTrack"]["title"].split(" - ").length == 3 # if title is track/artist/album
+    if data["currentTrack"]["artist"].include?("WKSU-HD2")
       title_parts = data["currentTrack"]["title"].split(" - ")
 
       {
