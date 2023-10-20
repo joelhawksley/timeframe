@@ -1,29 +1,34 @@
 css:
   html { font-size: 46px }
   body { padding: 0 2rem }
+  .hide-if-empty:empty {display: none;}
 
-div style="font-size: 1.75rem; position:absolute; left: 2rem; right: 2rem; top: 0; padding: 1rem 0; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;"
-  - if HomeAssistantHome.package_present?
-    i.fa-solid.fa-box-open style="margin-right: 1rem"
-  - if HomeAssistantHome.garage_door_open?
-    i.fa-solid.fa-garage-open style="margin-right: 1rem"
-  - if !WeatherKitAccount.healthy?
-    i.fa-solid.fa-cloud-slash style="margin-right: 1rem"
-  - if !SonosSystem.healthy?
-    i.fa-solid.fa-music-slash style="margin-right: 1rem"
-  - if !GoogleAccount.all.all?(&:healthy?)
-    i.fa-solid.fa-calendar-circle-exclamation style="margin-right: 1rem"
-  - if !HomeAssistantHome.healthy?
-    i.fa-solid.fa-house-circle-exclamation style="margin-right: 1rem"
-  - if status = SonosSystem.status
-    i.fa-solid.fa-music.fa-fw
-    strong =< status[:artist]
-    |  :
-    =< status[:track]
-div class="clearfix" style="margin: 3rem 0 -1.5rem;"
-  div style="float: left; font-size: 7rem; line-height: 7rem;" = view_object[:current_temperature]
+div.hide-if-empty style="font-size: 1.75rem; position:absolute; left: 0; right: 0; bottom: 0; background-color: black; color: white; z-index: 5"
+  div style="position: relative"
+    div style="background:-webkit-gradient(linear,left top,left bottom,color-stop(0%, rgba(255,255,255,0)),color-stop(100%,rgba(255,255,255,1)));position: absolute;left: 0;right: 0; top: -4.6875rem;height: 4.6875rem;z-index: 5;"
+  div.hide-if-empty style="padding: 1rem 2rem; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;"
+    - if status = SonosSystem.status
+      i.fa-solid.fa-music.fa-fw
+      strong =< status[:artist]
+      |  :
+      =< status[:track]
+div class="clearfix" style="margin: 2rem 0 0rem"
+  div style="float: left; font-size: 7rem; line-height: .7;" = view_object[:current_temperature]
   div style="text-align: right; float: right;"
-    div style="font-size: 5rem; line-height: 7rem;" = DateTime.now.strftime("%l:%M%P")
+    div style="font-size: 1.5rem;margin-bottom: .25rem"
+      - if HomeAssistantHome.package_present?
+        i.fa-solid.fa-box-open style="margin-left: 1rem"
+      - if HomeAssistantHome.garage_door_open?
+        i.fa-solid.fa-garage-open style="margin-left: 1rem"
+      - if !WeatherKitAccount.healthy?
+        i.fa-solid.fa-cloud-slash style="margin-left: 1rem"
+      - if !SonosSystem.healthy?
+        i.fa-solid.fa-music-slash style="margin-left: 1rem"
+      - if !GoogleAccount.all.all?(&:healthy?)
+        i.fa-solid.fa-calendar-circle-exclamation style="margin-left: 1rem"
+      - if !HomeAssistantHome.healthy?
+        i.fa-solid.fa-house-circle-exclamation style="margin-left: 1rem"
+    div style="font-size: 4rem" = DateTime.now.strftime("%l:%M%P")
 - if WeatherKitAccount.healthy? && WeatherKitAccount.weather["forecastNextHour"]["minutes"].any? { _1["precipitationChance"] > 0.1 }
   div
     table.minutely border=0 cellpadding="0" cellspacing="0" style="border-right: 2px solid #ccc;"
