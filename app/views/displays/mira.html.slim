@@ -3,18 +3,36 @@ css:
   body { padding: 0 2rem }
   .hide-if-empty:empty {display: none;}
 
-div.hide-if-empty style="font-size: 1.75rem; position:absolute; left: 0; right: 0; bottom: 0; background-color: black; color: white; z-index: 5"
+div.hide-if-empty style="font-size: 1.75rem; position:absolute; left: 0; right: 0; bottom: 0; z-index: 5"
   div style="position: relative"
     div style="background:-webkit-gradient(linear,left top,left bottom,color-stop(0%, rgba(255,255,255,0)),color-stop(100%,rgba(255,255,255,1)));position: absolute;left: 0;right: 0; top: -4.6875rem;height: 4.6875rem;z-index: 5;"
-  div.hide-if-empty style="padding: 1rem 2rem; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;"
+  div.hide-if-empty style="background-color: #eee; color: black; padding: 0.5rem 2rem; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;"
+    - if WeatherKitAccount.healthy? && WeatherKitAccount.weather["forecastNextHour"]["minutes"].any? { _1["precipitationChance"] > 0.2 }
+      div style="display: flex; justify-content: space-between"
+        div style="line-height: 3rem"
+          i.fa-solid.fa-raindrops.fa-fw
+          | Rain this hour.
+        div
+          table.minutely border=0 cellpadding="0" cellspacing="0" style=""
+            tr
+              - WeatherKitAccount.weather["forecastNextHour"]["minutes"].first(60).each_with_index do |minute, i|
+                - next if i.odd?
+                td
+                  div style="height: 100px; position:relative; width: 28px;"
+                    div style="background-color:black; position: absolute; height: #{minute["precipitationChance"]*100}px; opacity: #{minute["precipitationIntensity"]}; left: 0; right: 10px; bottom: 0; border-radius: 30px;"
+            tr style="font-size: .75rem;"
+              td colspan="10" Now
+              td colspan="10" 20m
+              td colspan="10" 40m
+  div.hide-if-empty style="background-color: black; color: white; padding: 1rem 2rem; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;"
     - if status = SonosSystem.status
       i.fa-solid.fa-music.fa-fw
       strong =< status[:artist]
       |  :
       =< status[:track]
-div class="clearfix" style="margin: 2rem 0 0rem"
-  div style="float: left; font-size: 7rem; line-height: .7; margin-bottom: 1rem;" = view_object[:current_temperature]
-  div style="text-align: right; float: right;"
+div style="margin: 2rem 0 0rem; display: flex; justify-content: space-between"
+  div style="font-size: 7rem; line-height: .7; margin-bottom: 1rem;" = view_object[:current_temperature]
+  div style="text-align: right;"
     div style="font-size: 1.5rem; height: 1.5rem;"
       - if HomeAssistantHome.package_present?
         i.fa-solid.fa-box-open style="margin-left: 1rem"
@@ -29,18 +47,5 @@ div class="clearfix" style="margin: 2rem 0 0rem"
       - if !HomeAssistantHome.healthy?
         i.fa-solid.fa-house-circle-exclamation style="margin-left: 1rem"
     div style="font-size: 4rem; line-height: 1" = DateTime.now.strftime("%l:%M%P")
-- if WeatherKitAccount.healthy? && WeatherKitAccount.weather["forecastNextHour"]["minutes"].any? { _1["precipitationChance"] > 0.1 }
-  div
-    table.minutely border=0 cellpadding="0" cellspacing="0" style="border-right: 2px solid #ccc;"
-      tr
-        - WeatherKitAccount.weather["forecastNextHour"]["minutes"].first(60).each_with_index do |minute, i|
-          - next if i.odd?
-          td
-            div style="height: 200px; position:relative; width: 30px; border-left: 2px solid #ccc;"
-              div style="background-color:black; position: absolute; height: #{minute["precipitationChance"]*200}px; left: 5px; right: 5px; bottom: 0; border-radius: 30px;"
-      tr
-        td style="border-left: 2px solid #ccc; padding-left: .25rem;" colspan="10" Now
-        td style="border-left: 2px solid #ccc; padding-left: .25rem;" colspan="10" 20m
-        td style="border-left: 2px solid #ccc; padding-left: .25rem;" colspan="10" 40m
 hr style="margin: 1rem 0 1rem; border: none; background-color: #ccc; color: #ccc; height: 2px;"
 = render Timeline.new(view_object: view_object)

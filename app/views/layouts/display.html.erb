@@ -2,14 +2,21 @@
 <html>
   <head>
     <title>Timeframe</title>
-    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
     <%= stylesheet_link_tag 'display', media: 'all' %>
     <% unless params[:debug] || !@refresh %>
       <meta http-equiv="refresh" content="2">
     <% end %>
   </head>
 
-  <body class='<%= "#{'flash' if @refresh && DateTime.now.hour == 3 && [0,2,4,6,8].include?(DateTime.now.minute)}" %>'>
+  <body>
+    <% if @refresh && DateTime.now.hour == 3 %>
+      <% if [0,2,4,6,8].include?(DateTime.now.minute) %>
+        <div style="background-color: black; position: absolute; left: 0; right: 0; top: 0; bottom: 0; z-index: 100"></div>
+      <% end %>
+      <% if [1,3,5,7].include?(DateTime.now.minute) %>
+        <div style="background-color: white; position: absolute; left: 0; right: 0; top: 0; bottom: 0; z-index: 100"></div>
+      <% end %>
+    <% end %>
     <div class="fade-bottom"></div>
     <%= yield %>
   </body>

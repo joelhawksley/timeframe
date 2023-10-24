@@ -67,12 +67,6 @@ td { height: 100%; padding: 0.05rem 0; }
   background: none;
 }
 
-.clearfix:after {
-  content:"";
-  display:block;
-  clear:both;
- }
-
 .minutely td {
   padding: 0;
 }
