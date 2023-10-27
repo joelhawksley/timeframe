@@ -1,11 +1,11 @@
 css:
   html { font-size: 46px }
-  body { padding: 0 2rem }
+  body { padding: 1rem 2rem 0 }
   .hide-if-empty:empty {display: none;}
 
 div.hide-if-empty style="font-size: 1.75rem; position:absolute; left: 0; right: 0; bottom: 0; z-index: 5"
   div style="position: relative"
-    div style="background:-webkit-gradient(linear,left top,left bottom,color-stop(0%, rgba(255,255,255,0)),color-stop(100%,rgba(255,255,255,1)));position: absolute;left: 0;right: 0; top: -4.6875rem;height: 4.6875rem;z-index: 5;"
+    div style="background:-webkit-gradient(linear,left top,left bottom,color-stop(0%, rgba(255,255,255,0)),color-stop(100%,rgba(255,255,255,1)));position: absolute;left: 0;right: 0; top: -2rem;height: 2rem;z-index: 5;"
   div.hide-if-empty style="background-color: #eee; color: black; padding: 0.5rem 2rem; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;"
     - if WeatherKitAccount.healthy? && WeatherKitAccount.weather["forecastNextHour"]["minutes"].any? { _1["precipitationChance"] > 0.2 }
       div style="display: flex; justify-content: space-between"
@@ -30,22 +30,24 @@ div.hide-if-empty style="font-size: 1.75rem; position:absolute; left: 0; right: 
       strong =< status[:artist]
       |  :
       =< status[:track]
+div style="font-size: 1.5rem; line-height: 1.5rem; position: absolute; top: 1rem; right: 2rem"
+  - if HomeAssistantHome.package_present?
+    i.fa-solid.fa-box-open style="marginleftt: 1rem"
+  - if HomeAssistantHome.garage_door_open?
+    i.fa-solid.fa-garage-open style="margin-left: 1rem"
+  - if !WeatherKitAccount.healthy?
+    i.fa-solid.fa-cloud-slash style="margin-left: 1rem"
+  - if !SonosSystem.healthy?
+    i.fa-solid.fa-music-slash style="margin-left: 1rem"
+  - if !GoogleAccount.all.all?(&:healthy?)
+    i.fa-solid.fa-calendar-circle-exclamation style="margin-left: 1rem"
+  - if !HomeAssistantHome.healthy?
+    i.fa-solid.fa-house-circle-exclamation style="margin-left: 1rem"
 div style="margin: 2rem 0 0rem; display: flex; justify-content: space-between"
-  div style="font-size: 7rem; line-height: .7; margin-bottom: 1rem;" = view_object[:current_temperature]
+  div style="font-size: 7.75rem; line-height: .7; margin-bottom: 1rem;" = view_object[:current_temperature]
   div style="text-align: right;"
-    div style="font-size: 1.5rem; height: 1.5rem;"
-      - if HomeAssistantHome.package_present?
-        i.fa-solid.fa-box-open style="margin-left: 1rem"
-      - if HomeAssistantHome.garage_door_open?
-        i.fa-solid.fa-garage-open style="margin-left: 1rem"
-      - if !WeatherKitAccount.healthy?
-        i.fa-solid.fa-cloud-slash style="margin-left: 1rem"
-      - if !SonosSystem.healthy?
-        i.fa-solid.fa-music-slash style="margin-left: 1rem"
-      - if !GoogleAccount.all.all?(&:healthy?)
-        i.fa-solid.fa-calendar-circle-exclamation style="margin-left: 1rem"
-      - if !HomeAssistantHome.healthy?
-        i.fa-solid.fa-house-circle-exclamation style="margin-left: 1rem"
+    div style="font-size: 1.5rem; line-height: 2rem;"
+      = DateTime.now.strftime("%A, %B %-d")
     div style="font-size: 4rem; line-height: 1" = DateTime.now.strftime("%l:%M%P")
 hr style="margin: 1rem 0 1rem; border: none; background-color: #ccc; color: #ccc; height: 2px;"
 = render Timeline.new(view_object: view_object)

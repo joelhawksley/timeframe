@@ -32,8 +32,18 @@ class DisplaysController < ApplicationController
       (0...5).each_with_object([]).map do |day_index|
         date = current_time + day_index.day
 
+        day_name =
+          case day_index
+          when 0
+            "Today"
+          when 1
+            "Tomorrow"
+          else
+            date.strftime('%A')
+          end
+
         {
-          day_name: date.strftime('%A'),
+          day_name: day_name,
           show_daily_events: day_index.zero? ? date.hour <= 19 : true,
           events: CalendarFeed.events_for(
             (day_index.zero? ? current_time : date.beginning_of_day).utc,

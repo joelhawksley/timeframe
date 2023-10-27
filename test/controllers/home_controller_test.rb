@@ -8,7 +8,7 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
       get "/mira"
 
       # look for tomorrow's day name, as current day is not always shown
-      assert_includes response.body, Date.tomorrow.strftime("%A")
+      assert_includes response.body, "Tomorrow"
 
       assert_response :success
     end
@@ -18,7 +18,7 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     get "/thirteen"
 
     # look for tomorrow's day name, as current day is not always shown
-    assert_includes response.body, Date.tomorrow.strftime("%A")
+    assert_includes response.body, "Tomorrow"
 
     assert_response :success
   end
