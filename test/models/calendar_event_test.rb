@@ -84,6 +84,16 @@ class CalendarEventTest < Minitest::Test
     refute(event[:daily])
   end
 
+  def test_daily_24h_non_midnight
+    event = CalendarEvent.new(
+      starts_at: 1698516000,
+      ends_at: 1698602400,
+      summary: "foo",
+    ).to_h
+
+    refute(event[:daily])
+  end
+
   def test_start_only
     start = 1621288800 # 4pm
     finish = 1621288800

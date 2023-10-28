@@ -112,11 +112,19 @@ class WeatherKitAccount
     end
 
     events.select { _1[:precipitation_type] != "clear" }.map do
+      icon =
+        case _1[:precipitation_type]
+        when "snow"
+          "snowflake"
+        when "rain"
+          "raindrops"
+        end
+
       CalendarEvent.new(
         id: "#{_1[:start_i]}_window",
         starts_at: _1[:start_i],
         ends_at:_1[:end_i],
-        icon: "raindrops",
+        icon: icon,
         summary: _1[:precipitation_type].capitalize
       )
     end
@@ -132,7 +140,10 @@ class WeatherKitAccount
       "Clear" => "sun",
       "Windy" => "wind",
       "Drizzle" => "raindrops",
-      "Rain" => "raindrops"
+      "Rain" => "raindrops",
+      "Haze" => "sun-haze",
+      "Snow" => "snowflake",
+      "Flurries" => "snowflake"
     }
 
     icon_mappings[condition_code] || "question"

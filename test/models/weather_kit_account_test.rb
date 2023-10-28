@@ -64,7 +64,7 @@ class WeatherKitAccountTest < Minitest::Test
         "hours" =>   [{"temperature"=>18.81,
           "conditionCode"=>"Clear",
           "forecastStart"=>"2023-08-27T05:00:00Z",
-          "precipitationType"=>"clear"},
+          "precipitationType"=>"snow"},
          {"temperature"=>18.11,
           "conditionCode"=>"Clear",
           "forecastStart"=>"2023-08-27T06:00:00Z",
@@ -1098,9 +1098,9 @@ class WeatherKitAccountTest < Minitest::Test
     weather = {
       "forecastHourly" => {
         "hours" =>   [{"temperature"=>18.81,
-          "conditionCode"=>"Clear",
+          "conditionCode"=>"Snow",
           "forecastStart"=>"2023-08-27T05:00:00Z",
-          "precipitationType"=>"clear"},
+          "precipitationType"=>"snow"},
          {"temperature"=>18.11,
           "conditionCode"=>"Clear",
           "forecastStart"=>"2023-08-27T06:00:00Z",
@@ -2119,7 +2119,7 @@ class WeatherKitAccountTest < Minitest::Test
 
     WeatherKitAccount.stub :weather, weather do
       travel_to DateTime.new(2023,8,27,16,20,0,"-0600") do
-        assert_equal(6, WeatherKitAccount.precip_calendar_events.length)
+        assert_equal(7, WeatherKitAccount.precip_calendar_events.length)
       end
     end
   end
