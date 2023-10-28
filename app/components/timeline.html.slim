@@ -1,7 +1,5 @@
 - view_object[:day_groups].each_with_index do |event_day, index|
   - next if !event_day[:show_daily_events] && event_day[:events][:periodic].empty?
-  - if index > 0
-    hr style="margin: 0 0 1rem; border: none;background-color: #ccc;color: #ccc;height: 2px;"
   div style="display: flex; margin-bottom: 1rem"
     div style="width: 16rem; vertical-align: top; padding-right: 1rem; border-right: 2px solid #ccc;"
       div style="font-size: 2rem; font-weight: 700" = event_day[:day_name]
@@ -30,3 +28,4 @@
               = event["time"].to_s.html_safe
             td style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;max-width: 0;"
               = event["summary"]
+  hr style="margin: 0 0 1rem; border: none;background-color: #ccc;color: #ccc;height: 2px;"
