@@ -130,6 +130,22 @@ class WeatherKitAccount
     end
   end
 
+  def self.weather_alert_calendar_events
+    alerts = weather.dig("weatherAlerts", "alerts")
+
+    return [] unless alerts.present?
+
+    alerts.map do |alert|
+      CalendarEvent.new(
+        id: alert["id"],
+        starts_at: alert["effectiveTime"],
+        ends_at: alert["expireTime"],
+        icon: "triangle-exclamation",
+        summary: alert["description"]
+      )
+    end
+  end
+
   def self.icon_for(condition_code)
     icon_mappings = {
       "Thunderstorms" => "cloud-bolt",

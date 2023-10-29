@@ -1,3 +1,12 @@
+GIT
+  remote: https://github.com/joelhawksley/tenkit
+  revision: 058e91fe8cc61f0556b34fe7ecc269ca83464330
+  branch: add-alerts
+  specs:
+    tenkit (0.0.5)
+      httparty (~> 0.21.0)
+      jwt (~> 2.7.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -286,9 +295,6 @@ GEM
       lint_roller (~> 1.1)
       rubocop-performance (~> 1.19.0)
     temple (0.10.2)
-    tenkit (0.0.5)
-      httparty (~> 0.21.0)
-      jwt (~> 2.7.0)
     thor (1.2.2)
     tilt (2.2.0)
     timeout (0.4.0)
@@ -330,7 +336,7 @@ DEPENDENCIES
   simplecov
   slim
   standard
-  tenkit
+  tenkit!
   vcr
   view_component
   webmock

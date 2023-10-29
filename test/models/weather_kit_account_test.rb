@@ -2305,4 +2305,48 @@ class WeatherKitAccountTest < Minitest::Test
       assert_equal([], WeatherKitAccount.daily_calendar_events)
     end
   end
+
+  def test_weather_alert_calendar_events
+    WeatherKitAccount.stub :weather, {} do
+      assert_equal([], WeatherKitAccount.weather_alert_calendar_events)
+    end
+  end
+
+  def test_weather_alert_calendar_events_with_data
+    weather = {
+      "weatherAlerts" => {
+        "alerts" => [
+          {
+            "id"=>"8022c653-95e6-5761-876a-62c74c11f720",
+            "name"=>"WeatherAlertSummary",
+            "token"=>"WINTER_STORM_WARNING",
+            "areaId"=>"coz040",
+            "source"=>"National Weather Service",
+            "urgency"=>"expected",
+            "areaName"=>"North Douglas County Below 6000 Feet/Denver/West Adams and Arapahoe Counties/East Broomfield County",
+            "severity"=>"moderate",
+            "certainty"=>"likely",
+            "responses"=>[],
+            "detailsUrl"=>"https://weatherkit.apple.com/alertDetails/index.html?ids=8022c653-95e6-5761-876a-62c74c11f720&lang=en-US&timezone=America/Denver",
+            "expireTime"=>"2023-10-29T18:00:00Z",
+            "importance"=>"normal",
+            "issuedTime"=>"2023-10-29T01:11:00Z",
+            "phenomenon"=>"Ice",
+            "precedence"=>0,
+            "countryCode"=>"US",
+            "description"=>"Winter Storm Warning",
+            "eventSource"=>"US",
+            "eventEndTime"=>"2023-10-29T18:00:00Z",
+            "significance"=>"warning",
+            "effectiveTime"=>"2023-10-29T01:11:00Z",
+            "attributionURL"=>"https://alerts.weather.gov/cap/wwacapget.php?x=CO1266674C329C.WinterStormWarning.1266674EC660CO.BOUWSWBOU.9b8acaa8e297b48e73cf808a93a6e421"
+          }
+        ]
+      }
+    }
+
+    WeatherKitAccount.stub :weather, weather do
+      assert_equal(1, WeatherKitAccount.weather_alert_calendar_events.length)
+    end
+  end
 end

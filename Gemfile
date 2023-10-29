@@ -11,7 +11,7 @@ gem "puma"
 gem "rails", "~> 7"
 gem "sass-rails"
 gem "slim"
-gem "tenkit"
+gem "tenkit", git: 'https://github.com/joelhawksley/tenkit', branch: 'add-alerts'
 gem "view_component"
 
 group :development, :test do
