@@ -21,7 +21,7 @@ div.hide-if-empty style="font-size: 1.75rem; position:absolute; left: 0; right: 
                 - next if i.odd?
                 td
                   div style="height: 100px; position:relative; width: 28px;"
-                    div style="background-color:black; position: absolute; height: #{minute["precipitationChance"]*minute["precipitationIntensity"]*1000}px; left: 0; right: 10px; bottom: 0; border-radius: 30px;"
+                    div style="background-color:black; position: absolute; height: #{[minute["precipitationChance"]*minute["precipitationIntensity"]*1000, 100].max}px; left: 0; right: 10px; bottom: 0; border-radius: 30px;"
             tr style="font-size: .75rem;"
               td colspan="10" Now
               td colspan="10" 20m
