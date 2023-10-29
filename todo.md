@@ -1,6 +1,6 @@
 # Things to do
 
-- Move all config into config.yml
+- Move all config into config.yml (or use AnywayConfig from Palkan?)
 - Use WeatherKit for alerts (in progress)
 - Updated readme todos
 - automate deploys to local server
