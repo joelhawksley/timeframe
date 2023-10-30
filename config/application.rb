@@ -40,6 +40,11 @@ module Timeframe
 
     config.active_record.legacy_connection_handling = false
 
+    RSpotify::authenticate(
+      Rails.application.config.local["spotify_client_id"],
+      Rails.application.config.local["spotify_client_secret"]
+    )
+
     # :nocov:
     config.after_initialize do
       def run_in_bg(interval, &block)
