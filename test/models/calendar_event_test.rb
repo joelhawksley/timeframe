@@ -181,4 +181,10 @@ class CalendarEventTest < Minitest::Test
 
     assert_equal("Sun 8p -<br />Mon 4p", event[:time])
   end
+
+  def test_event_over_time_change
+    event = CalendarEvent.new(starts_at: "2023-11-01", ends_at:  "2023-11-08", summary: "foo").to_h
+
+    assert(event[:daily])
+  end
 end

@@ -61,9 +61,9 @@ class CalendarEvent
     length_in_seconds = end_i - start_i
 
     return false if length_in_seconds == 0
-    return false unless @starts_at.hour == 0
+    return false unless @starts_at.hour == 0 && @ends_at.hour == 0
 
-    length_in_seconds % DAY_IN_SECONDS == 0
+    true
   end
 
   def start_i
