@@ -5,6 +5,4 @@ class Current < ActiveSupport::CurrentAttributes
 
   attribute :weatherkit
   attribute :weatherkit_fetched_at
-
-  attribute :weather_alerts
 end

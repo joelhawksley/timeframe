@@ -39,7 +39,6 @@ class CalendarFeed
       WeatherKitAccount.hourly_calendar_events +
       WeatherKitAccount.precip_calendar_events +
       WeatherKitAccount.weather_alert_calendar_events +
-      [WeatherAlert.calendar_event] +
       calendar_events
     )
 

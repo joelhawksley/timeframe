@@ -30,14 +30,17 @@ A web application for displaying information from various APIs on digital signag
 
 ## Todo list
 
-- Ensure tests and lints pass pre-commit
-- Improve test coverage
-- Improve architecture of application
+- Move all config into config.yml (or use AnywayConfig from Palkan?)
+- automate deploys to local server
+- set up remote chrome debugging on client display
+- sync tempest weather data
+- make /logs easier to scan (use details element?)
+- Dither images using this technique: https://news.ycombinator.com/item?id=37837009
+- Set up ruby and/or Standard LSP
+- Ensure lints pass pre-commit
 - Experiment with technologies (Hanami, Dry RB, Sorbet, HStore, Phlex, etc)
 - Integrate with Home Assistant to show whether mail has been delivered today
-- Improve OAuth refresh token availability
-- Improve local workflow as debugging is difficult due to using development server as production
-- remove Cron and Postgres dependencies for better application portability
+- remove Postgres dependency for better application portability
 
 ## Local development
 
