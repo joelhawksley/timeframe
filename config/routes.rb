@@ -11,6 +11,4 @@ Rails.application.routes.draw do
   get :logs, to: "home#logs"
   get :calendar_data, to: "home#calendar_data"
   get :weather_data, to: "home#weather_data"
-
-  get "/auth/spotify/callback", to: "spotify#callback"
 end

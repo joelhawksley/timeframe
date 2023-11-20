@@ -32,6 +32,9 @@ A web application for displaying information from various APIs on digital signag
 
 - Move all config into config.yml (or use AnywayConfig from Palkan?)
 - automate deploys to local server
+- use period/moment terms for time modeling
+- add health checks for home assistant automations
+- integrate with RFID jukebox: https://github.com/maddox/magic-cards
 - set up remote chrome debugging on client display
 - sync tempest weather data
 - make /logs easier to scan (use details element?)
