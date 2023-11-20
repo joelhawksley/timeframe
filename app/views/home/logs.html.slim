@@ -1,15 +1,22 @@
-table style="width: 100%"
+css:
+  td {
+    padding: 0 .5rem;
+  }
+table style="width: 100%; border-collapse:collapse;" border="1"
   thead
     th id
-    th globalID
+    th timestamp
+    th source
     th event
     th message
-    th timestamp
   tbody
     - Log.all.order(created_at: :desc).first(500).each do |log|
       tr
         td = log.id
+        td style="white-space: nowrap;" = log.created_at.in_time_zone(Timeframe::Application.config.local["timezone"]).strftime('%a %b %e %I:%M:%S %p')
         td = log.globalid
-        td = log.event
-        td = log.message
-        td = log.created_at.in_time_zone(Timeframe::Application.config.local["timezone"]).strftime('%a %b %e %I:%M:%S %p')
+        td style="white-space: nowrap;" = log.event
+        td
+          details
+            summary = log.message.lines.first
+            = log.message.lines[1..-1].join
