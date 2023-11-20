@@ -6,9 +6,9 @@ A web application for displaying information from various APIs on digital signag
 
 - Serve as a test bed for learning new technologies.
 - Long term: I expect to run this application for years, if not decades.
-- Stability: I expect the application to run without maintenace indefinitely.
+- Stability: I expect the application to run without maintenance indefinitely.
 - Availability: 100% uptime.
-- Fault tolerance: the application functions when no internet connection is available. (Comcast is not 100% reliable and I reset my internet connection daily for 5m in the early morning)
+- Fault tolerance: the application functions when no internet connection is available.
 
 ## Architecture
 
@@ -17,16 +17,7 @@ A web application for displaying information from various APIs on digital signag
         - Fetched by [Visionect Software Suite](https://docs.visionect.com/VisionectSoftwareSuite/index.html) running on local network and displayed on [13" Place and Play](https://www.visionect.com/shop/place-play-13/) devices. Fetch interval is currently 10m.
     - Boox Mira Pro (/mira)
         - Fetched by a client Mac Mini with a [Boox Mira Pro](https://shop.boox.com/products/mira) (25.3" 3200x1800px e-Paper display) running Google Chrome full screen.
-        - Self-refreshes entire screen every 5s.
-- Admin
-    - Configuration page (root path)
-        - Google OAuth flow
-    - Operational logs (/logs)
-    - Weather debugging page (/weather_data)
-- Cron jobs
-    - `rake fetch:tokens` refreshes Google access tokens at the top of every hour.
-    - `rake fetch:weather` fetches weather data from Weather.gov, WeatherFlow (home weather station), and Wunderground every 5m.
-    - `rake fetch:google` fetches Google data every 5m.
+        - Self-refreshes entire screen every 1s.
 
 ## Todo list
 
@@ -37,7 +28,6 @@ A web application for displaying information from various APIs on digital signag
 - integrate with RFID jukebox: https://github.com/maddox/magic-cards
 - set up remote chrome debugging on client display
 - sync tempest weather data
-- make /logs easier to scan (use details element?)
 - Dither images using this technique: https://news.ycombinator.com/item?id=37837009
 - Set up ruby and/or Standard LSP
 - Ensure lints pass pre-commit
