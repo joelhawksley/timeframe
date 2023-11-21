@@ -3,6 +3,11 @@ css:
   body { padding: 0 2rem }
   .hide-if-empty:empty {display: none;}
 
+- if @refresh && DateTime.now.hour % 12 == 0 && DateTime.now.minute == 0
+  - if [1,3,5].include?(DateTime.now.second)
+    div style="background-color: black; position: absolute; left: 0; right: 0; top: 0; bottom: 0; z-index: 100"
+  - if [0,2,4].include?(DateTime.now.second)
+    div style="background-color: white; position: absolute; left: 0; right: 0; top: 0; bottom: 0; z-index: 100"
 div.hide-if-empty style="font-size: 1.75rem; position:absolute; left: 0; right: 0; bottom: 0; z-index: 5"
   div style="position: relative"
     div style="background:-webkit-gradient(linear,left top,left bottom,color-stop(0%, rgba(255,255,255,0)),color-stop(100%,rgba(255,255,255,1)));position: absolute;left: 0;right: 0; top: -2rem;height: 2rem;z-index: 5;"
