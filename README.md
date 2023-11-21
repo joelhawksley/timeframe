@@ -31,6 +31,8 @@ A web application for displaying information from various APIs on digital signag
 - Dither images using this technique: https://news.ycombinator.com/item?id=37837009
 - Set up ruby and/or Standard LSP
 - Ensure lints pass pre-commit
+- automate server backups
+- restart server nightly
 - Experiment with technologies (Hanami, Dry RB, Sorbet, HStore, Phlex, etc)
 - Integrate with Home Assistant to show whether mail has been delivered today
 
