@@ -33,13 +33,11 @@ A web application for displaying information from various APIs on digital signag
 - Ensure lints pass pre-commit
 - Experiment with technologies (Hanami, Dry RB, Sorbet, HStore, Phlex, etc)
 - Integrate with Home Assistant to show whether mail has been delivered today
-- remove Postgres dependency for better application portability
 
 ## Local development
 
 ### Getting started
 
-1) Ensure you have Postgres installed.
 1) Optional: Install and run https://github.com/jishi/node-sonos-http-api.
 1) `bundle install`
 1) `npm install`
