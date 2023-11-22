@@ -35,6 +35,7 @@ A web application for displaying information from various APIs on digital signag
 - restart server nightly
 - Experiment with technologies (Hanami, Dry RB, Sorbet, HStore, Phlex, etc)
 - Integrate with Home Assistant to show whether mail has been delivered today
+- Use rails 7.1
 
 ## Local development
 
