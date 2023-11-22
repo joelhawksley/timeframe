@@ -63,8 +63,8 @@ module Timeframe
       end
 
       if ENV["RUN_BG"]
-        run_in_bg(2) { SonosSystem.fetch }
-        run_in_bg(2) { HomeAssistantHome.fetch }
+        run_in_bg(1) { SonosSystem.fetch }
+        run_in_bg(1) { HomeAssistantHome.fetch }
         run_in_bg(60) { WeatherKitAccount.fetch }
         run_in_bg(60) { GoogleAccount.all.each(&:fetch) }
       end
