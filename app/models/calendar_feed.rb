@@ -58,8 +58,8 @@ class CalendarFeed
           letter =
             if letters.uniq.length == 1
               letters[0]
-            elsif letters.include?('+')
-              '+'
+            elsif letters.include?("+")
+              "+"
             else
               letters[0]
             end
@@ -73,10 +73,10 @@ class CalendarFeed
       end
 
     {
-      daily: filtered_events.select { |event| event['daily'] },
-      periodic: filtered_events.
-        reject { |event| event['daily'] }.
-        sort_by { |event| event['start_i'] }
+      daily: filtered_events.select { |event| event["daily"] },
+      periodic: filtered_events
+        .reject { |event| event["daily"] }
+        .sort_by { |event| event["start_i"] }
     }
   end
 end

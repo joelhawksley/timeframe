@@ -40,17 +40,15 @@ module Timeframe
     config.after_initialize do
       def run_in_bg(interval, &block)
         Thread.new do
-          while true do
+          while true
             ActiveRecord::Base.connection_pool.with_connection do
-              begin
-                yield
-              rescue => e
-                Log.create(
-                  globalid: "Timeframe.after_initialize",
-                  event: "background thread error",
-                  message: e.message + e.backtrace.join("\n")
-                )
-              end
+              yield
+            rescue => e
+              Log.create(
+                globalid: "Timeframe.after_initialize",
+                event: "background thread error",
+                message: e.message + e.backtrace.join("\n")
+              )
             end
 
             sleep(interval)

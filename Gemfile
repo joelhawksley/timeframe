@@ -10,7 +10,7 @@ gem "sqlite3"
 gem "puma"
 gem "rails", "~> 7.1"
 gem "slim"
-gem "tenkit", git: 'https://github.com/joelhawksley/tenkit', branch: 'add-alerts'
+gem "tenkit", git: "https://github.com/joelhawksley/tenkit", branch: "add-alerts"
 gem "view_component"
 
 group :development, :test do

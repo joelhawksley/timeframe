@@ -7,7 +7,7 @@ class CalendarEventTest < Minitest::Test
     event = CalendarEvent.new(
       starts_at: 1675123200,
       ends_at: 1675126800,
-      summary: "foo",
+      summary: "foo"
     ).to_h
 
     assert_equal("5 - 6p", event[:time])
@@ -17,7 +17,7 @@ class CalendarEventTest < Minitest::Test
     event = CalendarEvent.new(
       starts_at: Time.at(1675123200),
       ends_at: Time.at(1675126800),
-      summary: "foo",
+      summary: "foo"
     ).to_h
 
     assert_equal("5 - 6p", event[:time])
@@ -27,7 +27,7 @@ class CalendarEventTest < Minitest::Test
     event = CalendarEvent.new(
       starts_at: "2023-08-16T11:30:00.000-06:00",
       ends_at: "2023-08-16T12:30:00.000-06:00",
-      summary: "foo",
+      summary: "foo"
     ).to_h
 
     assert_equal("11:30a - 12:30p", event[:time])
@@ -37,7 +37,7 @@ class CalendarEventTest < Minitest::Test
     event = CalendarEvent.new(
       starts_at: 1675123200,
       ends_at: 1675209601,
-      summary: "foo",
+      summary: "foo"
     ).to_h
 
     assert_equal(true, event[:multi_day])
@@ -48,7 +48,7 @@ class CalendarEventTest < Minitest::Test
       starts_at: 1675123200,
       ends_at: 1675209601,
       summary: "foo",
-      description: (Date.today.year - 2).to_s,
+      description: (Date.today.year - 2).to_s
     ).to_h
 
     assert_equal("foo (2)", event[:summary])
@@ -56,9 +56,9 @@ class CalendarEventTest < Minitest::Test
 
   def test_daily_true
     event = CalendarEvent.new(
-      starts_at: DateTime.new(2023,1,23),
-      ends_at: DateTime.new(2023,1,25),
-      summary: "foo",
+      starts_at: DateTime.new(2023, 1, 23),
+      ends_at: DateTime.new(2023, 1, 25),
+      summary: "foo"
     ).to_h
 
     assert(event[:daily])
@@ -68,7 +68,7 @@ class CalendarEventTest < Minitest::Test
     event = CalendarEvent.new(
       starts_at: Time.at(1675123200),
       ends_at: Time.at(1675126800),
-      summary: "foo",
+      summary: "foo"
     ).to_h
 
     refute(event[:daily])
@@ -78,7 +78,7 @@ class CalendarEventTest < Minitest::Test
     event = CalendarEvent.new(
       starts_at: 1675123200,
       ends_at: 1675123200,
-      summary: "foo",
+      summary: "foo"
     ).to_h
 
     refute(event[:daily])
@@ -88,7 +88,7 @@ class CalendarEventTest < Minitest::Test
     event = CalendarEvent.new(
       starts_at: 1698516000,
       ends_at: 1698602400,
-      summary: "foo",
+      summary: "foo"
     ).to_h
 
     refute(event[:daily])
@@ -183,7 +183,7 @@ class CalendarEventTest < Minitest::Test
   end
 
   def test_event_over_time_change
-    event = CalendarEvent.new(starts_at: "2023-11-01", ends_at:  "2023-11-08", summary: "foo").to_h
+    event = CalendarEvent.new(starts_at: "2023-11-01", ends_at: "2023-11-08", summary: "foo").to_h
 
     assert(event[:daily])
   end

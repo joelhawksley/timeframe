@@ -35,4 +35,4 @@
 PreCommit:
   Testing:
     enabled: true
-    command: ['bundle', 'exec', 'rake'] # Invoke within Bundler context
+    command: ['bundle', 'exec', 'rake']

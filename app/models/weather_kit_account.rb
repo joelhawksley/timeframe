@@ -41,8 +41,7 @@ class WeatherKitAccount
             ]
           ).raw,
         last_fetched_at: Time.now.utc.in_time_zone(Timeframe::Application.config.local["timezone"]).to_s
-      }
-    )
+      })
   rescue => e
     Log.create(
       globalid: "WeatherKitAccount",
@@ -77,7 +76,7 @@ class WeatherKitAccount
           starts_at: hour,
           ends_at: hour,
           icon: icon_for(weather_hour["conditionCode"]),
-          summary: "#{celsius_fahrenheit(weather_hour['temperature'])}°".html_safe
+          summary: "#{celsius_fahrenheit(weather_hour["temperature"])}°".html_safe
         )
       end.compact
     end
@@ -123,7 +122,7 @@ class WeatherKitAccount
       CalendarEvent.new(
         id: "#{_1[:start_i]}_window",
         starts_at: _1[:start_i],
-        ends_at:_1[:end_i],
+        ends_at: _1[:end_i],
         icon: icon,
         summary: _1[:precipitation_type].capitalize
       )
@@ -170,11 +169,11 @@ class WeatherKitAccount
 
     days.map do |day|
       CalendarEvent.new(
-        id: "_weather_day_#{day['forecastStart']}",
-        starts_at: DateTime.parse(day['forecastStart']).to_i,
-        ends_at:  DateTime.parse(day['forecastEnd']).to_i,
+        id: "_weather_day_#{day["forecastStart"]}",
+        starts_at: DateTime.parse(day["forecastStart"]).to_i,
+        ends_at: DateTime.parse(day["forecastEnd"]).to_i,
         icon: icon_for(day["conditionCode"]),
-        summary: "#{celsius_fahrenheit(day['temperatureMax'])}° / #{celsius_fahrenheit(day['temperatureMin'])}°".html_safe
+        summary: "#{celsius_fahrenheit(day["temperatureMax"])}° / #{celsius_fahrenheit(day["temperatureMin"])}°".html_safe
       )
     end
   end

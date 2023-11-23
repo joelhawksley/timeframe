@@ -15,28 +15,26 @@ class CalendarEvent
     @id, @icon, @letter, @summary, @description, @location, @daily =
       id, icon, letter, summary, description, location, daily
 
-    case starts_at
+    @starts_at = case starts_at
     when Integer
-      @starts_at = Time.at(starts_at).in_time_zone(Timeframe::Application.config.local["timezone"])
+      Time.at(starts_at).in_time_zone(Timeframe::Application.config.local["timezone"])
     when String
-      @starts_at =
-        ActiveSupport::TimeZone[
+      ActiveSupport::TimeZone[
           Timeframe::Application.config.local["timezone"]
         ].parse(starts_at)
     else
-      @starts_at = starts_at
+      starts_at
     end
 
-    case ends_at
+    @ends_at = case ends_at
     when Integer
-      @ends_at = Time.at(ends_at).in_time_zone(Timeframe::Application.config.local["timezone"])
+      Time.at(ends_at).in_time_zone(Timeframe::Application.config.local["timezone"])
     when String
-      @ends_at =
-        ActiveSupport::TimeZone[
+      ActiveSupport::TimeZone[
           Timeframe::Application.config.local["timezone"]
         ].parse(ends_at)
     else
-      @ends_at = ends_at
+      ends_at
     end
   end
 

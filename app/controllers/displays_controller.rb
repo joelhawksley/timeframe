@@ -18,7 +18,7 @@ class DisplaysController < ApplicationController
         message: e.message + e.backtrace.join("\n")
       )
 
-      render "error", locals: { klass: e.class.to_s, message: e.message }
+      render "error", locals: {klass: e.class.to_s, message: e.message}
       # :nocov:
     end
   end
@@ -39,7 +39,7 @@ class DisplaysController < ApplicationController
           when 1
             "Tomorrow"
           else
-            date.strftime('%A')
+            date.strftime("%A")
           end
 
         {
@@ -52,13 +52,10 @@ class DisplaysController < ApplicationController
         }
       end
 
-    out =
-      {
-        current_temperature: WeatherKitAccount.current_temperature,
-        day_groups: day_groups,
-        timestamp: current_time.strftime('%-l:%M %p')
-      }
-
-    out
+    {
+      current_temperature: WeatherKitAccount.current_temperature,
+      day_groups: day_groups,
+      timestamp: current_time.strftime("%-l:%M %p")
+    }
   end
 end

@@ -24,7 +24,7 @@ class CalendarFeedTest < Minitest::Test
   end
 
   def test_baby_age_event_works_in_evening
-    travel_to DateTime.new(2023,8,27,20,20,0,"-0600") do
+    travel_to DateTime.new(2023, 8, 27, 20, 20, 0, "-0600") do
       result = CalendarFeed.baby_age_event(Date.today - 7.days)
 
       assert_equal(27, result.to_h[:starts_at].day)
@@ -40,17 +40,17 @@ class CalendarFeedTest < Minitest::Test
     calendar_events = [
       CalendarEvent.new(
         id: "foo",
-        starts_at: DateTime.new(2023,8,27,20,20,0,"-0600"),
-        ends_at: DateTime.new(2023,8,27,23,0,0,"-0600"),
+        starts_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),
+        ends_at: DateTime.new(2023, 8, 27, 23, 0, 0, "-0600"),
         summary: "dupe",
         letter: "+"
       ).to_h.stringify_keys
     ]
 
     CalendarFeed.stub :calendar_events, calendar_events do
-      travel_to DateTime.new(2023,8,27,22,20,0,"-0600") do
-        start_time_utc = DateTime.new(2023,8,27,20,20,0,"-0600").utc.to_time
-        end_time_utc = DateTime.new(2023,8,28,0,0,0,"-0600").utc.to_time
+      travel_to DateTime.new(2023, 8, 27, 22, 20, 0, "-0600") do
+        start_time_utc = DateTime.new(2023, 8, 27, 20, 20, 0, "-0600").utc.to_time
+        end_time_utc = DateTime.new(2023, 8, 28, 0, 0, 0, "-0600").utc.to_time
 
         CalendarFeed.events_for(start_time_utc, end_time_utc)
       end
@@ -61,24 +61,24 @@ class CalendarFeedTest < Minitest::Test
     calendar_events = [
       CalendarEvent.new(
         id: "foo",
-        starts_at: DateTime.new(2023,8,27,20,20,0,"-0600"),
-        ends_at: DateTime.new(2023,8,27,23,0,0,"-0600"),
+        starts_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),
+        ends_at: DateTime.new(2023, 8, 27, 23, 0, 0, "-0600"),
         summary: "dupe",
         letter: "+"
       ).to_h,
       CalendarEvent.new(
         id: "foo",
-        starts_at: DateTime.new(2023,8,27,20,20,0,"-0600"),
-        ends_at: DateTime.new(2023,8,27,23,0,0,"-0600"),
+        starts_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),
+        ends_at: DateTime.new(2023, 8, 27, 23, 0, 0, "-0600"),
         summary: "dupe",
         letter: "J"
       ).to_h
     ]
 
     CalendarFeed.stub :calendar_events, calendar_events do
-      travel_to DateTime.new(2023,8,27,22,20,0,"-0600") do
-        start_time_utc = DateTime.new(2023,8,27,20,20,0,"-0600").utc.to_time
-        end_time_utc = DateTime.new(2023,8,28,0,0,0,"-0600").utc.to_time
+      travel_to DateTime.new(2023, 8, 27, 22, 20, 0, "-0600") do
+        start_time_utc = DateTime.new(2023, 8, 27, 20, 20, 0, "-0600").utc.to_time
+        end_time_utc = DateTime.new(2023, 8, 28, 0, 0, 0, "-0600").utc.to_time
 
         result = CalendarFeed.events_for(start_time_utc, end_time_utc)
         events = result[:periodic].select { _1[:id] == "foo" }
@@ -93,24 +93,24 @@ class CalendarFeedTest < Minitest::Test
     calendar_events = [
       CalendarEvent.new(
         id: "foo",
-        starts_at: DateTime.new(2023,8,27,20,20,0,"-0600"),
-        ends_at: DateTime.new(2023,8,27,23,0,0,"-0600"),
+        starts_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),
+        ends_at: DateTime.new(2023, 8, 27, 23, 0, 0, "-0600"),
         summary: "dupe",
         letter: "J"
       ).to_h,
       CalendarEvent.new(
         id: "foo",
-        starts_at: DateTime.new(2023,8,27,20,20,0,"-0600"),
-        ends_at: DateTime.new(2023,8,27,23,0,0,"-0600"),
+        starts_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),
+        ends_at: DateTime.new(2023, 8, 27, 23, 0, 0, "-0600"),
         summary: "dupe",
         letter: "J"
       ).to_h
     ]
 
     CalendarFeed.stub :calendar_events, calendar_events do
-      travel_to DateTime.new(2023,8,27,22,20,0,"-0600") do
-        start_time_utc = DateTime.new(2023,8,27,20,20,0,"-0600").utc.to_time
-        end_time_utc = DateTime.new(2023,8,28,0,0,0,"-0600").utc.to_time
+      travel_to DateTime.new(2023, 8, 27, 22, 20, 0, "-0600") do
+        start_time_utc = DateTime.new(2023, 8, 27, 20, 20, 0, "-0600").utc.to_time
+        end_time_utc = DateTime.new(2023, 8, 28, 0, 0, 0, "-0600").utc.to_time
 
         result = CalendarFeed.events_for(start_time_utc, end_time_utc)
         events = result[:periodic].select { _1[:id] == "foo" }
@@ -125,24 +125,24 @@ class CalendarFeedTest < Minitest::Test
     calendar_events = [
       CalendarEvent.new(
         id: "foo",
-        starts_at: DateTime.new(2023,8,27,20,20,0,"-0600"),
-        ends_at: DateTime.new(2023,8,27,23,0,0,"-0600"),
+        starts_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),
+        ends_at: DateTime.new(2023, 8, 27, 23, 0, 0, "-0600"),
         summary: "dupe",
         letter: "C"
       ).to_h,
       CalendarEvent.new(
         id: "foo",
-        starts_at: DateTime.new(2023,8,27,20,20,0,"-0600"),
-        ends_at: DateTime.new(2023,8,27,23,0,0,"-0600"),
+        starts_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),
+        ends_at: DateTime.new(2023, 8, 27, 23, 0, 0, "-0600"),
         summary: "dupe",
         letter: "J"
       ).to_h
     ]
 
     CalendarFeed.stub :calendar_events, calendar_events do
-      travel_to DateTime.new(2023,8,27,22,20,0,"-0600") do
-        start_time_utc = DateTime.new(2023,8,27,20,20,0,"-0600").utc.to_time
-        end_time_utc = DateTime.new(2023,8,28,0,0,0,"-0600").utc.to_time
+      travel_to DateTime.new(2023, 8, 27, 22, 20, 0, "-0600") do
+        start_time_utc = DateTime.new(2023, 8, 27, 20, 20, 0, "-0600").utc.to_time
+        end_time_utc = DateTime.new(2023, 8, 28, 0, 0, 0, "-0600").utc.to_time
 
         result = CalendarFeed.events_for(start_time_utc, end_time_utc)
         events = result[:periodic].select { _1[:id] == "foo" }
@@ -159,17 +159,17 @@ class CalendarFeedTest < Minitest::Test
     calendar_events = [
       CalendarEvent.new(
         id: "foo",
-        starts_at: DateTime.new(2023,8,27,20,20,0,"-0600"),
-        ends_at: DateTime.new(2023,8,27,20,20,0,"-0600"),
+        starts_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),
+        ends_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),
         summary: "momentary events should not be filtered out!",
         letter: "C"
       ).to_h
     ]
 
     CalendarFeed.stub :calendar_events, calendar_events do
-      travel_to DateTime.new(2023,8,27,22,20,0,"-0600") do
-        start_time_utc = DateTime.new(2023,8,27,20,20,0,"-0600").utc.to_time
-        end_time_utc = DateTime.new(2023,8,28,0,0,0,"-0600").utc.to_time
+      travel_to DateTime.new(2023, 8, 27, 22, 20, 0, "-0600") do
+        start_time_utc = DateTime.new(2023, 8, 27, 20, 20, 0, "-0600").utc.to_time
+        end_time_utc = DateTime.new(2023, 8, 28, 0, 0, 0, "-0600").utc.to_time
 
         assert(CalendarFeed.events_for(start_time_utc, end_time_utc)[:periodic].length == 1)
       end
@@ -180,22 +180,22 @@ class CalendarFeedTest < Minitest::Test
     calendar_events = [
       CalendarEvent.new(
         id: "foo",
-        starts_at: DateTime.new(2023,8,27,0,0,0,"-0600"),
-        ends_at: DateTime.new(2023,8,28,0,0,0,"-0600"),
+        starts_at: DateTime.new(2023, 8, 27, 0, 0, 0, "-0600"),
+        ends_at: DateTime.new(2023, 8, 28, 0, 0, 0, "-0600"),
         summary: "daily events should not be filtered out!",
         letter: "C"
       ).to_h
     ]
 
     CalendarFeed.stub :calendar_events, calendar_events do
-      travel_to DateTime.new(2023,8,27,22,20,0,"-0600") do
-        start_time_utc = DateTime.new(2023,8,27,20,20,0,"-0600").utc.to_time
-        end_time_utc = DateTime.new(2023,8,28,0,0,0,"-0600").utc.to_time
+      travel_to DateTime.new(2023, 8, 27, 22, 20, 0, "-0600") do
+        start_time_utc = DateTime.new(2023, 8, 27, 20, 20, 0, "-0600").utc.to_time
+        end_time_utc = DateTime.new(2023, 8, 28, 0, 0, 0, "-0600").utc.to_time
 
         assert(CalendarFeed.events_for(start_time_utc, end_time_utc)[:daily].length == 2)
 
-        start_time_utc = DateTime.new(2023,8,28,20,20,0,"-0600").utc.to_time
-        end_time_utc = DateTime.new(2023,8,29,0,0,0,"-0600").utc.to_time
+        start_time_utc = DateTime.new(2023, 8, 28, 20, 20, 0, "-0600").utc.to_time
+        end_time_utc = DateTime.new(2023, 8, 29, 0, 0, 0, "-0600").utc.to_time
         assert(CalendarFeed.events_for(start_time_utc, end_time_utc)[:daily].length == 0)
       end
     end
@@ -205,17 +205,17 @@ class CalendarFeedTest < Minitest::Test
     calendar_events = [
       CalendarEvent.new(
         id: "foo",
-        starts_at: DateTime.new(2023,8,27,20,20,0,"-0600"),
-        ends_at: DateTime.new(2023,8,29,22,20,0,"-0600"),
+        starts_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),
+        ends_at: DateTime.new(2023, 8, 29, 22, 20, 0, "-0600"),
         summary: "multi-day periodic events should not be filtered out!",
         letter: "C"
       ).to_h
     ]
 
     CalendarFeed.stub :calendar_events, calendar_events do
-      travel_to DateTime.new(2023,8,28,22,20,0,"-0600") do
-        start_time_utc = DateTime.new(2023,8,27,22,20,0,"-0600").utc.to_time
-        end_time_utc = DateTime.new(2023,8,28,0,0,0,"-0600").utc.to_time
+      travel_to DateTime.new(2023, 8, 28, 22, 20, 0, "-0600") do
+        start_time_utc = DateTime.new(2023, 8, 27, 22, 20, 0, "-0600").utc.to_time
+        end_time_utc = DateTime.new(2023, 8, 28, 0, 0, 0, "-0600").utc.to_time
 
         assert(CalendarFeed.events_for(start_time_utc, end_time_utc)[:periodic].length == 1)
       end

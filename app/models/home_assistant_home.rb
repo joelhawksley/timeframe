@@ -3,17 +3,16 @@ class HomeAssistantHome
     response = HTTParty.get(
       "http://homeassistant.local:8123/api/states",
       headers: {
-        "Authorization": "Bearer #{Timeframe::Application.config.local["home_assistant_token"]}",
-        "content-type": "application/json",
+        Authorization: "Bearer #{Timeframe::Application.config.local["home_assistant_token"]}",
+        "content-type": "application/json"
       }
     ).body
 
-    Value.upsert({ key: "home_assistant", value:
+    Value.upsert({key: "home_assistant", value:
       {
         states: JSON.parse(response),
         last_fetched_at: Time.now.utc.in_time_zone(Timeframe::Application.config.local["timezone"]).to_s
-      }
-    }, unique_by: :key)
+      }}, unique_by: :key)
   end
 
   def self.states

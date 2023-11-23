@@ -26,10 +26,10 @@ class GoogleAccount < ApplicationRecord
   end
 
   def events
-    (Value.find_or_create_by(key: key).value["data"] || {}).
-      values.
-      map(&:values).
-      flatten
+    (Value.find_or_create_by(key: key).value["data"] || {})
+      .values
+      .map(&:values)
+      .flatten
   end
 
   def last_fetched_at
@@ -82,54 +82,51 @@ class GoogleAccount < ApplicationRecord
     events = {}
 
     Timeframe::Application.config.local["calendars"].each do |calendar_config|
-      begin
-        items = service.list_events(
-          calendar_config["id"],
-          single_events: true,
-          order_by: "startTime",
-          fields: "items/attendees,items/id,items/start,items/end,items/description,items/summary,items/location",
-          time_min: (DateTime.now - 2.days).iso8601,
-          time_max: (DateTime.now + 1.week).iso8601
-        ).items
+      items = service.list_events(
+        calendar_config["id"],
+        single_events: true,
+        order_by: "startTime",
+        fields: "items/attendees,items/id,items/start,items/end,items/description,items/summary,items/location",
+        time_min: (DateTime.now - 2.days).iso8601,
+        time_max: (DateTime.now + 1.week).iso8601
+      ).items
 
-        events[calendar_config["id"]] = {}
+      events[calendar_config["id"]] = {}
 
-        items.each do |event|
-          event_json = event.as_json
+      items.each do |event|
+        event_json = event.as_json
 
-          next if
-            event_json["description"].to_s.downcase.include?("timeframe-omit") || # hide timeframe-omit
-              event_json["summary"] == "." || # hide . marker
-              event_json["summary"] == "Out of office" ||
-              event_json["attendees"].to_a.any? { _1["self"] && _1["response_status"] == "declined" } ||
-              !event_json["summary"].present?
+        next if
+          event_json["description"].to_s.downcase.include?("timeframe-omit") || # hide timeframe-omit
+            event_json["summary"] == "." || # hide . marker
+            event_json["summary"] == "Out of office" ||
+            event_json["attendees"].to_a.any? { _1["self"] && _1["response_status"] == "declined" } ||
+            !event_json["summary"].present?
 
-          events[calendar_config["id"]][event.id] = CalendarEvent.new(
-            id: event_json["id"],
-            location: event_json["location"],
-            summary: event_json["summary"],
-            description: event_json["description"],
-            icon: calendar_config["icon"],
-            letter: calendar_config["letter"],
-            starts_at: event_json["start"]["date"] || event_json["start"]["date_time"],
-            ends_at: event_json["end"]["date"] || event_json["end"]["date_time"]
-          ).to_h
-        end
-      rescue => e
-        Log.create(
-          globalid: key,
-          event: "list_events_error",
-          message: e.class.to_s + e.message + e.backtrace.join("\n") + calendar_config.to_json
-        )
+        events[calendar_config["id"]][event.id] = CalendarEvent.new(
+          id: event_json["id"],
+          location: event_json["location"],
+          summary: event_json["summary"],
+          description: event_json["description"],
+          icon: calendar_config["icon"],
+          letter: calendar_config["letter"],
+          starts_at: event_json["start"]["date"] || event_json["start"]["date_time"],
+          ends_at: event_json["end"]["date"] || event_json["end"]["date_time"]
+        ).to_h
       end
+    rescue => e
+      Log.create(
+        globalid: key,
+        event: "list_events_error",
+        message: e.class.to_s + e.message + e.backtrace.join("\n") + calendar_config.to_json
+      )
     end
 
-    Value.upsert({ key: key, value:
+    Value.upsert({key: key, value:
       {
         data: events,
         last_fetched_at: Time.now.utc.in_time_zone(Timeframe::Application.config.local["timezone"]).to_s
-      }
-    }, unique_by: :key)
+      }}, unique_by: :key)
   end
   # :nocov:
 
