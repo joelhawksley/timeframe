@@ -40,7 +40,7 @@ module Timeframe
     config.after_initialize do
       def run_in_bg(interval, &block)
         Thread.new do
-          while true
+          loop do
             ActiveRecord::Base.connection_pool.with_connection do
               yield
             rescue => e

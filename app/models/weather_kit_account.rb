@@ -165,7 +165,7 @@ class WeatherKitAccount
   end
 
   def self.daily_calendar_events
-    return [] unless days = weather.dig("forecastDaily", "days")
+    return [] unless (days = weather.dig("forecastDaily", "days"))
 
     days.map do |day|
       CalendarEvent.new(

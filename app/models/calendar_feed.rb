@@ -44,7 +44,7 @@ class CalendarFeed
 
     filtered_events = filtered_events.compact.map(&:to_h).map(&:with_indifferent_access).select do |event|
       if event[:start_i] == event[:end_i]
-        [event[:start_i], event[:end_i]].any? { (starts_at.to_i...ends_at.to_i).include?(_1) }
+        [event[:start_i], event[:end_i]].any? { (starts_at.to_i...ends_at.to_i).cover?(_1) }
       else
         (event[:start_i]...event[:end_i]).overlaps?(starts_at.to_i...ends_at.to_i)
       end
