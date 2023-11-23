@@ -33,8 +33,6 @@ module Timeframe
 
     config.secret_key_base = ENV["SECRET_KEY_BASE"]
 
-    config.assets.paths << Rails.root.join("app", "assets", "fonts")
-
     config.hosts << "hawksley-server.local"
     config.hosts << "timeframetesting.com"
 
