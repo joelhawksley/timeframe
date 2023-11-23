@@ -36,7 +36,7 @@ A web application for displaying information from various APIs on digital signag
 
 ## Local development
 
-### Getting started
+### Setup
 
 1) Optional: Install and run https://github.com/jishi/node-sonos-http-api.
 2) `bundle install`
@@ -44,8 +44,6 @@ A web application for displaying information from various APIs on digital signag
 4) Copy `.env.example` to `.env` and set the given values.
 5) `rails s`
 6) Visit [http://localhost:3000](http://localhost:3000)
-
-_Note: OAuth setup is not documented_
 
 ### Testing
 
@@ -55,8 +53,10 @@ _Note: OAuth setup is not documented_
 
 Currently, Timeframe runs on a local Mac Mini in development mode. There is no production deployment.
 
-To upgrade Visionect: `docker-compose pull && docker-compose up -d` in Visionect directory
+To fetch the latest version: `git fetch --all && git reset --hard origin/main`
+
+To upgrade Visionect: `docker-compose pull && docker-compose up -d`
 
 Run Sonos server: `cd node-sonos-http-api && npm start`
 
-Rails server: `rails s -p 80 -b 0.0.0.0`
+Rails server: `RUN_BG=true rails s -p 80 -b 0.0.0.0 --no-log-to-stdout`
