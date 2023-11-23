@@ -22,7 +22,6 @@ A web application for displaying information from various APIs on digital signag
 ## Todo list
 
 - Move all config into config.yml (or use AnywayConfig from Palkan?)
-- automate deploys to local server
 - use period/moment terms for time modeling
 - add health checks for home assistant automations
 - integrate with RFID jukebox: https://github.com/maddox/magic-cards
@@ -31,29 +30,26 @@ A web application for displaying information from various APIs on digital signag
 - Dither images using this technique: https://news.ycombinator.com/item?id=37837009
 - Set up ruby and/or Standard LSP
 - Ensure lints pass pre-commit
-- automate server backups
 - restart server nightly
 - Experiment with technologies (Hanami, Dry RB, Sorbet, HStore, Phlex, etc)
 - Integrate with Home Assistant to show whether mail has been delivered today
-- Use rails 7.1
 
 ## Local development
 
 ### Getting started
 
 1) Optional: Install and run https://github.com/jishi/node-sonos-http-api.
-1) `bundle install`
-1) `npm install`
-1) `rails db:setup`
-1) Copy `.env.example` to `.env` and set the given values.
-1) `rails s`
-1) Visit [http://localhost:3000](http://localhost:3000)
+2) `bundle install`
+3) `rails db:setup`
+4) Copy `.env.example` to `.env` and set the given values.
+5) `rails s`
+6) Visit [http://localhost:3000](http://localhost:3000)
 
 _Note: OAuth setup is not documented_
 
 ### Testing
 
-1) `bundle exec rake`
+`bundle exec rake`
 
 ### Deploying
 
@@ -63,4 +59,4 @@ To upgrade Visionect: `docker-compose pull && docker-compose up -d` in Visionect
 
 Run Sonos server: `cd node-sonos-http-api && npm start`
 
-Rails server: `rails s -p 3000 -b 0.0.0.0`
+Rails server: `rails s -p 80 -b 0.0.0.0`
