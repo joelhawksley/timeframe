@@ -12,7 +12,8 @@
   font-style: normal;
   font-weight: 400;
   font-display: block;
-  src: font-url("fa-regular-400.woff2") format("woff2"), font-url("fa-regular-400.ttf") format("truetype"); }
+  src: url("/fonts/fa-regular-400.woff2") format("woff2");
+}
 
 .far,
 .fa-regular {

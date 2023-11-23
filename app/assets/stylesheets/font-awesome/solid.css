@@ -12,7 +12,7 @@
   font-style: normal;
   font-weight: 900;
   font-display: block;
-  src: font-url("fa-solid-900.woff2") format("woff2"), font-url("fa-solid-900.ttf") format("truetype"); }
+  src: url("/fonts/fa-solid-900.woff2") format("woff2"); }
 
 .fas,
 .fa-solid {
