@@ -1,6 +1,6 @@
-@import "font-awesome/fontawesome";
-@import "font-awesome/solid";
-@import "font-awesome/regular";
+@import "font-awesome/fontawesome.css";
+@import "font-awesome/solid.css";
+@import "font-awesome/regular.css";
 
 /* lato-regular - latin */
 @font-face {
