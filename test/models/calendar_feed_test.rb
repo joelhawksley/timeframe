@@ -152,4 +152,52 @@ class CalendarFeedTest < Minitest::Test
       end
     end
   end
+
+  # Ran into this bug upgrading to Rails 7.1. Momentary events were not
+  # returned due to a bug in range overlap comparison
+  def test_filtering_moments
+    calendar_events = [
+      CalendarEvent.new(
+        id: "foo",
+        starts_at: DateTime.new(2023,8,27,20,20,0,"-0600"),
+        ends_at: DateTime.new(2023,8,27,20,20,0,"-0600"),
+        summary: "momentary events should not be filtered out!",
+        letter: "C"
+      ).to_h
+    ]
+
+    CalendarFeed.stub :calendar_events, calendar_events do
+      travel_to DateTime.new(2023,8,27,22,20,0,"-0600") do
+        start_time_utc = DateTime.new(2023,8,27,20,20,0,"-0600").utc.to_time
+        end_time_utc = DateTime.new(2023,8,28,0,0,0,"-0600").utc.to_time
+
+        assert(CalendarFeed.events_for(start_time_utc, end_time_utc)[:periodic].length == 1)
+      end
+    end
+  end
+
+  def test_filtering_daily
+    calendar_events = [
+      CalendarEvent.new(
+        id: "foo",
+        starts_at: DateTime.new(2023,8,27,0,0,0,"-0600"),
+        ends_at: DateTime.new(2023,8,28,0,0,0,"-0600"),
+        summary: "daily events should not be filtered out!",
+        letter: "C"
+      ).to_h
+    ]
+
+    CalendarFeed.stub :calendar_events, calendar_events do
+      travel_to DateTime.new(2023,8,27,22,20,0,"-0600") do
+        start_time_utc = DateTime.new(2023,8,27,20,20,0,"-0600").utc.to_time
+        end_time_utc = DateTime.new(2023,8,28,0,0,0,"-0600").utc.to_time
+
+        assert(CalendarFeed.events_for(start_time_utc, end_time_utc)[:daily].length == 2)
+
+        start_time_utc = DateTime.new(2023,8,28,20,20,0,"-0600").utc.to_time
+        end_time_utc = DateTime.new(2023,8,29,0,0,0,"-0600").utc.to_time
+        assert(CalendarFeed.events_for(start_time_utc, end_time_utc)[:daily].length == 0)
+      end
+    end
+  end
 end

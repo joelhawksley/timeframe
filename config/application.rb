@@ -36,8 +36,6 @@ module Timeframe
     config.hosts << "hawksley-server.local"
     config.hosts << "timeframetesting.com"
 
-    config.active_record.legacy_connection_handling = false
-
     # :nocov:
     config.after_initialize do
       def run_in_bg(interval, &block)
