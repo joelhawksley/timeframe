@@ -9,7 +9,6 @@ gem "httparty"
 gem "sqlite3"
 gem "puma"
 gem "rails", "~> 7"
-gem "sass-rails"
 gem "slim"
 gem "tenkit", git: 'https://github.com/joelhawksley/tenkit', branch: 'add-alerts'
 gem "view_component"

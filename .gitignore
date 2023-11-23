@@ -14,7 +14,6 @@
 .byebug_history
 .DS_Store
 /public/packs
-/node_modules
 .env
 config.yml
 /coverage/*
