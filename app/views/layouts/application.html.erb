@@ -1,19 +1,7 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Timeframe</title>
-    <%= csrf_meta_tags %>
-    <link rel="stylesheet">
-    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
-    <%= stylesheet_link_tag 'application', media: 'all' %>
-  </head>
-
   <body>
-    <% flash.each do |key, value| %>
-      <div data-flash="<%= key %>">
-        <%= value %>
-      </div>
-    <% end %>
+    <% flash.each do |key, value| %><%= value %><% end %>
     <%= yield %>
   </body>
 </html>
