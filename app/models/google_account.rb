@@ -7,14 +7,14 @@ class GoogleAccount < ApplicationRecord
 
   def self.client_options
     {
-      client_id: ENV["GOOGLE_CLIENT_ID"],
-      client_secret: ENV["GOOGLE_CLIENT_SECRET"],
+      client_id: Timeframe::Application.config.local["google_client_id"],
+      client_secret: Timeframe::Application.config.local["google_client_secret"],
       authorization_uri: "https://accounts.google.com/o/oauth2/auth",
       token_credential_uri: "https://accounts.google.com/o/oauth2/token",
       scope:
         "#{Google::Apis::CalendarV3::AUTH_CALENDAR_READONLY} " \
         "#{Google::Apis::PeopleV1::AUTH_USERINFO_PROFILE}",
-      redirect_uri: ENV["GOOGLE_REDIRECT_URI"],
+      redirect_uri: Timeframe::Application.config.local["google_redirect_uri"],
       access_type: "offline"
     }
   end
@@ -142,8 +142,8 @@ class GoogleAccount < ApplicationRecord
       HTTParty.post("https://accounts.google.com/o/oauth2/token",
         body: {
           grant_type: "refresh_token",
-          client_id: ENV["GOOGLE_CLIENT_ID"],
-          client_secret: ENV["GOOGLE_CLIENT_SECRET"],
+          client_id: Timeframe::Application.config.local["google_client_id"],
+          client_secret: Timeframe::Application.config.local["google_client_secret"],
           refresh_token: refresh_token
         })
 
