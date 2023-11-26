@@ -82,6 +82,8 @@ class GoogleAccount < ApplicationRecord
     events = {}
 
     Timeframe::Application.config.local["calendars"].each do |calendar_config|
+      next unless calendars.map(&:id).include?(calendar_config["id"])
+
       items = service.list_events(
         calendar_config["id"],
         single_events: true,
