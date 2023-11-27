@@ -26,14 +26,14 @@ class GoogleAccount < ApplicationRecord
   end
 
   def events
-    (Value.find_or_create_by(key: key).value["data"] || {})
+    (MemoryValue.get(key)[:data] || {})
       .values
       .map(&:values)
       .flatten
   end
 
   def last_fetched_at
-    Value.find_or_create_by(key: key).value["last_fetched_at"]
+    MemoryValue.get(key)[:last_fetched_at]
   end
 
   # :nocov:
@@ -114,7 +114,7 @@ class GoogleAccount < ApplicationRecord
           letter: calendar_config["letter"],
           starts_at: event_json["start"]["date"] || event_json["start"]["date_time"],
           ends_at: event_json["end"]["date"] || event_json["end"]["date_time"]
-        ).to_h
+        )
       end
     rescue => e
       Log.create(
@@ -124,11 +124,11 @@ class GoogleAccount < ApplicationRecord
       )
     end
 
-    Value.upsert({key: key, value:
+    MemoryValue.upsert(key,
       {
         data: events,
         last_fetched_at: Time.now.utc.in_time_zone(Timeframe::Application.config.local["timezone"]).to_s
-      }}, unique_by: :key)
+      })
   end
   # :nocov:
 

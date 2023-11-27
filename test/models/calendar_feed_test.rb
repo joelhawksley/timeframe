@@ -8,27 +8,27 @@ class CalendarFeedTest < Minitest::Test
   def test_baby_age_event
     result = CalendarFeed.baby_age_event(Date.today - 7.days)
 
-    assert_equal("1w", result.to_h[:summary])
+    assert_equal("1w", result.summary)
   end
 
   def test_baby_age_event_weeks_days
     result = CalendarFeed.baby_age_event(Date.today - 8.days)
 
-    assert_equal("1w1d", result.to_h[:summary])
+    assert_equal("1w1d", result.summary)
   end
 
   def test_baby_age_event_less_than_one_week
     result = CalendarFeed.baby_age_event(Date.today - 6.days)
 
-    assert_equal("6d", result.to_h[:summary])
+    assert_equal("6d", result.summary)
   end
 
   def test_baby_age_event_works_in_evening
     travel_to DateTime.new(2023, 8, 27, 20, 20, 0, "-0600") do
       result = CalendarFeed.baby_age_event(Date.today - 7.days)
 
-      assert_equal(27, result.to_h[:starts_at].day)
-      assert_equal(28, result.to_h[:ends_at].day)
+      assert_equal(27, result.starts_at.day)
+      assert_equal(28, result.ends_at.day)
     end
   end
 
@@ -44,7 +44,7 @@ class CalendarFeedTest < Minitest::Test
         ends_at: DateTime.new(2023, 8, 27, 23, 0, 0, "-0600"),
         summary: "dupe",
         letter: "+"
-      ).to_h.stringify_keys
+      )
     ]
 
     CalendarFeed.stub :calendar_events, calendar_events do
@@ -65,14 +65,14 @@ class CalendarFeedTest < Minitest::Test
         ends_at: DateTime.new(2023, 8, 27, 23, 0, 0, "-0600"),
         summary: "dupe",
         letter: "+"
-      ).to_h,
+      ),
       CalendarEvent.new(
         id: "foo",
         starts_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),
         ends_at: DateTime.new(2023, 8, 27, 23, 0, 0, "-0600"),
         summary: "dupe",
         letter: "J"
-      ).to_h
+      )
     ]
 
     CalendarFeed.stub :calendar_events, calendar_events do
@@ -81,10 +81,10 @@ class CalendarFeedTest < Minitest::Test
         end_time_utc = DateTime.new(2023, 8, 28, 0, 0, 0, "-0600").utc.to_time
 
         result = CalendarFeed.events_for(start_time_utc, end_time_utc)
-        events = result[:periodic].select { _1[:id] == "foo" }
+        events = result[:periodic].select { _1.id == "foo" }
 
         assert(events.length == 1)
-        assert(events[0][:letter] == "+")
+        assert(events[0].letter == "+")
       end
     end
   end
@@ -97,14 +97,14 @@ class CalendarFeedTest < Minitest::Test
         ends_at: DateTime.new(2023, 8, 27, 23, 0, 0, "-0600"),
         summary: "dupe",
         letter: "J"
-      ).to_h,
+      ),
       CalendarEvent.new(
         id: "foo",
         starts_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),
         ends_at: DateTime.new(2023, 8, 27, 23, 0, 0, "-0600"),
         summary: "dupe",
         letter: "J"
-      ).to_h
+      )
     ]
 
     CalendarFeed.stub :calendar_events, calendar_events do
@@ -113,10 +113,10 @@ class CalendarFeedTest < Minitest::Test
         end_time_utc = DateTime.new(2023, 8, 28, 0, 0, 0, "-0600").utc.to_time
 
         result = CalendarFeed.events_for(start_time_utc, end_time_utc)
-        events = result[:periodic].select { _1[:id] == "foo" }
+        events = result[:periodic].select { _1.id == "foo" }
 
         assert(events.length == 1)
-        assert(events[0][:letter] == "J")
+        assert(events[0].letter == "J")
       end
     end
   end
@@ -129,14 +129,14 @@ class CalendarFeedTest < Minitest::Test
         ends_at: DateTime.new(2023, 8, 27, 23, 0, 0, "-0600"),
         summary: "dupe",
         letter: "C"
-      ).to_h,
+      ),
       CalendarEvent.new(
         id: "foo",
         starts_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),
         ends_at: DateTime.new(2023, 8, 27, 23, 0, 0, "-0600"),
         summary: "dupe",
         letter: "J"
-      ).to_h
+      )
     ]
 
     CalendarFeed.stub :calendar_events, calendar_events do
@@ -145,10 +145,10 @@ class CalendarFeedTest < Minitest::Test
         end_time_utc = DateTime.new(2023, 8, 28, 0, 0, 0, "-0600").utc.to_time
 
         result = CalendarFeed.events_for(start_time_utc, end_time_utc)
-        events = result[:periodic].select { _1[:id] == "foo" }
+        events = result[:periodic].select { _1.id == "foo" }
 
         assert(events.length == 1)
-        assert(events[0][:letter] == "C")
+        assert(events[0].letter == "C")
       end
     end
   end
@@ -163,7 +163,7 @@ class CalendarFeedTest < Minitest::Test
         ends_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),
         summary: "momentary events should not be filtered out!",
         letter: "C"
-      ).to_h
+      )
     ]
 
     CalendarFeed.stub :calendar_events, calendar_events do
@@ -184,7 +184,7 @@ class CalendarFeedTest < Minitest::Test
         ends_at: DateTime.new(2023, 8, 28, 0, 0, 0, "-0600"),
         summary: "daily events should not be filtered out!",
         letter: "C"
-      ).to_h
+      )
     ]
 
     CalendarFeed.stub :calendar_events, calendar_events do
@@ -209,7 +209,7 @@ class CalendarFeedTest < Minitest::Test
         ends_at: DateTime.new(2023, 8, 29, 22, 20, 0, "-0600"),
         summary: "multi-day periodic events should not be filtered out!",
         letter: "C"
-      ).to_h
+      )
     ]
 
     CalendarFeed.stub :calendar_events, calendar_events do

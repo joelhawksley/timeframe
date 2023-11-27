@@ -1,12 +1,10 @@
 class WeatherKitAccount
   def self.weather
-    Current.weatherkit ||=
-      Value.find_or_create_by(key: "weatherkit").value["data"] || {}
+    MemoryValue.get(:weatherkit)[:data] || {}
   end
 
   def self.last_fetched_at
-    Current.weatherkit_fetched_at ||=
-      Value.find_or_create_by(key: "weatherkit").value["last_fetched_at"]
+    MemoryValue.get(:weatherkit)[:last_fetched_at]
   end
 
   def self.current_temperature
@@ -26,7 +24,7 @@ class WeatherKitAccount
   def self.fetch
     client = Tenkit::Client.new
     local_config = Timeframe::Application.config.local
-    Value.find_or_create_by(key: "weatherkit").update(value:
+    MemoryValue.upsert(:weatherkit,
       {
         data:
           client.weather(

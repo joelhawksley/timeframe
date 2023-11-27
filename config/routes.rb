@@ -9,6 +9,4 @@ Rails.application.routes.draw do
   get :google_callback, to: "home#google_callback"
 
   get :logs, to: "home#logs"
-  get :calendar_data, to: "home#calendar_data"
-  get :weather_data, to: "home#weather_data"
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_04_180334) do
+ActiveRecord::Schema[7.1].define(version: 2023_11_27_034206) do
   create_table "google_accounts", force: :cascade do |t|
     t.string "email", null: false
     t.datetime "created_at", null: false
@@ -27,14 +27,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_04_180334) do
     t.string "message", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-  end
-
-  create_table "values", force: :cascade do |t|
-    t.string "key", null: false
-    t.json "value", default: {}, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["key"], name: "index_values_on_key", unique: true
   end
 
 end

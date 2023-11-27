@@ -8,15 +8,15 @@ class HomeAssistantHome
       }
     ).body
 
-    Value.upsert({key: "home_assistant", value:
+    MemoryValue.upsert(:home_assistant,
       {
         states: JSON.parse(response),
         last_fetched_at: Time.now.utc.in_time_zone(Timeframe::Application.config.local["timezone"]).to_s
-      }}, unique_by: :key)
+      })
   end
 
   def self.states
-    Value.find_or_create_by(key: "home_assistant").value["states"] || []
+    MemoryValue.get(:home_assistant)[:states] || []
   end
 
   def self.healthy?
@@ -27,7 +27,7 @@ class HomeAssistantHome
 
   # :nocov:
   def self.last_fetched_at
-    Value.find_or_create_by(key: "home_assistant").value["last_fetched_at"]
+    MemoryValue.get(:home_assistant)[:last_fetched_at]
   end
   # :nocov:
 

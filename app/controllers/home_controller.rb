@@ -5,14 +5,6 @@ class HomeController < ApplicationController
     render "logs", layout: false
   end
 
-  def weather_data
-    render "weather_data", layout: false
-  end
-
-  def calendar_data
-    render "calendar_data", layout: false
-  end
-
   def redirect
     client = GoogleAccount.client
 

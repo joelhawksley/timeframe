@@ -42,19 +42,19 @@ class CalendarFeed
       calendar_events
     )
 
-    filtered_events = filtered_events.compact.map(&:to_h).map(&:with_indifferent_access).select do |event|
-      if event[:start_i] == event[:end_i]
-        [event[:start_i], event[:end_i]].any? { (starts_at.to_i...ends_at.to_i).cover?(_1) }
+    filtered_events = filtered_events.compact.select do |event|
+      if event.start_i == event.end_i
+        [event.start_i, event.end_i].any? { (starts_at.to_i...ends_at.to_i).cover?(_1) }
       else
-        (event[:start_i]...event[:end_i]).overlaps?(starts_at.to_i...ends_at.to_i)
+        (event.start_i...event.end_i).overlaps?(starts_at.to_i...ends_at.to_i)
       end
     end
 
     # Merge duplicate events, merging the letter with a custom rule if so
-    filtered_events = filtered_events.group_by { _1[:id] }
+    filtered_events = filtered_events.group_by { _1.id }
       .map do |_k, v|
         if v.length > 1
-          letters = v.map { |iv| iv[:letter] }
+          letters = v.map { |iv| iv.letter }
           letter =
             if letters.uniq.length == 1
               letters[0]
@@ -65,7 +65,7 @@ class CalendarFeed
             end
 
           out = v[0]
-          out[:letter] = letter
+          out.letter = letter
           out
         else
           v[0]
@@ -73,10 +73,10 @@ class CalendarFeed
       end
 
     {
-      daily: filtered_events.select { |event| event["daily"] },
+      daily: filtered_events.select(&:daily?),
       periodic: filtered_events
-        .reject { |event| event["daily"] }
-        .sort_by { |event| event["start_i"] }
+        .reject(&:daily?)
+        .sort_by(&:start_i)
     }
   end
 end

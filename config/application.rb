@@ -41,7 +41,7 @@ module Timeframe
       def run_in_bg(interval, &block)
         Thread.new do
           loop do
-            ActiveRecord::Base.connection_pool.with_connection do
+            begin
               yield
             rescue => e
               Log.create(
@@ -60,7 +60,11 @@ module Timeframe
         run_in_bg(1) { SonosSystem.fetch }
         run_in_bg(1) { HomeAssistantHome.fetch }
         run_in_bg(60) { WeatherKitAccount.fetch }
-        run_in_bg(60) { GoogleAccount.all.each(&:fetch) }
+        run_in_bg(60) do
+          ActiveRecord::Base.connection_pool.with_connection do
+            GoogleAccount.all.each(&:fetch)
+          end
+        end
       end
     end
     # :nocov:

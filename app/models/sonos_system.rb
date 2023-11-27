@@ -8,11 +8,11 @@ class SonosSystem
   end
 
   def self.data
-    Value.find_or_create_by(key: "sonos").value["data"] || {}
+    MemoryValue.get(:sonos)[:data] || {}
   end
 
   def self.last_fetched_at
-    Value.find_or_create_by(key: "sonos").value["last_fetched_at"]
+    MemoryValue.get(:sonos)[:last_fetched_at]
   end
 
   def self.status
@@ -34,10 +34,10 @@ class SonosSystem
   end
 
   def self.fetch
-    Value.upsert({key: "sonos", value:
+    MemoryValue.upsert(:sonos,
       {
         data: JSON.parse(HTTParty.get(Timeframe::Application.config.local["node_sonos_http_api_url"]).body),
         last_fetched_at: Time.now.utc.in_time_zone(Timeframe::Application.config.local["timezone"]).to_s
-      }}, unique_by: :key)
+      })
   end
 end
