@@ -19,3 +19,4 @@ config.yml
 /coverage/*
 timeframe_development*
 timeframe_test*
+pgdata
