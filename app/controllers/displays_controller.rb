@@ -15,7 +15,7 @@ class DisplaysController < ApplicationController
       Log.create(
         globalid: "Timeframe.display",
         event: "render error",
-        message: e.message + e.backtrace.join("\n") + MemoryValue.class_variable_get(:@@store).to_json
+        message: e.message + e.backtrace.join("\n")
       )
 
       render "error", locals: {klass: e.class.to_s, message: e.message}
