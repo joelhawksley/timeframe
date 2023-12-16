@@ -47,7 +47,7 @@ module Timeframe
               Log.create(
                 globalid: "Timeframe.after_initialize",
                 event: "background thread error",
-                message: e.message + e.backtrace.join("\n")
+                message: e.message + e.backtrace.join("\n") + MemoryValue.class_variable_get(:@@store).to_json
               )
             end
 
