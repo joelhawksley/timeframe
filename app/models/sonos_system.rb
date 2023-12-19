@@ -34,9 +34,13 @@ class SonosSystem
   end
 
   def self.fetch
+    response = HTTParty.get(Timeframe::Application.config.local["node_sonos_http_api_url"])
+
+    return if response["status"] == "error"
+
     MemoryValue.upsert(:sonos,
       {
-        data: JSON.parse(HTTParty.get(Timeframe::Application.config.local["node_sonos_http_api_url"]).body),
+        data: response,
         last_fetched_at: Time.now.utc.in_time_zone(Timeframe::Application.config.local["timezone"]).to_s
       })
   end
