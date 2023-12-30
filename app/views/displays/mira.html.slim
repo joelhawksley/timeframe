@@ -12,7 +12,7 @@ div.hide-if-empty style="font-size: 1.75rem; position:absolute; left: 0; right: 
   div style="position: relative"
     div style="background:-webkit-gradient(linear,left top,left bottom,color-stop(0%, rgba(255,255,255,0)),color-stop(100%,rgba(255,255,255,1)));position: absolute;left: 0;right: 0; top: -2rem;height: 2rem;z-index: 5;"
   div.hide-if-empty style="background-color: #ddd; color: black; padding: 0.5rem 2rem; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;"
-    - if WeatherKitAccount.healthy? && WeatherKitAccount.weather.dig("forecastNextHour", "summary")&.first["condition"] != "clear"
+    - if WeatherKitAccount.healthy? && WeatherKitAccount.weather.dig("forecastNextHour", "summary")&.first.to_h["condition"] != "clear"
       - summary = WeatherKitAccount.weather["forecastNextHour"]["summary"].first["condition"]
       - icon = summary == "snow" ? "snowflake" : "raindrops"
       div style="display: flex; justify-content: space-between"
