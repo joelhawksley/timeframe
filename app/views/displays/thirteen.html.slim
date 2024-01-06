@@ -6,9 +6,15 @@ javascript:
 .timestamp style="position: absolute; bottom: .25rem; right: .25rem; font-size: .4rem; color: #777; z-index: 10" = view_object[:timestamp]
 div style="font-size: 1rem"
   - if !WeatherKitAccount.healthy?
-    i.fa-solid.fa-cloud-slash style="margin-right: 1rem"
+    i.fa-solid.fa-cloud-slash style="margin-right: 1rem; margin-bottom: 1rem;"
   - if !GoogleAccount.all.all?(&:healthy?)
-    i.fa-solid.fa-calendar-circle-exclamation style="margin-right: 1rem"
+    i.fa-solid.fa-calendar-circle-exclamation style="margin-right: 1rem; margin-bottom: 1rem;"
   - if !HomeAssistantHome.healthy?
-    i.fa-solid.fa-house-circle-exclamation style="margin-right: 1rem"
+    i.fa-solid.fa-house-circle-exclamation style="margin-right: 1rem; margin-bottom: 1rem;"
+div style="clear: both; line-height: .7; margin-bottom: 1rem; padding-bottom: 1rem;"
+  div style="float: left; font-size: 2rem;" = view_object[:current_temperature]
+  div style="float: right; text-align: right; font-size: 2rem;" = DateTime.now.strftime("%A, %B %-d")
+  div
+    | &nbsp;
+hr style="margin: 1rem 0 1rem; border: none; background-color: #ccc; color: #ccc; height: 2px;"
 = render Timeline.new(view_object: view_object)
