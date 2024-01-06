@@ -9,4 +9,3 @@ class MemoryValue
     @@store[key] || {}
   end
 end
-
