@@ -20,7 +20,7 @@ div.hide-if-empty style="font-size: 1.75rem; position:absolute; left: 0; right: 
           i.fa-solid.fa-fw class="fa-#{icon}"
           | #{summary.humanize} this hour.
         div
-          table.minutely border=0 cellpadding="0" cellspacing="0" style=""
+          table.minutely border=0 cellpadding="0" cellspacing="0"
             tr
               - WeatherKitAccount.weather["forecastNextHour"]["minutes"].first(60).each_with_index do |minute, i|
                 - next if i.odd?
