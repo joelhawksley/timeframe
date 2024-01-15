@@ -2300,6 +2300,78 @@ class WeatherKitAccountTest < Minitest::Test
     end
   end
 
+  def test_daily_calendar_events_snow_precip
+    weather = {
+      "forecastDaily" => {"days" =>
+        [{"forecastStart" => "2024-01-15T07:00:00Z",
+          "forecastEnd" => "2024-01-16T07:00:00Z",
+          "conditionCode" => "Snow",
+          "maxUvIndex" => 1,
+          "moonPhase" => "waxingCrescent",
+          "moonrise" => "2024-01-15T17:16:34Z",
+          "moonset" => "2024-01-16T05:17:41Z",
+          "precipitationAmount" => 2.05,
+          "precipitationChance" => 0.35,
+          "precipitationType" => "snow",
+          "snowfallAmount" => 70.09,
+          "solarMidnight" => "2024-01-15T07:09:14Z",
+          "solarNoon" => "2024-01-15T19:09:36Z",
+          "sunrise" => "2024-01-15T14:20:01Z",
+          "sunriseCivil" => "2024-01-15T13:50:20Z",
+          "sunriseNautical" => "2024-01-15T13:17:00Z",
+          "sunriseAstronomical" => "2024-01-15T12:44:34Z",
+          "sunset" => "2024-01-15T23:59:18Z",
+          "sunsetCivil" => "2024-01-16T00:29:04Z",
+          "sunsetNautical" => "2024-01-16T01:02:18Z",
+          "sunsetAstronomical" => "2024-01-16T01:34:50Z",
+          "temperatureMax" => -16.58,
+          "temperatureMin" => -24.15,
+          "daytimeForecast" =>
+         {"forecastStart" => "2024-01-15T14:00:00Z",
+          "forecastEnd" => "2024-01-16T02:00:00Z",
+          "cloudCover" => 0.8,
+          "conditionCode" => "Snow",
+          "humidity" => 0.81,
+          "precipitationAmount" => 2.05,
+          "precipitationChance" => 0.34,
+          "precipitationType" => "snow",
+          "snowfallAmount" => 70.09,
+          "temperatureMax" => -16.58,
+          "temperatureMin" => -23.15,
+          "windDirection" => 351,
+          "windSpeed" => 11.08},
+          "overnightForecast" =>
+         {"forecastStart" => "2024-01-16T02:00:00Z",
+          "forecastEnd" => "2024-01-16T14:00:00Z",
+          "cloudCover" => 0.11,
+          "conditionCode" => "Clear",
+          "humidity" => 0.7,
+          "precipitationAmount" => 0.0,
+          "precipitationChance" => 0.0,
+          "precipitationType" => "clear",
+          "snowfallAmount" => 0.0,
+          "temperatureMax" => -19.56,
+          "temperatureMin" => -24.15,
+          "windDirection" => 217,
+          "windSpeed" => 7.94}}],
+                          "name" => "DailyForecast",
+                          "metadata" =>
+        {"units" => "m",
+         "version" => 1,
+         "latitude" => 39.915,
+         "readTime" => "2023-09-15T15:44:28Z",
+         "longitude" => -105.022,
+         "expireTime" => "2023-09-15T16:44:28Z",
+         "reportedTime" => "2023-09-15T15:00:00Z",
+         "attributionURL" =>
+          "https://developer.apple.com/weatherkit/data-source-attribution/"}}
+    }
+
+    WeatherKitAccount.stub :weather, weather do
+      assert(WeatherKitAccount.daily_calendar_events.first.summary.include?('2.1"'))
+    end
+  end
+
   def test_daily_calendar_events_no_data
     WeatherKitAccount.stub :weather, {} do
       assert_equal([], WeatherKitAccount.daily_calendar_events)

@@ -166,12 +166,16 @@ class WeatherKitAccount
     return [] unless (days = weather.dig("forecastDaily", "days"))
 
     days.map do |day|
+      summary_suffix = if day.dig("daytimeForecast", "precipitationAmount").to_f > 0
+        " / #{day["daytimeForecast"]["precipitationAmount"].round(1)}\""
+      end
+
       CalendarEvent.new(
         id: "_weather_day_#{day["forecastStart"]}",
         starts_at: DateTime.parse(day["forecastStart"]).to_i,
         ends_at: DateTime.parse(day["forecastEnd"]).to_i,
         icon: icon_for(day["conditionCode"]),
-        summary: "#{celsius_fahrenheit(day["temperatureMax"])}° / #{celsius_fahrenheit(day["temperatureMin"])}°".html_safe
+        summary: "#{celsius_fahrenheit(day["temperatureMax"])}° / #{celsius_fahrenheit(day["temperatureMin"])}°#{summary_suffix}".html_safe
       )
     end
   end
