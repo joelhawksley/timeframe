@@ -24,22 +24,28 @@ class WeatherKitAccount
   def self.fetch
     client = Tenkit::Client.new
     local_config = Timeframe::Application.config.local
+    data = client.weather(
+      local_config["latitude"],
+      local_config["longitude"],
+      data_sets: [
+        :current_weather,
+        :forecast_next_hour,
+        :forecast_daily,
+        :forecast_hourly,
+        :weather_alerts
+      ]
+    ).raw
+
+    # :nocov:
+    # Do not update unless response is well formed
+    return unless data.key?("currentWeather")
+
     MemoryValue.upsert(:weatherkit,
       {
-        data:
-          client.weather(
-            local_config["latitude"],
-            local_config["longitude"],
-            data_sets: [
-              :current_weather,
-              :forecast_next_hour,
-              :forecast_daily,
-              :forecast_hourly,
-              :weather_alerts
-            ]
-          ).raw,
+        data: data,
         last_fetched_at: Time.now.utc.in_time_zone(Timeframe::Application.config.local["timezone"]).to_s
       })
+    # :nocov:
   rescue => e
     Log.create(
       globalid: "WeatherKitAccount",
