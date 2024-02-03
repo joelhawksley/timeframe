@@ -2137,7 +2137,7 @@ class WeatherKitAccountTest < Minitest::Test
           "sunrise" => "2023-09-15T12:41:05Z",
           "moonrise" => "2023-09-15T13:08:37Z",
           "forecastEnd" => "2023-09-16T06:00:00Z",
-          "conditionCode" => "MostlyCloudy",
+          "conditionCode" => "Missing",
           "forecastStart" => "2023-09-15T06:00:00Z",
           "snowfallAmount" => 0.0,
           "temperatureMax" => 18.86,

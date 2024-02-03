@@ -165,7 +165,17 @@ class WeatherKitAccount
       "Flurries" => "snowflake"
     }
 
-    icon_mappings[condition_code] || "question"
+    if icon_mappings[condition_code]
+      icon_mappings[condition_code]
+    else
+      Log.create(
+        globalid: "WeatherKitAccount",
+        event: "icon_for could not find mapping",
+        message: "condition code: #{condition_code}"
+      )
+
+      "question"
+    end
   end
 
   def self.daily_calendar_events
