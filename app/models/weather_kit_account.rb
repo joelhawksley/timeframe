@@ -162,6 +162,7 @@ class WeatherKitAccount
       "Rain" => "raindrops",
       "Haze" => "sun-haze",
       "Snow" => "snowflake",
+      "HeavySnow" => "snowflakes",
       "Flurries" => "snowflake"
     }
 
