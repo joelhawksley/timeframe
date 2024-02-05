@@ -1,21 +1,31 @@
-# frozen_string_literal: true
-
 class CalendarFeed
   def self.baby_age_event(birthdate = Date.parse(Timeframe::Application.config.local["birthdate"]))
     day_count = Date.today - birthdate
     week_count = (day_count / 7).to_i
     remainder = (day_count % 7).to_i
 
-    summary =
-      if remainder > 0
-        if week_count > 0
-          "#{week_count}w#{remainder}d"
+    if week_count > 24
+      time_difference = TimeDifference.between(birthdate, Date.today).in_general
+      months = time_difference[:months]
+      weeks = time_difference[:weeks]
+      days = time_difference[:days]
+
+      summary = ""
+      summary << "#{months}m" if months > 0
+      summary << "#{weeks}w" if weeks > 0
+      summary << "#{days}d" if days > 0
+    else
+      summary =
+        if remainder > 0
+          if week_count > 0
+            "#{week_count}w#{remainder}d"
+          else
+            "#{remainder}d"
+          end
         else
-          "#{remainder}d"
+          "#{week_count}w"
         end
-      else
-        "#{week_count}w"
-      end
+    end
 
     CalendarEvent.new(
       id: "_baby_age",

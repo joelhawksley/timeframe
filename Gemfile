@@ -11,6 +11,7 @@ gem "puma"
 gem "rails", "~> 7.1"
 gem "slim"
 gem "tenkit", git: "https://github.com/joelhawksley/tenkit", branch: "add-alerts"
+gem "time_difference"
 gem "view_component"
 
 group :development, :test do
