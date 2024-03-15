@@ -36,7 +36,7 @@ class HomeAssistantHome
 
     return false unless entity.present?
 
-    entity["state"] != "closed"
+    entity["state"] == "open"
   end
 
   def self.package_present?
