@@ -41,10 +41,11 @@ class HomeAssistantHome
 
   def self.garage_door_open?
     entity = states.find { _1["entity_id"] == Timeframe::Application.config.local["home_assistant_garage_door_entity_id"] }
+    entity_2 = states.find { _1["entity_id"] == Timeframe::Application.config.local["home_assistant_garage_door_2_entity_id"] }
 
-    return false unless entity.present?
+    return false unless entity.present? && entity_2.present?
 
-    entity["state"] == "open"
+    entity["state"] == "open" || entity_2["state"] == "open"
   end
 
   def self.package_present?

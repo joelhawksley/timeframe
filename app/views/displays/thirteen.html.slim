@@ -11,6 +11,8 @@ div style="font-size: 1rem"
     i.fa-solid.fa-calendar-circle-exclamation style="margin-right: 1rem; margin-bottom: 1rem;"
   - if !HomeAssistantHome.healthy?
     i.fa-solid.fa-house-circle-exclamation style="margin-right: 1rem; margin-bottom: 1rem;"
+  - if !HomeAssistantHome.hot_water_heater_healthy?
+    i.fa-solid.fa-tank-water style="margin-right: 1rem"
 div style="clear: both; line-height: .7; margin-bottom: 1rem; padding-bottom: 1rem;"
   div style="float: left; font-size: 2rem;" = view_object[:current_temperature]
   div style="float: right; text-align: right; font-size: 2rem;" = DateTime.now.strftime("%A, %B %-d")

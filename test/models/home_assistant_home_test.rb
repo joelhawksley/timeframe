@@ -12,13 +12,38 @@ class HomeAssistantHomeTest < Minitest::Test
   end
 
   def test_garage_door_open_with_state_closed
-    HomeAssistantHome.stub :states, [{"entity_id" => Timeframe::Application.config.local["home_assistant_garage_door_entity_id"], "state" => "closed"}] do
+    HomeAssistantHome.stub(
+      :states, 
+      [
+        {"entity_id" => Timeframe::Application.config.local["home_assistant_garage_door_entity_id"], "state" => "closed"},
+        {"entity_id" => Timeframe::Application.config.local["home_assistant_garage_door_2_entity_id"], "state" => "closed"},
+      ]
+    ) do
       refute(HomeAssistantHome.garage_door_open?)
     end
   end
 
+
   def test_garage_door_open_with_state_open
-    HomeAssistantHome.stub :states, [{"entity_id" => Timeframe::Application.config.local["home_assistant_garage_door_entity_id"], "state" => "open"}] do
+    HomeAssistantHome.stub(
+      :states, 
+      [
+        {"entity_id" => Timeframe::Application.config.local["home_assistant_garage_door_entity_id"], "state" => "open"},
+        {"entity_id" => Timeframe::Application.config.local["home_assistant_garage_door_2_entity_id"], "state" => "closed"},
+      ]
+    ) do
+      assert(HomeAssistantHome.garage_door_open?)
+    end
+  end
+
+  def test_garage_door_open_with_state_open_2
+    HomeAssistantHome.stub(
+      :states, 
+      [
+        {"entity_id" => Timeframe::Application.config.local["home_assistant_garage_door_entity_id"], "state" => "closed"},
+        {"entity_id" => Timeframe::Application.config.local["home_assistant_garage_door_2_entity_id"], "state" => "open"},
+      ]
+    ) do
       assert(HomeAssistantHome.garage_door_open?)
     end
   end
