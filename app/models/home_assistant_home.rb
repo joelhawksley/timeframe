@@ -31,6 +31,14 @@ class HomeAssistantHome
   end
   # :nocov:
 
+  def self.hot_water_heater_healthy?
+    entity = states.find { _1["entity_id"] == Timeframe::Application.config.local["home_assistant_available_hot_water_entity_id"] }
+
+    return true unless entity.present?
+
+    entity["state"].to_i > 10
+  end
+
   def self.garage_door_open?
     entity = states.find { _1["entity_id"] == Timeframe::Application.config.local["home_assistant_garage_door_entity_id"] }
 

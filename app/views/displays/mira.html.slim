@@ -53,6 +53,8 @@ div style="margin-top: 1.5rem; display: flex; justify-content: space-between; li
       i.fa-solid.fa-calendar-circle-exclamation style="margin-right: 1rem"
     - if !HomeAssistantHome.healthy?
       i.fa-solid.fa-house-circle-exclamation style="margin-right: 1rem"
+    - if !HomeAssistantHome.hot_water_heater_healthy?
+      i.fa-solid.fa-tank-water style="margin-right: 1rem"
   div style="font-size:2rem;" = DateTime.now.strftime("%A, %B %-d")
 div style="margin-top: 1rem; display: flex; justify-content: space-between; line-height: .7"
   div style="font-size: 5.5rem;; margin-bottom: 1rem;" = view_object[:current_temperature]

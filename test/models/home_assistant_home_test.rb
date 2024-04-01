@@ -41,6 +41,12 @@ class HomeAssistantHomeTest < Minitest::Test
     end
   end
 
+  def test_hot_water_low
+    HomeAssistantHome.stub :states, [{"entity_id" => Timeframe::Application.config.local["home_assistant_available_hot_water_entity_id"], "state" => "8"}] do
+      refute(HomeAssistantHome.hot_water_heater_healthy?)
+    end
+  end
+
   def test_fetch
     VCR.use_cassette(:home_assistant_states) do
       HomeAssistantHome.fetch
