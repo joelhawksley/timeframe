@@ -65,6 +65,7 @@ module Timeframe
             GoogleAccount.all.each(&:fetch)
           end
         end
+        run_in_bg(300) { Birdnet.fetch }
       end
     end
     # :nocov:
