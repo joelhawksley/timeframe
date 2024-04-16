@@ -53,7 +53,7 @@ class DisplaysController < ApplicationController
       end
 
     {
-      current_temperature: WeatherKitAccount.current_temperature,
+      current_temperature: HomeAssistantHome.feels_like_temperature,
       day_groups: day_groups,
       timestamp: current_time.strftime("%-l:%M %p")
     }

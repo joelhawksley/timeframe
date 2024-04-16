@@ -72,6 +72,16 @@ class HomeAssistantHomeTest < Minitest::Test
     end
   end
 
+  def test_feels_like_temperature_no_data
+    assert_nil(HomeAssistantHome.feels_like_temperature)
+  end
+
+  def test_feels_like_temperature
+    HomeAssistantHome.stub :states, [{"entity_id"=>"sensor.weather_station_feels_like", "state"=>"49.712"}] do
+      assert_equal(HomeAssistantHome.feels_like_temperature, 49)
+    end
+  end
+
   def test_fetch
     VCR.use_cassette(:home_assistant_states) do
       HomeAssistantHome.fetch
