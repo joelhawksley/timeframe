@@ -21,7 +21,7 @@ class SonosSystem
     if data["currentTrack"]["artist"].include?("Colorado Public Radio News")
       
       {
-        artist: "Colorado Public Radio News",
+        artist: "CPR News",
         track: data["currentTrack"]["title"].present? ? (data["currentTrack"]["title"].split(" -- ").last.split("|").first) : nil
       }
     elsif data["currentTrack"]["artist"].include?("WKSU-HD2")

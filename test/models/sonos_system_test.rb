@@ -96,7 +96,7 @@ class SonosSystemTest < Minitest::Test
     }
 
     SonosSystem.stub :data, data do
-      assert_equal({artist: "Colorado Public Radio News", track: nil}, SonosSystem.status)
+      assert_equal({artist: "CPR News", track: nil}, SonosSystem.status)
     end
   end
 
