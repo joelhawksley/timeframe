@@ -88,6 +88,18 @@ class SonosSystemTest < Minitest::Test
     end
   end
 
+  def test_cpr_news_status
+    data = {
+      "currentTrack" =>
+       {"artist"=>"Colorado Public Radio News"},
+      "playbackState" => "PLAYING"
+    }
+
+    SonosSystem.stub :data, data do
+      assert_equal({artist: "Colorado Public Radio News", track: nil}, SonosSystem.status)
+    end
+  end
+
   def test_status_no_title
     data = {
       "currentTrack" =>
@@ -97,7 +109,7 @@ class SonosSystemTest < Minitest::Test
     }
 
     SonosSystem.stub :data, data do
-      assert_nil(SonosSystem.status)
+      assert_equal({artist: "Folk Alley", track: "American Tunes"}, SonosSystem.status)
     end
   end
 end

@@ -16,15 +16,30 @@ class SonosSystem
   end
 
   def self.status
-    return nil unless data["playbackState"] == "PLAYING" && data["currentTrack"]["title"].present?
+    return nil unless data["playbackState"] == "PLAYING"
 
-    if data["currentTrack"]["artist"].include?("WKSU-HD2")
-      title_parts = data["currentTrack"]["title"].split(" - ")
-
+    if data["currentTrack"]["artist"].include?("Colorado Public Radio News")
+      
       {
-        artist: title_parts[1],
-        track: title_parts[0]
+        artist: "Colorado Public Radio News",
+        track: data["currentTrack"]["title"].present? ? (data["currentTrack"]["title"].split(" -- ").last.split("|").first) : nil
       }
+    elsif data["currentTrack"]["artist"].include?("WKSU-HD2")
+      if data["currentTrack"]["title"].present?
+        title_parts = data["currentTrack"]["title"].split(" - ")
+
+        {
+          artist: title_parts[1],
+          track: title_parts[0]
+        }
+      else
+        artist_parts = data["currentTrack"]["artist"].split(" - ")
+
+        {
+          artist: data["currentTrack"]["artist"].split(" - ").first,
+          track: data["currentTrack"]["album"]
+        }
+      end
     else
       {
         artist: data["currentTrack"]["artist"],

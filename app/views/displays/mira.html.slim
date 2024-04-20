@@ -37,8 +37,9 @@ div.hide-if-empty style="font-size: 1.75rem; position:absolute; left: 0; right: 
     - if status = SonosSystem.status
       i.fa-solid.fa-music.fa-fw
       strong =< status[:artist]
-      |  :
-      =< status[:track]
+      - if status[:track].present?
+        |  :
+        =< status[:track]
 div style="margin-top: 1.5rem;"
 - if Birdnet.healthy? && Birdnet.most_unusual_species_trailing_24h.present?
   div style="text-align: right; margin-bottom: .5rem;"
