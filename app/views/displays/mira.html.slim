@@ -35,7 +35,7 @@ div.hide-if-empty style="font-size: 1.75rem; position:absolute; left: 0; right: 
                 td colspan="10" 40m
   div.hide-if-empty style="background-color: black; color: white; padding: 1rem 2rem; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;"
     - if status = SonosSystem.status
-      i.fa-solid.fa-music.fa-fw
+      i.fa-solid.fa-volume.fa-fw
       strong =< status[:artist]
       - if status[:track].present?
         |  :
@@ -56,7 +56,7 @@ div style="display: flex; justify-content: space-between; line-height: 2rem;"
     - if !WeatherKitAccount.healthy?
       i.fa-solid.fa-cloud-slash style="margin-right: 1rem"
     - if !SonosSystem.healthy?
-      i.fa-solid.fa-music-slash style="margin-right: 1rem"
+      i.fa-solid.fa-volume-slash style="margin-right: 1rem"
     - if !GoogleAccount.all.all?(&:healthy?)
       i.fa-solid.fa-calendar-circle-exclamation style="margin-right: 1rem"
     - if !HomeAssistantHome.healthy?
