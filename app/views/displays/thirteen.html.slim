@@ -12,7 +12,15 @@ div style="font-size: 1rem"
   - if !HomeAssistantHome.healthy?
     i.fa-solid.fa-house-circle-exclamation style="margin-right: 1rem; margin-bottom: 1rem;"
   - if !HomeAssistantHome.hot_water_heater_healthy?
-    i.fa-solid.fa-tank-water style="margin-right: 1rem"
+    i.fa-solid.fa-tank-water style="margin-right: 1rem; margin-bottom: 1rem"
+  - if HomeAssistantHome.washer_needs_attention?
+    i.fa-solid.fa-washing-machine style="margin-right: 1rem; margin-bottom: 1rem"
+  - if HomeAssistantHome.dryer_needs_attention?
+    i.fa-solid.fa-dryer-heat style="margin-right: 1rem; margin-bottom: 1rem"
+  - if Birdnet.healthy? && Birdnet.most_unusual_species_trailing_24h.present?
+    div style="margin-bottom: 1rem; margin-right: 1rem"
+      i.fa-solid.fa-crow
+      =< Birdnet.most_unusual_species_trailing_24h["commonName"]
 div style="clear: both; line-height: .7; margin-bottom: 1rem; padding-bottom: 1rem;"
   div style="float: left; font-size: 2rem;"
     = view_object[:current_temperature]
