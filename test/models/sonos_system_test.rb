@@ -100,6 +100,21 @@ class SonosSystemTest < Minitest::Test
     end
   end
 
+  def test_cpr_classical_status
+    data = {
+      "currentTrack"=>
+      {"artist"=>"Colorado Public Radio Classical",
+        "title"=>
+          "Slavonic Dance #5 in bb Op 72/5 by Antonin Dvorak -- Dvorak: Slavonic Dances / Dorati, Royal Po"
+      },
+      "playbackState" => "PLAYING"
+    }
+  
+    SonosSystem.stub :data, data do
+      assert_equal({artist: "Antonin Dvorak", track: "Slavonic Dance #5 in bb Op 72/5"}, SonosSystem.status)
+    end
+  end
+
   def test_status_no_title
     data = {
       "currentTrack" =>
