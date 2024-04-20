@@ -115,6 +115,21 @@ class SonosSystemTest < Minitest::Test
     end
   end
 
+  def test_cpr_classical_break_status
+    data = {
+      "currentTrack" =>
+        {
+          "artist" => "Colorado Public Radio Classical",
+          "title" => "CPR Classical -- Essential Saturdays" 
+        },
+     "playbackState" => "PLAYING"
+    }
+
+    SonosSystem.stub :data, data do
+      assert_equal({artist: "CPR Classical", track: "Essential Saturdays"}, SonosSystem.status)
+    end
+  end
+
   def test_status_no_title
     data = {
       "currentTrack" =>
