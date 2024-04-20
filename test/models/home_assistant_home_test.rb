@@ -111,4 +111,50 @@ class HomeAssistantHomeTest < Minitest::Test
       end
     end
   end
+
+  def test_dryer_needs_attention_no_data
+    assert_nil(HomeAssistantHome.dryer_needs_attention?)
+  end
+
+  def test_dryer_needs_attention
+    states = [
+      {
+        "entity_id" => Timeframe::Application.config.local["home_assistant_dryer_door_entity_id"],
+        "state" => "off",
+        "last_changed"=>"2024-04-20T13:14:09.114746+00:00",
+      },
+      {
+        "entity_id" => Timeframe::Application.config.local["home_assistant_dryer_state_entity_id"],
+        "state" => "Off",
+        "last_changed"=>"2024-04-20T14:08:54.382832+00:00",
+      }
+    ]
+
+    HomeAssistantHome.stub :states, states do
+      assert(HomeAssistantHome.dryer_needs_attention?)
+    end
+  end
+
+  def test_washer_needs_attention_no_data
+    assert_nil(HomeAssistantHome.washer_needs_attention?)
+  end
+
+  def test_washer_needs_attention
+    states = [
+      {
+        "entity_id" => Timeframe::Application.config.local["home_assistant_washer_state_entity_id"],
+        "state" => "Off",
+        "last_changed" => "2024-04-20T14:26:45.640590+00:00",
+      },
+      {
+        "entity_id" => Timeframe::Application.config.local["home_assistant_washer_door_entity_id"],
+        "state" => "off",
+        "last_changed" => "2024-04-20T13:15:17.285120+00:00",
+      }
+    ]
+
+    HomeAssistantHome.stub :states, states do
+      assert(HomeAssistantHome.washer_needs_attention?)
+    end
+  end
 end

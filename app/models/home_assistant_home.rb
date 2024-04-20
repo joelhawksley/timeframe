@@ -42,9 +42,31 @@ class HomeAssistantHome
   def self.hot_water_heater_healthy?
     entity = states.find { _1["entity_id"] == Timeframe::Application.config.local["home_assistant_available_hot_water_entity_id"] }
 
-    return true unless entity.present?
+    return nil unless entity.present?
 
     entity["state"].to_i > 10
+  end
+
+  def self.dryer_needs_attention?
+    door_entity = states.find { _1["entity_id"] == Timeframe::Application.config.local["home_assistant_dryer_door_entity_id"] }
+    state_entity = states.find { _1["entity_id"] == Timeframe::Application.config.local["home_assistant_dryer_state_entity_id"] }
+
+    return nil unless door_entity.present? && state_entity.present?
+
+    door_entity["state"] == "off" &&
+    state_entity["state"] == "Off" &&
+    Time.parse(state_entity["last_changed"]) > Time.parse(door_entity["last_changed"])
+  end
+
+  def self.washer_needs_attention?
+    door_entity = states.find { _1["entity_id"] == Timeframe::Application.config.local["home_assistant_washer_door_entity_id"] }
+    state_entity = states.find { _1["entity_id"] == Timeframe::Application.config.local["home_assistant_washer_state_entity_id"] }
+
+    return nil unless door_entity.present? && state_entity.present?
+
+    door_entity["state"] == "off" &&
+    state_entity["state"] == "Off" &&
+    Time.parse(state_entity["last_changed"]) > Time.parse(door_entity["last_changed"])
   end
 
   def self.garage_door_open?
