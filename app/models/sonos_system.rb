@@ -17,6 +17,7 @@ class SonosSystem
 
   def self.status
     return nil unless data["playbackState"] == "PLAYING"
+    return nil unless data["currentTrack"]["artist"].present?
 
     if data["currentTrack"]["artist"] == "Colorado Public Radio News"
       {
