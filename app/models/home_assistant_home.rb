@@ -95,6 +95,20 @@ class HomeAssistantHome
     entity["state"] == "on"
   end
 
+  def self.unavailable_door_sensors
+    out = []
+
+    Timeframe::Application.config.local["exterior_door_sensors"].concat(
+      Timeframe::Application.config.local["exterior_door_locks"]
+    ).each do |entity_id|
+      if HomeAssistantHome.states.find { _1["entity_id"] == entity_id }&.fetch("state") == "unavailable"
+        out << entity_id.split(".").last.gsub("_opening", "").humanize
+      end
+    end
+
+    out.uniq
+  end
+
   def self.open_doors
     out = []
 

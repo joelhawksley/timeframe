@@ -71,6 +71,10 @@ div style="display: flex; justify-content: space-between; line-height: 2rem;"
       i.fa-solid.fa-dryer-heat style="margin-right: 1rem"
     - if HomeAssistantHome.car_needs_plugged_in?
       i.fa-solid.fa-car-side-bolt style="margin-right: 1rem"
+    - HomeAssistantHome.unavailable_door_sensors.each do |door_sensor_name|
+      span style="margin-right: 1rem"
+        i.fa-solid.fa-triangle-exclamation
+        =< door_sensor_name
     - HomeAssistantHome.unlocked_doors.each do |door_name|
       span style="margin-right: 1rem"
         i.fa-solid.fa-lock-open

@@ -200,4 +200,17 @@ class HomeAssistantHomeTest < Minitest::Test
       assert_equal(HomeAssistantHome.unlocked_doors, ["Patio"])
     end
   end
+
+  def test_unavailable_door_sensors
+    states = [
+      {
+        "entity_id" => Timeframe::Application.config.local["exterior_door_locks"][0],
+        "state" => "unavailable",
+      }
+    ]
+
+    HomeAssistantHome.stub :states, states do
+      assert_equal(HomeAssistantHome.unavailable_door_sensors, ["Patio door lock"])
+    end
+  end
 end
