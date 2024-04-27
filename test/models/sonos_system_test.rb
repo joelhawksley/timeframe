@@ -152,7 +152,7 @@ class SonosSystemTest < Minitest::Test
     }
 
     SonosSystem.stub :data, data do
-      assert_equal(nil, SonosSystem.status)
+      assert_nil(SonosSystem.status)
     end
   end
 end
