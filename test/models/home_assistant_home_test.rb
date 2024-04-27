@@ -157,4 +157,21 @@ class HomeAssistantHomeTest < Minitest::Test
       assert(HomeAssistantHome.washer_needs_attention?)
     end
   end
+
+  def test_car_needs_plugged_in
+    states = [
+      {
+        "entity_id" => Timeframe::Application.config.local["home_assistant_west_charger_entity_id"],
+        "state" => "not_connected",
+      },
+      {
+        "entity_id" => Timeframe::Application.config.local["home_assistant_rav4_entity_id"],
+        "state" => "garage",
+      }
+    ]
+
+    HomeAssistantHome.stub :states, states do
+      assert(HomeAssistantHome.car_needs_plugged_in?)
+    end
+  end
 end

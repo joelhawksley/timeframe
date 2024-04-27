@@ -78,6 +78,15 @@ class HomeAssistantHome
     entity["state"] == "open" || entity_2["state"] == "open"
   end
 
+  def self.car_needs_plugged_in?
+    rav4_entity = states.find { _1["entity_id"] == Timeframe::Application.config.local["home_assistant_rav4_entity_id"] }
+    west_charger_entity = states.find { _1["entity_id"] == Timeframe::Application.config.local["home_assistant_west_charger_entity_id"] }
+
+    return false unless rav4_entity.present? && west_charger_entity.present?
+
+    rav4_entity["state"] == "garage" && west_charger_entity["state"] == "not_connected"
+  end
+
   def self.package_present?
     entity = states.find { _1["entity_id"] == Timeframe::Application.config.local["home_assistant_package_box_entity_id"] }
 

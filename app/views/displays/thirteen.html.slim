@@ -17,6 +17,8 @@ div style="font-size: 1rem"
     i.fa-solid.fa-washing-machine style="margin-right: 1rem; margin-bottom: 1rem"
   - if HomeAssistantHome.dryer_needs_attention?
     i.fa-solid.fa-dryer-heat style="margin-right: 1rem; margin-bottom: 1rem"
+  - if HomeAssistantHome.car_needs_plugged_in?
+    i.fa-solid.fa-car-side-bolt style="margin-right: 1rem; margin-bottom: 1rem"
   - if Birdnet.healthy? && Birdnet.most_unusual_species_trailing_24h.present?
     div style="display: inline-block; margin-bottom: 1rem; margin-right: 1rem"
       i.fa-solid.fa-crow

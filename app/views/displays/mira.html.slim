@@ -69,6 +69,8 @@ div style="display: flex; justify-content: space-between; line-height: 2rem;"
       i.fa-solid.fa-washing-machine style="margin-right: 1rem"
     - if HomeAssistantHome.dryer_needs_attention?
       i.fa-solid.fa-dryer-heat style="margin-right: 1rem"
+    - if HomeAssistantHome.car_needs_plugged_in?
+      i.fa-solid.fa-car-side-bolt style="margin-right: 1rem"
   div style="font-size:2rem;" = DateTime.now.strftime("%A, %B %-d")
 div style="margin-top: 1rem; display: flex; justify-content: space-between; line-height: .7"
   div style="font-size: 5.5rem; margin-bottom: 1rem;" 
