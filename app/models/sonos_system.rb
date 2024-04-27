@@ -44,8 +44,6 @@ class SonosSystem
           track: title_parts[0]
         }
       else
-        artist_parts = data["currentTrack"]["artist"].split(" - ")
-
         {
           artist: data["currentTrack"]["artist"].split(" - ").first,
           track: data["currentTrack"]["album"]
