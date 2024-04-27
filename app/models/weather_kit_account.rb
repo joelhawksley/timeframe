@@ -183,9 +183,14 @@ class WeatherKitAccount
     return [] unless (days = weather.dig("forecastDaily", "days"))
 
     days.map do |day|
-      summary_suffix = if day.dig("daytimeForecast", "precipitationAmount").to_f > 0
-        " / #{day["daytimeForecast"]["precipitationAmount"].round(1)}\""
-      end
+      summary_suffix = 
+        if day.dig("precipitationType") == "snow"
+          if day.dig("snowfallAmount") > 0.05
+            " / #{(day["snowfallAmount"] * 0.0393701).round(1)}\""
+          end
+        elsif day.dig("precipitationAmount").to_f > 0.05
+          " / #{(day["precipitationAmount"] * 0.0393701).round(1)}\""
+        end
 
       CalendarEvent.new(
         id: "_weather_day_#{day["forecastStart"]}",

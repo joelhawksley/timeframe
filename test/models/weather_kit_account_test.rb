@@ -2368,7 +2368,102 @@ class WeatherKitAccountTest < Minitest::Test
     }
 
     WeatherKitAccount.stub :weather, weather do
-      assert(WeatherKitAccount.daily_calendar_events.first.summary.include?('2.1"'))
+      assert(WeatherKitAccount.daily_calendar_events.first.summary.include?('2.8"'))
+    end
+  end
+
+  def test_daily_calendar_events_rain_precip
+    weather = {
+      "forecastDaily" => {"days" =>
+        [{"forecastStart"=>"2024-04-26T06:00:00Z",
+        "forecastEnd"=>"2024-04-27T06:00:00Z",
+        "conditionCode"=>"Rain",
+        "maxUvIndex"=>6,
+        "moonPhase"=>"waningGibbous",
+        "moonrise"=>"2024-04-27T05:09:51Z",
+        "moonset"=>"2024-04-26T13:20:07Z",
+        "precipitationAmount"=>7.82,
+        "precipitationChance"=>0.96,
+        "precipitationType"=>"rain",
+        "snowfallAmount"=>0.0,
+        "solarMidnight"=>"2024-04-26T06:57:40Z",
+        "solarNoon"=>"2024-04-26T18:57:55Z",
+        "sunrise"=>"2024-04-26T12:05:57Z",
+        "sunriseCivil"=>"2024-04-26T11:37:15Z",
+        "sunriseNautical"=>"2024-04-26T11:02:07Z",
+        "sunriseAstronomical"=>"2024-04-26T10:25:01Z",
+        "sunset"=>"2024-04-27T01:50:25Z",
+        "sunsetCivil"=>"2024-04-27T02:19:25Z",
+        "sunsetNautical"=>"2024-04-27T02:54:29Z",
+        "sunsetAstronomical"=>"2024-04-27T03:32:13Z",
+        "temperatureMax"=>19.92,
+        "temperatureMin"=>8.23,
+        "windGustSpeedMax"=>26.93,
+        "windSpeedAvg"=>8.8,
+        "windSpeedMax"=>14.45,
+        "daytimeForecast"=>
+         {"forecastStart"=>"2024-04-26T13:00:00Z",
+          "forecastEnd"=>"2024-04-27T01:00:00Z",
+          "cloudCover"=>0.64,
+          "conditionCode"=>"MostlyCloudy",
+          "humidity"=>0.39,
+          "precipitationAmount"=>1.12,
+          "precipitationChance"=>0.14,
+          "precipitationType"=>"rain",
+          "snowfallAmount"=>0.0,
+          "temperatureMax"=>19.92,
+          "temperatureMin"=>9.67,
+          "windDirection"=>20,
+          "windGustSpeedMax"=>25.73,
+          "windSpeed"=>9.47,
+          "windSpeedMax"=>14.45},
+        "overnightForecast"=>
+         {"forecastStart"=>"2024-04-27T01:00:00Z",
+          "forecastEnd"=>"2024-04-27T13:00:00Z",
+          "cloudCover"=>0.97,
+          "conditionCode"=>"Rain",
+          "humidity"=>0.8,
+          "precipitationAmount"=>14.75,
+          "precipitationChance"=>0.96,
+          "precipitationType"=>"rain",
+          "snowfallAmount"=>0.0,
+          "temperatureMax"=>11.51,
+          "temperatureMin"=>5.99,
+          "windDirection"=>344,
+          "windGustSpeedMax"=>26.93,
+          "windSpeed"=>11.57,
+          "windSpeedMax"=>13.89},
+        "restOfDayForecast"=>
+         {"forecastStart"=>"2024-04-27T03:19:06Z",
+          "forecastEnd"=>"2024-04-27T06:00:00Z",
+          "cloudCover"=>0.97,
+          "conditionCode"=>"Rain",
+          "humidity"=>0.8,
+          "precipitationAmount"=>4.41,
+          "precipitationChance"=>0.96,
+          "precipitationType"=>"rain",
+          "snowfallAmount"=>0.0,
+          "temperatureMax"=>9.15,
+          "temperatureMin"=>8.23,
+          "windDirection"=>345,
+          "windGustSpeedMax"=>25.57,
+          "windSpeed"=>11.62,
+          "windSpeedMax"=>12.64}}],
+                          "name" => "DailyForecast",
+                          "metadata" =>
+        {"units" => "m",
+         "version" => 1,
+         "latitude" => 39.915,
+         "readTime" => "2023-09-15T15:44:28Z",
+         "longitude" => -105.022,
+         "expireTime" => "2023-09-15T16:44:28Z",
+         "reportedTime" => "2023-09-15T15:00:00Z",
+         "attributionURL" =>
+          "https://developer.apple.com/weatherkit/data-source-attribution/"}}
+    }
+
+    WeatherKitAccount.stub :weather, weather do
+      assert(WeatherKitAccount.daily_calendar_events.first.summary.include?('0.3"'))
     end
   end
 
