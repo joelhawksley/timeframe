@@ -174,4 +174,30 @@ class HomeAssistantHomeTest < Minitest::Test
       assert(HomeAssistantHome.car_needs_plugged_in?)
     end
   end
+
+  def test_open_doors
+    states = [
+      {
+        "entity_id" => Timeframe::Application.config.local["exterior_door_sensors"][0],
+        "state" => "on",
+      }
+    ]
+
+    HomeAssistantHome.stub :states, states do
+      assert_equal(HomeAssistantHome.open_doors, ["Alley"])
+    end
+  end
+
+  def test_unlocked_doors
+    states = [
+      {
+        "entity_id" => Timeframe::Application.config.local["exterior_door_locks"][0],
+        "state" => "unlocked",
+      }
+    ]
+
+    HomeAssistantHome.stub :states, states do
+      assert_equal(HomeAssistantHome.unlocked_doors, ["Patio"])
+    end
+  end
 end

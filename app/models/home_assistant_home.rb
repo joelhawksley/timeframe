@@ -94,4 +94,28 @@ class HomeAssistantHome
 
     entity["state"] == "on"
   end
+
+  def self.open_doors
+    out = []
+
+    Timeframe::Application.config.local["exterior_door_sensors"].map do |entity_id|
+      if HomeAssistantHome.states.find { _1["entity_id"] == entity_id }&.fetch("state") == "on"
+        out << entity_id.split(".").last.split("_door").first.humanize
+      end
+    end
+
+    out
+  end
+
+  def self.unlocked_doors
+    out = []
+
+    Timeframe::Application.config.local["exterior_door_locks"].map do |entity_id|
+      if HomeAssistantHome.states.find { _1["entity_id"] == entity_id }&.fetch("state") == "unlocked"
+        out << entity_id.split(".").last.split("_door").first.humanize
+      end
+    end
+
+    out
+  end
 end
