@@ -160,6 +160,7 @@ class WeatherKitAccount
       "Windy" => "wind",
       "Drizzle" => "raindrops",
       "Rain" => "raindrops",
+      "HeavyRain" => "raindrops",
       "Haze" => "sun-haze",
       "Snow" => "snowflake",
       "HeavySnow" => "snowflakes",
