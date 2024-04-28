@@ -19,6 +19,8 @@ div style="font-size: 1rem"
     i.fa-solid.fa-dryer-heat style="margin-right: 1rem; margin-bottom: 1rem"
   - if HomeAssistantHome.car_needs_plugged_in?
     i.fa-solid.fa-car-side-bolt style="margin-right: 1rem; margin-bottom: 1rem"
+  - if !DogPark.open?
+    i.fa-solid.fa-location-pin-lock style="margin-right: 1rem; margin-bottom: 1rem"
   - HomeAssistantHome.unavailable_door_sensors.each do |door_sensor_name|
     span style="margin-right: 1rem; margin-bottom: 1rem"
       i.fa-solid.fa-triangle-exclamation

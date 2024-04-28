@@ -66,6 +66,7 @@ module Timeframe
           end
         end
         run_in_bg(300) { Birdnet.fetch }
+        run_in_bg(300) { DogPark.fetch }
       end
     end
     # :nocov:
