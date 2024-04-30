@@ -65,6 +65,8 @@ div style="display: flex; justify-content: space-between; line-height: 2rem;"
       i.fa-solid.fa-tank-water style="margin-right: 1rem"
     - if !Birdnet.healthy?
       i.fa-solid.fa-microphone-slash style="margin-right: 1rem"
+    - if !DogPark.healthy?
+      i.fa-solid.fa-bone-break style="margin-right: 1rem"
     - if HomeAssistantHome.washer_needs_attention?
       i.fa-solid.fa-washing-machine style="margin-right: 1rem"
     - if HomeAssistantHome.dryer_needs_attention?
@@ -87,7 +89,7 @@ div style="display: flex; justify-content: space-between; line-height: 2rem;"
         =< door_name
   div style="font-size:2rem;" = DateTime.now.strftime("%A, %B %-d")
 div style="margin-top: 1rem; display: flex; justify-content: space-between; line-height: .7"
-  div style="font-size: 5.5rem; margin-bottom: 1rem;" 
+  div style="font-size: 5.5rem; margin-bottom: 1rem;"
     = view_object[:current_temperature]
     ' °
   div style="text-align: right; font-size: 5.5rem;" = DateTime.now.strftime("%l:%M%P")
