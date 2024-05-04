@@ -75,12 +75,16 @@ class WeatherKitAccount
 
         next if !weather_hour.present?
 
+        wind_suffix = if weather_hour["windGust"].to_f > 20
+          " / #{weather_hour["windGust"].round}mph"
+        end
+
         CalendarEvent.new(
           id: "_weather_hour_#{hour.to_i}",
           starts_at: hour,
           ends_at: hour,
           icon: icon_for(weather_hour["conditionCode"]),
-          summary: "#{celsius_fahrenheit(weather_hour["temperature"])}°".html_safe
+          summary: "#{celsius_fahrenheit(weather_hour["temperature"])}°#{wind_suffix}".html_safe
         )
       end.compact
     end
