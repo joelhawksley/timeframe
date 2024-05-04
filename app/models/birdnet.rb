@@ -24,7 +24,7 @@ class Birdnet
   def self.healthy?
     return false unless last_fetched_at
 
-    DateTime.parse(last_fetched_at) > DateTime.now - 5.minutes
+    DateTime.parse(last_fetched_at) > DateTime.now - 10.minutes
   end
 
   # :nocov:
