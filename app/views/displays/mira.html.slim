@@ -41,14 +41,20 @@ div.hide-if-empty style="font-size: 1.75rem; position:absolute; left: 0; right: 
         |  :
         =< status[:track]
 div style="margin-top: 1.5rem;"
-div style="text-align: right; margin-bottom: .5rem;"
-  - if Birdnet.healthy? && Birdnet.most_unusual_species_trailing_24h.present?
-    i.fa-solid.fa-crow
-    =< Birdnet.most_unusual_species_trailing_24h["commonName"]
-  - else
-    | &nbsp;
-div style="display: flex; justify-content: space-between; line-height: 2rem;"
-  div style="font-size: 1.75rem"
+div style="display: flex; justify-content: space-between;"
+  div
+    - HomeAssistantHome.unavailable_door_sensors.each do |door_sensor_name|
+      span style="margin-right: 1rem"
+        i.fa-solid.fa-triangle-exclamation
+        =< door_sensor_name
+  div style="text-align: right; margin-bottom: .5rem;"
+    - if Birdnet.healthy? && Birdnet.most_unusual_species_trailing_24h.present?
+      i.fa-solid.fa-crow
+      =< Birdnet.most_unusual_species_trailing_24h["commonName"]
+    - else
+      | &nbsp;
+div style="display: flex; justify-content: space-between; line-height: 2rem; font-size:2rem;"
+  div
     - if HomeAssistantHome.package_present?
       i.fa-solid.fa-box-open style="margin-right: 1rem"
     - if HomeAssistantHome.garage_door_open?
@@ -75,10 +81,6 @@ div style="display: flex; justify-content: space-between; line-height: 2rem;"
       i.fa-solid.fa-car-side-bolt style="margin-right: 1rem"
     - if !DogPark.open?
       i.fa-solid.fa-location-pin-lock style="margin-right: 1rem"
-    - HomeAssistantHome.unavailable_door_sensors.each do |door_sensor_name|
-      span style="margin-right: 1rem"
-        i.fa-solid.fa-triangle-exclamation
-        =< door_sensor_name
     - HomeAssistantHome.unlocked_doors.each do |door_name|
       span style="margin-right: 1rem"
         i.fa-solid.fa-lock-open
@@ -87,7 +89,7 @@ div style="display: flex; justify-content: space-between; line-height: 2rem;"
       span style="margin-right: 1rem"
         i.fa-solid.fa-door-open
         =< door_name
-  div style="font-size:2rem;" = DateTime.now.strftime("%A, %B %-d")
+  div = DateTime.now.strftime("%A, %B %-d")
 div style="margin-top: 1rem; display: flex; justify-content: space-between; line-height: .7"
   div style="font-size: 5.5rem; margin-bottom: 1rem;"
     = view_object[:current_temperature]

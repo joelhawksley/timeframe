@@ -1,42 +1,46 @@
 .timestamp style="position: absolute; bottom: .25rem; right: .25rem; font-size: .4rem; color: #777; z-index: 10" = view_object[:timestamp]
-div style="font-size: 1rem"
-  - if !WeatherKitAccount.healthy?
-    i.fa-solid.fa-cloud-slash style="margin-right: 1rem; margin-bottom: 1rem;"
-  - if !GoogleAccount.all.all?(&:healthy?)
-    i.fa-solid.fa-calendar-circle-exclamation style="margin-right: 1rem; margin-bottom: 1rem;"
-  - if !HomeAssistantHome.healthy?
-    i.fa-solid.fa-house-circle-exclamation style="margin-right: 1rem; margin-bottom: 1rem;"
-  - if !HomeAssistantHome.hot_water_heater_healthy?
-    i.fa-solid.fa-tank-water style="margin-right: 1rem; margin-bottom: 1rem"
-  - if HomeAssistantHome.washer_needs_attention?
-    i.fa-solid.fa-washing-machine style="margin-right: 1rem; margin-bottom: 1rem"
-  - if HomeAssistantHome.dryer_needs_attention?
-    i.fa-solid.fa-dryer-heat style="margin-right: 1rem; margin-bottom: 1rem"
-  - if HomeAssistantHome.car_needs_plugged_in?
-    i.fa-solid.fa-car-side-bolt style="margin-right: 1rem; margin-bottom: 1rem"
-  - if !DogPark.open?
-    i.fa-solid.fa-location-pin-lock style="margin-right: 1rem; margin-bottom: 1rem"
-  - HomeAssistantHome.unavailable_door_sensors.each do |door_sensor_name|
-    span style="margin-right: 1rem; margin-bottom: 1rem"
-      i.fa-solid.fa-triangle-exclamation
-      =< door_sensor_name
-  - HomeAssistantHome.unlocked_doors.each do |door_name|
-    span style="margin-right: 1rem; margin-bottom: 1rem"
-      i.fa-solid.fa-lock-open
-      =< door_name
-  - HomeAssistantHome.open_doors.each do |door_name|
-    span style="margin-right: 1rem; margin-bottom: 1rem"
-      i.fa-solid.fa-door-open
-      =< door_name
-  - if Birdnet.healthy? && Birdnet.most_unusual_species_trailing_24h.present?
-    div style="display: inline-block; margin-bottom: 1rem; margin-right: 1rem"
-      i.fa-solid.fa-crow
-      =< Birdnet.most_unusual_species_trailing_24h["commonName"]
-div style="clear: both; line-height: .7; margin-bottom: 1rem; padding-bottom: 1rem;"
-  div style="float: left; font-size: 2rem;"
+div style="clear: both; line-height: .7; margin-bottom: 1rem; font-size: 1rem"
+  div style="float: left;"
+    - if !WeatherKitAccount.healthy?
+      i.fa-solid.fa-cloud-slash style="margin-right: 1rem;"
+    - if !GoogleAccount.all.all?(&:healthy?)
+      i.fa-solid.fa-calendar-circle-exclamation style="margin-right: 1rem;"
+    - if !HomeAssistantHome.healthy?
+      i.fa-solid.fa-house-circle-exclamation style="margin-right: 1rem;"
+    - if !HomeAssistantHome.hot_water_heater_healthy?
+      i.fa-solid.fa-tank-water style="margin-right: 1rem;"
+    - if HomeAssistantHome.washer_needs_attention?
+      i.fa-solid.fa-washing-machine style="margin-right: 1rem;"
+    - if HomeAssistantHome.dryer_needs_attention?
+      i.fa-solid.fa-dryer-heat style="margin-right: 1rem;"
+    - if HomeAssistantHome.car_needs_plugged_in?
+      i.fa-solid.fa-car-side-bolt style="margin-right: 1rem;"
+    - if !DogPark.open?
+      i.fa-solid.fa-location-pin-lock style="margin-right: 1rem;"
+    - HomeAssistantHome.unavailable_door_sensors.each do |door_sensor_name|
+      span style="margin-right: 1rem;"
+        i.fa-solid.fa-triangle-exclamation
+        =< door_sensor_name
+    - HomeAssistantHome.unlocked_doors.each do |door_name|
+      span style="margin-right: 1rem;"
+        i.fa-solid.fa-lock-open
+        =< door_name
+    - HomeAssistantHome.open_doors.each do |door_name|
+      span style="margin-right: 1rem;"
+        i.fa-solid.fa-door-open
+        =< door_name
+  div style="float: right; text-align: right;"
+    - if Birdnet.healthy? && Birdnet.most_unusual_species_trailing_24h.present?
+      div style="display: inline-block;"
+        i.fa-solid.fa-crow
+        =< Birdnet.most_unusual_species_trailing_24h["commonName"]
+  div
+    | &nbsp;
+div style="clear: both; line-height: .7; margin-bottom: 1rem; padding-bottom: .5rem; font-size: 3rem;"
+  div style="float: left;"
     = view_object[:current_temperature]
     ' °
-  div style="float: right; text-align: right; font-size: 2rem;" = DateTime.now.strftime("%A, %B %-d")
+  div style="float: right; text-align: right;" = DateTime.now.strftime("%A, %B %-d")
   div
     | &nbsp;
 hr style="margin: 1rem 0 1rem; border: none; background-color: #ccc; color: #ccc; height: 2px;"

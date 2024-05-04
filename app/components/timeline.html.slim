@@ -2,7 +2,7 @@
   - next if !event_day[:show_daily_events] && event_day[:events][:periodic].empty?
   div style="display: flex; margin-bottom: 1rem"
     div style="width: 15.5rem; vertical-align: top; padding-right: 1rem; border-right: 2px solid #ccc;"
-      div style="font-size: 2rem; font-weight: 700" = event_day[:day_name]
+      div style="font-size: 2rem; font-weight: 700; line-height: 1" = event_day[:day_name]
       table
         - event_day[:events][:daily].each do |event|
           tr
