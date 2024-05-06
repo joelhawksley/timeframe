@@ -91,7 +91,7 @@ class SonosSystemTest < Minitest::Test
   def test_cpr_news_status
     data = {
       "currentTrack" =>
-       {"artist"=>"Colorado Public Radio News"},
+       {"artist" => "Colorado Public Radio News"},
       "playbackState" => "PLAYING"
     }
 
@@ -102,14 +102,13 @@ class SonosSystemTest < Minitest::Test
 
   def test_cpr_classical_status
     data = {
-      "currentTrack"=>
-      {"artist"=>"Colorado Public Radio Classical",
-        "title"=>
-          "Slavonic Dance #5 in bb Op 72/5 by Antonin Dvorak -- Dvorak: Slavonic Dances / Dorati, Royal Po"
-      },
+      "currentTrack" =>
+      {"artist" => "Colorado Public Radio Classical",
+       "title" =>
+          "Slavonic Dance #5 in bb Op 72/5 by Antonin Dvorak -- Dvorak: Slavonic Dances / Dorati, Royal Po"},
       "playbackState" => "PLAYING"
     }
-  
+
     SonosSystem.stub :data, data do
       assert_equal({artist: "Antonin Dvorak", track: "Slavonic Dance #5 in bb Op 72/5"}, SonosSystem.status)
     end
@@ -120,9 +119,9 @@ class SonosSystemTest < Minitest::Test
       "currentTrack" =>
         {
           "artist" => "Colorado Public Radio Classical",
-          "title" => "CPR Classical -- Essential Saturdays" 
+          "title" => "CPR Classical -- Essential Saturdays"
         },
-     "playbackState" => "PLAYING"
+      "playbackState" => "PLAYING"
     }
 
     SonosSystem.stub :data, data do

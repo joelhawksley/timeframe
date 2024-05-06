@@ -13,23 +13,22 @@ class HomeAssistantHomeTest < Minitest::Test
 
   def test_garage_door_open_with_state_closed
     HomeAssistantHome.stub(
-      :states, 
+      :states,
       [
         {"entity_id" => Timeframe::Application.config.local["home_assistant_garage_door_entity_id"], "state" => "closed"},
-        {"entity_id" => Timeframe::Application.config.local["home_assistant_garage_door_2_entity_id"], "state" => "closed"},
+        {"entity_id" => Timeframe::Application.config.local["home_assistant_garage_door_2_entity_id"], "state" => "closed"}
       ]
     ) do
       refute(HomeAssistantHome.garage_door_open?)
     end
   end
 
-
   def test_garage_door_open_with_state_open
     HomeAssistantHome.stub(
-      :states, 
+      :states,
       [
         {"entity_id" => Timeframe::Application.config.local["home_assistant_garage_door_entity_id"], "state" => "open"},
-        {"entity_id" => Timeframe::Application.config.local["home_assistant_garage_door_2_entity_id"], "state" => "closed"},
+        {"entity_id" => Timeframe::Application.config.local["home_assistant_garage_door_2_entity_id"], "state" => "closed"}
       ]
     ) do
       assert(HomeAssistantHome.garage_door_open?)
@@ -38,10 +37,10 @@ class HomeAssistantHomeTest < Minitest::Test
 
   def test_garage_door_open_with_state_open_2
     HomeAssistantHome.stub(
-      :states, 
+      :states,
       [
         {"entity_id" => Timeframe::Application.config.local["home_assistant_garage_door_entity_id"], "state" => "closed"},
-        {"entity_id" => Timeframe::Application.config.local["home_assistant_garage_door_2_entity_id"], "state" => "open"},
+        {"entity_id" => Timeframe::Application.config.local["home_assistant_garage_door_2_entity_id"], "state" => "open"}
       ]
     ) do
       assert(HomeAssistantHome.garage_door_open?)
@@ -77,7 +76,7 @@ class HomeAssistantHomeTest < Minitest::Test
   end
 
   def test_feels_like_temperature
-    HomeAssistantHome.stub :states, [{"entity_id"=>"sensor.weather_station_feels_like", "state"=>"49.712"}] do
+    HomeAssistantHome.stub :states, [{"entity_id" => "sensor.weather_station_feels_like", "state" => "49.712"}] do
       assert_equal(HomeAssistantHome.feels_like_temperature, 49)
     end
   end
@@ -121,12 +120,12 @@ class HomeAssistantHomeTest < Minitest::Test
       {
         "entity_id" => Timeframe::Application.config.local["home_assistant_dryer_door_entity_id"],
         "state" => "off",
-        "last_changed"=>"2024-04-20T13:14:09.114746+00:00",
+        "last_changed" => "2024-04-20T13:14:09.114746+00:00"
       },
       {
         "entity_id" => Timeframe::Application.config.local["home_assistant_dryer_state_entity_id"],
         "state" => "Off",
-        "last_changed"=>"2024-04-20T14:08:54.382832+00:00",
+        "last_changed" => "2024-04-20T14:08:54.382832+00:00"
       }
     ]
 
@@ -144,12 +143,12 @@ class HomeAssistantHomeTest < Minitest::Test
       {
         "entity_id" => Timeframe::Application.config.local["home_assistant_washer_state_entity_id"],
         "state" => "Off",
-        "last_changed" => "2024-04-20T14:26:45.640590+00:00",
+        "last_changed" => "2024-04-20T14:26:45.640590+00:00"
       },
       {
         "entity_id" => Timeframe::Application.config.local["home_assistant_washer_door_entity_id"],
         "state" => "off",
-        "last_changed" => "2024-04-20T13:15:17.285120+00:00",
+        "last_changed" => "2024-04-20T13:15:17.285120+00:00"
       }
     ]
 
@@ -162,11 +161,11 @@ class HomeAssistantHomeTest < Minitest::Test
     states = [
       {
         "entity_id" => Timeframe::Application.config.local["home_assistant_west_charger_entity_id"],
-        "state" => "not_connected",
+        "state" => "not_connected"
       },
       {
         "entity_id" => Timeframe::Application.config.local["home_assistant_rav4_entity_id"],
-        "state" => "garage",
+        "state" => "garage"
       }
     ]
 
@@ -179,7 +178,7 @@ class HomeAssistantHomeTest < Minitest::Test
     states = [
       {
         "entity_id" => Timeframe::Application.config.local["exterior_door_sensors"][0],
-        "state" => "on",
+        "state" => "on"
       }
     ]
 
@@ -192,7 +191,7 @@ class HomeAssistantHomeTest < Minitest::Test
     states = [
       {
         "entity_id" => Timeframe::Application.config.local["exterior_door_locks"][0],
-        "state" => "unlocked",
+        "state" => "unlocked"
       }
     ]
 
@@ -205,7 +204,7 @@ class HomeAssistantHomeTest < Minitest::Test
     states = [
       {
         "entity_id" => Timeframe::Application.config.local["exterior_door_locks"][0],
-        "state" => "unavailable",
+        "state" => "unavailable"
       }
     ]
 

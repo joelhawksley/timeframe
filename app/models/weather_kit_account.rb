@@ -188,7 +188,7 @@ class WeatherKitAccount
     return [] unless (days = weather.dig("forecastDaily", "days"))
 
     days.map do |day|
-      summary_suffix = 
+      summary_suffix =
         if day.dig("precipitationType") == "snow"
           if day.dig("snowfallAmount") > 0.05
             " / #{(day["snowfallAmount"] * 0.0393701).round(1)}\""

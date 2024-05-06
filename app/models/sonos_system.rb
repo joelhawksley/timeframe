@@ -26,7 +26,7 @@ class SonosSystem
       }
     elsif data["currentTrack"]["artist"] == "Colorado Public Radio Classical"
       if data["currentTrack"]["title"].include?(" by ")
-        track, artist = data["currentTrack"]["title"].split(" -- ").first.split (" by ")
+        track, artist = data["currentTrack"]["title"].split(" -- ").first.split(" by ")
       else
         artist, track = data["currentTrack"]["title"].split(" -- ")
       end

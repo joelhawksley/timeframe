@@ -45,8 +45,8 @@ class DogParkTest < Minitest::Test
 
   def test_open
     data = "PrintFeedbackShare & BookmarkShare & Bookmark, Press Enter to show all options, press Tab go to next optionFont Size: + -
-    THE DOG OFF-LEASH AREA AT DAVIDSON MESA IS OPEN. 
-    
+    THE DOG OFF-LEASH AREA AT DAVIDSON MESA IS OPEN.
+
      The HOWL Line is currently experiencing technical difficulties. Please check back here for updates."
 
     DogPark.stub :data, data do

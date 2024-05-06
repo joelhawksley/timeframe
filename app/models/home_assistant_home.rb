@@ -54,8 +54,8 @@ class HomeAssistantHome
     return nil unless door_entity.present? && state_entity.present?
 
     door_entity["state"] == "off" &&
-    state_entity["state"] == "Off" &&
-    Time.parse(state_entity["last_changed"]) > Time.parse(door_entity["last_changed"])
+      state_entity["state"] == "Off" &&
+      Time.parse(state_entity["last_changed"]) > Time.parse(door_entity["last_changed"])
   end
 
   def self.washer_needs_attention?
@@ -65,8 +65,8 @@ class HomeAssistantHome
     return nil unless door_entity.present? && state_entity.present?
 
     door_entity["state"] == "off" &&
-    state_entity["state"] == "Off" &&
-    Time.parse(state_entity["last_changed"]) > Time.parse(door_entity["last_changed"])
+      state_entity["state"] == "Off" &&
+      Time.parse(state_entity["last_changed"]) > Time.parse(door_entity["last_changed"])
   end
 
   def self.garage_door_open?

@@ -46,6 +46,6 @@ Rails.application.configure do
   # config.file_watcher = ActiveSupport::EventedFileUpdateChecker
 
   config.logger = ::ActiveSupport::Logger.new("/dev/null")
-  config.logger.formatter = lambda { |*_| nil }
+  config.logger.formatter = lambda { |*_| }
   config.logger.level = 10 # FATAL is 4
 end
