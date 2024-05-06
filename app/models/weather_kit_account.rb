@@ -75,8 +75,8 @@ class WeatherKitAccount
 
         next if !weather_hour.present?
 
-        wind_suffix = if weather_hour["windGust"].to_f > 20
-          " / #{weather_hour["windGust"].round}mph"
+        wind_suffix = if weather_hour["windGust"].to_f * 0.621371 > 20
+          " / #{(weather_hour["windGust"] * 0.621371).round}mph"
         end
 
         CalendarEvent.new(

@@ -1096,13 +1096,13 @@ class WeatherKitAccountTest < Minitest::Test
            "conditionCode" => "Clear",
            "forecastStart" => "2023-08-27T18:00:00Z",
            "precipitationType" => "clear",
-           "windGust"=>31.15,}]
+           "windGust"=>51.15,}]
       }
     }
 
     WeatherKitAccount.stub :weather, weather do
       travel_to DateTime.new(2023, 8, 27, 16, 20, 0, "-0600") do
-        assert(WeatherKitAccount.hourly_calendar_events.last.summary.include?("31mph"))
+        assert(WeatherKitAccount.hourly_calendar_events.last.summary.include?("32mph"))
       end
     end
   end
