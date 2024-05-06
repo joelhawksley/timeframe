@@ -6,7 +6,7 @@ ruby "3.0.3"
 gem "dotenv-rails"
 gem "google-api-client", require: ["google/apis/calendar_v3", "google/apis/people_v1"]
 gem "httparty"
-gem "sqlite3"
+gem "sqlite3", "~> 1.4"
 gem "puma"
 gem "rails", "~> 7.1"
 gem "slim"
