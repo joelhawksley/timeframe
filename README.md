@@ -38,7 +38,7 @@ A web application for displaying information from various APIs on digital signag
 1) Optional: Install and run https://github.com/jishi/node-sonos-http-api.
 2) `bundle install`
 3) `rails db:setup`
-4) Copy `.config.example.yml` to `.config.yml` and set the given values.
+4) Copy `.config.yml`from a friend.
 5) `rails s`
 6) Visit [http://localhost:3000](http://localhost:3000)
 
