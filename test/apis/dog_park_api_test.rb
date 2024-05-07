@@ -9,8 +9,6 @@ class DogParkApiTest < Minitest::Test
     VCR.use_cassette(:dogpark_fetch, match_requests_on: [:method]) do
       DogParkApi.fetch
     end
-
-    MemoryValue.upsert(:dogpark, {})
   end
 
   def test_last_fetched_at_no_data

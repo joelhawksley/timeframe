@@ -9,8 +9,6 @@ class BirdnetApiTest < Minitest::Test
     VCR.use_cassette(:birdnet_fetch, match_requests_on: [:method]) do
       BirdnetApi.fetch
     end
-
-    MemoryValue.upsert(:birdnet, {})
   end
 
   def test_health_no_data
