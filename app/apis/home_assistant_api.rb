@@ -1,4 +1,4 @@
-class HomeAssistant < ApiModel
+class HomeAssistantApi < Api
   def self.headers
     {
       Authorization: "Bearer #{Timeframe::Application.config.local["home_assistant_token"]}",
@@ -80,7 +80,7 @@ class HomeAssistant < ApiModel
     Timeframe::Application.config.local["exterior_door_sensors"].concat(
       Timeframe::Application.config.local["exterior_door_locks"]
     ).each do |entity_id|
-      if HomeAssistant.data.find { _1["entity_id"] == entity_id }&.fetch("state") == "unavailable"
+      if HomeAssistantApi.data.find { _1["entity_id"] == entity_id }&.fetch("state") == "unavailable"
         out << entity_id.split(".").last.gsub("_opening", "").humanize
       end
     end
@@ -92,7 +92,7 @@ class HomeAssistant < ApiModel
     out = []
 
     Timeframe::Application.config.local["exterior_door_sensors"].map do |entity_id|
-      if HomeAssistant.data.find { _1["entity_id"] == entity_id }&.fetch("state") == "on"
+      if HomeAssistantApi.data.find { _1["entity_id"] == entity_id }&.fetch("state") == "on"
         out << entity_id.split(".").last.split("_door").first.humanize
       end
     end
@@ -104,7 +104,7 @@ class HomeAssistant < ApiModel
     out = []
 
     Timeframe::Application.config.local["exterior_door_locks"].map do |entity_id|
-      if HomeAssistant.data.find { _1["entity_id"] == entity_id }&.fetch("state") == "unlocked"
+      if HomeAssistantApi.data.find { _1["entity_id"] == entity_id }&.fetch("state") == "unlocked"
         out << entity_id.split(".").last.split("_door").first.humanize
       end
     end

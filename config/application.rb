@@ -57,16 +57,16 @@ module Timeframe
       end
 
       if ENV["RUN_BG"]
-        run_in_bg(1) { Sonos.fetch }
-        run_in_bg(1) { HomeAssistant.fetch }
-        run_in_bg(60) { WeatherKit.fetch }
+        run_in_bg(1) { SonosApi.fetch }
+        run_in_bg(1) { HomeAssistantApi.fetch }
+        run_in_bg(60) { WeatherKitApi.fetch }
         run_in_bg(60) do
           ActiveRecord::Base.connection_pool.with_connection do
             GoogleAccount.all.each(&:fetch)
           end
         end
-        run_in_bg(300) { Birdnet.fetch }
-        run_in_bg(300) { DogPark.fetch }
+        run_in_bg(300) { BirdnetApi.fetch }
+        run_in_bg(300) { DogParkApi.fetch }
       end
     end
     # :nocov:

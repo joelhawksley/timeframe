@@ -1,4 +1,4 @@
-class WeatherKit < ApiModel
+class WeatherKitApi < Api
   def self.time_before_unhealthy
     2.minutes
   end

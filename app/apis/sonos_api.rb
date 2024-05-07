@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Sonos < ApiModel
+class SonosApi < Api
   def self.time_before_unhealthy
     1.minute
   end

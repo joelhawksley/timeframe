@@ -2,12 +2,12 @@
 
 require "test_helper"
 
-class DogParkTest < Minitest::Test
+class DogParkApiTest < Minitest::Test
   include ActiveSupport::Testing::TimeHelpers
 
   def test_fetch
     VCR.use_cassette(:dogpark_fetch, match_requests_on: [:method]) do
-      DogPark.fetch
+      DogParkApi.fetch
     end
 
     MemoryValue.upsert(:dogpark, {})
@@ -15,35 +15,35 @@ class DogParkTest < Minitest::Test
 
   def test_last_fetched_at_no_data
     MemoryValue.stub(:get, {}) do
-      assert_nil(DogPark.last_fetched_at)
+      assert_nil(DogParkApi.last_fetched_at)
     end
   end
 
   def test_health_no_data
-    DogPark.stub :last_fetched_at, nil do
-      assert(!DogPark.healthy?)
+    DogParkApi.stub :last_fetched_at, nil do
+      assert(!DogParkApi.healthy?)
     end
   end
 
   def test_health_current_data
-    DogPark.stub :last_fetched_at, "2023-08-27 15:14:59 -0600" do
+    DogParkApi.stub :last_fetched_at, "2023-08-27 15:14:59 -0600" do
       travel_to DateTime.new(2023, 8, 27, 15, 15, 0, "-0600") do
-        assert(DogPark.healthy?)
+        assert(DogParkApi.healthy?)
       end
     end
   end
 
   def test_health_stale_data
-    DogPark.stub :last_fetched_at, "2023-08-27 15:14:59 -0600" do
+    DogParkApi.stub :last_fetched_at, "2023-08-27 15:14:59 -0600" do
       travel_to DateTime.new(2023, 8, 27, 16, 20, 0, "-0600") do
-        refute(DogPark.healthy?)
+        refute(DogParkApi.healthy?)
       end
     end
   end
 
   def test_open_no_data
-    DogPark.stub(:data, {}) do
-      assert_equal(DogPark.open?, false)
+    DogParkApi.stub(:data, {}) do
+      assert_equal(DogParkApi.open?, false)
     end
   end
 
@@ -53,8 +53,8 @@ class DogParkTest < Minitest::Test
 
      The HOWL Line is currently experiencing technical difficulties. Please check back here for updates."
 
-    DogPark.stub :data, data do
-      assert(DogPark.open?)
+    DogParkApi.stub :data, data do
+      assert(DogParkApi.open?)
     end
   end
 end

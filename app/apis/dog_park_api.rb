@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class DogPark < ApiModel
+class DogParkApi < Api
   def self.open?
     return false unless data.present?
 

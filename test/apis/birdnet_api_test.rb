@@ -2,41 +2,43 @@
 
 require "test_helper"
 
-class BirdnetTest < Minitest::Test
+class BirdnetApiTest < Minitest::Test
   include ActiveSupport::Testing::TimeHelpers
 
   def test_fetch
     VCR.use_cassette(:birdnet_fetch, match_requests_on: [:method]) do
-      Birdnet.fetch
+      BirdnetApi.fetch
     end
 
     MemoryValue.upsert(:birdnet, {})
   end
 
   def test_health_no_data
-    Birdnet.stub :last_fetched_at, nil do
-      assert(!Birdnet.healthy?)
+    BirdnetApi.stub :last_fetched_at, nil do
+      assert(!BirdnetApi.healthy?)
     end
   end
 
   def test_health_current_data
-    Birdnet.stub :last_fetched_at, "2023-08-27 15:14:59 -0600" do
+    BirdnetApi.stub :last_fetched_at, "2023-08-27 15:14:59 -0600" do
       travel_to DateTime.new(2023, 8, 27, 15, 15, 0, "-0600") do
-        assert(Birdnet.healthy?)
+        assert(BirdnetApi.healthy?)
       end
     end
   end
 
   def test_health_stale_data
-    Birdnet.stub :last_fetched_at, "2023-08-27 15:14:59 -0600" do
+    BirdnetApi.stub :last_fetched_at, "2023-08-27 15:14:59 -0600" do
       travel_to DateTime.new(2023, 8, 27, 16, 20, 0, "-0600") do
-        refute(Birdnet.healthy?)
+        refute(BirdnetApi.healthy?)
       end
     end
   end
 
   def test_most_unusual_species_trailing_24h_no_data
-    assert_equal(Birdnet.most_unusual_species_trailing_24h, {})
+    BirdnetApi.stub :data, {} do
+      assert_equal(BirdnetApi.most_unusual_species_trailing_24h, {})
+    end
   end
 
   def test_most_unusual_species_trailing_24h
@@ -91,8 +93,8 @@ class BirdnetTest < Minitest::Test
        "detections" => {"total" => 2, "almostCertain" => 2, "veryLikely" => 0, "uncertain" => 0, "unlikely" => 0},
        "latestDetectionAt" => "2024-04-13T16:10:08.000-06:00"}]}
 
-    Birdnet.stub :data, data do
-      assert_equal(568, Birdnet.most_unusual_species_trailing_24h["id"])
+    BirdnetApi.stub :data, data do
+      assert_equal(568, BirdnetApi.most_unusual_species_trailing_24h["id"])
     end
   end
 end

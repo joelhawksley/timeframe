@@ -12,10 +12,10 @@ div.hide-if-empty style="font-size: 1.75rem; position:absolute; left: 0; right: 
   div style="position: relative"
     div style="background:-webkit-gradient(linear,left top,left bottom,color-stop(0%, rgba(255,255,255,0)),color-stop(100%,rgba(255,255,255,1)));position: absolute;left: 0;right: 0; top: -2rem;height: 2rem;z-index: 5;"
   div.hide-if-empty style="background-color: #ddd; color: black; padding: 0.5rem 2rem; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;"
-    - if WeatherKit.healthy? && WeatherKit.weather.dig("forecastNextHour", "summary")&.first.to_h["condition"] != "clear"
-      - condition = WeatherKit.weather.dig("forecastNextHour", "summary")&.first.to_h["condition"]
+    - if WeatherKitApi.healthy? && WeatherKitApi.weather.dig("forecastNextHour", "summary")&.first.to_h["condition"] != "clear"
+      - condition = WeatherKitApi.weather.dig("forecastNextHour", "summary")&.first.to_h["condition"]
       - if condition.present? && condition != "clear"
-        - summary = WeatherKit.weather["forecastNextHour"]["summary"].first["condition"]
+        - summary = WeatherKitApi.weather["forecastNextHour"]["summary"].first["condition"]
         - icon = summary == "snow" ? "snowflake" : "raindrops"
         div style="display: flex; justify-content: space-between"
           div style="line-height: 3rem"
@@ -24,7 +24,7 @@ div.hide-if-empty style="font-size: 1.75rem; position:absolute; left: 0; right: 
           div
             table.minutely border=0 cellpadding="0" cellspacing="0"
               tr
-                - WeatherKit.weather["forecastNextHour"]["minutes"].first(60).each_with_index do |minute, i|
+                - WeatherKitApi.weather["forecastNextHour"]["minutes"].first(60).each_with_index do |minute, i|
                   - next if i.odd?
                   td
                     div style="height: 100px; position:relative; width: 28px;"
@@ -34,7 +34,7 @@ div.hide-if-empty style="font-size: 1.75rem; position:absolute; left: 0; right: 
                 td colspan="10" 20m
                 td colspan="10" 40m
   div.hide-if-empty style="background-color: black; color: white; padding: 1rem 2rem; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;"
-    - if status = Sonos.status
+    - if status = SonosApi.status
       i.fa-solid.fa-volume.fa-fw
       strong =< status[:artist]
       - if status[:track].present?
@@ -43,49 +43,49 @@ div.hide-if-empty style="font-size: 1.75rem; position:absolute; left: 0; right: 
 div style="margin-top: 1.5rem;"
 div style="display: flex; justify-content: space-between;"
   div
-    - HomeAssistant.unavailable_door_sensors.each do |door_sensor_name|
+    - HomeAssistantApi.unavailable_door_sensors.each do |door_sensor_name|
       span style="margin-right: 1rem"
         i.fa-solid.fa-triangle-exclamation
         =< door_sensor_name
   div style="text-align: right; margin-bottom: .5rem;"
-    - if Birdnet.healthy? && Birdnet.most_unusual_species_trailing_24h.present?
+    - if BirdnetApi.healthy? && BirdnetApi.most_unusual_species_trailing_24h.present?
       i.fa-solid.fa-crow
-      =< Birdnet.most_unusual_species_trailing_24h["commonName"]
+      =< BirdnetApi.most_unusual_species_trailing_24h["commonName"]
     - else
       | &nbsp;
 div style="display: flex; justify-content: space-between; line-height: 2rem; font-size:2rem;"
   div
-    - if HomeAssistant.package_present?
+    - if HomeAssistantApi.package_present?
       i.fa-solid.fa-box-open style="margin-right: 1rem"
-    - if HomeAssistant.garage_door_open?
+    - if HomeAssistantApi.garage_door_open?
       i.fa-solid.fa-garage-open style="margin-right: 1rem"
-    - if !WeatherKit.healthy?
+    - if !WeatherKitApi.healthy?
       i.fa-solid.fa-cloud-slash style="margin-right: 1rem"
-    - if !Sonos.healthy?
+    - if !SonosApi.healthy?
       i.fa-solid.fa-volume-slash style="margin-right: 1rem"
     - if !GoogleAccount.all.all?(&:healthy?)
       i.fa-solid.fa-calendar-circle-exclamation style="margin-right: 1rem"
-    - if !HomeAssistant.healthy?
+    - if !HomeAssistantApi.healthy?
       i.fa-solid.fa-house-circle-exclamation style="margin-right: 1rem"
-    - if !HomeAssistant.hot_water_heater_healthy?
+    - if !HomeAssistantApi.hot_water_heater_healthy?
       i.fa-solid.fa-tank-water style="margin-right: 1rem"
-    - if !Birdnet.healthy?
+    - if !BirdnetApi.healthy?
       i.fa-solid.fa-microphone-slash style="margin-right: 1rem"
-    - if !DogPark.healthy?
+    - if !DogParkApi.healthy?
       i.fa-solid.fa-bone-break style="margin-right: 1rem"
-    - if HomeAssistant.washer_needs_attention?
+    - if HomeAssistantApi.washer_needs_attention?
       i.fa-solid.fa-washing-machine style="margin-right: 1rem"
-    - if HomeAssistant.dryer_needs_attention?
+    - if HomeAssistantApi.dryer_needs_attention?
       i.fa-solid.fa-dryer-heat style="margin-right: 1rem"
-    - if HomeAssistant.car_needs_plugged_in?
+    - if HomeAssistantApi.car_needs_plugged_in?
       i.fa-solid.fa-car-side-bolt style="margin-right: 1rem"
-    - if !DogPark.open?
+    - if !DogParkApi.open?
       i.fa-solid.fa-location-pin-lock style="margin-right: 1rem"
-    - HomeAssistant.unlocked_doors.each do |door_name|
+    - HomeAssistantApi.unlocked_doors.each do |door_name|
       span style="margin-right: 1rem"
         i.fa-solid.fa-lock-open
         =< door_name
-    - HomeAssistant.open_doors.each do |door_name|
+    - HomeAssistantApi.open_doors.each do |door_name|
       span style="margin-right: 1rem"
         i.fa-solid.fa-door-open
         =< door_name

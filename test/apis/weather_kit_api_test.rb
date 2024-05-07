@@ -2,12 +2,12 @@
 
 require "test_helper"
 
-class WeatherKitTest < Minitest::Test
+class WeatherKitApiTest < Minitest::Test
   include ActiveSupport::Testing::TimeHelpers
 
   def test_current_temperature_no_data
-    WeatherKit.stub :data, {} do
-      assert_nil(WeatherKit.current_temperature)
+    WeatherKitApi.stub :data, {} do
+      assert_nil(WeatherKitApi.current_temperature)
     end
   end
 
@@ -19,36 +19,36 @@ class WeatherKitTest < Minitest::Test
         }
     }
 
-    WeatherKit.stub :data, weather do
-      assert_equal("86°", WeatherKit.current_temperature)
+    WeatherKitApi.stub :data, weather do
+      assert_equal("86°", WeatherKitApi.current_temperature)
     end
   end
 
   def test_health_no_data
-    WeatherKit.stub :last_fetched_at, nil do
-      assert(!WeatherKit.healthy?)
+    WeatherKitApi.stub :last_fetched_at, nil do
+      assert(!WeatherKitApi.healthy?)
     end
   end
 
   def test_health_current_data
-    WeatherKit.stub :last_fetched_at, "2023-08-27 15:14:59 -0600" do
+    WeatherKitApi.stub :last_fetched_at, "2023-08-27 15:14:59 -0600" do
       travel_to DateTime.new(2023, 8, 27, 15, 16, 0, "-0600") do
-        assert(WeatherKit.healthy?)
+        assert(WeatherKitApi.healthy?)
       end
     end
   end
 
   def test_health_stale_data
-    WeatherKit.stub :last_fetched_at, "2023-08-27 15:14:59 -0600" do
+    WeatherKitApi.stub :last_fetched_at, "2023-08-27 15:14:59 -0600" do
       travel_to DateTime.new(2023, 8, 27, 16, 20, 0, "-0600") do
-        refute(WeatherKit.healthy?)
+        refute(WeatherKitApi.healthy?)
       end
     end
   end
 
   def test_hourly_calendar_events_no_data
-    WeatherKit.stub :data, {} do
-      assert_equal([], WeatherKit.hourly_calendar_events)
+    WeatherKitApi.stub :data, {} do
+      assert_equal([], WeatherKitApi.hourly_calendar_events)
     end
   end
 
@@ -1075,9 +1075,9 @@ class WeatherKitTest < Minitest::Test
       }
     }
 
-    WeatherKit.stub :data, weather do
+    WeatherKitApi.stub :data, weather do
       travel_to DateTime.new(2023, 8, 27, 16, 20, 0, "-0600") do
-        assert_equal(16, WeatherKit.hourly_calendar_events.length)
+        assert_equal(16, WeatherKitApi.hourly_calendar_events.length)
       end
     end
   end
@@ -1095,16 +1095,16 @@ class WeatherKitTest < Minitest::Test
       }
     }
 
-    WeatherKit.stub :data, weather do
+    WeatherKitApi.stub :data, weather do
       travel_to DateTime.new(2023, 8, 27, 16, 20, 0, "-0600") do
-        assert(WeatherKit.hourly_calendar_events.last.summary.include?("32mph"))
+        assert(WeatherKitApi.hourly_calendar_events.last.summary.include?("32mph"))
       end
     end
   end
 
   def test_precip_calendar_events_no_data
-    WeatherKit.stub :data, {} do
-      assert_equal([], WeatherKit.precip_calendar_events)
+    WeatherKitApi.stub :data, {} do
+      assert_equal([], WeatherKitApi.precip_calendar_events)
     end
   end
 
@@ -2131,16 +2131,16 @@ class WeatherKitTest < Minitest::Test
       }
     }
 
-    WeatherKit.stub :data, weather do
+    WeatherKitApi.stub :data, weather do
       travel_to DateTime.new(2023, 8, 27, 16, 20, 0, "-0600") do
-        assert_equal(7, WeatherKit.precip_calendar_events.length)
+        assert_equal(7, WeatherKitApi.precip_calendar_events.length)
       end
     end
   end
 
   def test_fetch_raises_no_errors
     VCR.use_cassette("weatherkit_fetch") do
-      WeatherKit.fetch
+      WeatherKitApi.fetch
     end
   end
 
@@ -2309,8 +2309,8 @@ class WeatherKitTest < Minitest::Test
           "https://developer.apple.com/weatherkit/data-source-attribution/"}}
     }
 
-    WeatherKit.stub :data, weather do
-      assert_equal(10, WeatherKit.daily_calendar_events.length)
+    WeatherKitApi.stub :data, weather do
+      assert_equal(10, WeatherKitApi.daily_calendar_events.length)
     end
   end
 
@@ -2381,8 +2381,8 @@ class WeatherKitTest < Minitest::Test
           "https://developer.apple.com/weatherkit/data-source-attribution/"}}
     }
 
-    WeatherKit.stub :data, weather do
-      assert(WeatherKit.daily_calendar_events.first.summary.include?('2.8"'))
+    WeatherKitApi.stub :data, weather do
+      assert(WeatherKitApi.daily_calendar_events.first.summary.include?('2.8"'))
     end
   end
 
@@ -2476,20 +2476,20 @@ class WeatherKitTest < Minitest::Test
           "https://developer.apple.com/weatherkit/data-source-attribution/"}}
     }
 
-    WeatherKit.stub :data, weather do
-      assert(WeatherKit.daily_calendar_events.first.summary.include?('0.3"'))
+    WeatherKitApi.stub :data, weather do
+      assert(WeatherKitApi.daily_calendar_events.first.summary.include?('0.3"'))
     end
   end
 
   def test_daily_calendar_events_no_data
-    WeatherKit.stub :data, {} do
-      assert_equal([], WeatherKit.daily_calendar_events)
+    WeatherKitApi.stub :data, {} do
+      assert_equal([], WeatherKitApi.daily_calendar_events)
     end
   end
 
   def test_weather_alert_calendar_events
-    WeatherKit.stub :data, {} do
-      assert_equal([], WeatherKit.weather_alert_calendar_events)
+    WeatherKitApi.stub :data, {} do
+      assert_equal([], WeatherKitApi.weather_alert_calendar_events)
     end
   end
 
@@ -2508,7 +2508,7 @@ class WeatherKitTest < Minitest::Test
             "severity" => "moderate",
             "certainty" => "likely",
             "responses" => [],
-            "detailsUrl" => "https://weatherkit.apple.com/alertDetails/index.html?ids=8022c653-95e6-5761-876a-62c74c11f720&lang=en-US&timezone=America/Denver",
+            "detailsUrl" => "https://WeatherKitApi.apple.com/alertDetails/index.html?ids=8022c653-95e6-5761-876a-62c74c11f720&lang=en-US&timezone=America/Denver",
             "expireTime" => "2023-10-29T18:00:00Z",
             "importance" => "normal",
             "issuedTime" => "2023-10-29T01:11:00Z",
@@ -2526,8 +2526,8 @@ class WeatherKitTest < Minitest::Test
       }
     }
 
-    WeatherKit.stub :data, weather do
-      assert_equal(1, WeatherKit.weather_alert_calendar_events.length)
+    WeatherKitApi.stub :data, weather do
+      assert_equal(1, WeatherKitApi.weather_alert_calendar_events.length)
     end
   end
 end

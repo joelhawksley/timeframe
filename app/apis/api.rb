@@ -1,4 +1,4 @@
-class ApiModel
+class Api
   def self.fetch
     response = HTTParty.get(Timeframe::Application.config.local["#{storage_key}_url"], headers: headers)
 
