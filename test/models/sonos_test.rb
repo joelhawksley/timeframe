@@ -2,33 +2,33 @@
 
 require "test_helper"
 
-class SonosSystemTest < Minitest::Test
+class SonosTest < Minitest::Test
   include ActiveSupport::Testing::TimeHelpers
 
   def test_fetch
     VCR.use_cassette(:sonos_fetch, match_requests_on: [:method]) do
-      SonosSystem.fetch
+      Sonos.fetch
     end
   end
 
   def test_health_no_data
-    SonosSystem.stub :last_fetched_at, nil do
-      assert(!SonosSystem.healthy?)
+    Sonos.stub :last_fetched_at, nil do
+      assert(!Sonos.healthy?)
     end
   end
 
   def test_health_current_data
-    SonosSystem.stub :last_fetched_at, "2023-08-27 15:14:59 -0600" do
+    Sonos.stub :last_fetched_at, "2023-08-27 15:14:59 -0600" do
       travel_to DateTime.new(2023, 8, 27, 15, 15, 0, "-0600") do
-        assert(SonosSystem.healthy?)
+        assert(Sonos.healthy?)
       end
     end
   end
 
   def test_health_stale_data
-    SonosSystem.stub :last_fetched_at, "2023-08-27 15:14:59 -0600" do
+    Sonos.stub :last_fetched_at, "2023-08-27 15:14:59 -0600" do
       travel_to DateTime.new(2023, 8, 27, 16, 20, 0, "-0600") do
-        refute(SonosSystem.healthy?)
+        refute(Sonos.healthy?)
       end
     end
   end
@@ -69,8 +69,8 @@ class SonosSystemTest < Minitest::Test
       "elapsedTimeFormatted" => "00:00:00"
     }
 
-    SonosSystem.stub :data, data do
-      assert_equal({artist: "Allen Toussaint", track: "Southern Nights"}, SonosSystem.status)
+    Sonos.stub :data, data do
+      assert_equal({artist: "Allen Toussaint", track: "Southern Nights"}, Sonos.status)
     end
   end
 
@@ -83,8 +83,8 @@ class SonosSystemTest < Minitest::Test
       "playbackState" => "PLAYING"
     }
 
-    SonosSystem.stub :data, data do
-      assert_equal({artist: "Andrew Bird", track: "Masterfade"}, SonosSystem.status)
+    Sonos.stub :data, data do
+      assert_equal({artist: "Andrew Bird", track: "Masterfade"}, Sonos.status)
     end
   end
 
@@ -95,8 +95,8 @@ class SonosSystemTest < Minitest::Test
       "playbackState" => "PLAYING"
     }
 
-    SonosSystem.stub :data, data do
-      assert_equal({artist: "CPR News", track: nil}, SonosSystem.status)
+    Sonos.stub :data, data do
+      assert_equal({artist: "CPR News", track: nil}, Sonos.status)
     end
   end
 
@@ -109,8 +109,8 @@ class SonosSystemTest < Minitest::Test
       "playbackState" => "PLAYING"
     }
 
-    SonosSystem.stub :data, data do
-      assert_equal({artist: "Antonin Dvorak", track: "Slavonic Dance #5 in bb Op 72/5"}, SonosSystem.status)
+    Sonos.stub :data, data do
+      assert_equal({artist: "Antonin Dvorak", track: "Slavonic Dance #5 in bb Op 72/5"}, Sonos.status)
     end
   end
 
@@ -124,8 +124,8 @@ class SonosSystemTest < Minitest::Test
       "playbackState" => "PLAYING"
     }
 
-    SonosSystem.stub :data, data do
-      assert_equal({artist: "CPR Classical", track: "Essential Saturdays"}, SonosSystem.status)
+    Sonos.stub :data, data do
+      assert_equal({artist: "CPR Classical", track: "Essential Saturdays"}, Sonos.status)
     end
   end
 
@@ -137,8 +137,8 @@ class SonosSystemTest < Minitest::Test
       "playbackState" => "PLAYING"
     }
 
-    SonosSystem.stub :data, data do
-      assert_equal({artist: "Folk Alley", track: "American Tunes"}, SonosSystem.status)
+    Sonos.stub :data, data do
+      assert_equal({artist: "Folk Alley", track: "American Tunes"}, Sonos.status)
     end
   end
 
@@ -150,8 +150,8 @@ class SonosSystemTest < Minitest::Test
       "playbackState" => "PLAYING"
     }
 
-    SonosSystem.stub :data, data do
-      assert_nil(SonosSystem.status)
+    Sonos.stub :data, data do
+      assert_nil(Sonos.status)
     end
   end
 end

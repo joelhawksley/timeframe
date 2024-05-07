@@ -57,7 +57,7 @@ module Timeframe
       end
 
       if ENV["RUN_BG"]
-        run_in_bg(1) { SonosSystem.fetch }
+        run_in_bg(1) { Sonos.fetch }
         run_in_bg(1) { HomeAssistant.fetch }
         run_in_bg(60) { WeatherKitAccount.fetch }
         run_in_bg(60) do
