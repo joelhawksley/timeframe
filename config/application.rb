@@ -59,7 +59,7 @@ module Timeframe
       if ENV["RUN_BG"]
         run_in_bg(1) { Sonos.fetch }
         run_in_bg(1) { HomeAssistant.fetch }
-        run_in_bg(60) { WeatherKitAccount.fetch }
+        run_in_bg(60) { WeatherKit.fetch }
         run_in_bg(60) do
           ActiveRecord::Base.connection_pool.with_connection do
             GoogleAccount.all.each(&:fetch)

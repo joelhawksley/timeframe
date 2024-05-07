@@ -44,11 +44,11 @@ class CalendarFeed
   # adding a `time` key for the time formatted for the user's timezone
   def self.events_for(starts_at, ends_at)
     filtered_events = (
-      WeatherKitAccount.daily_calendar_events +
+      WeatherKit.daily_calendar_events +
       [baby_age_event] +
-      WeatherKitAccount.hourly_calendar_events +
-      WeatherKitAccount.precip_calendar_events +
-      WeatherKitAccount.weather_alert_calendar_events +
+      WeatherKit.hourly_calendar_events +
+      WeatherKit.precip_calendar_events +
+      WeatherKit.weather_alert_calendar_events +
       calendar_events
     )
 

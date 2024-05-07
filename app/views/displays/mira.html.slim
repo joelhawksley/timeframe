@@ -12,10 +12,10 @@ div.hide-if-empty style="font-size: 1.75rem; position:absolute; left: 0; right: 
   div style="position: relative"
     div style="background:-webkit-gradient(linear,left top,left bottom,color-stop(0%, rgba(255,255,255,0)),color-stop(100%,rgba(255,255,255,1)));position: absolute;left: 0;right: 0; top: -2rem;height: 2rem;z-index: 5;"
   div.hide-if-empty style="background-color: #ddd; color: black; padding: 0.5rem 2rem; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;"
-    - if WeatherKitAccount.healthy? && WeatherKitAccount.weather.dig("forecastNextHour", "summary")&.first.to_h["condition"] != "clear"
-      - condition = WeatherKitAccount.weather.dig("forecastNextHour", "summary")&.first.to_h["condition"]
+    - if WeatherKit.healthy? && WeatherKit.weather.dig("forecastNextHour", "summary")&.first.to_h["condition"] != "clear"
+      - condition = WeatherKit.weather.dig("forecastNextHour", "summary")&.first.to_h["condition"]
       - if condition.present? && condition != "clear"
-        - summary = WeatherKitAccount.weather["forecastNextHour"]["summary"].first["condition"]
+        - summary = WeatherKit.weather["forecastNextHour"]["summary"].first["condition"]
         - icon = summary == "snow" ? "snowflake" : "raindrops"
         div style="display: flex; justify-content: space-between"
           div style="line-height: 3rem"
@@ -24,7 +24,7 @@ div.hide-if-empty style="font-size: 1.75rem; position:absolute; left: 0; right: 
           div
             table.minutely border=0 cellpadding="0" cellspacing="0"
               tr
-                - WeatherKitAccount.weather["forecastNextHour"]["minutes"].first(60).each_with_index do |minute, i|
+                - WeatherKit.weather["forecastNextHour"]["minutes"].first(60).each_with_index do |minute, i|
                   - next if i.odd?
                   td
                     div style="height: 100px; position:relative; width: 28px;"
@@ -59,7 +59,7 @@ div style="display: flex; justify-content: space-between; line-height: 2rem; fon
       i.fa-solid.fa-box-open style="margin-right: 1rem"
     - if HomeAssistant.garage_door_open?
       i.fa-solid.fa-garage-open style="margin-right: 1rem"
-    - if !WeatherKitAccount.healthy?
+    - if !WeatherKit.healthy?
       i.fa-solid.fa-cloud-slash style="margin-right: 1rem"
     - if !Sonos.healthy?
       i.fa-solid.fa-volume-slash style="margin-right: 1rem"

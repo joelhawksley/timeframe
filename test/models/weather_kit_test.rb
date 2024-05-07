@@ -2,18 +2,18 @@
 
 require "test_helper"
 
-class WeatherKitAccountTest < Minitest::Test
+class WeatherKitTest < Minitest::Test
   include ActiveSupport::Testing::TimeHelpers
 
   def test_weather_no_data
-    WeatherKitAccount.stub :weather, {} do
-      assert_equal({}, WeatherKitAccount.weather)
+    WeatherKit.stub :weather, {} do
+      assert_equal({}, WeatherKit.weather)
     end
   end
 
   def test_current_temperature_no_data
-    WeatherKitAccount.stub :weather, {} do
-      assert_nil(WeatherKitAccount.current_temperature)
+    WeatherKit.stub :weather, {} do
+      assert_nil(WeatherKit.current_temperature)
     end
   end
 
@@ -25,36 +25,36 @@ class WeatherKitAccountTest < Minitest::Test
         }
     }
 
-    WeatherKitAccount.stub :weather, weather do
-      assert_equal("86°", WeatherKitAccount.current_temperature)
+    WeatherKit.stub :weather, weather do
+      assert_equal("86°", WeatherKit.current_temperature)
     end
   end
 
   def test_health_no_data
-    WeatherKitAccount.stub :last_fetched_at, nil do
-      assert(!WeatherKitAccount.healthy?)
+    WeatherKit.stub :last_fetched_at, nil do
+      assert(!WeatherKit.healthy?)
     end
   end
 
   def test_health_current_data
-    WeatherKitAccount.stub :last_fetched_at, "2023-08-27 15:14:59 -0600" do
+    WeatherKit.stub :last_fetched_at, "2023-08-27 15:14:59 -0600" do
       travel_to DateTime.new(2023, 8, 27, 15, 16, 0, "-0600") do
-        assert(WeatherKitAccount.healthy?)
+        assert(WeatherKit.healthy?)
       end
     end
   end
 
   def test_health_stale_data
-    WeatherKitAccount.stub :last_fetched_at, "2023-08-27 15:14:59 -0600" do
+    WeatherKit.stub :last_fetched_at, "2023-08-27 15:14:59 -0600" do
       travel_to DateTime.new(2023, 8, 27, 16, 20, 0, "-0600") do
-        refute(WeatherKitAccount.healthy?)
+        refute(WeatherKit.healthy?)
       end
     end
   end
 
   def test_hourly_calendar_events_no_data
-    WeatherKitAccount.stub :weather, {} do
-      assert_equal([], WeatherKitAccount.hourly_calendar_events)
+    WeatherKit.stub :weather, {} do
+      assert_equal([], WeatherKit.hourly_calendar_events)
     end
   end
 
@@ -1081,9 +1081,9 @@ class WeatherKitAccountTest < Minitest::Test
       }
     }
 
-    WeatherKitAccount.stub :weather, weather do
+    WeatherKit.stub :weather, weather do
       travel_to DateTime.new(2023, 8, 27, 16, 20, 0, "-0600") do
-        assert_equal(16, WeatherKitAccount.hourly_calendar_events.length)
+        assert_equal(16, WeatherKit.hourly_calendar_events.length)
       end
     end
   end
@@ -1101,16 +1101,16 @@ class WeatherKitAccountTest < Minitest::Test
       }
     }
 
-    WeatherKitAccount.stub :weather, weather do
+    WeatherKit.stub :weather, weather do
       travel_to DateTime.new(2023, 8, 27, 16, 20, 0, "-0600") do
-        assert(WeatherKitAccount.hourly_calendar_events.last.summary.include?("32mph"))
+        assert(WeatherKit.hourly_calendar_events.last.summary.include?("32mph"))
       end
     end
   end
 
   def test_precip_calendar_events_no_data
-    WeatherKitAccount.stub :weather, {} do
-      assert_equal([], WeatherKitAccount.precip_calendar_events)
+    WeatherKit.stub :weather, {} do
+      assert_equal([], WeatherKit.precip_calendar_events)
     end
   end
 
@@ -2137,16 +2137,16 @@ class WeatherKitAccountTest < Minitest::Test
       }
     }
 
-    WeatherKitAccount.stub :weather, weather do
+    WeatherKit.stub :weather, weather do
       travel_to DateTime.new(2023, 8, 27, 16, 20, 0, "-0600") do
-        assert_equal(7, WeatherKitAccount.precip_calendar_events.length)
+        assert_equal(7, WeatherKit.precip_calendar_events.length)
       end
     end
   end
 
   def test_fetch_raises_no_errors
     VCR.use_cassette("weatherkit_fetch") do
-      WeatherKitAccount.fetch
+      WeatherKit.fetch
     end
   end
 
@@ -2315,8 +2315,8 @@ class WeatherKitAccountTest < Minitest::Test
           "https://developer.apple.com/weatherkit/data-source-attribution/"}}
     }
 
-    WeatherKitAccount.stub :weather, weather do
-      assert_equal(10, WeatherKitAccount.daily_calendar_events.length)
+    WeatherKit.stub :weather, weather do
+      assert_equal(10, WeatherKit.daily_calendar_events.length)
     end
   end
 
@@ -2387,8 +2387,8 @@ class WeatherKitAccountTest < Minitest::Test
           "https://developer.apple.com/weatherkit/data-source-attribution/"}}
     }
 
-    WeatherKitAccount.stub :weather, weather do
-      assert(WeatherKitAccount.daily_calendar_events.first.summary.include?('2.8"'))
+    WeatherKit.stub :weather, weather do
+      assert(WeatherKit.daily_calendar_events.first.summary.include?('2.8"'))
     end
   end
 
@@ -2482,20 +2482,20 @@ class WeatherKitAccountTest < Minitest::Test
           "https://developer.apple.com/weatherkit/data-source-attribution/"}}
     }
 
-    WeatherKitAccount.stub :weather, weather do
-      assert(WeatherKitAccount.daily_calendar_events.first.summary.include?('0.3"'))
+    WeatherKit.stub :weather, weather do
+      assert(WeatherKit.daily_calendar_events.first.summary.include?('0.3"'))
     end
   end
 
   def test_daily_calendar_events_no_data
-    WeatherKitAccount.stub :weather, {} do
-      assert_equal([], WeatherKitAccount.daily_calendar_events)
+    WeatherKit.stub :weather, {} do
+      assert_equal([], WeatherKit.daily_calendar_events)
     end
   end
 
   def test_weather_alert_calendar_events
-    WeatherKitAccount.stub :weather, {} do
-      assert_equal([], WeatherKitAccount.weather_alert_calendar_events)
+    WeatherKit.stub :weather, {} do
+      assert_equal([], WeatherKit.weather_alert_calendar_events)
     end
   end
 
@@ -2532,8 +2532,8 @@ class WeatherKitAccountTest < Minitest::Test
       }
     }
 
-    WeatherKitAccount.stub :weather, weather do
-      assert_equal(1, WeatherKitAccount.weather_alert_calendar_events.length)
+    WeatherKit.stub :weather, weather do
+      assert_equal(1, WeatherKit.weather_alert_calendar_events.length)
     end
   end
 end

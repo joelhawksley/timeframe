@@ -1,4 +1,4 @@
-class WeatherKitAccount
+class WeatherKit
   def self.weather
     MemoryValue.get(:weatherkit)[:data] || {}
   end
@@ -48,7 +48,7 @@ class WeatherKitAccount
     # :nocov:
   rescue => e
     Log.create(
-      globalid: "WeatherKitAccount",
+      globalid: "WeatherKit",
       event: "call_error",
       message: e.message + e.backtrace.join("\n")
     )
@@ -175,7 +175,7 @@ class WeatherKitAccount
       icon_mappings[condition_code]
     else
       Log.create(
-        globalid: "WeatherKitAccount",
+        globalid: "WeatherKit",
         event: "icon_for could not find mapping",
         message: "condition code: #{condition_code}"
       )

@@ -1,7 +1,7 @@
 .timestamp style="position: absolute; bottom: .25rem; right: .25rem; font-size: .4rem; color: #777; z-index: 10" = view_object[:timestamp]
 div style="clear: both; line-height: .7; margin-bottom: 1rem; font-size: 1rem"
   div style="float: left;"
-    - if !WeatherKitAccount.healthy?
+    - if !WeatherKit.healthy?
       i.fa-solid.fa-cloud-slash style="margin-right: 1rem;"
     - if !GoogleAccount.all.all?(&:healthy?)
       i.fa-solid.fa-calendar-circle-exclamation style="margin-right: 1rem;"
