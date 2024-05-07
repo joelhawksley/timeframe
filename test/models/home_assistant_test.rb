@@ -2,121 +2,121 @@
 
 require "test_helper"
 
-class HomeAssistantHomeTest < Minitest::Test
+class HomeAssistantTest < Minitest::Test
   include ActiveSupport::Testing::TimeHelpers
 
-  def test_garage_door_open_no_states
-    HomeAssistantHome.stub :states, [] do
-      refute(HomeAssistantHome.garage_door_open?)
+  def test_garage_door_open_no_data
+    HomeAssistant.stub :data, [] do
+      refute(HomeAssistant.garage_door_open?)
     end
   end
 
   def test_garage_door_open_with_state_closed
-    HomeAssistantHome.stub(
-      :states,
+    HomeAssistant.stub(
+      :data,
       [
         {"entity_id" => Timeframe::Application.config.local["home_assistant_garage_door_entity_id"], "state" => "closed"},
         {"entity_id" => Timeframe::Application.config.local["home_assistant_garage_door_2_entity_id"], "state" => "closed"}
       ]
     ) do
-      refute(HomeAssistantHome.garage_door_open?)
+      refute(HomeAssistant.garage_door_open?)
     end
   end
 
   def test_garage_door_open_with_state_open
-    HomeAssistantHome.stub(
-      :states,
+    HomeAssistant.stub(
+      :data,
       [
         {"entity_id" => Timeframe::Application.config.local["home_assistant_garage_door_entity_id"], "state" => "open"},
         {"entity_id" => Timeframe::Application.config.local["home_assistant_garage_door_2_entity_id"], "state" => "closed"}
       ]
     ) do
-      assert(HomeAssistantHome.garage_door_open?)
+      assert(HomeAssistant.garage_door_open?)
     end
   end
 
   def test_garage_door_open_with_state_open_2
-    HomeAssistantHome.stub(
-      :states,
+    HomeAssistant.stub(
+      :data,
       [
         {"entity_id" => Timeframe::Application.config.local["home_assistant_garage_door_entity_id"], "state" => "closed"},
         {"entity_id" => Timeframe::Application.config.local["home_assistant_garage_door_2_entity_id"], "state" => "open"}
       ]
     ) do
-      assert(HomeAssistantHome.garage_door_open?)
+      assert(HomeAssistant.garage_door_open?)
     end
   end
 
-  def test_package_present_no_states
-    HomeAssistantHome.stub :states, [] do
-      refute(HomeAssistantHome.garage_door_open?)
+  def test_package_present_no_data
+    HomeAssistant.stub :data, [] do
+      refute(HomeAssistant.garage_door_open?)
     end
   end
 
   def test_package_present_with_state_off
-    HomeAssistantHome.stub :states, [{"entity_id" => Timeframe::Application.config.local["home_assistant_package_box_entity_id"], "state" => "off"}] do
-      refute(HomeAssistantHome.package_present?)
+    HomeAssistant.stub :data, [{"entity_id" => Timeframe::Application.config.local["home_assistant_package_box_entity_id"], "state" => "off"}] do
+      refute(HomeAssistant.package_present?)
     end
   end
 
   def test_package_present_with_state_on
-    HomeAssistantHome.stub :states, [{"entity_id" => Timeframe::Application.config.local["home_assistant_package_box_entity_id"], "state" => "on"}] do
-      assert(HomeAssistantHome.package_present?)
+    HomeAssistant.stub :data, [{"entity_id" => Timeframe::Application.config.local["home_assistant_package_box_entity_id"], "state" => "on"}] do
+      assert(HomeAssistant.package_present?)
     end
   end
 
   def test_hot_water_low
-    HomeAssistantHome.stub :states, [{"entity_id" => Timeframe::Application.config.local["home_assistant_available_hot_water_entity_id"], "state" => "8"}] do
-      refute(HomeAssistantHome.hot_water_heater_healthy?)
+    HomeAssistant.stub :data, [{"entity_id" => Timeframe::Application.config.local["home_assistant_available_hot_water_entity_id"], "state" => "8"}] do
+      refute(HomeAssistant.hot_water_heater_healthy?)
     end
   end
 
   def test_feels_like_temperature_no_data
-    assert_nil(HomeAssistantHome.feels_like_temperature)
+    assert_nil(HomeAssistant.feels_like_temperature)
   end
 
   def test_feels_like_temperature
-    HomeAssistantHome.stub :states, [{"entity_id" => "sensor.weather_station_feels_like", "state" => "49.712"}] do
-      assert_equal(HomeAssistantHome.feels_like_temperature, 49)
+    HomeAssistant.stub :data, [{"entity_id" => "sensor.weather_station_feels_like", "state" => "49.712"}] do
+      assert_equal(HomeAssistant.feels_like_temperature, 49)
     end
   end
 
   def test_fetch
     VCR.use_cassette(:home_assistant_states) do
-      HomeAssistantHome.fetch
+      HomeAssistant.fetch
 
-      assert(HomeAssistantHome.states.length > 20)
+      assert(HomeAssistant.data.length > 20)
     end
   end
 
   def test_health_no_fetched_at
-    HomeAssistantHome.stub :last_fetched_at, nil do
-      assert(!HomeAssistantHome.healthy?)
+    HomeAssistant.stub :last_fetched_at, nil do
+      assert(!HomeAssistant.healthy?)
     end
   end
 
   def test_health_current_fetched_at
-    HomeAssistantHome.stub :last_fetched_at, "2023-08-27 15:14:59 -0600" do
+    HomeAssistant.stub :last_fetched_at, "2023-08-27 15:14:59 -0600" do
       travel_to DateTime.new(2023, 8, 27, 15, 15, 0, "-0600") do
-        assert(HomeAssistantHome.healthy?)
+        assert(HomeAssistant.healthy?)
       end
     end
   end
 
   def test_health_stale_fetched_at
-    HomeAssistantHome.stub :last_fetched_at, "2023-08-27 15:14:59 -0600" do
+    HomeAssistant.stub :last_fetched_at, "2023-08-27 15:14:59 -0600" do
       travel_to DateTime.new(2023, 8, 27, 16, 20, 0, "-0600") do
-        refute(HomeAssistantHome.healthy?)
+        refute(HomeAssistant.healthy?)
       end
     end
   end
 
   def test_dryer_needs_attention_no_data
-    assert_nil(HomeAssistantHome.dryer_needs_attention?)
+    assert_nil(HomeAssistant.dryer_needs_attention?)
   end
 
   def test_dryer_needs_attention
-    states = [
+    data = [
       {
         "entity_id" => Timeframe::Application.config.local["home_assistant_dryer_door_entity_id"],
         "state" => "off",
@@ -129,17 +129,17 @@ class HomeAssistantHomeTest < Minitest::Test
       }
     ]
 
-    HomeAssistantHome.stub :states, states do
-      assert(HomeAssistantHome.dryer_needs_attention?)
+    HomeAssistant.stub :data, data do
+      assert(HomeAssistant.dryer_needs_attention?)
     end
   end
 
   def test_washer_needs_attention_no_data
-    assert_nil(HomeAssistantHome.washer_needs_attention?)
+    assert_nil(HomeAssistant.washer_needs_attention?)
   end
 
   def test_washer_needs_attention
-    states = [
+    data = [
       {
         "entity_id" => Timeframe::Application.config.local["home_assistant_washer_state_entity_id"],
         "state" => "Off",
@@ -152,13 +152,13 @@ class HomeAssistantHomeTest < Minitest::Test
       }
     ]
 
-    HomeAssistantHome.stub :states, states do
-      assert(HomeAssistantHome.washer_needs_attention?)
+    HomeAssistant.stub :data, data do
+      assert(HomeAssistant.washer_needs_attention?)
     end
   end
 
   def test_car_needs_plugged_in
-    states = [
+    data = [
       {
         "entity_id" => Timeframe::Application.config.local["home_assistant_west_charger_entity_id"],
         "state" => "not_connected"
@@ -169,47 +169,47 @@ class HomeAssistantHomeTest < Minitest::Test
       }
     ]
 
-    HomeAssistantHome.stub :states, states do
-      assert(HomeAssistantHome.car_needs_plugged_in?)
+    HomeAssistant.stub :data, data do
+      assert(HomeAssistant.car_needs_plugged_in?)
     end
   end
 
   def test_open_doors
-    states = [
+    data = [
       {
         "entity_id" => Timeframe::Application.config.local["exterior_door_sensors"][0],
         "state" => "on"
       }
     ]
 
-    HomeAssistantHome.stub :states, states do
-      assert_equal(HomeAssistantHome.open_doors, ["Alley"])
+    HomeAssistant.stub :data, data do
+      assert_equal(HomeAssistant.open_doors, ["Alley"])
     end
   end
 
   def test_unlocked_doors
-    states = [
+    data = [
       {
         "entity_id" => Timeframe::Application.config.local["exterior_door_locks"][0],
         "state" => "unlocked"
       }
     ]
 
-    HomeAssistantHome.stub :states, states do
-      assert_equal(HomeAssistantHome.unlocked_doors, ["Patio"])
+    HomeAssistant.stub :data, data do
+      assert_equal(HomeAssistant.unlocked_doors, ["Patio"])
     end
   end
 
   def test_unavailable_door_sensors
-    states = [
+    data = [
       {
         "entity_id" => Timeframe::Application.config.local["exterior_door_locks"][0],
         "state" => "unavailable"
       }
     ]
 
-    HomeAssistantHome.stub :states, states do
-      assert_equal(HomeAssistantHome.unavailable_door_sensors, ["Patio door lock"])
+    HomeAssistant.stub :data, data do
+      assert_equal(HomeAssistant.unavailable_door_sensors, ["Patio door lock"])
     end
   end
 end

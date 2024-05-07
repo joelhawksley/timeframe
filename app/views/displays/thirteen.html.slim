@@ -5,27 +5,27 @@ div style="clear: both; line-height: .7; margin-bottom: 1rem; font-size: 1rem"
       i.fa-solid.fa-cloud-slash style="margin-right: 1rem;"
     - if !GoogleAccount.all.all?(&:healthy?)
       i.fa-solid.fa-calendar-circle-exclamation style="margin-right: 1rem;"
-    - if !HomeAssistantHome.healthy?
+    - if !HomeAssistant.healthy?
       i.fa-solid.fa-house-circle-exclamation style="margin-right: 1rem;"
-    - if !HomeAssistantHome.hot_water_heater_healthy?
+    - if !HomeAssistant.hot_water_heater_healthy?
       i.fa-solid.fa-tank-water style="margin-right: 1rem;"
-    - if HomeAssistantHome.washer_needs_attention?
+    - if HomeAssistant.washer_needs_attention?
       i.fa-solid.fa-washing-machine style="margin-right: 1rem;"
-    - if HomeAssistantHome.dryer_needs_attention?
+    - if HomeAssistant.dryer_needs_attention?
       i.fa-solid.fa-dryer-heat style="margin-right: 1rem;"
-    - if HomeAssistantHome.car_needs_plugged_in?
+    - if HomeAssistant.car_needs_plugged_in?
       i.fa-solid.fa-car-side-bolt style="margin-right: 1rem;"
     - if !DogPark.open?
       i.fa-solid.fa-location-pin-lock style="margin-right: 1rem;"
-    - HomeAssistantHome.unavailable_door_sensors.each do |door_sensor_name|
+    - HomeAssistant.unavailable_door_sensors.each do |door_sensor_name|
       span style="margin-right: 1rem;"
         i.fa-solid.fa-triangle-exclamation
         =< door_sensor_name
-    - HomeAssistantHome.unlocked_doors.each do |door_name|
+    - HomeAssistant.unlocked_doors.each do |door_name|
       span style="margin-right: 1rem;"
         i.fa-solid.fa-lock-open
         =< door_name
-    - HomeAssistantHome.open_doors.each do |door_name|
+    - HomeAssistant.open_doors.each do |door_name|
       span style="margin-right: 1rem;"
         i.fa-solid.fa-door-open
         =< door_name

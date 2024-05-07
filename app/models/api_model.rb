@@ -2,7 +2,7 @@ class ApiModel
   def self.fetch
     response = HTTParty.get(Timeframe::Application.config.local["#{storage_key}_url"], headers: headers)
 
-    return if response["status"] == "error" # TODO: log error responses
+    return if response.code != 200 # TODO: log error responses
 
     MemoryValue.upsert(
       storage_key,
@@ -11,6 +11,10 @@ class ApiModel
         last_fetched_at: Time.now.utc.in_time_zone(Timeframe::Application.config.local["timezone"]).to_s
       }
     )
+  end
+
+  def self.time_before_unhealthy
+    10.minutes
   end
 
   def self.headers
@@ -28,7 +32,7 @@ class ApiModel
   def self.healthy?
     return false unless last_fetched_at
 
-    DateTime.parse(last_fetched_at) > DateTime.now - 10.minutes
+    DateTime.parse(last_fetched_at) > DateTime.now - time_before_unhealthy
   end
 
   # :nocov:

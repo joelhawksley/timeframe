@@ -43,7 +43,7 @@ div.hide-if-empty style="font-size: 1.75rem; position:absolute; left: 0; right: 
 div style="margin-top: 1.5rem;"
 div style="display: flex; justify-content: space-between;"
   div
-    - HomeAssistantHome.unavailable_door_sensors.each do |door_sensor_name|
+    - HomeAssistant.unavailable_door_sensors.each do |door_sensor_name|
       span style="margin-right: 1rem"
         i.fa-solid.fa-triangle-exclamation
         =< door_sensor_name
@@ -55,9 +55,9 @@ div style="display: flex; justify-content: space-between;"
       | &nbsp;
 div style="display: flex; justify-content: space-between; line-height: 2rem; font-size:2rem;"
   div
-    - if HomeAssistantHome.package_present?
+    - if HomeAssistant.package_present?
       i.fa-solid.fa-box-open style="margin-right: 1rem"
-    - if HomeAssistantHome.garage_door_open?
+    - if HomeAssistant.garage_door_open?
       i.fa-solid.fa-garage-open style="margin-right: 1rem"
     - if !WeatherKitAccount.healthy?
       i.fa-solid.fa-cloud-slash style="margin-right: 1rem"
@@ -65,27 +65,27 @@ div style="display: flex; justify-content: space-between; line-height: 2rem; fon
       i.fa-solid.fa-volume-slash style="margin-right: 1rem"
     - if !GoogleAccount.all.all?(&:healthy?)
       i.fa-solid.fa-calendar-circle-exclamation style="margin-right: 1rem"
-    - if !HomeAssistantHome.healthy?
+    - if !HomeAssistant.healthy?
       i.fa-solid.fa-house-circle-exclamation style="margin-right: 1rem"
-    - if !HomeAssistantHome.hot_water_heater_healthy?
+    - if !HomeAssistant.hot_water_heater_healthy?
       i.fa-solid.fa-tank-water style="margin-right: 1rem"
     - if !Birdnet.healthy?
       i.fa-solid.fa-microphone-slash style="margin-right: 1rem"
     - if !DogPark.healthy?
       i.fa-solid.fa-bone-break style="margin-right: 1rem"
-    - if HomeAssistantHome.washer_needs_attention?
+    - if HomeAssistant.washer_needs_attention?
       i.fa-solid.fa-washing-machine style="margin-right: 1rem"
-    - if HomeAssistantHome.dryer_needs_attention?
+    - if HomeAssistant.dryer_needs_attention?
       i.fa-solid.fa-dryer-heat style="margin-right: 1rem"
-    - if HomeAssistantHome.car_needs_plugged_in?
+    - if HomeAssistant.car_needs_plugged_in?
       i.fa-solid.fa-car-side-bolt style="margin-right: 1rem"
     - if !DogPark.open?
       i.fa-solid.fa-location-pin-lock style="margin-right: 1rem"
-    - HomeAssistantHome.unlocked_doors.each do |door_name|
+    - HomeAssistant.unlocked_doors.each do |door_name|
       span style="margin-right: 1rem"
         i.fa-solid.fa-lock-open
         =< door_name
-    - HomeAssistantHome.open_doors.each do |door_name|
+    - HomeAssistant.open_doors.each do |door_name|
       span style="margin-right: 1rem"
         i.fa-solid.fa-door-open
         =< door_name
