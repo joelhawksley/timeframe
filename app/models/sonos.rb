@@ -58,7 +58,7 @@ class Sonos
   end
 
   def self.fetch
-    response = HTTParty.get(Timeframe::Application.config.local["node_sonos_http_api_url"])
+    response = HTTParty.get(Timeframe::Application.config.local["sonos_url"])
 
     return if response["status"] == "error"
 
