@@ -1,8 +1,8 @@
 class ApiModel
   def self.fetch
-    response = HTTParty.get(Timeframe::Application.config.local[config_url_key])
+    response = HTTParty.get(Timeframe::Application.config.local["#{storage_key}_url"], headers: headers)
 
-    return if response["status"] == "error"
+    return if response["status"] == "error" # TODO: log error responses
 
     MemoryValue.upsert(
       storage_key,
@@ -13,8 +13,12 @@ class ApiModel
     )
   end
 
+  def self.headers
+    {}
+  end
+
   def self.storage_key
-    name.downcase.to_sym
+    name.underscore.to_sym
   end
 
   def self.data

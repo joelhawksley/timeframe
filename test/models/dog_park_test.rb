@@ -13,8 +13,10 @@ class DogParkTest < Minitest::Test
     MemoryValue.upsert(:dogpark, {})
   end
 
-  def test_last_fetched_at
-    assert_nil(DogPark.last_fetched_at)
+  def test_last_fetched_at_no_data
+    MemoryValue.stub(:get, {}) do
+      assert_nil(DogPark.last_fetched_at)
+    end
   end
 
   def test_health_no_data
@@ -40,7 +42,9 @@ class DogParkTest < Minitest::Test
   end
 
   def test_open_no_data
-    assert_equal(DogPark.open?, false)
+    DogPark.stub(:data, {}) do
+      assert_equal(DogPark.open?, false)
+    end
   end
 
   def test_open
