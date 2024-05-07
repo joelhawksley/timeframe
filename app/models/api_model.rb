@@ -4,6 +4,10 @@ class ApiModel
 
     return if response.code != 200 # TODO: log error responses
 
+    save_response(response)
+  end
+
+  def self.save_response(response)
     MemoryValue.upsert(
       storage_key,
       {

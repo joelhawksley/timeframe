@@ -1,24 +1,6 @@
-class WeatherKit
-  def self.weather
-    MemoryValue.get(:weatherkit)[:data] || {}
-  end
-
-  def self.last_fetched_at
-    MemoryValue.get(:weatherkit)[:last_fetched_at]
-  end
-
-  def self.current_temperature
-    raw_temp = weather.dig("currentWeather", "temperature")
-
-    return nil unless raw_temp
-
-    "#{celsius_fahrenheit(weather.dig("currentWeather", "temperature"))}°"
-  end
-
-  def self.healthy?
-    return false unless last_fetched_at
-
-    DateTime.parse(last_fetched_at) > DateTime.now - 2.minutes
+class WeatherKit < ApiModel
+  def self.time_before_unhealthy
+    2.minutes
   end
 
   def self.fetch
@@ -40,11 +22,7 @@ class WeatherKit
     # Do not update unless response is well formed
     return unless data.key?("currentWeather")
 
-    MemoryValue.upsert(:weatherkit,
-      {
-        data: data,
-        last_fetched_at: Time.now.utc.in_time_zone(Timeframe::Application.config.local["timezone"]).to_s
-      })
+    save_response(data)
     # :nocov:
   rescue => e
     Log.create(
@@ -54,10 +32,18 @@ class WeatherKit
     )
   end
 
+  def self.current_temperature
+    raw_temp = data.dig("currentWeather", "temperature")
+
+    return nil unless raw_temp
+
+    "#{celsius_fahrenheit(data.dig("currentWeather", "temperature"))}°"
+  end
+
   def self.hourly_calendar_events
     today = Date.today.in_time_zone(Timeframe::Application.config.local["timezone"])
 
-    hours_forecast = weather.dig("forecastHourly", "hours")
+    hours_forecast = data.dig("forecastHourly", "hours")
 
     return [] unless hours_forecast.present?
 
@@ -93,11 +79,11 @@ class WeatherKit
   def self.precip_calendar_events
     events = []
 
-    hours_forecast = weather.dig("forecastHourly", "hours")
+    hours_forecast = data.dig("forecastHourly", "hours")
 
     return events unless hours_forecast.present?
 
-    hours = weather["forecastHourly"]["hours"]
+    hours = data["forecastHourly"]["hours"]
 
     hours.each_with_index do |hour, index|
       existing_event =
@@ -138,7 +124,7 @@ class WeatherKit
   end
 
   def self.weather_alert_calendar_events
-    alerts = weather.dig("weatherAlerts", "alerts")
+    alerts = data.dig("weatherAlerts", "alerts")
 
     return [] unless alerts.present?
 
@@ -185,7 +171,7 @@ class WeatherKit
   end
 
   def self.daily_calendar_events
-    return [] unless (days = weather.dig("forecastDaily", "days"))
+    return [] unless (days = data.dig("forecastDaily", "days"))
 
     days.map do |day|
       summary_suffix =
