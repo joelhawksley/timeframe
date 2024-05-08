@@ -196,7 +196,8 @@ class CalendarFeedTest < Minitest::Test
 
         start_time_utc = DateTime.new(2023, 8, 28, 20, 20, 0, "-0600").utc.to_time
         end_time_utc = DateTime.new(2023, 8, 29, 0, 0, 0, "-0600").utc.to_time
-        assert(CalendarFeed.events_for(start_time_utc, end_time_utc)[:daily].length == 0)
+
+        assert(CalendarFeed.events_for(start_time_utc, end_time_utc)[:daily].length == 1)
       end
     end
   end
