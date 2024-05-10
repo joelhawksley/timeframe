@@ -20,14 +20,13 @@ div.hide-if-empty style="font-size: 1.75rem; position:absolute; left: 0; right: 
         div style="display: flex; justify-content: space-between"
           div style="line-height: 3rem"
             i.fa-solid.fa-fw class="fa-#{icon}"
-            | #{summary.humanize} this hour.
           div
             table.minutely border=0 cellpadding="0" cellspacing="0"
               tr
                 - WeatherKitApi.data["forecastNextHour"]["minutes"].first(60).each_with_index do |minute, i|
                   - next if i.odd?
                   td
-                    div style="height: 100px; position:relative; width: 28px;"
+                    div style="height: 100px; position:relative; width: 30px;"
                       div style="background-color:black; position: absolute; height: #{(minute["precipitationChance"] * minute["precipitationIntensity"] * 50).clamp(3,100)}px; left: 0; right: 10px; bottom: 0; border-radius: 30px;"
               tr style="font-size: .75rem;"
                 td colspan="10" Now
