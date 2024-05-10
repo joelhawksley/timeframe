@@ -7,8 +7,6 @@ div style="clear: both; line-height: .7; margin-bottom: 1rem; font-size: 1rem"
       i.fa-solid.fa-calendar-circle-exclamation style="margin-right: 1rem;"
     - if !HomeAssistantApi.healthy?
       i.fa-solid.fa-house-circle-exclamation style="margin-right: 1rem;"
-    - if !HomeAssistantApi.hot_water_heater_healthy?
-      i.fa-solid.fa-tank-water style="margin-right: 1rem;"
     - if HomeAssistantApi.washer_needs_attention?
       i.fa-solid.fa-washing-machine style="margin-right: 1rem;"
     - if HomeAssistantApi.dryer_needs_attention?

@@ -65,12 +65,6 @@ class HomeAssistantApiTest < Minitest::Test
     end
   end
 
-  def test_hot_water_low
-    HomeAssistantApi.stub :data, [{"entity_id" => Timeframe::Application.config.local["home_assistant_available_hot_water_entity_id"], "state" => "8"}] do
-      refute(HomeAssistantApi.hot_water_heater_healthy?)
-    end
-  end
-
   def test_feels_like_temperature_no_data
     assert_nil(HomeAssistantApi.feels_like_temperature)
   end
