@@ -158,6 +158,11 @@ GEM
     jwt (2.7.1)
     language_server-protocol (3.17.0.3)
     lint_roller (1.1.0)
+    lograge (0.14.0)
+      actionpack (>= 4)
+      activesupport (>= 4)
+      railties (>= 4)
+      request_store (~> 1.0)
     loofah (2.22.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
@@ -260,6 +265,8 @@ GEM
       declarative (< 0.1.0)
       trailblazer-option (>= 0.1.1, < 0.2.0)
       uber (< 0.2.0)
+    request_store (1.7.0)
+      rack (>= 1.4)
     retriable (3.1.2)
     rexml (3.2.6)
     rubocop (1.62.1)
@@ -342,6 +349,7 @@ DEPENDENCIES
   dotenv-rails
   google-api-client
   httparty
+  lograge
   m
   minitest
   overcommit
@@ -359,7 +367,7 @@ DEPENDENCIES
   webmock
 
 RUBY VERSION
-   ruby 3.0.3p157
+   ruby 3.2.2p53
 
 BUNDLED WITH
    2.2.33

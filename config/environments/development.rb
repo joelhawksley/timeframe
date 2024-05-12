@@ -45,7 +45,8 @@ Rails.application.configure do
   # routes, locales, etc. This feature depends on the listen gem.
   # config.file_watcher = ActiveSupport::EventedFileUpdateChecker
 
-  config.logger = ::ActiveSupport::Logger.new("/dev/null")
-  config.logger.formatter = lambda { |*_| }
-  config.logger.level = 10 # FATAL is 4
+  # config.logger = ::ActiveSupport::Logger.new("/dev/null")
+  # config.logger.formatter = lambda { |*_| }
+  # config.logger.level = 10 # FATAL is 4
+  config.lograge.enabled = true
 end

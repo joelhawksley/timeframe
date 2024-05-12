@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
 source "https://rubygems.org"
-ruby "3.0.3"
+ruby "3.2.2"
 
 gem "dotenv-rails"
 gem "google-api-client", require: ["google/apis/calendar_v3", "google/apis/people_v1"]
 gem "httparty"
+gem "lograge"
 gem "puma"
 gem "rails", "~> 7.1"
 gem "slim"
