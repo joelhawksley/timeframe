@@ -101,6 +101,6 @@ class HomeAssistantApi < Api
       end
     end
 
-    out
+    out - open_doors
   end
 end

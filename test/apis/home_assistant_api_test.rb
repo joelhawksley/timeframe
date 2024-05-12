@@ -181,6 +181,23 @@ class HomeAssistantApiTest < Minitest::Test
     end
   end
 
+  def test_unlocked_doors_ignores_open_doors
+    data = [
+      {
+        "entity_id" => Timeframe::Application.config.local["exterior_door_sensors"][2],
+        "state" => "on"
+      },
+      {
+        "entity_id" => Timeframe::Application.config.local["exterior_door_locks"][0],
+        "state" => "unlocked"
+      }
+    ]
+
+    HomeAssistantApi.stub :data, data do
+      assert_equal(HomeAssistantApi.unlocked_doors, [])
+    end
+  end
+
   def test_unlocked_doors
     data = [
       {
