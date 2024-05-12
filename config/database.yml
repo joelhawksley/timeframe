@@ -2,7 +2,7 @@ default: &default
   adapter: sqlite3
   encoding: unicode
   timeout: 5000
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 10 } %>
 
 development:
   <<: *default
