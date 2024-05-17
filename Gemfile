@@ -4,6 +4,8 @@ source "https://rubygems.org"
 ruby "3.2.2"
 
 gem "daybreak", "~> 0.3.0"
+gem "rufus-scheduler"
+gem "puma-rufus-scheduler"
 gem "dotenv-rails"
 gem "google-api-client", require: ["google/apis/calendar_v3", "google/apis/people_v1"]
 gem "httparty"

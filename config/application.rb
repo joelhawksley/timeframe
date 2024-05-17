@@ -35,40 +35,5 @@ module Timeframe
 
     config.hosts << "hawksley-server.local"
     config.hosts << "timeframetesting.com"
-
-    # :nocov:
-    config.after_initialize do
-      def run_in_bg(interval, &block)
-        Thread.new do
-          loop do
-            begin
-              yield
-            rescue => e
-              Log.create(
-                globalid: "Timeframe.after_initialize",
-                event: "background thread error",
-                message: e.message + e.backtrace.join("\n")
-              )
-            end
-
-            sleep(interval)
-          end
-        end
-      end
-
-      if ENV["RUN_BG"]
-        run_in_bg(1) { SonosApi.fetch }
-        run_in_bg(1) { HomeAssistantApi.fetch }
-        run_in_bg(60) { WeatherKitApi.fetch }
-        run_in_bg(60) do
-          ActiveRecord::Base.connection_pool.with_connection do
-            GoogleAccount.all.each(&:fetch)
-          end
-        end
-        run_in_bg(300) { BirdnetApi.fetch }
-        run_in_bg(300) { DogParkApi.fetch }
-      end
-    end
-    # :nocov:
   end
 end

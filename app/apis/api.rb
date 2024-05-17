@@ -7,11 +7,15 @@ class Api
     save_response(response)
   end
 
+  def self.prepare_response(response)
+    response
+  end
+
   def self.save_response(response)
     DaybreakValue.upsert(
       storage_key,
       {
-        data: response,
+        data: prepare_response(response),
         last_fetched_at: Time.now.utc.in_time_zone(Timeframe::Application.config.local["timezone"]).to_s
       }
     )

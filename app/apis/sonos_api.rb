@@ -5,6 +5,10 @@ class SonosApi < Api
     1.minute
   end
 
+  def self.prepare_response(response)
+    response.to_h
+  end
+
   def self.status
     return nil unless data["playbackState"] == "PLAYING"
     return nil unless data["currentTrack"]["artist"].present?
