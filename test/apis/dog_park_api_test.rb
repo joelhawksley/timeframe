@@ -12,7 +12,7 @@ class DogParkApiTest < Minitest::Test
   end
 
   def test_last_fetched_at_no_data
-    MemoryValue.stub(:get, {}) do
+    DaybreakValue.stub(:get, {}) do
       assert_nil(DogParkApi.last_fetched_at)
     end
   end

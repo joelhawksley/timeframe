@@ -26,14 +26,14 @@ class GoogleAccount < ApplicationRecord
   end
 
   def events
-    (MemoryValue.get(key)[:data] || {})
+    (DaybreakValue.get(key)[:data] || {})
       .values
       .map(&:values)
       .flatten
   end
 
   def last_fetched_at
-    MemoryValue.get(key)[:last_fetched_at]
+    DaybreakValue.get(key)[:last_fetched_at]
   end
 
   # :nocov:
@@ -124,7 +124,7 @@ class GoogleAccount < ApplicationRecord
       )
     end
 
-    MemoryValue.upsert(key,
+    DaybreakValue.upsert(key,
       {
         data: events,
         last_fetched_at: Time.now.utc.in_time_zone(Timeframe::Application.config.local["timezone"]).to_s

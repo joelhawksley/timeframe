@@ -8,7 +8,7 @@ class Api
   end
 
   def self.save_response(response)
-    MemoryValue.upsert(
+    DaybreakValue.upsert(
       storage_key,
       {
         data: response,
@@ -26,11 +26,11 @@ class Api
   end
 
   def self.storage_key
-    name.underscore.to_sym
+    name.underscore.to_s
   end
 
   def self.data
-    MemoryValue.get(storage_key)[:data] || {}
+    DaybreakValue.get(storage_key)[:data] || {}
   end
 
   def self.healthy?
@@ -41,7 +41,7 @@ class Api
 
   # :nocov:
   def self.last_fetched_at
-    MemoryValue.get(storage_key)[:last_fetched_at]
+    DaybreakValue.get(storage_key)[:last_fetched_at]
   end
   # :nocov
 end

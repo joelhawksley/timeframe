@@ -20,3 +20,4 @@ config.yml
 timeframe_development*
 timeframe_test*
 pgdata
+local.db
