@@ -12,14 +12,9 @@ class DisplaysController < ApplicationController
     begin
       render "mira", locals: {view_object: view_object}
     rescue => e
-      Log.create(
-        globalid: "Timeframe.display",
-        event: "render error",
-        message: e.message + e.backtrace.join("\n")
-      )
+      Rails.logger.error("Render error: " + e.message + e.backtrace.join("\n"))
 
       render "error", locals: {klass: e.class.to_s, message: e.message}
-      
     end
     # :nocov:
   end
