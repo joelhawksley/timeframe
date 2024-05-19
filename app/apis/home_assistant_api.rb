@@ -103,4 +103,12 @@ class HomeAssistantApi < Api
 
     out - open_doors
   end
+
+  def self.active_video_call?
+    entity = data.find { _1["entity_id"] == Timeframe::Application.config.local["home_assistant_audio_input_in_use"] }
+
+    return false unless entity.present?
+
+    entity["state"] == "on"
+  end
 end

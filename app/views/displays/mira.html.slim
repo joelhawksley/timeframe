@@ -71,6 +71,8 @@ div style="display: flex; justify-content: space-between; line-height: 2rem; fon
         i.fa-solid.fa-dryer-heat style="margin-right: 1rem"
       - if HomeAssistantApi.car_needs_plugged_in?
         i.fa-solid.fa-car-side-bolt style="margin-right: 1rem"
+      - if HomeAssistantApi.active_video_call?
+        i.fa-solid.fa-video style="margin-right: 1rem"
     - else
       i.fa-solid.fa-house-circle-exclamation style="margin-right: 1rem"
     - if !WeatherKitApi.healthy?
