@@ -47,7 +47,7 @@ class WeatherKitApi < Api
 
     return [] unless hours_forecast.present?
 
-    [today, today.tomorrow, today + 2.day, today + 3.day].flat_map do |twz|
+    [today, today.tomorrow, today + 2.day, today + 3.day, today + 4.day, today + 5.day].flat_map do |twz|
       [
         (twz.noon - 4.hours),
         twz.noon,

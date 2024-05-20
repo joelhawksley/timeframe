@@ -1077,7 +1077,7 @@ class WeatherKitApiTest < Minitest::Test
 
     WeatherKitApi.stub :data, weather do
       travel_to DateTime.new(2023, 8, 27, 16, 20, 0, "-0600") do
-        assert_equal(16, WeatherKitApi.hourly_calendar_events.length)
+        assert_equal(24, WeatherKitApi.hourly_calendar_events.length)
       end
     end
   end
