@@ -26,10 +26,6 @@ if ENV["RUN_BG"]
   scheduler.every "5m", first: :now do
     DogParkApi.fetch
   end
-
-  scheduler.every "5m" do
-    DaybreakValue.db.compact
-  end
 end
 
 scheduler.join

@@ -11,12 +11,6 @@ class DogParkApiTest < Minitest::Test
     end
   end
 
-  def test_last_fetched_at_no_data
-    DaybreakValue.stub(:get, {}) do
-      assert_nil(DogParkApi.last_fetched_at)
-    end
-  end
-
   def test_health_no_data
     DogParkApi.stub :last_fetched_at, nil do
       assert(!DogParkApi.healthy?)

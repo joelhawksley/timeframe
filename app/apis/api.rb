@@ -12,7 +12,7 @@ class Api
   end
 
   def self.save_response(response)
-    DaybreakValue.upsert(
+    Rails.cache.write(
       storage_key,
       {
         data: prepare_response(response),
@@ -34,7 +34,7 @@ class Api
   end
 
   def self.data
-    DaybreakValue.get(storage_key)[:data] || {}
+    Rails.cache.fetch(storage_key) { {} }[:data] || {}
   end
 
   def self.healthy?
@@ -45,7 +45,7 @@ class Api
 
   # :nocov:
   def self.last_fetched_at
-    DaybreakValue.get(storage_key)[:last_fetched_at]
+    Rails.cache.fetch(storage_key) { {} }[:last_fetched_at]
   end
   # :nocov
 end

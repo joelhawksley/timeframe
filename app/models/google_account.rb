@@ -26,14 +26,14 @@ class GoogleAccount < ApplicationRecord
   end
 
   def events
-    (DaybreakValue.get(key)[:data] || {})
+    (Rails.cache.fetch(key) { {} }[:data] || {})
       .values
       .map(&:values)
       .flatten
   end
 
   def last_fetched_at
-    DaybreakValue.get(key)[:last_fetched_at]
+    Rails.cache.fetch(key) { {} }[:last_fetched_at]
   end
 
   # :nocov:
@@ -124,11 +124,13 @@ class GoogleAccount < ApplicationRecord
       )
     end
 
-    DaybreakValue.upsert(key,
+    Rails.cache.write(
+      key,
       {
         data: events,
         last_fetched_at: Time.now.utc.in_time_zone(Timeframe::Application.config.local["timezone"]).to_s
-      })
+      }
+    )
   end
   # :nocov:
 

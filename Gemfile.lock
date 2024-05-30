@@ -99,7 +99,6 @@ GEM
       rexml
     crass (1.0.6)
     date (3.3.4)
-    daybreak (0.3.0)
     declarative (0.0.20)
     docile (1.4.0)
     dotenv (3.1.2)
@@ -365,7 +364,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  daybreak (~> 0.3.0)
   dotenv-rails
   google-api-client
   httparty

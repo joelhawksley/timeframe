@@ -3,7 +3,6 @@
 source "https://rubygems.org"
 ruby "3.2.2"
 
-gem "daybreak", "~> 0.3.0"
 gem "rufus-scheduler"
 gem "puma-rufus-scheduler"
 gem "dotenv-rails"
