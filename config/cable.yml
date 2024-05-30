@@ -1,0 +1,8 @@
+development:
+  adapter: litecable
+
+test:
+  adapter: test
+
+production:
+  adapter: litecable

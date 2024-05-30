@@ -20,4 +20,8 @@ config.yml
 timeframe_development*
 timeframe_test*
 pgdata
-local.db
+*.db
+
+# Ignore default Litestack SQLite databases.
+/db/**/*.sqlite3
+/db/**/*.sqlite3-*

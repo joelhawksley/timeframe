@@ -164,6 +164,13 @@ GEM
     jwt (2.7.1)
     language_server-protocol (3.17.0.3)
     lint_roller (1.1.0)
+    litestack (0.4.4)
+      erubi (~> 1)
+      oj (~> 3)
+      rack (~> 3)
+      rackup (~> 2)
+      sqlite3 (>= 1.6.0, < 2.0.0)
+      tilt (~> 2)
     lograge (0.14.0)
       actionpack (>= 4)
       activesupport (>= 4)
@@ -203,6 +210,8 @@ GEM
     nokogiri (1.16.4)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
+    oj (3.16.3)
+      bigdecimal (>= 3.0)
     os (1.1.4)
     overcommit (0.63.0)
       childprocess (>= 0.6.3, < 6)
@@ -360,6 +369,7 @@ DEPENDENCIES
   dotenv-rails
   google-api-client
   httparty
+  litestack
   lograge
   m
   minitest
@@ -371,7 +381,6 @@ DEPENDENCIES
   rufus-scheduler
   simplecov
   slim
-  sqlite3 (~> 1.4)
   standard
   tenkit!
   time_difference

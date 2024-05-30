@@ -1,7 +1,7 @@
 require "daybreak"
 
 class DaybreakValue
-  @@db = Daybreak::DB.new "local.db"
+  @@db = Daybreak::DB.new "#{ENV['RAILS_ENV']}.db"
 
   def self.db
     @@db
