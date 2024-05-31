@@ -34,7 +34,7 @@ class Api
   end
 
   def self.data
-    Rails.cache.fetch(storage_key) { {} }[:data] || {}
+    @_data ||= Rails.cache.fetch(storage_key) { {} }[:data] || {}
   end
 
   def self.healthy?

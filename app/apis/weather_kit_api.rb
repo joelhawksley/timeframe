@@ -54,10 +54,8 @@ class WeatherKitApi < Api
         (twz.noon + 4.hours),
         (twz.noon + 8.hours)
       ].map do |hour|
-        weather_hour =
-          hours_forecast.find do
-            DateTime.parse(_1["forecastStart"]) == hour
-          end
+        hour_str = hour.utc.iso8601
+        weather_hour = hours_forecast.find { _1["forecastStart"] == hour_str }
 
         next if !weather_hour.present?
 
@@ -86,18 +84,17 @@ class WeatherKitApi < Api
     hours = data["forecastHourly"]["hours"]
 
     hours.each_with_index do |hour, index|
+      hour_i = DateTime.parse(hour["forecastStart"]).to_i
+
       existing_event =
-        events.find do
-          _1[:end_i] == DateTime.parse(hour["forecastStart"]).to_i &&
-          _1[:precipitation_type] == hour["precipitationType"]
-        end
+        events.find { _1[:end_i] == hour_i && _1[:precipitation_type] == hour["precipitationType"] }
 
       if existing_event
         existing_event[:end_i] += 3600
       else
         events <<
           {
-            start_i: DateTime.parse(hour["forecastStart"]).to_i,
+            start_i: hour_i,
             end_i: (DateTime.parse(hour["forecastStart"]) + 1.hour).to_i,
             precipitation_type: hour["precipitationType"]
           }
