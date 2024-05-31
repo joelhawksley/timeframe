@@ -376,6 +376,7 @@ DEPENDENCIES
   puma
   puma-rufus-scheduler
   rails (~> 7.1)
+  request_store
   rufus-scheduler
   simplecov
   slim
