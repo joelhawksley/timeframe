@@ -91,9 +91,25 @@ class DisplaysController < ApplicationController
     GoogleAccount.all.each do |google_account|
       status_icons_with_labels << ["calendar-circle-exclamation", google_account.email.truncate(10)] if !google_account.healthy?
     end
+
+    minutely_weather_minutes = []
+    minutely_weather_minutes_icon = nil
+    
+    if (
+      WeatherKitApi.healthy? && 
+      condition = WeatherKitApi.data.dig("forecastNextHour", "summary")&.first.to_h["condition"] &&
+      condition != "clear"
+    )
+      
+      summary = WeatherKitApi.data["forecastNextHour"]["summary"].first["condition"]
+      minutely_weather_minutes_icon = summary == "snow" ? "snowflake" : "raindrops"
+      minutely_weather_minutes = WeatherKitApi.data["forecastNextHour"]["minutes"].first(60)
+    end
     # :nocov:
 
     {
+      minutely_weather_minutes: minutely_weather_minutes,
+      minutely_weather_minutes_icon: minutely_weather_minutes_icon,
       status_icons: status_icons,
       status_icons_with_labels: status_icons_with_labels,
       current_temperature: HomeAssistantApi.feels_like_temperature,
