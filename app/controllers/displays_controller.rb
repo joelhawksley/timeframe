@@ -18,6 +18,9 @@ class DisplaysController < ApplicationController
          Rails.logger.error(t.backtrace.take(5))
       end
 
+      stats = ActiveRecord::Base.connection_pool.stat
+      Rails.logger.error("Connection Pool Stats #{stats.inspect}")
+
       Rails.logger.error("Render error: " + e.message + e.backtrace.join("\n"))
 
       render "error", locals: {klass: e.class.to_s, message: e.message}
