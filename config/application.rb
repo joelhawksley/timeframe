@@ -20,8 +20,6 @@ Bundler.require(*Rails.groups)
 
 module Timeframe
   class Application < Rails::Application
-    # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 7.0
     config.local = YAML.load_file(Rails.root.join("config.yml"))
 
     # Settings in config/environments/* take precedence over those specified here.
