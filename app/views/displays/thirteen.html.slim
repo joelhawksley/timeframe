@@ -3,18 +3,10 @@ div style="clear: both; line-height: .7; margin-bottom: 1rem; font-size: 1rem"
   div style="float: left;"
     - view_object[:status_icons].each do |status_icon|
       i.fa-solid class="fa-#{status_icon}" style="margin-right: 1rem"
-    - HomeAssistantApi.unavailable_door_sensors.each do |door_sensor_name|
+    - view_object[:status_icons_with_labels].each do |status_icon, label|
       span style="margin-right: 1rem;"
-        i.fa-solid.fa-triangle-exclamation
-        =< door_sensor_name
-    - HomeAssistantApi.unlocked_doors.each do |door_name|
-      span style="margin-right: 1rem;"
-        i.fa-solid.fa-lock-open
-        =< door_name
-    - HomeAssistantApi.open_doors.each do |door_name|
-      span style="margin-right: 1rem;"
-        i.fa-solid.fa-door-open
-        =< door_name
+        i.fa-solid class="fa-#{status_icon}"
+        =< label
   div style="float: right; text-align: right;"
     - if BirdnetApi.healthy? && BirdnetApi.most_unusual_species_trailing_24h.present?
       div style="display: inline-block;"

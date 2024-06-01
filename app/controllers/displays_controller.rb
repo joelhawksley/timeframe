@@ -48,9 +48,11 @@ class DisplaysController < ApplicationController
         }
       end
 
-    status_icons = []
+   
 
     # :nocov:
+    status_icons = []
+
     if HomeAssistantApi.healthy?
       status_icons << "box-open" if HomeAssistantApi.package_present?
       status_icons << "garage-open" if HomeAssistantApi.garage_door_open?
@@ -71,10 +73,29 @@ class DisplaysController < ApplicationController
     else
       status_icons << "bone-break"
     end
+
+    status_icons_with_labels = []
+
+    HomeAssistantApi.unavailable_door_sensors.each do |door_sensor_name|
+      status_icons_with_labels << ["triangle-exclamation", door_sensor_name]
+    end
+    
+    HomeAssistantApi.unlocked_doors.each do |door_name|
+      status_icons_with_labels << ["lock-open", door_name]
+    end
+
+    HomeAssistantApi.open_doors.each do |door_name|
+      status_icons_with_labels << ["door-open", door_name]
+    end
+
+    GoogleAccount.all.each do |google_account|
+      status_icons_with_labels << ["calendar-circle-exclamation", google_account.email.truncate(10)] if !google_account.healthy?
+    end
     # :nocov:
 
     {
       status_icons: status_icons,
+      status_icons_with_labels: status_icons_with_labels,
       current_temperature: HomeAssistantApi.feels_like_temperature,
       day_groups: day_groups,
       timestamp: current_time.strftime("%-l:%M %p")
