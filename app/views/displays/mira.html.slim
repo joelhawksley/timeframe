@@ -38,19 +38,19 @@ div.hide-if-empty style="font-size: 1.75rem; position:absolute; left: 0; right: 
         |  :
         =< status[:track]
 div style="margin-top: 1.5rem;"
-div style="display: flex; justify-content: space-between;"
+div style="display: flex; justify-content: space-between; margin-bottom: .5rem;"
   div
     - view_object[:status_icons_with_labels].each do |status_icon, label|
       span style="margin-right: .5rem;"
         i.fa-solid class="fa-#{status_icon}"
         =< label
-  div style="text-align: right; margin-bottom: .5rem;"
-    - if BirdnetApi.healthy? && BirdnetApi.most_unusual_species_trailing_24h.present?
+  div style="text-align: right;"
+    - if BirdnetApi.most_unusual_species_trailing_24h.present?
       i.fa-solid.fa-crow
       =< BirdnetApi.most_unusual_species_trailing_24h["commonName"]
     - else
       | &nbsp;
-div style="display: flex; justify-content: space-between; line-height: 2rem; font-size:2rem;"
+div style="display: flex; justify-content: space-between; line-height: 2rem; font-size: 2rem;"
   div
     - view_object[:status_icons].each do |status_icon|
       i.fa-solid class="fa-#{status_icon}" style="margin-right: 1rem"
