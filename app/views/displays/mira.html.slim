@@ -59,4 +59,4 @@ div style="margin-top: 1rem; display: flex; justify-content: space-between; line
   div style="text-align: right; font-size: 5.5rem;" = DateTime.now.strftime("%l:%M%P")
 hr style="margin: 1rem 0 1rem; border: none; background-color: #ccc; color: #ccc; height: 2px;"
 div style="position: absolute; top: 13rem; bottom: 0; left: 2rem; right: 2rem; overflow: hidden;"
-  = render Timeline.new(view_object: view_object)
+  = render "timeline", view_object: view_object

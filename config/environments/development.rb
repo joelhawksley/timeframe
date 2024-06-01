@@ -50,5 +50,4 @@ Rails.application.configure do
   # config.logger = ::ActiveSupport::Logger.new("/dev/null")
   # config.logger.formatter = lambda { |*_| }
   # config.logger.level = 10 # FATAL is 4
-  config.lograge.enabled = true
 end

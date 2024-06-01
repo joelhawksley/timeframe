@@ -5,18 +5,15 @@ ruby "3.2.2"
 
 gem "rufus-scheduler"
 gem "puma-rufus-scheduler"
-gem "dotenv-rails"
 gem "google-api-client", require: ["google/apis/calendar_v3", "google/apis/people_v1"]
 gem "httparty"
-gem "lograge"
 gem "puma"
-gem "rails", "~> 7.1"
+gem "rails", github: "rails/rails", branch: "main"
 gem "slim"
 gem "litestack"
 gem "request_store"
 gem "tenkit", git: "https://github.com/joelhawksley/tenkit", branch: "add-alerts"
 gem "time_difference"
-gem "view_component"
 
 group :development, :test do
   gem "overcommit"

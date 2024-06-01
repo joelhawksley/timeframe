@@ -23,7 +23,7 @@ class DisplaysController < ApplicationController
 
       Rails.logger.error("Render error: " + e.message + e.backtrace.join("\n"))
 
-      render "error", locals: {klass: e.class.to_s, message: e.message}
+      render "error", locals: {klass: e.class.to_s, message: e.message, backtrace: e.backtrace}
     end
     # :nocov:
   end
