@@ -103,15 +103,10 @@ class DisplaysController < ApplicationController
 
     minutely_weather_minutes = []
     minutely_weather_minutes_icon = nil
+    condition = WeatherKitApi.data.dig("forecastNextHour", "summary")&.first.to_h["condition"]
     
-    if (
-      WeatherKitApi.healthy? && 
-      condition = WeatherKitApi.data.dig("forecastNextHour", "summary")&.first.to_h["condition"] &&
-      condition != "clear"
-    )
-      
-      summary = WeatherKitApi.data["forecastNextHour"]["summary"].first["condition"]
-      minutely_weather_minutes_icon = summary == "snow" ? "snowflake" : "raindrops"
+    if (WeatherKitApi.healthy? && condition != "clear")
+      minutely_weather_minutes_icon = condition == "snow" ? "snowflake" : "raindrops"
       minutely_weather_minutes = WeatherKitApi.data["forecastNextHour"]["minutes"].first(60)
     end
     # :nocov:
