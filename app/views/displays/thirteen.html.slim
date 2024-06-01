@@ -8,7 +8,7 @@ div style="clear: both; line-height: .7; margin-bottom: 1rem; font-size: 1rem"
         i.fa-solid class="fa-#{status_icon}"
         =< label
   div style="float: right; text-align: right;"
-    - if BirdnetApi.healthy? && BirdnetApi.most_unusual_species_trailing_24h.present?
+    - if BirdnetApi.most_unusual_species_trailing_24h.present?
       div style="display: inline-block;"
         i.fa-solid.fa-crow
         =< BirdnetApi.most_unusual_species_trailing_24h["commonName"]
