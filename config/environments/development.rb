@@ -25,10 +25,10 @@ Rails.application.configure do
   else
     config.action_controller.perform_caching = false
 
-    config.cache_store = :litecache
+    config.cache_store = :memory_store
   end
 
-  config.active_job.queue_adapter = :litejob
+  config.active_job.queue_adapter = :async
 
   config.action_mailer.default_url_options = {host: "localhost", port: 3000}
 

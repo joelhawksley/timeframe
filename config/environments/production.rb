@@ -43,9 +43,9 @@ Rails.application.configure do
   config.log_tags = [:request_id]
 
   # Use a different cache store in production.
-  config.cache_store = :litecache
+  config.cache_store = :memory_store
 
-  config.active_job.queue_adapter = :litejob
+  config.active_job.queue_adapter = :async
   config.action_mailer.perform_caching = false
 
   # Ignore bad email addresses and do not raise email delivery errors.
