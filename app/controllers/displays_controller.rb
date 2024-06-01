@@ -10,8 +10,14 @@ class DisplaysController < ApplicationController
 
     # :nocov:
     begin
-      render "mira", locals: {view_object: view_object}
+      render "mira", locals: {view_object: view_object}      
     rescue => e
+      Rails.logger.error("listing #{Thread.list.count} threads:")
+      Thread.list.each_with_index do |t,i| 
+         Rails.logger.error("---- thread #{i}: #{t.inspect}")
+         Rails.logger.error(t.backtrace.take(5))
+      end
+
       Rails.logger.error("Render error: " + e.message + e.backtrace.join("\n"))
 
       render "error", locals: {klass: e.class.to_s, message: e.message}
