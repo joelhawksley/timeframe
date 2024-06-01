@@ -65,32 +65,8 @@ div style="display: flex; justify-content: space-between;"
       | &nbsp;
 div style="display: flex; justify-content: space-between; line-height: 2rem; font-size:2rem;"
   div
-    - if HomeAssistantApi.healthy?
-      - if HomeAssistantApi.package_present?
-        i.fa-solid.fa-box-open style="margin-right: 1rem"
-      - if HomeAssistantApi.garage_door_open?
-        i.fa-solid.fa-garage-open style="margin-right: 1rem"
-      - if HomeAssistantApi.washer_needs_attention?
-        i.fa-solid.fa-washing-machine style="margin-right: 1rem"
-      - if HomeAssistantApi.dryer_needs_attention?
-        i.fa-solid.fa-dryer-heat style="margin-right: 1rem"
-      - if HomeAssistantApi.car_needs_plugged_in?
-        i.fa-solid.fa-car-side-bolt style="margin-right: 1rem"
-      - if HomeAssistantApi.active_video_call?
-        i.fa-solid.fa-video style="margin-right: 1rem"
-    - else
-      i.fa-solid.fa-house-circle-exclamation style="margin-right: 1rem"
-    - if !WeatherKitApi.healthy?
-      i.fa-solid.fa-cloud-slash style="margin-right: 1rem"
-    - if !SonosApi.healthy?
-      i.fa-solid.fa-volume-slash style="margin-right: 1rem"
-    - if !BirdnetApi.healthy?
-      i.fa-solid.fa-microphone-slash style="margin-right: 1rem"
-    - if DogParkApi.healthy?
-      - if !DogParkApi.open?
-        i.fa-solid.fa-location-pin-lock style="margin-right: 1rem"
-    - else
-      i.fa-solid.fa-bone-break style="margin-right: 1rem"
+    - view_object[:status_icons].each do |status_icon|
+      i.fa-solid class="fa-#{status_icon}" style="margin-right: 1rem"
   div = DateTime.now.strftime("%A, %B %-d")
 div style="margin-top: 1rem; display: flex; justify-content: space-between; line-height: .7"
   div style="font-size: 5.5rem; margin-bottom: 1rem;"

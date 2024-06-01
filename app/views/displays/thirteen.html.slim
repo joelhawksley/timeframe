@@ -1,20 +1,8 @@
 .timestamp style="position: absolute; bottom: .25rem; right: .25rem; font-size: .4rem; color: #777; z-index: 10" = view_object[:timestamp]
 div style="clear: both; line-height: .7; margin-bottom: 1rem; font-size: 1rem"
   div style="float: left;"
-    - if !WeatherKitApi.healthy?
-      i.fa-solid.fa-cloud-slash style="margin-right: 1rem;"
-    - if !GoogleAccount.all.all?(&:healthy?)
-      i.fa-solid.fa-calendar-circle-exclamation style="margin-right: 1rem;"
-    - if !HomeAssistantApi.healthy?
-      i.fa-solid.fa-house-circle-exclamation style="margin-right: 1rem;"
-    - if HomeAssistantApi.washer_needs_attention?
-      i.fa-solid.fa-washing-machine style="margin-right: 1rem;"
-    - if HomeAssistantApi.dryer_needs_attention?
-      i.fa-solid.fa-dryer-heat style="margin-right: 1rem;"
-    - if HomeAssistantApi.car_needs_plugged_in?
-      i.fa-solid.fa-car-side-bolt style="margin-right: 1rem;"
-    - if !DogParkApi.open?
-      i.fa-solid.fa-location-pin-lock style="margin-right: 1rem;"
+    - view_object[:status_icons].each do |status_icon|
+      i.fa-solid class="fa-#{status_icon}" style="margin-right: 1rem"
     - HomeAssistantApi.unavailable_door_sensors.each do |door_sensor_name|
       span style="margin-right: 1rem;"
         i.fa-solid.fa-triangle-exclamation

@@ -48,7 +48,33 @@ class DisplaysController < ApplicationController
         }
       end
 
+    status_icons = []
+
+    # :nocov:
+    if HomeAssistantApi.healthy?
+      status_icons << "box-open" if HomeAssistantApi.package_present?
+      status_icons << "garage-open" if HomeAssistantApi.garage_door_open?
+      status_icons << "washing-machine" if HomeAssistantApi.washer_needs_attention?
+      status_icons << "dryer-heat" if HomeAssistantApi.dryer_needs_attention?
+      status_icons << "car-side-bolt" if HomeAssistantApi.car_needs_plugged_in?
+      status_icons << "video" if HomeAssistantApi.active_video_call?
+    else
+      status_icons << "house-circle-exclamation"
+    end
+
+    status_icons << "cloud-slash" if !WeatherKitApi.healthy?
+    status_icons << "volume-slash" if !SonosApi.healthy?
+    status_icons << "microphone-slash" if !BirdnetApi.healthy?
+
+    if DogParkApi.healthy? && !DogParkApi.open?
+      status_icons << "location-pin-lock"
+    else
+      status_icons << "bone-break"
+    end
+    # :nocov:
+
     {
+      status_icons: status_icons,
       current_temperature: HomeAssistantApi.feels_like_temperature,
       day_groups: day_groups,
       timestamp: current_time.strftime("%-l:%M %p")
