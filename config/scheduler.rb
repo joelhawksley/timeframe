@@ -2,7 +2,7 @@ require "schedule_job"
 
 scheduler = Rufus::Scheduler.new
 
-if ENV["RUN_BG"]
+if ENV["RUN_BG"] || ENV["RAILS_ENV"] == "production"
   scheduler.every "1s" do
     ScheduleJob.perform_async(:sonos)
   end
