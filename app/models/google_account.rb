@@ -20,7 +20,7 @@ class GoogleAccount < ApplicationRecord
   end
 
   def healthy?
-    return false unless last_fetched_at
+    return false unless last_fetched_at && refresh_token.present?
 
     DateTime.parse(last_fetched_at) > DateTime.now - 2.minutes
   end
