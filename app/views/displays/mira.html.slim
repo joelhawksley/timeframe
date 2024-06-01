@@ -40,6 +40,11 @@ div.hide-if-empty style="font-size: 1.75rem; position:absolute; left: 0; right: 
 div style="margin-top: 1.5rem;"
 div style="display: flex; justify-content: space-between;"
   div
+    - GoogleAccount.all.each do |google_account|
+      - if !google_account.healthy?
+        span style="margin-right: 1rem"
+          i.fa-solid.fa-calendar-circle-exclamation
+          =< google_account.email.truncate(10)
     - HomeAssistantApi.unavailable_door_sensors.each do |door_sensor_name|
       span style="margin-right: .5rem"
         i.fa-solid.fa-triangle-exclamation
@@ -79,8 +84,6 @@ div style="display: flex; justify-content: space-between; line-height: 2rem; fon
       i.fa-solid.fa-cloud-slash style="margin-right: 1rem"
     - if !SonosApi.healthy?
       i.fa-solid.fa-volume-slash style="margin-right: 1rem"
-    - if !GoogleAccount.all.all?(&:healthy?)
-      i.fa-solid.fa-calendar-circle-exclamation style="margin-right: 1rem"
     - if !BirdnetApi.healthy?
       i.fa-solid.fa-microphone-slash style="margin-right: 1rem"
     - if DogParkApi.healthy?
