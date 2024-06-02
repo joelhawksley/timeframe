@@ -77,12 +77,6 @@ class DisplaysController < ApplicationController
     status_icons << "volume-slash" if !SonosApi.healthy?
     status_icons << "microphone-slash" if !BirdnetApi.healthy?
 
-    if DogParkApi.healthy? && !DogParkApi.open?
-      status_icons << "location-pin-lock"
-    else
-      status_icons << "bone-break"
-    end
-
     status_icons_with_labels = []
 
     HomeAssistantApi.unavailable_door_sensors.each do |door_sensor_name|

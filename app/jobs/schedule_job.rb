@@ -17,8 +17,6 @@ class ScheduleJob
       GoogleAccount.all.each(&:fetch)
     when :birdnet
       BirdnetApi.fetch
-    when :dog_park
-      DogParkApi.fetch
     end
   end
 end

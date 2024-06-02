@@ -31,11 +31,6 @@ if ENV["RUN_BG"] || ENV["RAILS_ENV"] == "production"
     BirdnetApi.fetch
     # ScheduleJob.perform_async(:birdnet)
   end
-
-  scheduler.every "5m", first: :now do
-    DogParkApi.fetch
-    # ScheduleJob.perform_async(:dog_park)
-  end
 end
 
 scheduler.join
