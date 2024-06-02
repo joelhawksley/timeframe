@@ -92,7 +92,10 @@ class DisplaysController < ApplicationController
     end
 
     GoogleAccount.all.each do |google_account|
-      status_icons_with_labels << ["calendar-circle-exclamation", google_account.email.truncate(10)] if !google_account.healthy?
+      if !google_account.healthy?
+        label = Timeframe::Application.config.local["google_accounts"].find { _1["id"] == google_account.email }&.dig("label")
+        status_icons_with_labels << ["calendar-circle-exclamation", label] 
+      end
     end
 
     minutely_weather_minutes = []
