@@ -33,7 +33,6 @@ body {
   overflow: hidden;
 }
 
-table { height: 1px; }
 tr { height: 100%; }
 td { height: 100%; padding: 0.05rem 0; }
 

@@ -1,34 +1,14 @@
 .timestamp style="position: absolute; bottom: .25rem; right: .25rem; font-size: .4rem; color: #777; z-index: 10" = view_object[:timestamp]
 div style="clear: both; line-height: .7; margin-bottom: 1rem; font-size: 1rem"
   div style="float: left;"
-    - if !WeatherKitApi.healthy?
-      i.fa-solid.fa-cloud-slash style="margin-right: 1rem;"
-    - if !GoogleAccount.all.all?(&:healthy?)
-      i.fa-solid.fa-calendar-circle-exclamation style="margin-right: 1rem;"
-    - if !HomeAssistantApi.healthy?
-      i.fa-solid.fa-house-circle-exclamation style="margin-right: 1rem;"
-    - if HomeAssistantApi.washer_needs_attention?
-      i.fa-solid.fa-washing-machine style="margin-right: 1rem;"
-    - if HomeAssistantApi.dryer_needs_attention?
-      i.fa-solid.fa-dryer-heat style="margin-right: 1rem;"
-    - if HomeAssistantApi.car_needs_plugged_in?
-      i.fa-solid.fa-car-side-bolt style="margin-right: 1rem;"
-    - if !DogParkApi.open?
-      i.fa-solid.fa-location-pin-lock style="margin-right: 1rem;"
-    - HomeAssistantApi.unavailable_door_sensors.each do |door_sensor_name|
+    - view_object[:status_icons].each do |status_icon|
+      i.fa-solid class="fa-#{status_icon}" style="margin-right: 1rem"
+    - view_object[:status_icons_with_labels].each do |status_icon, label|
       span style="margin-right: 1rem;"
-        i.fa-solid.fa-triangle-exclamation
-        =< door_sensor_name
-    - HomeAssistantApi.unlocked_doors.each do |door_name|
-      span style="margin-right: 1rem;"
-        i.fa-solid.fa-lock-open
-        =< door_name
-    - HomeAssistantApi.open_doors.each do |door_name|
-      span style="margin-right: 1rem;"
-        i.fa-solid.fa-door-open
-        =< door_name
+        i.fa-solid class="fa-#{status_icon}"
+        =< label
   div style="float: right; text-align: right;"
-    - if BirdnetApi.healthy? && BirdnetApi.most_unusual_species_trailing_24h.present?
+    - if BirdnetApi.most_unusual_species_trailing_24h.present?
       div style="display: inline-block;"
         i.fa-solid.fa-crow
         =< BirdnetApi.most_unusual_species_trailing_24h["commonName"]
@@ -42,4 +22,4 @@ div style="clear: both; line-height: .7; margin-bottom: 1rem; padding-bottom: .5
   div
     | &nbsp;
 hr style="margin: 1rem 0 1rem; border: none; background-color: #ccc; color: #ccc; height: 2px;"
-= render Timeline.new(view_object: view_object)
+= render "timeline", view_object: view_object

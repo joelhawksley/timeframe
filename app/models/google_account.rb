@@ -20,20 +20,20 @@ class GoogleAccount < ApplicationRecord
   end
 
   def healthy?
-    return false unless last_fetched_at
+    return false unless last_fetched_at && refresh_token.present?
 
     DateTime.parse(last_fetched_at) > DateTime.now - 2.minutes
   end
 
   def events
-    (MemoryValue.get(key)[:data] || {})
+    (Rails.cache.fetch(key) { {} }[:data] || {})
       .values
       .map(&:values)
       .flatten
   end
 
   def last_fetched_at
-    MemoryValue.get(key)[:last_fetched_at]
+    Rails.cache.fetch(key) { {} }[:last_fetched_at]
   end
 
   # :nocov:
@@ -124,11 +124,13 @@ class GoogleAccount < ApplicationRecord
       )
     end
 
-    MemoryValue.upsert(key,
+    Rails.cache.write(
+      key,
       {
         data: events,
         last_fetched_at: Time.now.utc.in_time_zone(Timeframe::Application.config.local["timezone"]).to_s
-      })
+      }
+    )
   end
   # :nocov:
 

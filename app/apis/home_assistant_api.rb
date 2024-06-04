@@ -72,7 +72,7 @@ class HomeAssistantApi < Api
     Timeframe::Application.config.local["exterior_door_sensors"].concat(
       Timeframe::Application.config.local["exterior_door_locks"]
     ).each do |entity_id|
-      if HomeAssistantApi.data.find { _1["entity_id"] == entity_id }&.fetch("state") == "unavailable"
+      if data.find { _1["entity_id"] == entity_id }&.fetch("state") == "unavailable"
         out << entity_id.split(".").last.gsub("_opening", "").humanize
       end
     end
@@ -84,7 +84,7 @@ class HomeAssistantApi < Api
     out = []
 
     Timeframe::Application.config.local["exterior_door_sensors"].map do |entity_id|
-      if HomeAssistantApi.data.find { _1["entity_id"] == entity_id }&.fetch("state") == "on"
+      if data.find { _1["entity_id"] == entity_id }&.fetch("state") == "on"
         out << entity_id.split(".").last.split("_door").first.humanize
       end
     end
@@ -96,11 +96,33 @@ class HomeAssistantApi < Api
     out = []
 
     Timeframe::Application.config.local["exterior_door_locks"].map do |entity_id|
-      if HomeAssistantApi.data.find { _1["entity_id"] == entity_id }&.fetch("state") == "unlocked"
+      if data.find { _1["entity_id"] == entity_id }&.fetch("state") == "unlocked"
         out << entity_id.split(".").last.split("_door").first.humanize
       end
     end
 
+    out - open_doors
+  end
+
+  def self.low_batteries
+    out = []
+
+    data.select { _1.dig("attributes", "device_class") == "battery" }.each do |entity|
+      next if entity["state"] == "unknown"
+      
+      if entity["state"].to_f < 25
+        out << entity["entity_id"].split(".").last.split("_battery").first.humanize
+      end
+    end
+
     out
+  end
+
+  def self.active_video_call?
+    entity = data.find { _1["entity_id"] == Timeframe::Application.config.local["home_assistant_audio_input_in_use"] }
+
+    return false unless entity.present?
+
+    entity["state"] == "on"
   end
 end

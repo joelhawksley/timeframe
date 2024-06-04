@@ -66,7 +66,9 @@ class HomeAssistantApiTest < Minitest::Test
   end
 
   def test_feels_like_temperature_no_data
-    assert_nil(HomeAssistantApi.feels_like_temperature)
+    HomeAssistantApi.stub :data, [] do
+      assert_nil(HomeAssistantApi.feels_like_temperature)
+    end
   end
 
   def test_feels_like_temperature
@@ -106,7 +108,9 @@ class HomeAssistantApiTest < Minitest::Test
   end
 
   def test_dryer_needs_attention_no_data
-    assert_nil(HomeAssistantApi.dryer_needs_attention?)
+    HomeAssistantApi.stub :data, [] do
+      assert_nil(HomeAssistantApi.dryer_needs_attention?)
+    end
   end
 
   def test_dryer_needs_attention
@@ -129,7 +133,9 @@ class HomeAssistantApiTest < Minitest::Test
   end
 
   def test_washer_needs_attention_no_data
-    assert_nil(HomeAssistantApi.washer_needs_attention?)
+    HomeAssistantApi.stub :data, [] do
+      assert_nil(HomeAssistantApi.washer_needs_attention?)
+    end
   end
 
   def test_washer_needs_attention
@@ -181,6 +187,23 @@ class HomeAssistantApiTest < Minitest::Test
     end
   end
 
+  def test_unlocked_doors_ignores_open_doors
+    data = [
+      {
+        "entity_id" => Timeframe::Application.config.local["exterior_door_sensors"][2],
+        "state" => "on"
+      },
+      {
+        "entity_id" => Timeframe::Application.config.local["exterior_door_locks"][0],
+        "state" => "unlocked"
+      }
+    ]
+
+    HomeAssistantApi.stub :data, data do
+      assert_equal(HomeAssistantApi.unlocked_doors, [])
+    end
+  end
+
   def test_unlocked_doors
     data = [
       {
@@ -204,6 +227,47 @@ class HomeAssistantApiTest < Minitest::Test
 
     HomeAssistantApi.stub :data, data do
       assert_equal(HomeAssistantApi.unavailable_door_sensors, ["Patio door lock"])
+    end
+  end
+
+  def test_low_batteries
+    data = [
+      {
+        "entity_id" => "sensor.laundry_room_washer_leak_sensor_battery",
+        "state" => "100",
+        "attributes" => { "device_class" => "battery" }
+      },
+      {
+        "entity_id" => "sensor.laundry_room_sink_leak_sensor_battery",
+        "state" => "10",
+        "attributes" => { "device_class" => "battery" }
+      },
+      {
+        "entity_id" => "sensor.unknown_leak_sensor_battery",
+        "state" => "unknown",
+        "attributes" => { "device_class" => "battery" }
+      }
+    ]
+
+    HomeAssistantApi.stub :data, data do
+      assert_equal(HomeAssistantApi.low_batteries, ["Laundry room sink leak sensor"])
+    end
+  end
+
+  def test_active_video_call
+    data = [
+      {
+        "entity_id" => Timeframe::Application.config.local["home_assistant_audio_input_in_use"],
+        "state" => "on"
+      }
+    ]
+
+    HomeAssistantApi.stub :data, data do
+      assert(HomeAssistantApi.active_video_call?)
+    end
+
+    HomeAssistantApi.stub :data, {} do
+      refute(HomeAssistantApi.active_video_call?)
     end
   end
 end

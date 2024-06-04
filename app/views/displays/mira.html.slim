@@ -12,26 +12,21 @@ div.hide-if-empty style="font-size: 1.75rem; position:absolute; left: 0; right: 
   div style="position: relative"
     div style="background:-webkit-gradient(linear,left top,left bottom,color-stop(0%, rgba(255,255,255,0)),color-stop(100%,rgba(255,255,255,1)));position: absolute;left: 0;right: 0; top: -2rem;height: 2rem;z-index: 5;"
   div.hide-if-empty style="background-color: #ddd; color: black; padding: 0.5rem 2rem; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;"
-    - if WeatherKitApi.healthy? && WeatherKitApi.data.dig("forecastNextHour", "summary")&.first.to_h["condition"] != "clear"
-      - condition = WeatherKitApi.data.dig("forecastNextHour", "summary")&.first.to_h["condition"]
-      - if condition.present? && condition != "clear"
-        - summary = WeatherKitApi.data["forecastNextHour"]["summary"].first["condition"]
-        - icon = summary == "snow" ? "snowflake" : "raindrops"
-        div style="display: flex; justify-content: space-between"
-          div style="line-height: 3rem"
-            i.fa-solid.fa-fw class="fa-#{icon}"
-          div
-            table.minutely border=0 cellpadding="0" cellspacing="0"
-              tr
-                - WeatherKitApi.data["forecastNextHour"]["minutes"].first(60).each_with_index do |minute, i|
-                  - next if i.odd?
-                  td
-                    div style="height: 100px; position:relative; width: 30px;"
-                      div style="background-color:black; position: absolute; height: #{(minute["precipitationChance"] * minute["precipitationIntensity"] * 50).clamp(3,100)}px; left: 0; right: 10px; bottom: 0; border-radius: 30px;"
-              tr style="font-size: .75rem;"
-                td colspan="10" Now
-                td colspan="10" 20m
-                td colspan="10" 40m
+    - if view_object[:minutely_weather_minutes].present?
+      div
+        div style="display: inline-block; padding-right: 1rem; vertical-align: super"
+          i.fa-solid.fa-fw class="fa-#{view_object[:minutely_weather_minutes_icon]}"
+        div style="display: inline-block"
+          table.minutely border=0 cellpadding="0" cellspacing="0" 
+            tr
+              - view_object[:minutely_weather_minutes].each_with_index do |minute, i|
+                td
+                  div style="height: 100px; position:relative; width: 25px;"
+                    div style="background-color:black; position: absolute; height: #{(minute["precipitationChance"] * minute["precipitationIntensity"] * 50).clamp(3,100)}px; left: 0; right: 10px; bottom: 0; border-radius: 100%;"
+            tr style="font-size: .75rem;"
+              td colspan="20" Now
+              td colspan="20" 20m
+              td colspan="20" 40m
   div.hide-if-empty style="background-color: black; color: white; padding: 1rem 2rem; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;"
     - if status = SonosApi.status
       i.fa-solid.fa-volume.fa-fw
@@ -40,52 +35,22 @@ div.hide-if-empty style="font-size: 1.75rem; position:absolute; left: 0; right: 
         |  :
         =< status[:track]
 div style="margin-top: 1.5rem;"
-div style="display: flex; justify-content: space-between;"
+div style="display: flex; justify-content: space-between; margin-bottom: .5rem;"
   div
-    - HomeAssistantApi.unavailable_door_sensors.each do |door_sensor_name|
-      span style="margin-right: 1rem"
-        i.fa-solid.fa-triangle-exclamation
-        =< door_sensor_name
-  div style="text-align: right; margin-bottom: .5rem;"
-    - if BirdnetApi.healthy? && BirdnetApi.most_unusual_species_trailing_24h.present?
+    - view_object[:status_icons_with_labels].each do |status_icon, label|
+      span style="margin-right: .5rem;"
+        i.fa-solid class="fa-#{status_icon}"
+        =< label
+  div style="text-align: right;"
+    - if BirdnetApi.most_unusual_species_trailing_24h.present?
       i.fa-solid.fa-crow
       =< BirdnetApi.most_unusual_species_trailing_24h["commonName"]
     - else
       | &nbsp;
-div style="display: flex; justify-content: space-between; line-height: 2rem; font-size:2rem;"
+div style="display: flex; justify-content: space-between; line-height: 2rem; font-size: 2rem;"
   div
-    - if HomeAssistantApi.package_present?
-      i.fa-solid.fa-box-open style="margin-right: 1rem"
-    - if HomeAssistantApi.garage_door_open?
-      i.fa-solid.fa-garage-open style="margin-right: 1rem"
-    - if !WeatherKitApi.healthy?
-      i.fa-solid.fa-cloud-slash style="margin-right: 1rem"
-    - if !SonosApi.healthy?
-      i.fa-solid.fa-volume-slash style="margin-right: 1rem"
-    - if !GoogleAccount.all.all?(&:healthy?)
-      i.fa-solid.fa-calendar-circle-exclamation style="margin-right: 1rem"
-    - if !HomeAssistantApi.healthy?
-      i.fa-solid.fa-house-circle-exclamation style="margin-right: 1rem"
-    - if !BirdnetApi.healthy?
-      i.fa-solid.fa-microphone-slash style="margin-right: 1rem"
-    - if !DogParkApi.healthy?
-      i.fa-solid.fa-bone-break style="margin-right: 1rem"
-    - if HomeAssistantApi.washer_needs_attention?
-      i.fa-solid.fa-washing-machine style="margin-right: 1rem"
-    - if HomeAssistantApi.dryer_needs_attention?
-      i.fa-solid.fa-dryer-heat style="margin-right: 1rem"
-    - if HomeAssistantApi.car_needs_plugged_in?
-      i.fa-solid.fa-car-side-bolt style="margin-right: 1rem"
-    - if !DogParkApi.open?
-      i.fa-solid.fa-location-pin-lock style="margin-right: 1rem"
-    - HomeAssistantApi.unlocked_doors.each do |door_name|
-      span style="margin-right: 1rem"
-        i.fa-solid.fa-lock-open
-        =< door_name
-    - HomeAssistantApi.open_doors.each do |door_name|
-      span style="margin-right: 1rem"
-        i.fa-solid.fa-door-open
-        =< door_name
+    - view_object[:status_icons].each do |status_icon|
+      i.fa-solid class="fa-#{status_icon}" style="margin-right: 1rem"
   div = DateTime.now.strftime("%A, %B %-d")
 div style="margin-top: 1rem; display: flex; justify-content: space-between; line-height: .7"
   div style="font-size: 5.5rem; margin-bottom: 1rem;"
@@ -94,4 +59,4 @@ div style="margin-top: 1rem; display: flex; justify-content: space-between; line
   div style="text-align: right; font-size: 5.5rem;" = DateTime.now.strftime("%l:%M%P")
 hr style="margin: 1rem 0 1rem; border: none; background-color: #ccc; color: #ccc; height: 2px;"
 div style="position: absolute; top: 13rem; bottom: 0; left: 2rem; right: 2rem; overflow: hidden;"
-  = render Timeline.new(view_object: view_object)
+  = render "timeline", view_object: view_object

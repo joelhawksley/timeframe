@@ -56,4 +56,4 @@ To upgrade Visionect: `docker-compose pull && docker-compose up -d`
 
 Run Sonos server: `cd node-sonos-http-api && npm start`
 
-Rails server: `RUN_BG=true rails s -p 80 -b 0.0.0.0 --no-log-to-stdout`
+Rails server: `SECRET_KEY_BASE="foo" RAILS_ENV=production rails s -p 80 -b 0.0.0.0 --no-log-to-stdout`

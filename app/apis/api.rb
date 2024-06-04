@@ -7,11 +7,15 @@ class Api
     save_response(response)
   end
 
+  def self.prepare_response(response)
+    response
+  end
+
   def self.save_response(response)
-    MemoryValue.upsert(
+    Rails.cache.write(
       storage_key,
       {
-        data: response,
+        data: prepare_response(response),
         last_fetched_at: Time.now.utc.in_time_zone(Timeframe::Application.config.local["timezone"]).to_s
       }
     )
@@ -26,11 +30,13 @@ class Api
   end
 
   def self.storage_key
-    name.underscore.to_sym
+    name.underscore.to_s
   end
 
   def self.data
-    MemoryValue.get(storage_key)[:data] || {}
+    RequestStore.store[storage_key] ||= (Rails.cache.fetch(storage_key) { {} }[:data] || {})
+
+    RequestStore.store[storage_key]
   end
 
   def self.healthy?
@@ -41,7 +47,7 @@ class Api
 
   # :nocov:
   def self.last_fetched_at
-    MemoryValue.get(storage_key)[:last_fetched_at]
+    Rails.cache.fetch(storage_key) { {} }[:last_fetched_at]
   end
   # :nocov
 end

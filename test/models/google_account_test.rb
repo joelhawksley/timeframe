@@ -6,7 +6,9 @@ class GoogleAccountTest < Minitest::Test
   def test_is_healthy
     account = GoogleAccount.new
     account.stub(:last_fetched_at, (Time.now - 1.second).to_s) do
-      assert(account.healthy?)
+      account.stub(:refresh_token, "bar") do
+        assert(account.healthy?)
+      end
     end
   end
 

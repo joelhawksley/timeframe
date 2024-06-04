@@ -25,8 +25,10 @@ Rails.application.configure do
   else
     config.action_controller.perform_caching = false
 
-    config.cache_store = :null_store
+    config.cache_store = :memory_store
   end
+
+  config.active_job.queue_adapter = :async
 
   config.action_mailer.default_url_options = {host: "localhost", port: 3000}
 
@@ -45,7 +47,7 @@ Rails.application.configure do
   # routes, locales, etc. This feature depends on the listen gem.
   # config.file_watcher = ActiveSupport::EventedFileUpdateChecker
 
-  config.logger = ::ActiveSupport::Logger.new("/dev/null")
-  config.logger.formatter = lambda { |*_| }
-  config.logger.level = 10 # FATAL is 4
+  # config.logger = ::ActiveSupport::Logger.new("/dev/null")
+  # config.logger.formatter = lambda { |*_| }
+  # config.logger.level = 10 # FATAL is 4
 end
