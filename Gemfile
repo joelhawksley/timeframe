@@ -16,6 +16,7 @@ gem "time_difference"
 
 group :development do
   gem "rack-mini-profiler"
+  gem "stackprof"
 end
 
 group :development, :test do

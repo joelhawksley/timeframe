@@ -15,11 +15,14 @@ class GoogleCalendarApi < Api
   end
 
   def self.data
-    if super.empty?
-      []
-    else
-      super.map { CalendarEvent.new(**_1.symbolize_keys!) }
-    end
+    RequestStore.store[:google_calendar_data] ||=
+      begin
+        if super.empty?
+          []
+        else
+          super.map { CalendarEvent.new(**_1.symbolize_keys!) }
+        end
+      end
   end
 end
 # :nocov:
