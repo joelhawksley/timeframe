@@ -8,7 +8,7 @@ gem "puma-rufus-scheduler"
 gem "google-api-client", require: ["google/apis/calendar_v3", "google/apis/people_v1"]
 gem "httparty"
 gem "puma"
-gem "rails", github: "rails/rails", branch: "main"
+gem "rails", "~> 7.1"
 gem "slim"
 gem "litestack"
 gem "request_store"
