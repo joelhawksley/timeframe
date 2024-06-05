@@ -37,7 +37,7 @@ class CalendarFeed
   end
 
   def self.calendar_events
-    Current.calendar_events ||= GoogleAccount.all.map(&:events).flatten
+    RequestStore.store[:calendar_events] ||= GoogleAccount.all.map(&:events).flatten
   end
 
   # Returns calendar events for a given UTC integer time range,
