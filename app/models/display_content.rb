@@ -2,6 +2,13 @@ class DisplayContent
   def call
     current_time = Time.now.utc.in_time_zone(Timeframe::Application.config.local["timezone"])
 
+    events = 
+      WeatherKitApi.daily_calendar_events +
+      [CalendarFeed.baby_age_event] +
+      WeatherKitApi.hourly_calendar_events +
+      WeatherKitApi.precip_calendar_events +
+      WeatherKitApi.weather_alert_calendar_events
+
     day_groups =
       (0...5).each_with_object([]).map do |day_index|
         date = current_time + day_index.day
@@ -21,12 +28,11 @@ class DisplayContent
           show_daily_events: day_index.zero? ? date.hour <= 19 : true,
           events: CalendarFeed.events_for(
             (day_index.zero? ? current_time : date.beginning_of_day).utc,
-            date.end_of_day.utc
+            date.end_of_day.utc,
+            events
           )
         }
       end
-
-
 
     # :nocov:
     status_icons = []

@@ -42,15 +42,8 @@ class CalendarFeed
 
   # Returns calendar events for a given UTC integer time range,
   # adding a `time` key for the time formatted for the user's timezone
-  def self.events_for(starts_at, ends_at)
-    filtered_events = (
-      WeatherKitApi.daily_calendar_events +
-      [baby_age_event] +
-      WeatherKitApi.hourly_calendar_events +
-      WeatherKitApi.precip_calendar_events +
-      WeatherKitApi.weather_alert_calendar_events +
-      calendar_events
-    )
+  def self.events_for(starts_at, ends_at, events = [])
+    filtered_events = (events + calendar_events)
 
     filtered_events = filtered_events.compact.select do |event|
       if event.start_i == event.end_i
