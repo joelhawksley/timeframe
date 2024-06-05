@@ -1,10 +1,4 @@
-require "litestack"
-
 class ScheduleJob
-  include ::Litejob
-
-  queue = :default
-
   def perform(task)
     case task.to_sym
     when :sonos
