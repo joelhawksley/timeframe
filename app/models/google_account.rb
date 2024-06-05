@@ -19,23 +19,6 @@ class GoogleAccount < ApplicationRecord
     }
   end
 
-  def healthy?
-    return false unless last_fetched_at && refresh_token.present?
-
-    DateTime.parse(last_fetched_at) > DateTime.now - 2.minutes
-  end
-
-  def events
-    (Rails.cache.fetch(key) { {} }[:data] || {})
-      .values
-      .map(&:values)
-      .flatten
-  end
-
-  def last_fetched_at
-    Rails.cache.fetch(key) { {} }[:last_fetched_at]
-  end
-
   # :nocov:
   def fetch
     begin
@@ -124,15 +107,8 @@ class GoogleAccount < ApplicationRecord
       )
     end
 
-    Rails.cache.write(
-      key,
-      {
-        data: events,
-        last_fetched_at: Time.now.utc.in_time_zone(Timeframe::Application.config.local["timezone"]).to_s
-      }
-    )
+    events
   end
-  # :nocov:
 
   private
 
@@ -140,7 +116,6 @@ class GoogleAccount < ApplicationRecord
     to_global_id.to_s
   end
 
-  # :nocov:
   def refresh_token!
     response =
       HTTParty.post("https://accounts.google.com/o/oauth2/token",

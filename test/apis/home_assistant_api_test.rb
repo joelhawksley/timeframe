@@ -79,7 +79,7 @@ class HomeAssistantApiTest < Minitest::Test
 
   def test_fetch
     VCR.use_cassette(:home_assistant_states) do
-      HomeAssistantApi.fetch
+      api_response = HomeAssistantApi.fetch
 
       assert(HomeAssistantApi.data.length > 20)
     end

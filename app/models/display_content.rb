@@ -42,6 +42,7 @@ class DisplayContent
       status_icons << "house-circle-exclamation"
     end
 
+    status_icons << "calendar-circle-exclamation" if !GoogleCalendarApi.healthy?
     status_icons << "cloud-slash" if !WeatherKitApi.healthy?
     status_icons << "volume-slash" if !SonosApi.healthy?
     status_icons << "microphone-slash" if !BirdnetApi.healthy?
@@ -58,13 +59,6 @@ class DisplayContent
 
     HomeAssistantApi.open_doors.each do |door_name|
       status_icons_with_labels << ["door-open", door_name]
-    end
-
-    GoogleAccount.all.each do |google_account|
-      if !google_account.healthy?
-        label = Timeframe::Application.config.local["google_accounts"]&.find { _1["id"] == google_account.email }&.dig("label")
-        status_icons_with_labels << ["calendar-circle-exclamation", label]
-      end
     end
 
     minutely_weather_minutes = []

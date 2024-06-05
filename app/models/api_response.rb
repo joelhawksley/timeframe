@@ -1,0 +1,2 @@
+class ApiResponse < ApplicationRecord
+end

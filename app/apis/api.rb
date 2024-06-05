@@ -8,17 +8,11 @@ class Api
   end
 
   def self.prepare_response(response)
-    response
+    JSON.parse(response.body)
   end
 
   def self.save_response(response)
-    Rails.cache.write(
-      storage_key,
-      {
-        data: prepare_response(response),
-        last_fetched_at: Time.now.utc.in_time_zone(Timeframe::Application.config.local["timezone"]).to_s
-      }
-    )
+    ApiResponse.create(name: storage_key, response: prepare_response(response))
   end
 
   def self.time_before_unhealthy
@@ -33,21 +27,23 @@ class Api
     name.underscore.to_s
   end
 
-  def self.data
-    RequestStore.store[storage_key] ||= (Rails.cache.fetch(storage_key) { {} }[:data] || {})
+  def self.latest_api_response
+    ApiResponse.where(name: storage_key).last
+  end
 
-    RequestStore.store[storage_key]
+  def self.data
+    latest_api_response&.response || {}
   end
 
   def self.healthy?
     return false unless last_fetched_at
 
-    DateTime.parse(last_fetched_at) > DateTime.now - time_before_unhealthy
+    last_fetched_at > DateTime.now - time_before_unhealthy
   end
 
   # :nocov:
   def self.last_fetched_at
-    Rails.cache.fetch(storage_key) { {} }[:last_fetched_at]
+    latest_api_response&.created_at
   end
   # :nocov
 end
