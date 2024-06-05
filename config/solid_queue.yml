@@ -17,7 +17,7 @@ default: &default
           schedule: every minute
         google_calendar:
           class: ScheduleJob
-          args: [ "google_calendar_api" ]
+          args: [ "google_calendar" ]
           schedule: every minute
         birdnet:
           class: ScheduleJob
