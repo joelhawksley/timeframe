@@ -19,11 +19,7 @@ if ENV["RUN_BG"] || ENV["RAILS_ENV"] == "production"
   end
 
   scheduler.every "1m", first: :now do
-    GoogleAccount.all.each do |google_account|
-      ActiveRecord::Base.connection_pool.with_connection do
-        google_account.fetch
-      end
-    end
+    GoogleCalendarApi.fetch
     # ScheduleJob.perform_async(:google_calendar)
   end
 

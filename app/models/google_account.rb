@@ -53,14 +53,18 @@ class GoogleAccount < ApplicationRecord
     events = {}
 
     Timeframe::Application.config.local["calendars"].each do |calendar_config|
-      items = service.list_events(
-        calendar_config["id"],
-        single_events: true,
-        order_by: "startTime",
-        fields: "items/attendees,items/id,items/start,items/end,items/description,items/summary,items/location",
-        time_min: (DateTime.now - 2.days).iso8601,
-        time_max: (DateTime.now + 1.week).iso8601
-      ).items
+      begin
+        items = service.list_events(
+          calendar_config["id"],
+          single_events: true,
+          order_by: "startTime",
+          fields: "items/attendees,items/id,items/start,items/end,items/description,items/summary,items/location",
+          time_min: (DateTime.now - 2.days).iso8601,
+          time_max: (DateTime.now + 1.week).iso8601
+        ).items
+      rescue
+        next
+      end
 
       events[calendar_config["id"]] = {}
 
