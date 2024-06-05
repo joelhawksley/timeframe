@@ -14,6 +14,10 @@ gem "request_store"
 gem "tenkit", git: "https://github.com/joelhawksley/tenkit", branch: "add-alerts"
 gem "time_difference"
 
+group :development do
+  gem "rack-mini-profiler"
+end
+
 group :development, :test do
   gem "overcommit"
   gem "m"

@@ -28,7 +28,7 @@ class Api
   end
 
   def self.latest_api_response
-    ApiResponse.where(name: storage_key).last
+    RequestStore.store[storage_key] ||= ApiResponse.where(name: storage_key).last
   end
 
   def self.data
