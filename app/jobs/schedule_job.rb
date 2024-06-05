@@ -1,4 +1,4 @@
-class ScheduleJob
+class ScheduleJob < ActiveJob::Base
   def perform(task)
     case task.to_sym
     when :sonos
@@ -8,7 +8,7 @@ class ScheduleJob
     when :weather_kit
       WeatherKitApi.fetch
     when :google_calendar
-      GoogleAccount.all.each(&:fetch)
+      GoogleCalendarApi.fetch
     when :birdnet
       BirdnetApi.fetch
     end

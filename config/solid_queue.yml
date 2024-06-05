@@ -1,0 +1,39 @@
+default: &default
+  dispatchers:
+    - polling_interval: 1
+      batch_size: 500
+      recurring_tasks:
+        sonos:
+          class: ScheduleJob
+          args: [ "sonos" ]
+          schedule: every second
+        home_assistant:
+          class: ScheduleJob
+          args: [ "home_assistant" ]
+          schedule: every second
+        weather_kit:
+          class: ScheduleJob
+          args: [ "weather_kit" ]
+          schedule: every minute
+        google_calendar:
+          class: ScheduleJob
+          args: [ "google_calendar_api" ]
+          schedule: every minute
+        birdnet:
+          class: ScheduleJob
+          args: [ "birdnet" ]
+          schedule: every minute
+  workers:
+    - queues: "*"
+      threads: 3
+      processes: 1
+      polling_interval: 0.1
+
+development:
+ <<: *default
+
+test:
+ <<: *default
+
+production:
+ <<: *default
