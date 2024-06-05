@@ -50,23 +50,9 @@ class GoogleAccount < ApplicationRecord
     service = Google::Apis::CalendarV3::CalendarService.new
     service.authorization = client
 
-    begin
-      calendars = service.list_calendar_lists.items
-    rescue => e
-      Log.create(
-        globalid: key,
-        event: "list_calendar_lists",
-        message: e.message
-      )
-    end
-
-    return unless calendars.present?
-
     events = {}
 
     Timeframe::Application.config.local["calendars"].each do |calendar_config|
-      next unless calendars.map(&:id).include?(calendar_config["id"])
-
       items = service.list_events(
         calendar_config["id"],
         single_events: true,
