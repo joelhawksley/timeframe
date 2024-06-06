@@ -80,6 +80,25 @@ class HomeAssistantApi < Api
     out.uniq
   end
 
+  def self.roborock_errors
+    out = []
+
+    entity = data.find { _1["entity_id"] == Timeframe::Application.config.local["home_assistant_roborock_dock_error"] }
+
+    if entity.present? && entity["state"] != "ok"
+      out << entity["state"].humanize
+    end
+
+    entity = data.find { _1["entity_id"] == Timeframe::Application.config.local["home_assistant_roborock_vacuum_error"] }
+
+    if entity.present? && entity["state"] != "none"
+      out << entity["state"].humanize
+    end
+
+
+    out.uniq
+  end
+
   def self.open_doors
     out = []
 

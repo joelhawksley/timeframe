@@ -44,6 +44,22 @@ class DisplayContent
       status_icons << "dryer-heat" if HomeAssistantApi.dryer_needs_attention?
       status_icons << "car-side-bolt" if HomeAssistantApi.car_needs_plugged_in?
       status_icons << "video" if HomeAssistantApi.active_video_call?
+
+      HomeAssistantApi.unavailable_door_sensors.each do |door_sensor_name|
+        status_icons_with_labels << ["triangle-exclamation", door_sensor_name]
+      end
+  
+      HomeAssistantApi.unlocked_doors.each do |door_name|
+        status_icons_with_labels << ["lock-open", door_name]
+      end
+  
+      HomeAssistantApi.open_doors.each do |door_name|
+        status_icons_with_labels << ["door-open", door_name]
+      end
+
+      HomeAssistantApi.roborock_errors.each do |error|
+        status_icons_with_labels << ["vacuum-robot", error]
+      end
     else
       status_icons << "house-circle-exclamation"
     end
@@ -54,18 +70,6 @@ class DisplayContent
     status_icons << "microphone-slash" if !BirdnetApi.healthy?
 
     status_icons_with_labels = []
-
-    HomeAssistantApi.unavailable_door_sensors.each do |door_sensor_name|
-      status_icons_with_labels << ["triangle-exclamation", door_sensor_name]
-    end
-
-    HomeAssistantApi.unlocked_doors.each do |door_name|
-      status_icons_with_labels << ["lock-open", door_name]
-    end
-
-    HomeAssistantApi.open_doors.each do |door_name|
-      status_icons_with_labels << ["door-open", door_name]
-    end
 
     minutely_weather_minutes = []
     minutely_weather_minutes_icon = nil

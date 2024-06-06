@@ -270,4 +270,54 @@ class HomeAssistantApiTest < Minitest::Test
       refute(HomeAssistantApi.active_video_call?)
     end
   end
+
+  def test_roborock_errors
+    HomeAssistantApi.stub :data, {} do
+      assert_equal(HomeAssistantApi.roborock_errors, [])
+    end
+
+    data = [
+      {
+        "entity_id" => Timeframe::Application.config.local["home_assistant_roborock_dock_error"],
+        "state" => "ok"
+      }
+    ]
+
+    HomeAssistantApi.stub :data, data do
+      assert_equal(HomeAssistantApi.roborock_errors, [])
+    end
+
+    data = [
+      {
+        "entity_id" => Timeframe::Application.config.local["home_assistant_roborock_dock_error"],
+        "state" => "water_empty"
+      }
+    ]
+
+    HomeAssistantApi.stub :data, data do
+      assert_equal(HomeAssistantApi.roborock_errors, ["Water empty"])
+    end
+
+    data = [
+      {
+        "entity_id" => Timeframe::Application.config.local["home_assistant_roborock_vacuum_error"],
+        "state" => "none"
+      }
+    ]
+
+    HomeAssistantApi.stub :data, data do
+      assert_equal(HomeAssistantApi.roborock_errors, [])
+    end
+
+    data = [
+      {
+        "entity_id" => Timeframe::Application.config.local["home_assistant_roborock_vacuum_error"],
+        "state" => "bumper_stuck"
+      }
+    ]
+
+    HomeAssistantApi.stub :data, data do
+      assert_equal(HomeAssistantApi.roborock_errors, ["Bumper stuck"])
+    end
+  end
 end
