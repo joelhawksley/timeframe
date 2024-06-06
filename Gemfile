@@ -10,14 +10,11 @@ gem "puma"
 gem "rails", "~> 7.1"
 gem "slim"
 gem "solid_queue"
+gem "stackprof"
+gem "rack-mini-profiler"
 gem "request_store"
 gem "tenkit", git: "https://github.com/joelhawksley/tenkit", branch: "add-alerts"
 gem "time_difference"
-
-group :development do
-  gem "rack-mini-profiler"
-  gem "stackprof"
-end
 
 group :development, :test do
   gem "overcommit"
