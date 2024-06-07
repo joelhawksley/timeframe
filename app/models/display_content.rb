@@ -68,6 +68,10 @@ class DisplayContent
       home_assistant_api.roborock_errors.each do |error|
         status_icons_with_labels << ["vacuum-robot", error]
       end
+
+      home_assistant_api.low_batteries.each do |low_battery|
+        status_icons_with_labels << ["battery-slash", low_battery]
+      end
     else
       status_icons << "house-circle-exclamation"
     end

@@ -261,7 +261,7 @@ class HomeAssistantApiTest < Minitest::Test
       },
       {
         "entity_id" => "sensor.laundry_room_sink_leak_sensor_battery",
-        "state" => "10",
+        "state" => "5",
         "attributes" => { "device_class" => "battery" }
       },
       {

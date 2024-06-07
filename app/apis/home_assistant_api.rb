@@ -129,7 +129,7 @@ class HomeAssistantApi < Api
     data.select { _1.dig("attributes", "device_class") == "battery" }.each do |entity|
       next if entity["state"] == "unknown"
       
-      if entity["state"].to_f < 25
+      if entity["state"].to_f <= 5
         out << entity["entity_id"].split(".").last.split("_battery").first.humanize
       end
     end
