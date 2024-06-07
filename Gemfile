@@ -12,7 +12,6 @@ gem "slim"
 gem "solid_queue"
 gem "stackprof"
 gem "rack-mini-profiler"
-gem "request_store"
 gem "tenkit", git: "https://github.com/joelhawksley/tenkit", branch: "add-alerts"
 gem "time_difference"
 

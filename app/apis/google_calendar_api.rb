@@ -15,7 +15,7 @@ class GoogleCalendarApi < Api
   end
 
   def data
-    RequestStore.store[:google_calendar_data] ||=
+    @data ||=
       begin
         if super.empty?
           []

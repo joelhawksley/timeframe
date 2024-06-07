@@ -259,8 +259,6 @@ GEM
       declarative (< 0.1.0)
       trailblazer-option (>= 0.1.1, < 0.2.0)
       uber (< 0.2.0)
-    request_store (1.7.0)
-      rack (>= 1.4)
     retriable (3.1.2)
     rexml (3.2.8)
       strscan (>= 3.0.9)
@@ -354,7 +352,6 @@ DEPENDENCIES
   puma
   rack-mini-profiler
   rails (~> 7.1)
-  request_store
   simplecov
   slim
   solid_queue
