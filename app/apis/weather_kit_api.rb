@@ -1,9 +1,9 @@
 class WeatherKitApi < Api
-  def self.time_before_unhealthy
+  def time_before_unhealthy
     2.minutes
   end
 
-  def self.fetch
+  def fetch
     client = Tenkit::Client.new
     local_config = Timeframe::Application.config.local
     data = client.weather(
@@ -32,7 +32,7 @@ class WeatherKitApi < Api
     )
   end
 
-  def self.current_temperature
+  def current_temperature
     raw_temp = data.dig("currentWeather", "temperature")
 
     return nil unless raw_temp
@@ -40,7 +40,7 @@ class WeatherKitApi < Api
     "#{celsius_fahrenheit(data.dig("currentWeather", "temperature"))}°"
   end
 
-  def self.hourly_calendar_events
+  def hourly_calendar_events
     today = Date.today.in_time_zone(Timeframe::Application.config.local["timezone"])
 
     hours_forecast = data.dig("forecastHourly", "hours")
@@ -74,7 +74,7 @@ class WeatherKitApi < Api
     end
   end
 
-  def self.precip_calendar_events
+  def precip_calendar_events
     events = []
 
     hours_forecast = data.dig("forecastHourly", "hours")
@@ -120,7 +120,7 @@ class WeatherKitApi < Api
     end
   end
 
-  def self.weather_alert_calendar_events
+  def weather_alert_calendar_events
     alerts = data.dig("weatherAlerts", "alerts")
 
     return [] unless alerts.present?
@@ -136,7 +136,7 @@ class WeatherKitApi < Api
     end
   end
 
-  def self.icon_for(condition_code)
+  def icon_for(condition_code)
     icon_mappings = {
       "Thunderstorms" => "cloud-bolt",
       "Cloudy" => "clouds",
@@ -167,7 +167,7 @@ class WeatherKitApi < Api
     end
   end
 
-  def self.daily_calendar_events
+  def daily_calendar_events
     return [] unless (days = data.dig("forecastDaily", "days"))
 
     days.map do |day|
@@ -190,7 +190,7 @@ class WeatherKitApi < Api
     end
   end
 
-  def self.celsius_fahrenheit(c)
+  def celsius_fahrenheit(c)
     (c * 9 / 5 + 32).round
   end
 end

@@ -28,12 +28,12 @@ div.hide-if-empty style="font-size: 1.75rem; position:absolute; left: 0; right: 
               td colspan="20" 20m
               td colspan="20" 40m
   div.hide-if-empty style="background-color: black; color: white; padding: 1rem 2rem; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;"
-    - if status = SonosApi.status
+    - if view_object[:sonos_status].present?
       i.fa-solid.fa-volume.fa-fw
-      strong =< status[:artist]
-      - if status[:track].present?
+      strong =< view_object[:sonos_status][:artist]
+      - if view_object[:sonos_status][:track].present?
         |  :
-        =< status[:track]
+        =< view_object[:sonos_status][:track]
 div style="margin-top: 1.5rem;"
 div style="display: flex; justify-content: space-between; margin-bottom: .5rem;"
   div
@@ -42,9 +42,9 @@ div style="display: flex; justify-content: space-between; margin-bottom: .5rem;"
         i.fa-solid class="fa-#{status_icon}"
         =< label
   div style="text-align: right;"
-    - if BirdnetApi.most_unusual_species_trailing_24h.present?
+    - if view_object[:birdnet_most_unusual_species_trailing_24h].present?
       i.fa-solid.fa-crow
-      =< BirdnetApi.most_unusual_species_trailing_24h["commonName"]
+      =< view_object[:birdnet_most_unusual_species_trailing_24h]["commonName"]
     - else
       | &nbsp;
 div style="display: flex; justify-content: space-between; line-height: 2rem; font-size: 2rem;"

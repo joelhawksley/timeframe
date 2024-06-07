@@ -2,15 +2,15 @@ class ScheduleJob < ActiveJob::Base
   def perform(task)
     case task.to_sym
     when :sonos
-      SonosApi.fetch
+      SonosApi.new.fetch
     when :home_assistant
-      HomeAssistantApi.fetch
+      HomeAssistantApi.new.fetch
     when :weather_kit
-      WeatherKitApi.fetch
+      WeatherKitApi.new.fetch
     when :google_calendar
-      GoogleCalendarApi.fetch
+      GoogleCalendarApi.new.fetch
     when :birdnet
-      BirdnetApi.fetch
+      BirdnetApi.new.fetch
     end
   end
 end

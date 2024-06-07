@@ -1,7 +1,7 @@
 # I'd love to test this, but for now I'm not as I don't want to cache my PII in VCR.
 # :nocov:
 class GoogleCalendarApi < Api
-  def self.fetch
+  def fetch
     result = 
       GoogleAccount.all.map do |google_account|
         google_account.fetch.values.map(&:values).flatten
@@ -10,11 +10,11 @@ class GoogleCalendarApi < Api
     save_response(result)
   end
 
-  def self.prepare_response(response)
+  def prepare_response(response)
     response
   end
 
-  def self.data
+  def data
     RequestStore.store[:google_calendar_data] ||=
       begin
         if super.empty?

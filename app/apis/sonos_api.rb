@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
 class SonosApi < Api
-  def self.time_before_unhealthy
+  def time_before_unhealthy
     1.minute
   end
 
-  def self.prepare_response(response)
+  def prepare_response(response)
     response.to_h
   end
 
-  def self.status
+  def status
     return nil unless data["playbackState"] == "PLAYING"
     return nil unless data["currentTrack"]["artist"].present?
 

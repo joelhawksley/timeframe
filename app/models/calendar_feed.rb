@@ -1,5 +1,5 @@
 class CalendarFeed
-  def self.baby_age_event(birthdate = Date.parse(Timeframe::Application.config.local["birthdate"]))
+  def baby_age_event(birthdate = Date.parse(Timeframe::Application.config.local["birthdate"]))
     day_count = Date.today - birthdate
     week_count = (day_count / 7).to_i
     remainder = (day_count % 7).to_i
@@ -36,16 +36,10 @@ class CalendarFeed
     )
   end
 
-  def self.calendar_events
-    GoogleCalendarApi.data
-  end
-
   # Returns calendar events for a given UTC integer time range,
   # adding a `time` key for the time formatted for the user's timezone
-  def self.events_for(starts_at, ends_at, events = [])
-    filtered_events = (events + calendar_events)
-
-    filtered_events = filtered_events.compact.select do |event|
+  def events_for(starts_at, ends_at, events = [])
+    filtered_events = events.compact.select do |event|
       if event.start_i == event.end_i
         [event.start_i, event.end_i].any? { (starts_at.to_i...ends_at.to_i).cover?(_1) }
       else
