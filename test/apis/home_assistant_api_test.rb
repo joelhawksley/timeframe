@@ -268,6 +268,11 @@ class HomeAssistantApiTest < Minitest::Test
         "entity_id" => "sensor.unknown_leak_sensor_battery",
         "state" => "unknown",
         "attributes" => { "device_class" => "battery" }
+      },
+      {
+        "entity_id" => "sensor.unknown_leak_sensor_battery",
+        "state" => "unavailable",
+        "attributes" => { "device_class" => "battery" }
       }
     ]
 

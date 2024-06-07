@@ -127,7 +127,7 @@ class HomeAssistantApi < Api
     out = []
 
     data.select { _1.dig("attributes", "device_class") == "battery" }.each do |entity|
-      next if entity["state"] == "unknown"
+      next if entity["state"] == "unknown" || entity["state"] == "unavailable"
       
       if entity["state"].to_f <= 5
         out << entity["entity_id"].split(".").last.split("_battery").first.humanize
