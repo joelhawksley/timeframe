@@ -23,6 +23,9 @@ default: &default
           class: ScheduleJob
           args: [ "birdnet" ]
           schedule: every minute
+        api_response_cleanup:
+          class: ApiResponseCleanupJob
+          schedule: every day
   workers:
     - queues: "*"
       threads: 3
