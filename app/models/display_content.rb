@@ -41,6 +41,7 @@ class DisplayContent
 
     # :nocov:
     status_icons = []
+    status_icons_with_labels = []
 
     home_assistant_api = HomeAssistantApi.new
 
@@ -80,8 +81,6 @@ class DisplayContent
     birdnet_api = BirdnetApi.new
     status_icons << "microphone-slash" if !birdnet_api.healthy?
     
-
-    status_icons_with_labels = []
 
     minutely_weather_minutes = []
     minutely_weather_minutes_icon = nil
