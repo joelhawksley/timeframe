@@ -6,6 +6,13 @@ class HomeAssistantApi < Api
     }
   end
 
+  def prepare_response(response)
+    entity_ids = Timeframe::Application.config.local["home_assistant"].values.flatten
+
+    # Only save entity states we are interested in vs. all 1000+ entities
+    response.filter { entity_ids.include?(_1["entity_id"]) || _1.dig("attributes", "device_class") == "battery" }
+  end
+
   def time_before_unhealthy
     1.minute
   end

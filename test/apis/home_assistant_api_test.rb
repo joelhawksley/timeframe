@@ -91,7 +91,7 @@ class HomeAssistantApiTest < Minitest::Test
       api = HomeAssistantApi.new
       api.fetch
 
-      assert(api.data.length > 20)
+      assert(api.data.length > 1)
     end
   end
 
