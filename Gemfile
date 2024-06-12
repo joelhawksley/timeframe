@@ -13,7 +13,6 @@ gem "solid_queue"
 gem "rails_performance"
 gem "tenkit", git: "https://github.com/joelhawksley/tenkit", branch: "add-alerts"
 gem "time_difference"
-
 gem "stackprof"
 gem "memory_profiler"
 gem "rack-mini-profiler"
