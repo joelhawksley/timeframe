@@ -1,7 +1,7 @@
 class HomeAssistantApi < Api
   def headers
     {
-      Authorization: "Bearer #{Timeframe::Application.config.local["home_assistant"]["token"]}",
+      Authorization: "Bearer #{Timeframe::Application.config.local["home_assistant_token"]}",
       "content-type": "application/json"
     }
   end
