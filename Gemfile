@@ -10,12 +10,12 @@ gem "puma"
 gem "rails", "~> 7.1"
 gem "slim"
 gem "solid_queue"
-gem "stackprof"
 gem "rails_performance"
 gem "tenkit", git: "https://github.com/joelhawksley/tenkit", branch: "add-alerts"
 gem "time_difference"
 
 group :development, :test do
+  gem "stackprof"
   gem "memory_profiler"
   gem "rack-mini-profiler"
   gem "overcommit"
