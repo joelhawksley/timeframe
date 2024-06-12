@@ -1,7 +1,7 @@
 class HomeAssistantApi < Api
   def headers
     {
-      Authorization: "Bearer #{Timeframe::Application.config.local["home_assistant_token"]}",
+      Authorization: "Bearer #{Timeframe::Application.config.local["home_assistant"]["token"]}",
       "content-type": "application/json"
     }
   end
@@ -11,7 +11,7 @@ class HomeAssistantApi < Api
   end
 
   def feels_like_temperature
-    entity = data.find { _1["entity_id"] == Timeframe::Application.config.local["home_assistant_weather_feels_like_entity_id"] }
+    entity = data.find { _1["entity_id"] == Timeframe::Application.config.local["home_assistant"]["weather_feels_like_entity_id"] }
 
     return nil unless entity.present?
 
@@ -19,8 +19,8 @@ class HomeAssistantApi < Api
   end
 
   def dryer_needs_attention?
-    door_entity = data.find { _1["entity_id"] == Timeframe::Application.config.local["home_assistant_dryer_door_entity_id"] }
-    state_entity = data.find { _1["entity_id"] == Timeframe::Application.config.local["home_assistant_dryer_state_entity_id"] }
+    door_entity = data.find { _1["entity_id"] == Timeframe::Application.config.local["home_assistant"]["dryer_door_entity_id"] }
+    state_entity = data.find { _1["entity_id"] == Timeframe::Application.config.local["home_assistant"]["dryer_state_entity_id"] }
 
     return nil unless door_entity.present? && state_entity.present?
 
@@ -30,8 +30,8 @@ class HomeAssistantApi < Api
   end
 
   def washer_needs_attention?
-    door_entity = data.find { _1["entity_id"] == Timeframe::Application.config.local["home_assistant_washer_door_entity_id"] }
-    state_entity = data.find { _1["entity_id"] == Timeframe::Application.config.local["home_assistant_washer_state_entity_id"] }
+    door_entity = data.find { _1["entity_id"] == Timeframe::Application.config.local["home_assistant"]["washer_door_entity_id"] }
+    state_entity = data.find { _1["entity_id"] == Timeframe::Application.config.local["home_assistant"]["washer_state_entity_id"] }
 
     return nil unless door_entity.present? && state_entity.present?
 
@@ -41,8 +41,8 @@ class HomeAssistantApi < Api
   end
 
   def garage_door_open?
-    entity = data.find { _1["entity_id"] == Timeframe::Application.config.local["home_assistant_garage_door_entity_id"] }
-    entity_2 = data.find { _1["entity_id"] == Timeframe::Application.config.local["home_assistant_garage_door_2_entity_id"] }
+    entity = data.find { _1["entity_id"] == Timeframe::Application.config.local["home_assistant"]["garage_door_entity_id"] }
+    entity_2 = data.find { _1["entity_id"] == Timeframe::Application.config.local["home_assistant"]["garage_door_2_entity_id"] }
 
     return false unless entity.present? && entity_2.present?
 
@@ -50,8 +50,8 @@ class HomeAssistantApi < Api
   end
 
   def car_needs_plugged_in?
-    rav4_entity = data.find { _1["entity_id"] == Timeframe::Application.config.local["home_assistant_rav4_entity_id"] }
-    west_charger_entity = data.find { _1["entity_id"] == Timeframe::Application.config.local["home_assistant_west_charger_entity_id"] }
+    rav4_entity = data.find { _1["entity_id"] == Timeframe::Application.config.local["home_assistant"]["rav4_entity_id"] }
+    west_charger_entity = data.find { _1["entity_id"] == Timeframe::Application.config.local["home_assistant"]["west_charger_entity_id"] }
 
     return false unless rav4_entity.present? && west_charger_entity.present?
 
@@ -59,7 +59,7 @@ class HomeAssistantApi < Api
   end
 
   def package_present?
-    entity = data.find { _1["entity_id"] == Timeframe::Application.config.local["home_assistant_package_box_entity_id"] }
+    entity = data.find { _1["entity_id"] == Timeframe::Application.config.local["home_assistant"]["package_box_entity_id"] }
 
     return false unless entity.present?
 
@@ -69,8 +69,8 @@ class HomeAssistantApi < Api
   def unavailable_door_sensors
     out = []
 
-    Timeframe::Application.config.local["exterior_door_sensors"].concat(
-      Timeframe::Application.config.local["exterior_door_locks"]
+    Timeframe::Application.config.local["home_assistant"]["exterior_door_sensors"].concat(
+      Timeframe::Application.config.local["home_assistant"]["exterior_door_locks"]
     ).each do |entity_id|
       if data.find { _1["entity_id"] == entity_id }&.fetch("state") == "unavailable"
         out << entity_id.split(".").last.gsub("_opening", "").humanize
@@ -83,13 +83,13 @@ class HomeAssistantApi < Api
   def roborock_errors
     out = []
 
-    entity = data.find { _1["entity_id"] == Timeframe::Application.config.local["home_assistant_roborock_dock_error"] }
+    entity = data.find { _1["entity_id"] == Timeframe::Application.config.local["home_assistant"]["roborock_dock_error"] }
 
     if entity.present? && entity["state"] != "ok"
       out << entity["state"].humanize
     end
 
-    entity = data.find { _1["entity_id"] == Timeframe::Application.config.local["home_assistant_roborock_vacuum_error"] }
+    entity = data.find { _1["entity_id"] == Timeframe::Application.config.local["home_assistant"]["roborock_vacuum_error"] }
 
     if entity.present? && entity["state"] != "none"
       out << entity["state"].humanize
@@ -102,7 +102,7 @@ class HomeAssistantApi < Api
   def open_doors
     out = []
 
-    Timeframe::Application.config.local["exterior_door_sensors"].map do |entity_id|
+    Timeframe::Application.config.local["home_assistant"]["exterior_door_sensors"].map do |entity_id|
       if data.find { _1["entity_id"] == entity_id }&.fetch("state") == "on"
         out << entity_id.split(".").last.split("_door").first.humanize
       end
@@ -114,7 +114,7 @@ class HomeAssistantApi < Api
   def unlocked_doors
     out = []
 
-    Timeframe::Application.config.local["exterior_door_locks"].map do |entity_id|
+    Timeframe::Application.config.local["home_assistant"]["exterior_door_locks"].map do |entity_id|
       if data.find { _1["entity_id"] == entity_id }&.fetch("state") == "unlocked"
         out << entity_id.split(".").last.split("_door").first.humanize
       end
@@ -138,7 +138,7 @@ class HomeAssistantApi < Api
   end
 
   def active_video_call?
-    entity = data.find { _1["entity_id"] == Timeframe::Application.config.local["home_assistant_audio_input_in_use"] }
+    entity = data.find { _1["entity_id"] == Timeframe::Application.config.local["home_assistant"]["audio_input_in_use"] }
 
     return false unless entity.present?
 
