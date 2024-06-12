@@ -61,9 +61,9 @@ class DisplayContent
         status_icons_with_labels << ["lock-open", door_name]
       end
   
-      # home_assistant_api.open_doors.each do |door_name|
-      #   status_icons_with_labels << ["door-open", door_name]
-      # end
+      home_assistant_api.open_doors.each do |door_name|
+        status_icons_with_labels << ["door-open", door_name]
+      end
 
       home_assistant_api.roborock_errors.each do |error|
         status_icons_with_labels << ["vacuum-robot", error]
