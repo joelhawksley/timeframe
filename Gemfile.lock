@@ -166,6 +166,7 @@ GEM
       net-pop
       net-smtp
     marcel (1.0.4)
+    memory_profiler (1.0.1)
     method_source (1.1.0)
     mini_mime (1.1.5)
     mini_portile2 (2.8.7)
@@ -357,6 +358,7 @@ DEPENDENCIES
   google-api-client
   httparty
   m
+  memory_profiler
   minitest
   overcommit
   pg

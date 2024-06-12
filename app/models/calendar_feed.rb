@@ -2,7 +2,6 @@ class CalendarFeed
   def baby_age_event(birthdate = Date.parse(Timeframe::Application.config.local["birthdate"]))
     day_count = Date.today - birthdate
     week_count = (day_count / 7).to_i
-    remainder = (day_count % 7).to_i
 
     if week_count > 24
       time_difference = TimeDifference.between(birthdate, Date.today).in_general
@@ -15,6 +14,8 @@ class CalendarFeed
       summary << "#{weeks}w" if weeks > 0
       summary << "#{days}d" if days > 0
     else
+      remainder = (day_count % 7).to_i
+      
       summary =
         if remainder > 0
           if week_count > 0
