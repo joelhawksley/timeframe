@@ -12,9 +12,6 @@ gem "slim"
 gem "solid_queue"
 gem "tenkit", git: "https://github.com/joelhawksley/tenkit", branch: "add-alerts"
 gem "time_difference"
-gem "stackprof"
-gem "memory_profiler"
-gem "rack-mini-profiler"
 
 group :development, :test do
   gem "overcommit"

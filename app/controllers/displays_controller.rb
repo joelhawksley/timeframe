@@ -16,8 +16,6 @@ class DisplaysController < ApplicationController
 
     # :nocov:
     begin
-      Rack::MiniProfiler.authorize_request if params[:pp]
-
       render "mira", locals: {view_object: DisplayContent.new.call}
     rescue => e
       render "error", locals: {klass: e.class.to_s, message: e.message, backtrace: e.backtrace}
