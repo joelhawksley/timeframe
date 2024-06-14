@@ -257,22 +257,22 @@ class HomeAssistantApiTest < Minitest::Test
       {
         "entity_id" => "sensor.laundry_room_washer_leak_sensor_battery",
         "state" => "100",
-        "attributes" => { "device_class" => "battery" }
+        "attributes" => {"device_class" => "battery"}
       },
       {
         "entity_id" => "sensor.laundry_room_sink_leak_sensor_battery",
         "state" => "5",
-        "attributes" => { "device_class" => "battery" }
+        "attributes" => {"device_class" => "battery"}
       },
       {
         "entity_id" => "sensor.unknown_leak_sensor_battery",
         "state" => "unknown",
-        "attributes" => { "device_class" => "battery" }
+        "attributes" => {"device_class" => "battery"}
       },
       {
         "entity_id" => "sensor.unknown_leak_sensor_battery",
         "state" => "unavailable",
-        "attributes" => { "device_class" => "battery" }
+        "attributes" => {"device_class" => "battery"}
       }
     ]
 

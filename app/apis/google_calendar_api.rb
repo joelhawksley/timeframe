@@ -2,7 +2,7 @@
 # :nocov:
 class GoogleCalendarApi < Api
   def fetch
-    result = 
+    result =
       GoogleAccount.all.map do |google_account|
         google_account.fetch.values.map(&:values).flatten
       end.flatten
@@ -16,12 +16,10 @@ class GoogleCalendarApi < Api
 
   def data
     @data ||=
-      begin
-        if super.empty?
-          []
-        else
-          super.map { CalendarEvent.new(**_1.symbolize_keys!) }
-        end
+      if super.empty?
+        []
+      else
+        super.map { CalendarEvent.new(**_1.symbolize_keys!) }
       end
   end
 end

@@ -6,7 +6,7 @@ class DisplayContent
     google_calendar_api = GoogleCalendarApi.new
     calendar_feed = CalendarFeed.new
 
-    events = 
+    events =
       weather_kit_api.daily_calendar_events +
       [calendar_feed.baby_age_event] +
       weather_kit_api.hourly_calendar_events +
@@ -56,11 +56,11 @@ class DisplayContent
       home_assistant_api.unavailable_door_sensors.each do |door_sensor_name|
         status_icons_with_labels << ["triangle-exclamation", door_sensor_name]
       end
-  
+
       home_assistant_api.unlocked_doors.each do |door_name|
         status_icons_with_labels << ["lock-open", door_name]
       end
-  
+
       home_assistant_api.open_doors.each do |door_name|
         status_icons_with_labels << ["door-open", door_name]
       end
@@ -84,14 +84,13 @@ class DisplayContent
 
     birdnet_api = BirdnetApi.new
     status_icons << "microphone-slash" if !birdnet_api.healthy?
-    
 
     minutely_weather_minutes = []
     minutely_weather_minutes_icon = nil
     condition = weather_kit_api.data.dig("forecastNextHour", "summary")&.first.to_h["condition"]
 
-    if (weather_kit_api.healthy? && condition != "clear")
-      minutely_weather_minutes_icon = condition == "snow" ? "snowflake" : "raindrops"
+    if weather_kit_api.healthy? && condition != "clear"
+      minutely_weather_minutes_icon = (condition == "snow") ? "snowflake" : "raindrops"
       minutely_weather_minutes = weather_kit_api.data["forecastNextHour"]["minutes"].first(60)
     end
     # :nocov:

@@ -33,9 +33,7 @@ class Api
 
   def data
     @data ||=
-      begin
-        latest_api_response&.response || {}
-      end
+      latest_api_response&.response || {}
   end
 
   def healthy?

@@ -15,7 +15,7 @@ class CalendarFeed
       summary << "#{days}d" if days > 0
     else
       remainder = (day_count % 7).to_i
-      
+
       summary =
         if remainder > 0
           if week_count > 0

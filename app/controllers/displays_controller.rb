@@ -3,11 +3,11 @@ class DisplaysController < ApplicationController
 
   def thirteen
     # :nocov:
-    begin
-      render "thirteen", locals: {view_object: DisplayContent.new.call}
-    rescue => e
-      render "error", locals: {klass: e.class.to_s, message: e.message, backtrace: e.backtrace}
-    end
+
+    render "thirteen", locals: {view_object: DisplayContent.new.call}
+  rescue => e
+    render "error", locals: {klass: e.class.to_s, message: e.message, backtrace: e.backtrace}
+
     # :nocov:
   end
 
