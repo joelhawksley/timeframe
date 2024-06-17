@@ -1,6 +1,6 @@
 class WeatherKitApi < Api
   def time_before_unhealthy
-    2.minutes
+    5.minutes
   end
 
   def fetch
