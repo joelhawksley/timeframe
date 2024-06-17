@@ -126,6 +126,8 @@ class WeatherKitApi < Api
     return [] unless alerts.present?
 
     alerts.map do |alert|
+      next if alert["description"].include?("Red Flag Warning") || alert["description"].include?("Air Quality Alert")
+
       CalendarEvent.new(
         id: alert["id"],
         starts_at: alert["effectiveTime"],
@@ -133,7 +135,7 @@ class WeatherKitApi < Api
         icon: "triangle-exclamation",
         summary: alert["description"]
       )
-    end
+    end.compact
   end
 
   def icon_for(condition_code)
