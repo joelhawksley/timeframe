@@ -6,11 +6,11 @@ default: &default
         sonos:
           class: ScheduleJob
           args: [ "sonos" ]
-          schedule: every second
+          schedule: every 2 seconds
         home_assistant:
           class: ScheduleJob
           args: [ "home_assistant" ]
-          schedule: every 5 seconds
+          schedule: every 10 seconds
         weather_kit:
           class: ScheduleJob
           args: [ "weather_kit" ]
@@ -28,9 +28,9 @@ default: &default
           schedule: every day
   workers:
     - queues: "*"
-      threads: 3
+      threads: 2
       processes: 1
-      polling_interval: 0.1
+      polling_interval: 1
 
 development:
  <<: *default
