@@ -17,8 +17,8 @@ class HomeAssistantApiTest < Minitest::Test
     api.stub(
       :data,
       [
-        {"entity_id" => Timeframe::Application.config.local["home_assistant"]["garage_door_entity_id"], "state" => "closed"},
-        {"entity_id" => Timeframe::Application.config.local["home_assistant"]["garage_door_2_entity_id"], "state" => "closed"}
+        {entity_id: Timeframe::Application.config.local["home_assistant"]["garage_door_entity_id"], state: "closed"},
+        {entity_id: Timeframe::Application.config.local["home_assistant"]["garage_door_2_entity_id"], state: "closed"}
       ]
     ) do
       refute(api.garage_door_open?)
@@ -30,8 +30,8 @@ class HomeAssistantApiTest < Minitest::Test
     api.stub(
       :data,
       [
-        {"entity_id" => Timeframe::Application.config.local["home_assistant"]["garage_door_entity_id"], "state" => "open"},
-        {"entity_id" => Timeframe::Application.config.local["home_assistant"]["garage_door_2_entity_id"], "state" => "closed"}
+        {entity_id: Timeframe::Application.config.local["home_assistant"]["garage_door_entity_id"], state: "open"},
+        {entity_id: Timeframe::Application.config.local["home_assistant"]["garage_door_2_entity_id"], state: "closed"}
       ]
     ) do
       assert(api.garage_door_open?)
@@ -43,8 +43,8 @@ class HomeAssistantApiTest < Minitest::Test
     api.stub(
       :data,
       [
-        {"entity_id" => Timeframe::Application.config.local["home_assistant"]["garage_door_entity_id"], "state" => "closed"},
-        {"entity_id" => Timeframe::Application.config.local["home_assistant"]["garage_door_2_entity_id"], "state" => "open"}
+        {entity_id: Timeframe::Application.config.local["home_assistant"]["garage_door_entity_id"], state: "closed"},
+        {entity_id: Timeframe::Application.config.local["home_assistant"]["garage_door_2_entity_id"], state: "open"}
       ]
     ) do
       assert(api.garage_door_open?)
@@ -60,14 +60,14 @@ class HomeAssistantApiTest < Minitest::Test
 
   def test_package_present_with_state_off
     api = HomeAssistantApi.new
-    api.stub :data, [{"entity_id" => Timeframe::Application.config.local["home_assistant"]["package_box_entity_id"], "state" => "off"}] do
+    api.stub :data, [{entity_id: Timeframe::Application.config.local["home_assistant"]["package_box_entity_id"], state: "off"}] do
       refute(api.package_present?)
     end
   end
 
   def test_package_present_with_state_on
     api = HomeAssistantApi.new
-    api.stub :data, [{"entity_id" => Timeframe::Application.config.local["home_assistant"]["package_box_entity_id"], "state" => "on"}] do
+    api.stub :data, [{entity_id: Timeframe::Application.config.local["home_assistant"]["package_box_entity_id"], state: "on"}] do
       assert(api.package_present?)
     end
   end
@@ -81,7 +81,7 @@ class HomeAssistantApiTest < Minitest::Test
 
   def test_feels_like_temperature
     api = HomeAssistantApi.new
-    api.stub :data, [{"entity_id" => "sensor.weather_station_feels_like", "state" => "49.712"}] do
+    api.stub :data, [{entity_id: "sensor.weather_station_feels_like", state: "49.712"}] do
       assert_equal("49°", api.feels_like_temperature)
     end
   end
@@ -130,14 +130,14 @@ class HomeAssistantApiTest < Minitest::Test
   def test_dryer_needs_attention
     data = [
       {
-        "entity_id" => Timeframe::Application.config.local["home_assistant"]["dryer_door_entity_id"],
-        "state" => "off",
-        "last_changed" => "2024-04-20T13:14:09.114746+00:00"
+        entity_id: Timeframe::Application.config.local["home_assistant"]["dryer_door_entity_id"],
+        state: "off",
+        last_changed: "2024-04-20T13:14:09.114746+00:00"
       },
       {
-        "entity_id" => Timeframe::Application.config.local["home_assistant"]["dryer_state_entity_id"],
-        "state" => "Off",
-        "last_changed" => "2024-04-20T14:08:54.382832+00:00"
+        entity_id: Timeframe::Application.config.local["home_assistant"]["dryer_state_entity_id"],
+        state: "Off",
+        last_changed: "2024-04-20T14:08:54.382832+00:00"
       }
     ]
 
@@ -157,14 +157,14 @@ class HomeAssistantApiTest < Minitest::Test
   def test_washer_needs_attention
     data = [
       {
-        "entity_id" => Timeframe::Application.config.local["home_assistant"]["washer_state_entity_id"],
-        "state" => "Off",
-        "last_changed" => "2024-04-20T14:26:45.640590+00:00"
+        entity_id: Timeframe::Application.config.local["home_assistant"]["washer_state_entity_id"],
+        state: "Off",
+        last_changed: "2024-04-20T14:26:45.640590+00:00"
       },
       {
-        "entity_id" => Timeframe::Application.config.local["home_assistant"]["washer_door_entity_id"],
-        "state" => "off",
-        "last_changed" => "2024-04-20T13:15:17.285120+00:00"
+        entity_id: Timeframe::Application.config.local["home_assistant"]["washer_door_entity_id"],
+        state: "off",
+        last_changed: "2024-04-20T13:15:17.285120+00:00"
       }
     ]
 
@@ -177,12 +177,12 @@ class HomeAssistantApiTest < Minitest::Test
   def test_car_needs_plugged_in
     data = [
       {
-        "entity_id" => Timeframe::Application.config.local["home_assistant"]["west_charger_entity_id"],
-        "state" => "not_connected"
+        entity_id: Timeframe::Application.config.local["home_assistant"]["west_charger_entity_id"],
+        state: "not_connected"
       },
       {
-        "entity_id" => Timeframe::Application.config.local["home_assistant"]["rav4_entity_id"],
-        "state" => "garage"
+        entity_id: Timeframe::Application.config.local["home_assistant"]["rav4_entity_id"],
+        state: "garage"
       }
     ]
 
@@ -195,8 +195,8 @@ class HomeAssistantApiTest < Minitest::Test
   def test_open_doors
     data = [
       {
-        "entity_id" => Timeframe::Application.config.local["home_assistant"]["exterior_door_sensors"][0],
-        "state" => "on"
+        entity_id: Timeframe::Application.config.local["home_assistant"]["exterior_door_sensors"][0],
+        state: "on"
       }
     ]
 
@@ -209,12 +209,12 @@ class HomeAssistantApiTest < Minitest::Test
   def test_unlocked_doors_ignores_open_doors
     data = [
       {
-        "entity_id" => Timeframe::Application.config.local["home_assistant"]["exterior_door_sensors"][2],
-        "state" => "on"
+        entity_id: Timeframe::Application.config.local["home_assistant"]["exterior_door_sensors"][2],
+        state: "on"
       },
       {
-        "entity_id" => Timeframe::Application.config.local["home_assistant"]["exterior_door_locks"][0],
-        "state" => "unlocked"
+        entity_id: Timeframe::Application.config.local["home_assistant"]["exterior_door_locks"][0],
+        state: "unlocked"
       }
     ]
 
@@ -227,8 +227,8 @@ class HomeAssistantApiTest < Minitest::Test
   def test_unlocked_doors
     data = [
       {
-        "entity_id" => Timeframe::Application.config.local["home_assistant"]["exterior_door_locks"][0],
-        "state" => "unlocked"
+        entity_id: Timeframe::Application.config.local["home_assistant"]["exterior_door_locks"][0],
+        state: "unlocked"
       }
     ]
 
@@ -241,8 +241,8 @@ class HomeAssistantApiTest < Minitest::Test
   def test_unavailable_door_sensors
     data = [
       {
-        "entity_id" => Timeframe::Application.config.local["home_assistant"]["exterior_door_locks"][0],
-        "state" => "unavailable"
+        entity_id: Timeframe::Application.config.local["home_assistant"]["exterior_door_locks"][0],
+        state: "unavailable"
       }
     ]
 
@@ -255,24 +255,24 @@ class HomeAssistantApiTest < Minitest::Test
   def test_low_batteries
     data = [
       {
-        "entity_id" => "sensor.laundry_room_washer_leak_sensor_battery",
-        "state" => "100",
-        "attributes" => {"device_class" => "battery"}
+        entity_id: "sensor.laundry_room_washer_leak_sensor_battery",
+        state: "100",
+        attributes: {device_class: "battery"}
       },
       {
-        "entity_id" => "sensor.laundry_room_sink_leak_sensor_battery",
-        "state" => "5",
-        "attributes" => {"device_class" => "battery"}
+        entity_id: "sensor.laundry_room_sink_leak_sensor_battery",
+        state: "5",
+        attributes: {device_class: "battery"}
       },
       {
-        "entity_id" => "sensor.unknown_leak_sensor_battery",
-        "state" => "unknown",
-        "attributes" => {"device_class" => "battery"}
+        entity_id: "sensor.unknown_leak_sensor_battery",
+        state: "unknown",
+        attributes: {device_class: "battery"}
       },
       {
-        "entity_id" => "sensor.unknown_leak_sensor_battery",
-        "state" => "unavailable",
-        "attributes" => {"device_class" => "battery"}
+        entity_id: "sensor.unknown_leak_sensor_battery",
+        state: "unavailable",
+        attributes: {device_class: "battery"}
       }
     ]
 
@@ -285,8 +285,8 @@ class HomeAssistantApiTest < Minitest::Test
   def test_active_video_call
     data = [
       {
-        "entity_id" => Timeframe::Application.config.local["home_assistant"]["audio_input_in_use"],
-        "state" => "on"
+        entity_id: Timeframe::Application.config.local["home_assistant"]["audio_input_in_use"],
+        state: "on"
       }
     ]
 
@@ -309,8 +309,8 @@ class HomeAssistantApiTest < Minitest::Test
 
     data = [
       {
-        "entity_id" => Timeframe::Application.config.local["home_assistant"]["roborock_dock_error"],
-        "state" => "ok"
+        entity_id: Timeframe::Application.config.local["home_assistant"]["roborock_dock_error"],
+        state: "ok"
       }
     ]
 
@@ -321,8 +321,8 @@ class HomeAssistantApiTest < Minitest::Test
 
     data = [
       {
-        "entity_id" => Timeframe::Application.config.local["home_assistant"]["roborock_dock_error"],
-        "state" => "water_empty"
+        entity_id: Timeframe::Application.config.local["home_assistant"]["roborock_dock_error"],
+        state: "water_empty"
       }
     ]
 
@@ -333,8 +333,8 @@ class HomeAssistantApiTest < Minitest::Test
 
     data = [
       {
-        "entity_id" => Timeframe::Application.config.local["home_assistant"]["roborock_vacuum_error"],
-        "state" => "none"
+        entity_id: Timeframe::Application.config.local["home_assistant"]["roborock_vacuum_error"],
+        state: "none"
       }
     ]
 
@@ -345,8 +345,8 @@ class HomeAssistantApiTest < Minitest::Test
 
     data = [
       {
-        "entity_id" => Timeframe::Application.config.local["home_assistant"]["roborock_vacuum_error"],
-        "state" => "bumper_stuck"
+        entity_id: Timeframe::Application.config.local["home_assistant"]["roborock_vacuum_error"],
+        state: "bumper_stuck"
       }
     ]
 

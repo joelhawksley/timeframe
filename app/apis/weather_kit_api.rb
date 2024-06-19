@@ -2,7 +2,7 @@ class WeatherKitApi < Api
   def fetch
     client = Tenkit::Client.new
     local_config = Timeframe::Application.config.local
-    data = client.weather(
+    hash = client.weather(
       local_config["latitude"],
       local_config["longitude"],
       data_sets: [
@@ -16,9 +16,9 @@ class WeatherKitApi < Api
 
     # :nocov:
     # Do not update unless response is well formed
-    return unless data.key?("currentWeather")
+    return unless hash.key?("currentWeather")
 
-    save_response(data)
+    save_response(hash)
     # :nocov:
   rescue => e
     Log.create(
@@ -29,17 +29,17 @@ class WeatherKitApi < Api
   end
 
   def current_temperature
-    raw_temp = data.dig("currentWeather", "temperature")
+    raw_temp = data.dig(:currentWeather, :temperature)
 
     return nil unless raw_temp
 
-    "#{celsius_fahrenheit(data.dig("currentWeather", "temperature"))}°"
+    "#{celsius_fahrenheit(data.dig(:currentWeather, :temperature))}°"
   end
 
   def hourly_calendar_events
     today = Date.today.in_time_zone(Timeframe::Application.config.local["timezone"])
 
-    hours_forecast = data.dig("forecastHourly", "hours")
+    hours_forecast = data.dig(:forecastHourly, :hours)
 
     return [] unless hours_forecast.present?
 
@@ -51,20 +51,20 @@ class WeatherKitApi < Api
         (twz.noon + 8.hours)
       ].map do |hour|
         hour_str = hour.utc.iso8601
-        weather_hour = hours_forecast.find { _1["forecastStart"] == hour_str }
+        weather_hour = hours_forecast.find { _1[:forecastStart] == hour_str }
 
         next if !weather_hour.present?
 
-        wind_suffix = if weather_hour["windGust"].to_f * 0.621371 > 20
-          " / #{(weather_hour["windGust"] * 0.621371).round}mph"
+        wind_suffix = if weather_hour[:windGust].to_f * 0.621371 > 20
+          " / #{(weather_hour[:windGust] * 0.621371).round}mph"
         end
 
         CalendarEvent.new(
           id: "_weather_hour_#{hour.to_i}",
           starts_at: hour,
           ends_at: hour,
-          icon: icon_for(weather_hour["conditionCode"]),
-          summary: "#{celsius_fahrenheit(weather_hour["temperature"])}°#{wind_suffix}".html_safe
+          icon: icon_for(weather_hour[:conditionCode]),
+          summary: "#{celsius_fahrenheit(weather_hour[:temperature])}°#{wind_suffix}".html_safe
         )
       end.compact
     end
@@ -73,17 +73,17 @@ class WeatherKitApi < Api
   def precip_calendar_events
     events = []
 
-    hours_forecast = data.dig("forecastHourly", "hours")
+    hours_forecast = data.dig(:forecastHourly, :hours)
 
     return events unless hours_forecast.present?
 
-    hours = data["forecastHourly"]["hours"]
+    hours = data[:forecastHourly][:hours]
 
     hours.each_with_index do |hour, index|
-      hour_i = DateTime.parse(hour["forecastStart"]).to_i
+      hour_i = DateTime.parse(hour[:forecastStart]).to_i
 
       existing_event =
-        events.find { _1[:end_i] == hour_i && _1[:precipitation_type] == hour["precipitationType"] }
+        events.find { _1[:end_i] == hour_i && _1[:precipitation_type] == hour[:precipitationType] }
 
       if existing_event
         existing_event[:end_i] += 3600
@@ -91,8 +91,8 @@ class WeatherKitApi < Api
         events <<
           {
             start_i: hour_i,
-            end_i: (DateTime.parse(hour["forecastStart"]) + 1.hour).to_i,
-            precipitation_type: hour["precipitationType"]
+            end_i: (DateTime.parse(hour[:forecastStart]) + 1.hour).to_i,
+            precipitation_type: hour[:precipitationType]
           }
       end
     end
@@ -117,19 +117,19 @@ class WeatherKitApi < Api
   end
 
   def weather_alert_calendar_events
-    alerts = data.dig("weatherAlerts", "alerts")
+    alerts = data.dig(:weatherAlerts, :alerts)
 
     return [] unless alerts.present?
 
     alerts.map do |alert|
-      next if alert["description"].include?("Red Flag Warning") || alert["description"].include?("Air Quality Alert")
+      next if alert[:description].include?("Red Flag Warning") || alert[:description].include?("Air Quality Alert")
 
       CalendarEvent.new(
         id: alert["id"],
-        starts_at: alert["effectiveTime"],
-        ends_at: alert["expireTime"],
+        starts_at: alert[:effectiveTime],
+        ends_at: alert[:expireTime],
         icon: "triangle-exclamation",
-        summary: alert["description"]
+        summary: alert[:description]
       )
     end.compact
   end
@@ -166,24 +166,24 @@ class WeatherKitApi < Api
   end
 
   def daily_calendar_events
-    return [] unless (days = data.dig("forecastDaily", "days"))
+    return [] unless (days = data.dig(:forecastDaily, :days))
 
     days.map do |day|
       summary_suffix =
-        if day.dig("precipitationType") == "snow"
-          if day.dig("snowfallAmount") > 0.05
-            " / #{(day["snowfallAmount"] * 0.0393701).round(1)}\""
+        if day.dig(:precipitationType) == "snow"
+          if day.dig(:snowfallAmount) > 0.05
+            " / #{(day[:snowfallAmount] * 0.0393701).round(1)}\""
           end
-        elsif day.dig("precipitationAmount").to_f > 0.05
-          " / #{(day["precipitationAmount"] * 0.0393701).round(1)}\""
+        elsif day.dig(:precipitationAmount).to_f > 0.05
+          " / #{(day[:precipitationAmount] * 0.0393701).round(1)}\""
         end
 
       CalendarEvent.new(
-        id: "_weather_day_#{day["forecastStart"]}",
-        starts_at: DateTime.parse(day["forecastStart"]).to_i,
-        ends_at: DateTime.parse(day["forecastEnd"]).to_i,
-        icon: icon_for(day["conditionCode"]),
-        summary: "#{celsius_fahrenheit(day["temperatureMax"])}° / #{celsius_fahrenheit(day["temperatureMin"])}°#{summary_suffix}".html_safe
+        id: "_weather_day_#{day[:forecastStart]}",
+        starts_at: DateTime.parse(day[:forecastStart]).to_i,
+        ends_at: DateTime.parse(day[:forecastEnd]).to_i,
+        icon: icon_for(day[:conditionCode]),
+        summary: "#{celsius_fahrenheit(day[:temperatureMax])}° / #{celsius_fahrenheit(day[:temperatureMin])}°#{summary_suffix}".html_safe
       )
     end
   end

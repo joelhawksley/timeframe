@@ -250,6 +250,10 @@ GEM
     rake (13.2.1)
     rdoc (6.7.0)
       psych (>= 4.0.0)
+    redis (5.2.0)
+      redis-client (>= 0.22.0)
+    redis-client (0.22.2)
+      connection_pool
     regexp_parser (2.9.2)
     reline (0.5.9)
       io-console (~> 0.5)
@@ -277,6 +281,15 @@ GEM
       rubocop (>= 1.48.1, < 2.0)
       rubocop-ast (>= 1.31.1, < 2.0)
     ruby-progressbar (1.13.0)
+    sidekiq (7.2.4)
+      concurrent-ruby (< 2)
+      connection_pool (>= 2.3.0)
+      rack (>= 2.2.4)
+      redis-client (>= 0.19.0)
+    sidekiq-cron (1.12.0)
+      fugit (~> 1.8)
+      globalid (>= 1.0.1)
+      sidekiq (>= 6)
     signet (0.19.0)
       addressable (~> 2.8)
       faraday (>= 0.17.5, < 3.a)
@@ -291,12 +304,6 @@ GEM
     slim (5.2.1)
       temple (~> 0.10.0)
       tilt (>= 2.1.0)
-    solid_queue (0.3.3)
-      activejob (>= 7.1)
-      activerecord (>= 7.1)
-      concurrent-ruby (>= 1.3.1)
-      fugit (~> 1.11.0)
-      railties (>= 7.1)
     standard (1.37.0)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.0)
@@ -339,6 +346,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  connection_pool
   google-api-client
   httparty
   m
@@ -348,9 +356,11 @@ DEPENDENCIES
   pry-rails
   puma
   rails (~> 7.1)
+  redis
+  sidekiq
+  sidekiq-cron
   simplecov
   slim
-  solid_queue
   standard
   tenkit!
   time_difference

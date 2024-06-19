@@ -1,5 +1,9 @@
 class ScheduleJob < ActiveJob::Base
+  queue_as :default
+
   def perform(task)
+    puts "Running #{task} task"
+
     case task.to_sym
     when :sonos
       SonosApi.new.fetch

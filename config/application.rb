@@ -18,8 +18,16 @@ require "action_view/railtie"
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
+require "redis"
+
 module Timeframe
   class Application < Rails::Application
+    def self.redis
+      @redis ||= ConnectionPool::Wrapper.new do
+        Redis.new
+      end
+    end
+
     config.local = YAML.load_file(Rails.root.join("config.yml"))
 
     # Settings in config/environments/* take precedence over those specified here.

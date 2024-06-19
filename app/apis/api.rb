@@ -1,8 +1,8 @@
 class Api
   def fetch
-    response = HTTParty.get(Timeframe::Application.config.local["#{storage_key}_url"], headers: headers)
+    response = HTTParty.get(Timeframe::Application.config.local["#{self.class.name.underscore}_url"], headers: headers)
 
-    return if response.code != 200 # TODO: log error responses
+    return if response.code != 200
 
     save_response(response)
   end
@@ -12,7 +12,7 @@ class Api
   end
 
   def save_response(response)
-    ApiResponse.create(name: storage_key, response: prepare_response(response))
+    Timeframe::Application.redis.set(storage_key, {last_fetched_at: Time.now.utc, response: prepare_response(response)}.to_json)
   end
 
   def time_before_unhealthy
@@ -24,16 +24,15 @@ class Api
   end
 
   def storage_key
-    self.class.name.underscore.to_s
+    APP_VERSION + self.class.name.underscore.to_s
   end
 
-  def latest_api_response
-    @latest_api_response ||= ApiResponse.where(name: storage_key).last
+  def value
+    @value ||= JSON.parse(Timeframe::Application.redis.get(storage_key) || "{}", symbolize_names: true)
   end
 
   def data
-    @data ||=
-      latest_api_response&.response || {}
+    value[:response] || {}
   end
 
   def healthy?
@@ -44,7 +43,7 @@ class Api
 
   # :nocov:
   def last_fetched_at
-    latest_api_response&.created_at
+    value[:last_fetched_at].present? ? DateTime.parse(value[:last_fetched_at]) : nil
   end
   # :nocov
 end

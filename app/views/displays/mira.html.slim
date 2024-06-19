@@ -22,7 +22,7 @@ div.hide-if-empty style="font-size: 1.75rem; position:absolute; left: 0; right: 
               - view_object[:minutely_weather_minutes].each_with_index do |minute, i|
                 td
                   div style="height: 100px; position:relative; width: 25px;"
-                    div style="background-color:black; position: absolute; height: #{(minute["precipitationChance"] * minute["precipitationIntensity"] * 50).clamp(3,100)}px; left: 0; right: 10px; bottom: 0; border-radius: 100%;"
+                    div style="background-color:black; position: absolute; height: #{(minute[:precipitationChance] * minute[:precipitationIntensity  ] * 50).clamp(3,100)}px; left: 0; right: 10px; bottom: 0; border-radius: 100%;"
             tr style="font-size: .75rem;"
               td colspan="20" Now
               td colspan="20" 20m

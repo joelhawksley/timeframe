@@ -28,7 +28,7 @@ Rails.application.configure do
     config.cache_store = :memory_store
   end
 
-  config.active_job.queue_adapter = :solid_queue
+  config.active_job.queue_adapter = :sidekiq
 
   config.action_mailer.default_url_options = {host: "localhost", port: 3000}
 

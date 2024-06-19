@@ -58,4 +58,4 @@ Run Sonos server: `cd node-sonos-http-api && npm start`
 
 Rails server: `SECRET_KEY_BASE="foo" RAILS_ENV=production rails s -p 80 -b 0.0.0.0 --no-log-to-stdout`
 
-Solid queue: `RAILS_ENV=production bundle exec rake solid_queue:start`
+BG jobs: `RAILS_ENV=production bundle exec sidekiq`

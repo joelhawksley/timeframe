@@ -87,11 +87,11 @@ class DisplayContent
 
     minutely_weather_minutes = []
     minutely_weather_minutes_icon = nil
-    condition = weather_kit_api.data.dig("forecastNextHour", "summary")&.first.to_h["condition"]
+    condition = weather_kit_api.data.dig(:forecastNextHour, :summary)&.first.to_h["condition"]
 
     if weather_kit_api.healthy? && condition != "clear"
       minutely_weather_minutes_icon = (condition == "snow") ? "snowflake" : "raindrops"
-      minutely_weather_minutes = weather_kit_api.data["forecastNextHour"]["minutes"].first(60)
+      minutely_weather_minutes = weather_kit_api.data.dig(:forecastNextHour, :minutes)&.first(60)
     end
     # :nocov:
 

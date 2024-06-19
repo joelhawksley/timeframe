@@ -12,21 +12,6 @@ default: &default
           class: ScheduleJob
           args: [ "home_assistant" ]
           schedule: every 10 seconds
-        weather_kit:
-          class: ScheduleJob
-          args: [ "weather_kit" ]
-          schedule: every minute
-        google_calendar:
-          class: ScheduleJob
-          args: [ "google_calendar" ]
-          schedule: every minute
-        birdnet:
-          class: ScheduleJob
-          args: [ "birdnet" ]
-          schedule: every minute
-        api_response_cleanup:
-          class: ApiResponseCleanupJob
-          schedule: every day
   workers:
     - queues: "*"
       threads: 2
