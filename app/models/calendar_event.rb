@@ -108,6 +108,6 @@ class CalendarEvent
       "#{@summary} (#{counter})"
     else
       @summary
-    end
+    end.gsub(/\p{Emoji_Presentation}/, '').strip
   end
 end

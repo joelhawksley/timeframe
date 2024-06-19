@@ -187,4 +187,10 @@ class CalendarEventTest < Minitest::Test
 
     assert(event.daily?)
   end
+
+  def test_strips_emoji
+    event = CalendarEvent.new(starts_at: "2023-11-01", ends_at: "2023-11-08", summary: "✨ foo")
+
+    assert_equal("foo", event.summary)
+  end
 end
