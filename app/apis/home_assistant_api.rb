@@ -22,7 +22,7 @@ class HomeAssistantApi < Api
 
     return nil unless entity.present?
 
-    entity["state"].to_i
+    "#{entity["state"].to_i}°"
   end
 
   def dryer_needs_attention?

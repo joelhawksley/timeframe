@@ -82,7 +82,7 @@ class HomeAssistantApiTest < Minitest::Test
   def test_feels_like_temperature
     api = HomeAssistantApi.new
     api.stub :data, [{"entity_id" => "sensor.weather_station_feels_like", "state" => "49.712"}] do
-      assert_equal(api.feels_like_temperature, 49)
+      assert_equal("49°", api.feels_like_temperature)
     end
   end
 

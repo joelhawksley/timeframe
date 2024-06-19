@@ -15,9 +15,7 @@ div style="clear: both; line-height: .7; margin-bottom: 1rem; font-size: 1rem"
   div
     | &nbsp;
 div style="clear: both; line-height: .7; margin-bottom: 1rem; padding-bottom: .5rem; font-size: 3rem;"
-  div style="float: left;"
-    = view_object[:current_temperature]
-    ' °
+  div style="float: left;"  = view_object[:current_temperature]
   div style="float: right; text-align: right;" = DateTime.now.strftime("%A, %B %-d")
   div
     | &nbsp;
