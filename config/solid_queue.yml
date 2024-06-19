@@ -10,7 +10,7 @@ default: &default
         home_assistant:
           class: ScheduleJob
           args: [ "home_assistant" ]
-          schedule: every second
+          schedule: every 5 seconds
         weather_kit:
           class: ScheduleJob
           args: [ "weather_kit" ]
