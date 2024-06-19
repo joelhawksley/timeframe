@@ -150,4 +150,12 @@ class HomeAssistantApi < Api
 
     entity[:state] == "on"
   end
+
+  def online?
+    entity = data.find { _1[:entity_id] == Timeframe::Application.config.local["home_assistant"]["ping_sensor_entity_id"] }
+
+    return false unless entity.present?
+
+    entity[:state] == "on"
+  end
 end

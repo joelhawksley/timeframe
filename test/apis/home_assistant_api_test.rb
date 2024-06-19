@@ -301,6 +301,25 @@ class HomeAssistantApiTest < Minitest::Test
     end
   end
 
+  def test_online
+    data = [
+      {
+        entity_id: Timeframe::Application.config.local["home_assistant"]["ping_sensor_entity_id"],
+        state: "on"
+      }
+    ]
+
+    api = HomeAssistantApi.new
+    api.stub :data, data do
+      assert(api.online?)
+    end
+
+    api = HomeAssistantApi.new
+    api.stub :data, {} do
+      refute(api.online?)
+    end
+  end
+
   def test_roborock_errors
     api = HomeAssistantApi.new
     api.stub :data, {} do
