@@ -1,8 +1,4 @@
 class WeatherKitApi < Api
-  def time_before_unhealthy
-    5.minutes
-  end
-
   def fetch
     client = Tenkit::Client.new
     local_config = Timeframe::Application.config.local
