@@ -2,7 +2,7 @@ class BirdnetApi < Api
   def most_unusual_species_trailing_24h
     return {} unless healthy?
 
-    data["species"]&.try(:last) || {}
+    data[:species]&.try(:last)&.dig(:commonName) || {}
   end
 
   def time_before_unhealthy

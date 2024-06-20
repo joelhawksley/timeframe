@@ -44,7 +44,7 @@ div style="display: flex; justify-content: space-between; margin-bottom: .5rem;"
   div style="text-align: right;"
     - if view_object[:birdnet_most_unusual_species_trailing_24h].present?
       i.fa-solid.fa-crow
-      =< view_object[:birdnet_most_unusual_species_trailing_24h]["commonName"]
+      =< view_object[:birdnet_most_unusual_species_trailing_24h]
     - else
       | &nbsp;
 div style="display: flex; justify-content: space-between; line-height: 2rem; font-size: 2rem;"
