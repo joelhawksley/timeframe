@@ -52,12 +52,6 @@ class DisplayContent
       out[:status_icons_with_labels] << ["triangle-exclamation", "Home Assistant"]
     end
 
-    if google_calendar_api.healthy?
-      raw_events << google_calendar_api.data
-    elsif home_assistant_api.online?
-      out[:status_icons_with_labels] << ["triangle-exclamation", "Google Calendar"]
-    end
-
     if sonos_api.healthy?
       out[:sonos_status] = sonos_api.status
     else
@@ -92,6 +86,13 @@ class DisplayContent
         out[:status_icons_with_labels] << ["triangle-exclamation", "Apple Weather"]
       end
     end
+
+    if google_calendar_api.healthy?
+      raw_events << google_calendar_api.data
+    elsif home_assistant_api.online?
+      out[:status_icons_with_labels] << ["triangle-exclamation", "Google Calendar"]
+    end
+
     # :nocov:
 
     out[:day_groups] =
