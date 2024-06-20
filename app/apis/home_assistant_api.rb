@@ -105,6 +105,12 @@ class HomeAssistantApi < Api
       out << entity[:state].humanize
     end
 
+    entity = data.find { _1[:entity_id] == Timeframe::Application.config.local["home_assistant"]["roborock_status"] }
+
+    if entity.present? && ["idle", "charger_disconnected"].include?(entity[:state])
+      out << "Return to charger"
+    end
+
     out.uniq
   end
 

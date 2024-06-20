@@ -373,5 +373,29 @@ class HomeAssistantApiTest < Minitest::Test
     api.stub :data, data do
       assert_equal(api.roborock_errors, ["Bumper stuck"])
     end
+
+    data = [
+      {
+        entity_id: Timeframe::Application.config.local["home_assistant"]["roborock_status"],
+        state: "charger_disconnected"
+      }
+    ]
+
+    api = HomeAssistantApi.new
+    api.stub :data, data do
+      assert_equal(api.roborock_errors, ["Return to charger"])
+    end
+
+    data = [
+      {
+        entity_id: Timeframe::Application.config.local["home_assistant"]["roborock_status"],
+        state: "idle"
+      }
+    ]
+
+    api = HomeAssistantApi.new
+    api.stub :data, data do
+      assert_equal(api.roborock_errors, ["Return to charger"])
+    end
   end
 end
