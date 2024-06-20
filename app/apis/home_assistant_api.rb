@@ -10,7 +10,10 @@ class HomeAssistantApi < Api
     entity_ids = Timeframe::Application.config.local["home_assistant"].values.flatten
 
     # Only save entity states we are interested in vs. all 1000+ entities
-    response.filter { entity_ids.include?(_1["entity_id"]) || _1.dig("attributes", "device_class") == "battery" }
+    response.filter do
+      !Timeframe::Application.config.local["home_assistant"]["ignored_entity_ids"].include?(_1["entity_id"]) &&
+        (entity_ids.include?(_1["entity_id"]) || _1.dig("attributes", "device_class") == "battery")
+    end
   end
 
   def time_before_unhealthy
