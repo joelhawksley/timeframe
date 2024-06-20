@@ -10,28 +10,28 @@ class SonosApi < Api
   end
 
   def status
-    return nil unless data["playbackState"] == "PLAYING"
-    return nil unless data["currentTrack"]["artist"].present?
+    return nil unless data[:playbackState] == "PLAYING"
+    return nil unless data[:currentTrack][:artist].present?
 
-    if data["currentTrack"]["artist"] == "Colorado Public Radio News"
+    if data[:currentTrack][:artist] == "Colorado Public Radio News"
       {
         artist: "CPR News",
-        track: data["currentTrack"]["title"].present? ? (data["currentTrack"]["title"].split(" -- ").last.split("|").first) : nil
+        track: data[:currentTrack][:title].present? ? (data[:currentTrack][:title].split(" -- ").last.split("|").first) : nil
       }
-    elsif data["currentTrack"]["artist"] == "Colorado Public Radio Classical"
-      if data["currentTrack"]["title"].include?(" by ")
-        track, artist = data["currentTrack"]["title"].split(" -- ").first.split(" by ")
+    elsif data[:currentTrack][:artist] == "Colorado Public Radio Classical"
+      if data[:currentTrack][:title].include?(" by ")
+        track, artist = data[:currentTrack][:title].split(" -- ").first.split(" by ")
       else
-        artist, track = data["currentTrack"]["title"].split(" -- ")
+        artist, track = data[:currentTrack][:title].split(" -- ")
       end
 
       {
         artist: artist,
         track: track
       }
-    elsif data["currentTrack"]["artist"].include?("WKSU-HD2")
-      if data["currentTrack"]["title"].present?
-        title_parts = data["currentTrack"]["title"].split(" - ")
+    elsif data[:currentTrack][:artist].include?("WKSU-HD2")
+      if data[:currentTrack][:title].present?
+        title_parts = data[:currentTrack][:title].split(" - ")
 
         {
           artist: title_parts[1],
@@ -39,14 +39,14 @@ class SonosApi < Api
         }
       else
         {
-          artist: data["currentTrack"]["artist"].split(" - ").first,
-          track: data["currentTrack"]["album"]
+          artist: data[:currentTrack][:artist].split(" - ").first,
+          track: data[:currentTrack][:album]
         }
       end
     else
       {
-        artist: data["currentTrack"]["artist"],
-        track: data["currentTrack"]["title"]
+        artist: data[:currentTrack][:artist],
+        track: data[:currentTrack][:title]
       }
     end
   end
