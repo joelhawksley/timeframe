@@ -44,13 +44,17 @@ class DisplayContent
       home_assistant_api.low_batteries.each do |low_battery|
         out[:status_icons_with_labels] << ["battery-slash", low_battery]
       end
+
+      if !home_assistant_api.online?
+        out[:status_icons_with_labels] << ["triangle-exclamation", "Offline"]
+      end
     else
       out[:status_icons_with_labels] << ["triangle-exclamation", "Home Assistant"]
     end
 
     if google_calendar_api.healthy?
       raw_events << google_calendar_api.data
-    else
+    elsif home_assistant_api.online?
       out[:status_icons_with_labels] << ["triangle-exclamation", "Google Calendar"]
     end
 
@@ -60,12 +64,10 @@ class DisplayContent
       out[:status_icons] << ["triangle-exclamation", "Sonos"]
     end
 
-    if home_assistant_api.online?
-      if birdnet_api.healthy?
-        out[:birdnet_most_unusual_species_trailing_24h] = birdnet_api.most_unusual_species_trailing_24h
-      else
-        out[:status_icons_with_labels] << ["triangle-exclamation", "Birdnet"]
-      end
+    if birdnet_api.healthy?
+      out[:birdnet_most_unusual_species_trailing_24h] = birdnet_api.most_unusual_species_trailing_24h
+    else
+      out[:status_icons_with_labels] << ["triangle-exclamation", "Birdnet"]
     end
 
     if home_assistant_api.online?
