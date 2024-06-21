@@ -14,7 +14,7 @@ class DisplayContent
     out[:status_icons] = []
     out[:status_icons_with_labels] = []
     out[:timestamp] = current_time.strftime("%-l:%M %p")
-    out[:current_temperature] = home_assistant_api.feels_like_temperature
+    out[:current_temperature] = home_assistant_api.feels_like_temperature if home_assistant_api.healthy?
     raw_events = [[calendar_feed.baby_age_event]]
 
     if home_assistant_api.healthy?
