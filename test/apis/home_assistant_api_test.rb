@@ -397,5 +397,17 @@ class HomeAssistantApiTest < Minitest::Test
     api.stub :data, data do
       assert_equal(api.roborock_errors, ["Return to charger"])
     end
+
+    data = [
+      {
+        entity_id: Timeframe::Application.config.local["home_assistant"]["roborock_sensor_time_left"],
+        state: "-17031"
+      }
+    ]
+
+    api = HomeAssistantApi.new
+    api.stub :data, data do
+      assert_equal(api.roborock_errors, ["Sensor maintenance"])
+    end
   end
 end

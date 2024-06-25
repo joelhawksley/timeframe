@@ -111,6 +111,12 @@ class HomeAssistantApi < Api
       out << "Return to charger"
     end
 
+    entity = data.find { _1[:entity_id] == Timeframe::Application.config.local["home_assistant"]["roborock_sensor_time_left"] }
+
+    if entity.present? && entity[:state].to_i <= 0
+      out << "Sensor maintenance"
+    end
+
     out.uniq
   end
 
