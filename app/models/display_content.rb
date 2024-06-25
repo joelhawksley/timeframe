@@ -95,7 +95,7 @@ class DisplayContent
     # :nocov:
 
     out[:day_groups] =
-      (0...5).each_with_object([]).map do |day_index|
+      (0...5).to_a.map do |day_index|
         date = current_time + day_index.day
 
         day_name =
@@ -108,16 +108,23 @@ class DisplayContent
             date.strftime("%A")
           end
 
+        events = calendar_feed.events_for(
+          (day_index.zero? ? current_time : date.beginning_of_day).utc,
+          date.end_of_day.utc,
+          raw_events.flatten
+        )
+
+        # Attempt to hide Today if it's after 8pm and there are no events
+        if day_index.zero? && current_time.hour >= 20
+          next if events[:periodic].empty? ||
+            events[:periodic].all? { _1.ends_at > date.end_of_day.utc }
+        end
+
         {
           day_name: day_name,
-          show_daily_events: day_index.zero? ? date.hour <= 19 : true,
-          events: calendar_feed.events_for(
-            (day_index.zero? ? current_time : date.beginning_of_day).utc,
-            date.end_of_day.utc,
-            raw_events.flatten
-          )
+          events: events
         }
-      end
+      end.compact
 
     out
   end
