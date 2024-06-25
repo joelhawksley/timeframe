@@ -1,14 +1,13 @@
 class DisplayContent
-  def call
-    current_time = Time.now.utc.in_time_zone(Timeframe::Application.config.local["timezone"])
-
-    weather_kit_api = WeatherKitApi.new
-    google_calendar_api = GoogleCalendarApi.new
-    calendar_feed = CalendarFeed.new
-    home_assistant_api = HomeAssistantApi.new
-    birdnet_api = BirdnetApi.new
-    sonos_api = SonosApi.new
-
+  def call(
+    current_time: Time.now.utc.in_time_zone(Timeframe::Application.config.local["timezone"]),
+    weather_kit_api: WeatherKitApi.new,
+    google_calendar_api: GoogleCalendarApi.new,
+    calendar_feed: CalendarFeed.new,
+    home_assistant_api: HomeAssistantApi.new,
+    birdnet_api: BirdnetApi.new,
+    sonos_api: SonosApi.new
+  )
     # :nocov:
     out = {}
     out[:status_icons] = []
