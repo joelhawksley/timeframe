@@ -173,4 +173,12 @@ class HomeAssistantApi < Api
 
     entity[:state] == "on"
   end
+
+  def nas_online?
+    entity = data.find { _1[:entity_id] == Timeframe::Application.config.local["home_assistant"]["nas_temperature_entity_id"] }
+
+    return false unless entity.present?
+
+    entity[:state].to_i > 0
+  end
 end

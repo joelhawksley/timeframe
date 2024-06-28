@@ -44,6 +44,10 @@ class DisplayContent
         out[:status_icons_with_labels] << ["battery-slash", low_battery]
       end
 
+      if !home_assistant_api.nas_online?
+        out[:status_icons_with_labels] << ["triangle-exclamation", "NAS offline"]
+      end
+
       if !home_assistant_api.online?
         out[:status_icons_with_labels] << ["triangle-exclamation", "Offline"]
       end

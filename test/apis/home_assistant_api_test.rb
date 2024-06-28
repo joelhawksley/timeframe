@@ -320,6 +320,37 @@ class HomeAssistantApiTest < Minitest::Test
     end
   end
 
+  def test_nas_online
+    data = [
+      {
+        entity_id: Timeframe::Application.config.local["home_assistant"]["nas_temperature_entity_id"],
+        state: "100"
+      }
+    ]
+
+    api = HomeAssistantApi.new
+    api.stub :data, data do
+      assert(api.nas_online?)
+    end
+
+    data = [
+      {
+        entity_id: Timeframe::Application.config.local["home_assistant"]["nas_temperature_entity_id"],
+        state: "unavailable"
+      }
+    ]
+
+    api = HomeAssistantApi.new
+    api.stub :data, data do
+      refute(api.nas_online?)
+    end
+
+    api = HomeAssistantApi.new
+    api.stub :data, {} do
+      refute(api.nas_online?)
+    end
+  end
+
   def test_roborock_errors
     api = HomeAssistantApi.new
     api.stub :data, {} do
