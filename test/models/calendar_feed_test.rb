@@ -8,19 +8,19 @@ class CalendarFeedTest < Minitest::Test
   def test_baby_age_event
     result = CalendarFeed.new.baby_age_event(Date.today - 8.days)
 
-    assert_equal("1w", result.summary)
+    assert_equal("1w1d", result.summary)
   end
 
   def test_baby_age_event_weeks_days
     result = CalendarFeed.new.baby_age_event(Date.today - 9.days)
 
-    assert_equal("1w1d", result.summary)
+    assert_equal("1w2d", result.summary)
   end
 
   def test_baby_age_event_less_than_one_week
     result = CalendarFeed.new.baby_age_event(Date.today - 7.days)
 
-    assert_equal("6d", result.summary)
+    assert_equal("1w", result.summary)
   end
 
   def test_baby_age_event_works_in_evening

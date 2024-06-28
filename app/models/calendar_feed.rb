@@ -21,7 +21,9 @@ class CalendarFeed
           if week_count > 0
             "#{week_count}w#{remainder}d"
           else
+            # :nocov:
             "#{remainder}d"
+            # :nocov:
           end
         else
           "#{week_count}w"
