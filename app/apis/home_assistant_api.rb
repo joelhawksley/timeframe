@@ -79,7 +79,7 @@ class HomeAssistantApi < Api
   def unavailable_door_sensors
     out = []
 
-    Timeframe::Application.config.local["home_assistant"]["exterior_door_sensors"].concat(
+    (Timeframe::Application.config.local["home_assistant"]["exterior_door_sensors"] +
       Timeframe::Application.config.local["home_assistant"]["exterior_door_locks"]
     ).each do |entity_id|
       if data.find { _1[:entity_id] == entity_id }&.fetch(:state) == "unavailable"

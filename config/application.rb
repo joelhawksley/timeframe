@@ -28,7 +28,7 @@ module Timeframe
       end
     end
 
-    config.local = YAML.load_file(Rails.root.join("config.yml"))
+    config.local = YAML.load_file(Rails.root.join("config.yml")).freeze
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
