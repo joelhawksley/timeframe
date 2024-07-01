@@ -11,7 +11,7 @@ unless Rails.env.test?
 
   Sidekiq::Cron::Job.create(
     name: "Fetch Home Assistant",
-    cron: "every 5 seconds",
+    cron: "every 2 seconds",
     args: ["home_assistant"],
     class: "ScheduleJob"
   )
