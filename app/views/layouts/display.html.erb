@@ -3,9 +3,7 @@
   <head>
     <title>Timeframe</title>
     <link rel="stylesheet" href="/css/display.css">
-    <% if !params[:debug].present? || !@refresh || params[:refresh].present? %>
-      <meta http-equiv="refresh" content="2">
-    <% end %>
+    <meta http-equiv="refresh" content="<%= @refresh %>">
   </head>
 
   <body>
