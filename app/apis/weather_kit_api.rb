@@ -174,7 +174,7 @@ class WeatherKitApi < Api
           if day.dig(:snowfallAmount) > 0.05
             " / #{(day[:snowfallAmount] * 0.0393701).round(1)}\""
           end
-        elsif day.dig(:precipitationAmount).to_f > 0.05
+        elsif (day.dig(:precipitationAmount).to_f * 0.0393701) >= 0.1
           " / #{(day[:precipitationAmount] * 0.0393701).round(1)}\""
         end
 
