@@ -1,15 +1,19 @@
 class CalendarFeed
   def baby_age_event(birthdate = Date.parse(Timeframe::Application.config.local["birthdate"]))
-    day_count = Date.yesterday - birthdate
+    today = Time.now.in_time_zone(Timeframe::Application.config.local["timezone"]).to_date
+
+    day_count = today - 1.day - birthdate
     week_count = (day_count / 7).to_i
 
     if week_count > 24
-      time_difference = TimeDifference.between(birthdate, Date.yesterday).in_general
+      time_difference = TimeDifference.between(birthdate, today).in_general
       months = time_difference[:months]
       weeks = time_difference[:weeks]
       days = time_difference[:days]
+      years = time_difference[:years]
 
       summary = ""
+      summary << "#{years}y" if years > 0
       summary << "#{months}m" if months > 0
       summary << "#{weeks}w" if weeks > 0
       summary << "#{days}d" if days > 0

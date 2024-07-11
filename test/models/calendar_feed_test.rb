@@ -32,6 +32,14 @@ class CalendarFeedTest < Minitest::Test
     end
   end
 
+  def test_baby_age_event_1_yr
+    travel_to DateTime.new(2024, 7, 11, 8, 0, 0, "-0600") do
+      result = CalendarFeed.new.baby_age_event(Date.new(2023, 7, 11))
+
+      assert_equal("1y", result.summary)
+    end
+  end
+
   # CalendarEvents coming from the DB look different than those
   # constructed on the fly. DB events have string keys, for example.
   # This is not ideal and we should probably move to a standard value
