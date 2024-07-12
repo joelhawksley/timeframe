@@ -25,14 +25,7 @@ module Timeframe
 
     config.local = YAML.load_file(Rails.root.join("config.yml")).freeze
 
-    # Settings in config/environments/* take precedence over those specified here.
-    # Application configuration should go into files in config/initializers
-    # -- all .rb files in that directory are automatically loaded.
-
-    # Don't generate system test files.
-    config.generators.system_tests = nil
-
-    config.secret_key_base = ENV["SECRET_KEY_BASE"]
+    config.secret_key_base = "foo" # Not needed as app runs behind firewall
 
     config.hosts << "hawksley-server.local"
     config.hosts << "timeframetesting.com"
