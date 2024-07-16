@@ -15,6 +15,8 @@ class ScheduleJob < ActiveJob::Base
       GoogleCalendarApi.new.fetch
     when :birdnet
       BirdnetApi.new.fetch
+    when :airnow
+      AirNowApi.new.fetch
     end
   end
 end

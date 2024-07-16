@@ -1,0 +1,42 @@
+---
+http_interactions:
+- request:
+    method: get
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: ''
+    headers:
+      Date:
+      - Tue, 16 Jul 2024 17:05:08 GMT
+      Content-Type:
+      - application/json;charset=UTF-8
+      Content-Length:
+      - '1003'
+      Connection:
+      - keep-alive
+      Cache-Control:
+      - private
+      Expires:
+      - Thu, 01 Jan 1970 00:00:00 GMT
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Disposition:
+      - attachment; filename=Output.json;
+      Content-Language:
+      - en-US
+    body:
+      encoding: UTF-8
+      string: '[{"DateIssue":"2024-07-16","DateForecast":"2024-07-16","ReportingArea":"Denver-Boulder","StateCode":"CO","Latitude":39.9003,"Longitude":-105.042,"ParameterName":"O3","AQI":-1,"Category":{"Number":2,"Name":"Moderate"},"ActionDay":false,"Discussion":""},{"DateIssue":"2024-07-16","DateForecast":"2024-07-16","ReportingArea":"Denver-Boulder","StateCode":"CO","Latitude":39.9003,"Longitude":-105.042,"ParameterName":"PM2.5","AQI":-1,"Category":{"Number":1,"Name":"Good"},"ActionDay":false,"Discussion":""},{"DateIssue":"2024-07-16","DateForecast":"2024-07-17","ReportingArea":"Denver-Boulder","StateCode":"CO","Latitude":39.9003,"Longitude":-105.042,"ParameterName":"O3","AQI":-1,"Category":{"Number":2,"Name":"Moderate"},"ActionDay":false,"Discussion":""},{"DateIssue":"2024-07-16","DateForecast":"2024-07-17","ReportingArea":"Denver-Boulder","StateCode":"CO","Latitude":39.9003,"Longitude":-105.042,"ParameterName":"PM2.5","AQI":-1,"Category":{"Number":1,"Name":"Good"},"ActionDay":false,"Discussion":""}]'
+  recorded_at: Tue, 16 Jul 2024 17:05:08 GMT
+recorded_with: VCR 6.2.0

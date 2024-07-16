@@ -2,7 +2,6 @@
 http_interactions:
 - request:
     method: get
-    uri: https://app.birdweather.com/api/v1/stations/CkrGj6P3ym1iJEqCeeWLPyeb/species
     body:
       encoding: US-ASCII
       string: ''

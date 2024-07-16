@@ -6,7 +6,8 @@ class DisplayContent
     calendar_feed: CalendarFeed.new,
     home_assistant_api: HomeAssistantApi.new,
     birdnet_api: BirdnetApi.new,
-    sonos_api: SonosApi.new
+    sonos_api: SonosApi.new,
+    air_now_api: AirNowApi.new
   )
     # :nocov:
     out = {}
@@ -88,6 +89,10 @@ class DisplayContent
       else
         out[:status_icons_with_labels] << ["triangle-exclamation", "Apple Weather"]
       end
+    end
+
+    if air_now_api.healthy?
+      raw_events << air_now_api.daily_calendar_events
     end
 
     if google_calendar_api.healthy?

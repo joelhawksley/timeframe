@@ -36,5 +36,12 @@ unless Rails.env.test?
     args: ["birdnet"],
     class: "ScheduleJob"
   )
+
+  Sidekiq::Cron::Job.create(
+    name: "Fetch Airnow",
+    cron: "*/1 * * * *",
+    args: ["airnow"],
+    class: "ScheduleJob"
+  )
 end
 # :nocov:
