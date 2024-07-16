@@ -38,6 +38,7 @@ class BirdnetApiTest < Minitest::Test
 
   def test_most_unusual_species_trailing_24h_no_data
     api = BirdnetApi.new
+
     api.stub :data, {} do
       assert_equal(api.most_unusual_species_trailing_24h, {})
     end
@@ -86,8 +87,12 @@ class BirdnetApiTest < Minitest::Test
        latestDetectionAt: "2024-04-13T16:10:08.000-06:00"}]}
 
     api = BirdnetApi.new
-    api.stub :data, data do
-      assert_equal("Western Meadowlark", api.most_unusual_species_trailing_24h)
+    api.stub :last_fetched_at, "2023-08-27 15:14:59 -0600" do
+      travel_to DateTime.new(2023, 8, 27, 15, 15, 0, "-0600") do
+        api.stub :data, data do
+          assert_equal("Western Meadowlark", api.most_unusual_species_trailing_24h)
+        end
+      end
     end
   end
 end
