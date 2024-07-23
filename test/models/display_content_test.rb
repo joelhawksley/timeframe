@@ -6,10 +6,12 @@ class DisplayContenttTest < Minitest::Test
   include ActiveSupport::Testing::TimeHelpers
 
   def test_no_data
-    result = DisplayContent.new.call
+    travel_to DateTime.new(2023, 8, 27, 18, 15, 0, "-0600") do
+      result = DisplayContent.new.call
 
-    assert_nil(result[:current_temperature])
-    assert_equal(result[:day_groups].count, 5)
+      assert_nil(result[:current_temperature])
+      assert_equal(result[:day_groups].count, 5)
+    end
   end
 
   def test_hide_events_after_cutoff

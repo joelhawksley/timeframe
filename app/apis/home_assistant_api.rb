@@ -136,7 +136,7 @@ class HomeAssistantApi < Api
     out = []
 
     Timeframe::Application.config.local["home_assistant"]["exterior_door_locks"].map do |entity_id|
-      if data.find { _1[:entity_id] == entity_id }&.fetch(:state) == "unlocked"
+      if ["unlocked", "off"].include?(data.find { _1[:entity_id] == entity_id }&.fetch(:state))
         out << entity_id.split(".").last.split("_door").first.humanize
       end
     end
