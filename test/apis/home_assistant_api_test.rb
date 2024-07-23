@@ -214,7 +214,7 @@ class HomeAssistantApiTest < Minitest::Test
       },
       {
         entity_id: Timeframe::Application.config.local["home_assistant"]["exterior_door_locks"][0],
-        state: "unlocked"
+        state: "off"
       }
     ]
 
@@ -228,7 +228,7 @@ class HomeAssistantApiTest < Minitest::Test
     data = [
       {
         entity_id: Timeframe::Application.config.local["home_assistant"]["exterior_door_locks"][0],
-        state: "unlocked"
+        state: "off"
       }
     ]
 
@@ -241,14 +241,14 @@ class HomeAssistantApiTest < Minitest::Test
   def test_unavailable_door_sensors
     data = [
       {
-        entity_id: Timeframe::Application.config.local["home_assistant"]["exterior_door_locks"][0],
+        entity_id: Timeframe::Application.config.local["home_assistant"]["exterior_door_sensors"][0],
         state: "unavailable"
       }
     ]
 
     api = HomeAssistantApi.new
     api.stub :data, data do
-      assert_equal(api.unavailable_door_sensors, ["Patio door lock"])
+      assert_equal(api.unavailable_door_sensors, ["Alley door sensor"])
     end
   end
 
