@@ -8,7 +8,7 @@ class ScheduleJob < ActiveJob::Base
     when :sonos
       SonosApi.new.fetch
     when :home_assistant
-      HomeAssistantApi.new.fetch
+      HomeAssistantApi.new(Timeframe::Application.config.local).fetch
     when :weather_kit
       WeatherKitApi.new.fetch
     when :google_calendar
