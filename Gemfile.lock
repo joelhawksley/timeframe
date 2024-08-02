@@ -265,7 +265,7 @@ GEM
       trailblazer-option (>= 0.1.1, < 0.2.0)
       uber (< 0.2.0)
     retriable (3.1.2)
-    rexml (3.3.2)
+    rexml (3.3.3)
       strscan
     rubocop (1.64.1)
       json (~> 2.3)
