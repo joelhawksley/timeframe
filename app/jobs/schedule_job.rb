@@ -5,8 +5,6 @@ class ScheduleJob < ActiveJob::Base
     puts "Running #{task} task"
 
     case task.to_sym
-    when :sonos
-      SonosApi.new.fetch
     when :home_assistant
       HomeAssistantApi.new(Timeframe::Application.config.local).fetch
     when :weather_kit

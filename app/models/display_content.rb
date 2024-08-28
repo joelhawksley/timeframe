@@ -6,7 +6,6 @@ class DisplayContent
     calendar_feed: CalendarFeed.new,
     home_assistant_api: HomeAssistantApi.new,
     birdnet_api: BirdnetApi.new,
-    sonos_api: SonosApi.new,
     air_now_api: AirNowApi.new
   )
     # :nocov:
@@ -18,6 +17,7 @@ class DisplayContent
     raw_events = [[calendar_feed.baby_age_event]]
 
     if home_assistant_api.healthy?
+      out[:sonos_status] = home_assistant_api.now_playing
       out[:status_icons] << "box-open" if home_assistant_api.package_present?
       out[:status_icons] << "garage-open" if home_assistant_api.garage_door_open?
       out[:status_icons] << "washing-machine" if home_assistant_api.washer_needs_attention?
@@ -54,12 +54,6 @@ class DisplayContent
       end
     else
       out[:status_icons_with_labels] << ["triangle-exclamation", "Home Assistant"]
-    end
-
-    if sonos_api.healthy?
-      out[:sonos_status] = sonos_api.status
-    else
-      out[:status_icons] << ["triangle-exclamation", "Sonos"]
     end
 
     if birdnet_api.healthy?

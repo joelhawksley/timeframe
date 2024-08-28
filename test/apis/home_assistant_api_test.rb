@@ -562,4 +562,121 @@ class HomeAssistantApiTest < Minitest::Test
       assert_equal(api.roborock_errors, ["Sensor maintenance"])
     end
   end
+
+  def test_now_playing_no_data
+    config = {
+      "home_assistant" => {
+        "media_player_entity_id" => "media_player_entity_id"
+      }
+    }
+
+    api = HomeAssistantApi.new(config)
+    api.stub :data, [] do
+      assert_equal(api.now_playing, {})
+    end
+  end
+
+  def test_now_playing_paused
+    config = {
+      "home_assistant" => {
+        "media_player_entity_id" => "media_player_entity_id"
+      }
+    }
+
+    data = [{entity_id: "media_player_entity_id", state: "paused"}]
+
+    api = HomeAssistantApi.new(config)
+    api.stub :data, data do
+      assert_equal(api.now_playing, {})
+    end
+  end
+
+  def test_now_playing_with_media_title
+    config = {
+      "home_assistant" => {
+        "media_player_entity_id" => "media_player_entity_id"
+      }
+    }
+
+    data = [{
+      entity_id: "media_player_entity_id",
+      state: "playing",
+      attributes: {
+        media_title: "Snoozy Stardust",
+        media_artist: "COSMOGLOW"
+      }
+    }]
+
+    api = HomeAssistantApi.new(config)
+    api.stub :data, data do
+      assert_equal(api.now_playing, {artist: "COSMOGLOW", track: "Snoozy Stardust"})
+    end
+  end
+
+  def test_now_playing_with_cpr_news
+    config = {
+      "home_assistant" => {
+        "media_player_entity_id" => "media_player_entity_id"
+      }
+    }
+
+    data = [{
+      entity_id: "media_player_entity_id",
+      state: "playing",
+      attributes: {
+        media_title: "CPR News -- Today, Explained",
+        media_artist: "CPR News -- Today, Explained"
+      }
+    }]
+
+    api = HomeAssistantApi.new(config)
+    api.stub :data, data do
+      assert_equal(api.now_playing, {artist: "CPR News", track: "Today, Explained"})
+    end
+  end
+
+  def test_now_playing_with_cpr_classical
+    config = {
+      "home_assistant" => {
+        "media_player_entity_id" => "media_player_entity_id"
+      }
+    }
+
+    data = [{
+      entity_id: "media_player_entity_id",
+      state: "playing",
+      attributes: {
+        media_channel: "Colorado Public Radio Classical • Live Classical Music",
+        media_title:
+     "Fantasia on a Theme by Thomas Tallis by Ralph Vaughan Williams -- Vaughan Williams: Wasps Overture /"
+      }
+    }]
+
+    api = HomeAssistantApi.new(config)
+    api.stub :data, data do
+      assert_equal(api.now_playing, {artist: "Thomas Tallis", track: "Fantasia on a Theme"})
+    end
+  end
+
+  def test_now_playing_with_folk_alley
+    config = {
+      "home_assistant" => {
+        "media_player_entity_id" => "media_player_entity_id"
+      }
+    }
+
+    data = [{
+      entity_id: "media_player_entity_id",
+      state: "playing",
+      attributes: {
+        media_title: "The Decemberists - The King Is Dead",
+        media_channel: "Folk Alley - WKSU-HD2 • Folk Alley"
+      }
+    }]
+
+    api = HomeAssistantApi.new(config)
+    api.stub :data, data do
+      assert_equal(api.now_playing, {artist: "The Decemberists", track: "The King Is Dead"})
+    end
+  end
 end

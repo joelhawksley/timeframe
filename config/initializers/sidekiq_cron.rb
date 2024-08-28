@@ -3,13 +3,6 @@ unless Rails.env.test?
   Sidekiq::Options[:cron_poll_interval] = 1
 
   Sidekiq::Cron::Job.create(
-    name: "Fetch Sonos",
-    cron: "every 2 seconds",
-    args: ["sonos"],
-    class: "ScheduleJob"
-  )
-
-  Sidekiq::Cron::Job.create(
     name: "Fetch Home Assistant",
     cron: "every 2 seconds",
     args: ["home_assistant"],

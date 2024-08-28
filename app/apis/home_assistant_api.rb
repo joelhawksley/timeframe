@@ -20,6 +20,39 @@ class HomeAssistantApi < Api
     end
   end
 
+  def now_playing
+    entity = data.find { _1[:entity_id] == @config["home_assistant"]["media_player_entity_id"] }
+
+    return {} unless entity.present?
+    return {} if entity[:state] == "paused"
+
+    if entity.dig(:attributes, :media_artist)&.include?("CPR News")
+      {
+        artist: "CPR News",
+        track: entity.dig(:attributes, :media_title).split(" -- ").last
+      }
+    elsif entity.dig(:attributes, :media_channel)&.include?("Colorado Public Radio Classical")
+      track, artist = entity.dig(:attributes, :media_title).split(" -- ").first.split(" by ")
+
+      {
+        artist: artist,
+        track: track
+      }
+    elsif entity.dig(:attributes, :media_channel)&.include?("WKSU-HD2")
+      title_parts = entity.dig(:attributes, :media_title).split(" - ")
+
+      {
+        artist: title_parts[0],
+        track: title_parts[1]
+      }
+    else
+      {
+        artist: entity.dig(:attributes, :media_artist),
+        track: entity.dig(:attributes, :media_title)
+      }
+    end
+  end
+
   def time_before_unhealthy
     1.minute
   end
