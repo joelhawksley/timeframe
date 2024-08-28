@@ -193,4 +193,14 @@ class CalendarEventTest < Minitest::Test
 
     assert_equal("foo", event.summary)
   end
+
+  def test_daily_summary_count
+    event = CalendarEvent.new(
+      starts_at: DateTime.new(2023, 1, 23),
+      ends_at: DateTime.new(2023, 1, 25),
+      summary: "foo"
+    )
+
+    assert_equal(event.summary(DateTime.new(2023, 1, 24)), "foo (2/2)")
+  end
 end

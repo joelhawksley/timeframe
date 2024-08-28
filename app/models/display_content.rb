@@ -131,6 +131,7 @@ class DisplayContent
 
         {
           day_name: day_name,
+          date: date.to_date,
           events: events
         }
       end.compact

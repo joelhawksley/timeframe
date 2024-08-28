@@ -101,11 +101,16 @@ class CalendarEvent
     end
   end
 
-  def summary
+  def summary(as_of = nil)
     if (1900..2100).cover?(@description.to_s.to_i)
       counter = Date.today.year - @description.to_s.to_i
 
       "#{@summary} (#{counter})"
+    elsif multi_day? && as_of
+      numerator = (as_of.to_date - @starts_at.to_date).to_i + 1
+      denominator = (@ends_at.to_date - @starts_at.to_date).to_i
+
+      "#{@summary} (#{numerator}/#{denominator})"
     else
       @summary
     end.gsub(/\p{Emoji_Presentation}/, "").strip
