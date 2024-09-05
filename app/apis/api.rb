@@ -1,6 +1,10 @@
 class Api
+  def url
+    Timeframe::Application.config.local["#{self.class.name.underscore}_url"]
+  end
+
   def fetch
-    response = HTTParty.get(Timeframe::Application.config.local["#{self.class.name.underscore}_url"], headers: headers)
+    response = HTTParty.get(url, headers: headers)
 
     return if response.code != 200
 
