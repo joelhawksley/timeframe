@@ -24,7 +24,7 @@ class HomeAssistantApi < Api
     entity = data.find { _1[:entity_id] == @config["home_assistant"]["media_player_entity_id"] }
 
     return {} unless entity.present?
-    return {} if entity[:state] == "paused"
+    return {} if entity[:state] == "paused" || entity[:state] == "idle"
 
     if entity.dig(:attributes, :media_artist)&.include?("CPR News")
       {
