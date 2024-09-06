@@ -5,6 +5,7 @@ class DisplayContent
     google_calendar_api: GoogleCalendarApi.new,
     calendar_feed: CalendarFeed.new,
     home_assistant_api: HomeAssistantApi.new,
+    home_assistant_calendar_api: HomeAssistantCalendarApi.new,
     birdnet_api: BirdnetApi.new,
     air_now_api: AirNowApi.new
   )
@@ -94,6 +95,8 @@ class DisplayContent
     elsif home_assistant_api.online?
       out[:status_icons_with_labels] << ["triangle-exclamation", "Google Calendar"]
     end
+
+    raw_events << home_assistant_calendar_api.data
 
     # :nocov:
 

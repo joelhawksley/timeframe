@@ -10,6 +10,13 @@ unless Rails.env.test?
   )
 
   Sidekiq::Cron::Job.create(
+    name: "Fetch Home Assistant Calendar",
+    cron: "every 1 minute",
+    args: ["home_calendar"],
+    class: "ScheduleJob"
+  )
+
+  Sidekiq::Cron::Job.create(
     name: "Fetch WeatherKit",
     cron: "*/1 * * * *",
     args: ["weather_kit"],

@@ -7,6 +7,8 @@ class ScheduleJob < ActiveJob::Base
     case task.to_sym
     when :home_assistant
       HomeAssistantApi.new(Timeframe::Application.config.local).fetch
+    when :home_assistant_calendar
+      HomeAssistantCalendarApi.new(Timeframe::Application.config.local).fetch
     when :weather_kit
       WeatherKitApi.new.fetch
     when :google_calendar
