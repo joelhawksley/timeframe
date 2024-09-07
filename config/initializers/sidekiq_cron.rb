@@ -23,13 +23,6 @@ unless Rails.env.test?
     class: "ScheduleJob"
   )
 
-  # Sidekiq::Cron::Job.create(
-  #   name: "Fetch Google Calendar",
-  #   cron: "*/1 * * * *",
-  #   args: ["google_calendar"],
-  #   class: "ScheduleJob"
-  # )
-
   Sidekiq::Cron::Job.create(
     name: "Fetch Birdnet",
     cron: "*/1 * * * *",

@@ -2,7 +2,6 @@ class DisplayContent
   def call(
     current_time: Time.now.utc.in_time_zone(Timeframe::Application.config.local["timezone"]),
     weather_kit_api: WeatherKitApi.new,
-    google_calendar_api: GoogleCalendarApi.new,
     calendar_feed: CalendarFeed.new,
     home_assistant_api: HomeAssistantApi.new,
     home_assistant_calendar_api: HomeAssistantCalendarApi.new,
@@ -88,12 +87,6 @@ class DisplayContent
 
     if air_now_api.healthy?
       raw_events << air_now_api.daily_calendar_events
-    end
-
-    if google_calendar_api.healthy?
-      raw_events << google_calendar_api.data
-    elsif home_assistant_api.online?
-      out[:status_icons_with_labels] << ["triangle-exclamation", "Google Calendar"]
     end
 
     raw_events << home_assistant_calendar_api.data

@@ -25,12 +25,12 @@ class DisplayContenttTest < Minitest::Test
   def test_hide_events_after_cutoff_if_periodic_extends_to_tomorrow
     travel_time = DateTime.new(2023, 8, 27, 20, 15, 0, "-0600")
     travel_to travel_time do
-      api = GoogleCalendarApi.new
+      api = HomeAssistantCalendarApi.new
       api.stub :healthy?, true do
         api.stub :data, [
           CalendarEvent.new(starts_at: travel_time - 1.hour, ends_at: travel_time + 1.day, summary: "test")
         ] do
-          result = DisplayContent.new.call(google_calendar_api: api)
+          result = DisplayContent.new.call(home_assistant_calendar_api: api)
 
           assert_equal(result[:day_groups].count, 4)
         end

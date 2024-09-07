@@ -11,8 +11,6 @@ class ScheduleJob < ActiveJob::Base
       HomeAssistantCalendarApi.new(Timeframe::Application.config.local).fetch
     when :weather_kit
       WeatherKitApi.new.fetch
-    when :google_calendar
-      GoogleCalendarApi.new.fetch
     when :birdnet
       BirdnetApi.new.fetch
     when :airnow

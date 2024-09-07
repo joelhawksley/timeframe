@@ -8,9 +8,6 @@ Rails.application.routes.draw do
   get :mira, to: "displays#mira"
 
   root to: "home#index"
-  get :redirect, to: "home#redirect"
-  get :google_callback, to: "home#google_callback"
-
   get :logs, to: "home#logs"
 
   mount Sidekiq::Web => "/sidekiq"
