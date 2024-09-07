@@ -3,15 +3,16 @@ class HomeAssistantCalendarApi < Api
     @config = config
   end
 
-  def prepare_response(response)
+  def fetch
     start_time = (Time.now - 1.day).utc.iso8601
     end_time = (Time.now + 5.days).utc.iso8601
 
     out = []
 
-    response.each do |calendar|
+    Timeframe::Application.config.local["calendars"].each do |calendar|
+      next unless calendar["entity_id"].present?
+
       res = HTTParty.get("#{url}/#{calendar["entity_id"]}?start=#{start_time}&end=#{end_time}", headers: headers)
-      config = Timeframe::Application.config.local["calendars"].find { _1["entity_id"] == calendar["entity_id"] }
 
       res.map! do |event|
         event["calendar_entity_id"] = calendar["entity_id"]
@@ -21,10 +22,8 @@ class HomeAssistantCalendarApi < Api
 
         event["ends_at"] = event["end"]["date"] || event["end"]["dateTime"]
 
-        if config
-          event["icon"] = config["icon"]
-          event["letter"] = config["letter"]
-        end
+        event["icon"] = calendar["icon"]
+        event["letter"] = calendar["letter"]
 
         event["id"] = event["uid"]
 
@@ -42,7 +41,11 @@ class HomeAssistantCalendarApi < Api
       out.concat(res)
     end
 
-    out
+    save_response(out)
+  end
+
+  def prepare_response(response)
+    response
   end
 
   def headers

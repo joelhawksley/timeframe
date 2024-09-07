@@ -12,7 +12,7 @@ unless Rails.env.test?
   Sidekiq::Cron::Job.create(
     name: "Fetch Home Assistant Calendar",
     cron: "every 1 minute",
-    args: ["home_calendar"],
+    args: ["home_assistant_calendar"],
     class: "ScheduleJob"
   )
 
@@ -23,12 +23,12 @@ unless Rails.env.test?
     class: "ScheduleJob"
   )
 
-  Sidekiq::Cron::Job.create(
-    name: "Fetch Google Calendar",
-    cron: "*/1 * * * *",
-    args: ["google_calendar"],
-    class: "ScheduleJob"
-  )
+  # Sidekiq::Cron::Job.create(
+  #   name: "Fetch Google Calendar",
+  #   cron: "*/1 * * * *",
+  #   args: ["google_calendar"],
+  #   class: "ScheduleJob"
+  # )
 
   Sidekiq::Cron::Job.create(
     name: "Fetch Birdnet",
