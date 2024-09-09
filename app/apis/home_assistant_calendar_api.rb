@@ -41,7 +41,7 @@ class HomeAssistantCalendarApi < Api
       out.concat(res)
     end
 
-    save_response(out)
+    save_response(out.compact)
   end
 
   def prepare_response(response)
