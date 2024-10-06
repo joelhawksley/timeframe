@@ -110,7 +110,8 @@ class DisplayContent
         events = calendar_feed.events_for(
           (day_index.zero? ? current_time : date.beginning_of_day).utc,
           date.end_of_day.utc,
-          raw_events.flatten
+          raw_events.flatten,
+          home_assistant_calendar_api.private_mode?
         )
 
         # Attempt to hide Today if it's after 8pm and there are no events

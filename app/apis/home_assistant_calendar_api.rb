@@ -55,6 +55,12 @@ class HomeAssistantCalendarApi < Api
     }
   end
 
+  def private_mode?
+    current_time = DateTime.now.in_time_zone(Timeframe::Application.config.local["timezone"])
+
+    data.any? { _1.summary == "timeframe-private" && _1.starts_at <= current_time && _1.ends_at >= current_time }
+  end
+
   def data
     @data ||= super.map { CalendarEvent.new(**_1.symbolize_keys!) }
   end

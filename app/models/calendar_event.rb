@@ -50,6 +50,10 @@ class CalendarEvent
     true
   end
 
+  def private?
+    @summary == "timeframe-private" || @description == "timeframe-private"
+  end
+
   def start_i
     @starts_at.to_i
   end

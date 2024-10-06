@@ -45,7 +45,7 @@ class CalendarFeed
 
   # Returns calendar events for a given UTC integer time range,
   # adding a `time` key for the time formatted for the user's timezone
-  def events_for(starts_at, ends_at, events = [])
+  def events_for(starts_at, ends_at, events = [], private_mode = false)
     filtered_events = events.compact.select do |event|
       if event.start_i == event.end_i
         [event.start_i, event.end_i].any? { (starts_at.to_i...ends_at.to_i).cover?(_1) }
@@ -75,6 +75,8 @@ class CalendarFeed
           v[0]
         end
       end
+
+    filtered_events = filtered_events.select { !_1.private? } if private_mode
 
     {
       daily: filtered_events.select(&:daily?),
