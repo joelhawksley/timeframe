@@ -54,6 +54,10 @@ class CalendarEvent
     @summary == "timeframe-private" || @description == "timeframe-private"
   end
 
+  def omit?
+    @description == "timeframe-omit"
+  end
+
   def start_i
     @starts_at.to_i
   end

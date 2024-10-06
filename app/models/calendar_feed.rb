@@ -52,7 +52,7 @@ class CalendarFeed
       else
         (event.start_i...event.end_i).overlaps?(starts_at.to_i...ends_at.to_i)
       end
-    end
+    end.select { !_1.omit? }
 
     # Merge duplicate events, merging the letter with a custom rule if so
     filtered_events = filtered_events.group_by { _1.id }
