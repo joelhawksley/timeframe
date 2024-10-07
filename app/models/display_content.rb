@@ -89,6 +89,10 @@ class DisplayContent
       raw_events << air_now_api.daily_calendar_events
     end
 
+    if home_assistant_calendar_api.healthy? && home_assistant_calendar_api.private_mode?
+      out[:status_icons] << "eye-slash"
+    end
+
     raw_events << home_assistant_calendar_api.data
 
     # :nocov:
