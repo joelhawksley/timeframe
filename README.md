@@ -31,6 +31,11 @@ A web application for displaying information from various APIs on digital signag
 - sync tempest weather data
 - Dither images using this technique: https://news.ycombinator.com/item?id=37837009
 - Integrate with Home Assistant to show whether mail has been delivered today
+- Use a pi for kiosk mode instead of a mac mini
+- Alert on unavailable entities
+- Baby age should be in months until 2 years+
+- Add UV warning
+- Add lightning warning
 
 ## Local development
 
