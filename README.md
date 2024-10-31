@@ -25,7 +25,6 @@ A web application for displaying information from various APIs on digital signag
 - Use PStore instead of SQLite
 - run Rails server with `launchd`
 - add health checks for home assistant automations
-- integrate with RFID jukebox: https://github.com/maddox/magic-cards
 - set up remote chrome debugging on client display
 - sync tempest weather data
 - Dither images using this technique: https://news.ycombinator.com/item?id=37837009
