@@ -36,7 +36,23 @@ class CalendarFeedTest < Minitest::Test
     travel_to DateTime.new(2024, 7, 11, 8, 0, 0, "-0600") do
       result = CalendarFeed.new.baby_age_event(Date.new(2023, 7, 11))
 
-      assert_equal("1y", result.summary)
+      assert_equal("12m", result.summary)
+    end
+  end
+
+  def test_baby_age_event_18_mos
+    travel_to DateTime.new(2025, 1, 11, 8, 0, 0, "-0600") do
+      result = CalendarFeed.new.baby_age_event(Date.new(2023, 7, 11))
+
+      assert_equal("18m", result.summary)
+    end
+  end
+
+  def test_baby_age_event_36_mos
+    travel_to DateTime.new(2026, 7, 11, 8, 0, 0, "-0600") do
+      result = CalendarFeed.new.baby_age_event(Date.new(2023, 7, 11))
+
+      assert_equal("3y", result.summary)
     end
   end
 

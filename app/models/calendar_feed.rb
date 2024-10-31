@@ -5,7 +5,7 @@ class CalendarFeed
     day_count = today - 1.day - birthdate
     week_count = (day_count / 7).to_i
 
-    if week_count > 24
+    if week_count > 104
       time_difference = TimeDifference.between(birthdate, today).in_general
       months = time_difference[:months]
       weeks = time_difference[:weeks]
@@ -15,8 +15,24 @@ class CalendarFeed
       summary = ""
       summary << "#{years}y" if years > 0
       summary << "#{months}m" if months > 0
-      summary << "#{weeks}w" if weeks > 0
-      summary << "#{days}d" if days > 0
+
+      if birthdate.day != today.day
+        summary << "#{weeks}w" if weeks > 0
+        summary << "#{days}d" if days > 0
+      end
+    elsif week_count > 24
+      time_difference = TimeDifference.between(birthdate, today).in_general
+      months = time_difference[:months] + (time_difference[:years] * 12)
+      weeks = time_difference[:weeks]
+      days = time_difference[:days]
+
+      summary = ""
+      summary << "#{months}m" if months > 0
+
+      if birthdate.day != today.day
+        summary << "#{weeks}w" if weeks > 0
+        summary << "#{days}d" if days > 0
+      end
     else
       remainder = (day_count % 7).to_i
 
