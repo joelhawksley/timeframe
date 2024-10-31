@@ -23,7 +23,6 @@ A web application for displaying information from various APIs on digital signag
 
 - remove .stub from tests in favor of dependency injection
 - Use PStore instead of SQLite
-- Add (day x/y) for multi-day all-day events
 - run Rails server with `launchd`
 - add health checks for home assistant automations
 - integrate with RFID jukebox: https://github.com/maddox/magic-cards
