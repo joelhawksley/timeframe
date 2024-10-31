@@ -32,7 +32,6 @@ A web application for displaying information from various APIs on digital signag
 - Use a pi for kiosk mode instead of a mac mini
 - Alert on unavailable entities
 - Baby age should be in months until 2 years+
-- Add UV warning
 - Add lightning warning
 
 ## Local development
