@@ -242,7 +242,8 @@ GEM
       rubocop-ast (>= 1.31.1, < 2.0)
     ruby-progressbar (1.13.0)
     securerandom (0.3.1)
-    sidekiq (7.3.4)
+    sidekiq (7.3.2)
+      concurrent-ruby (< 2)
       connection_pool (>= 2.3.0)
       logger
       rack (>= 2.2.4)
@@ -309,7 +310,7 @@ DEPENDENCIES
   puma
   rails (~> 7.1)
   redis
-  sidekiq
+  sidekiq (= 7.3.2)
   sidekiq-cron
   simplecov
   slim

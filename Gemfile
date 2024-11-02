@@ -9,7 +9,7 @@ gem "pg"
 gem "puma"
 gem "rails", "~> 7.1"
 gem "redis"
-gem "sidekiq"
+gem "sidekiq", "7.3.2" # until compat with sidekiq-cron is fixed
 gem "sidekiq-cron"
 gem "slim"
 gem "tenkit", git: "https://github.com/joelhawksley/tenkit", branch: "add-alerts"
