@@ -5,6 +5,7 @@ class DisplayContent
     calendar_feed: CalendarFeed.new,
     home_assistant_api: HomeAssistantApi.new,
     home_assistant_calendar_api: HomeAssistantCalendarApi.new,
+    home_assistant_lightning_api: HomeAssistantLightningApi.new,
     birdnet_api: BirdnetApi.new,
     air_now_api: AirNowApi.new
   )
@@ -87,6 +88,10 @@ class DisplayContent
 
     if air_now_api.healthy?
       raw_events << air_now_api.daily_calendar_events
+    end
+
+    if home_assistant_lightning_api.healthy? && home_assistant_lightning_api.distance.present?
+      out[:status_icons_with_labels] << ["cloud-bolt", home_assistant_lightning_api.distance]
     end
 
     if home_assistant_calendar_api.healthy? && home_assistant_calendar_api.private_mode?
