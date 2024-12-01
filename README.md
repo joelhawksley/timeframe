@@ -25,14 +25,8 @@ A web application for displaying information from various APIs on digital signag
 - Use PStore instead of SQLite
 - run Rails server with `launchd`
 - add health checks for home assistant automations
-- set up remote chrome debugging on client display
-- sync tempest weather data
 - Dither images using this technique: https://news.ycombinator.com/item?id=37837009
-- Integrate with Home Assistant to show whether mail has been delivered today
 - Use a pi for kiosk mode instead of a mac mini
-- Alert on unavailable entities
-- Baby age should be in months until 2 years+
-- Add lightning warning
 
 ## Local development
 

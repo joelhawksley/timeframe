@@ -291,4 +291,23 @@ class CalendarFeedTest < Minitest::Test
       assert(CalendarFeed.new.events_for(start_time_utc, end_time_utc, calendar_events)[:periodic].length == 0)
     end
   end
+
+  def test_excludes_omit_with_other_details
+    calendar_events = [
+      CalendarEvent.new(
+        id: "foo",
+        starts_at: DateTime.new(2023, 8, 27, 15, 20, 0, "-0600"),
+        ends_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),
+        summary: "Hide me!",
+        description: "1995\ntimeframe-omit"
+      )
+    ]
+
+    travel_to DateTime.new(2023, 8, 27, 17, 20, 0, "-0600") do
+      start_time_utc = DateTime.new(2023, 8, 27, 0, 20, 0, "-0600").utc.to_time
+      end_time_utc = DateTime.new(2023, 8, 28, 0, 0, 0, "-0600").utc.to_time
+
+      assert(CalendarFeed.new.events_for(start_time_utc, end_time_utc, calendar_events)[:periodic].length == 0)
+    end
+  end
 end
