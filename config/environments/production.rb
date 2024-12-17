@@ -43,7 +43,6 @@ Rails.application.configure do
   config.cache_store = :memory_store
 
   config.active_job.queue_adapter = :solid_queue
-  config.solid_queue.connects_to = {database: {writing: :queue}}
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation cannot be found).
