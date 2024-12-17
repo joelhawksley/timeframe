@@ -51,5 +51,3 @@ To fetch the latest version: `git fetch --all && git reset --hard origin/main`
 To upgrade Visionect: `docker-compose pull && docker-compose up -d`
 
 Rails server: `SECRET_KEY_BASE="foo" RAILS_ENV=production rails s -p 80 -b 0.0.0.0 --no-log-to-stdout`
-
-BG jobs: `RAILS_ENV=production bundle exec sidekiq`
