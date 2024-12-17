@@ -21,8 +21,8 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "should get #logs with no data" do
-    get "/logs"
+  test "should get #index with no data" do
+    get "/"
 
     assert_response :success
   end

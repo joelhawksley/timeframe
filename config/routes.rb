@@ -5,5 +5,4 @@ Rails.application.routes.draw do
   get :mira, to: "displays#mira"
 
   root to: "home#index"
-  get :logs, to: "home#logs"
 end
