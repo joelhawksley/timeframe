@@ -7,7 +7,7 @@ gem "connection_pool"
 gem "httparty"
 gem "pg"
 gem "puma"
-gem "rails", "~> 7.1"
+gem "rails", "~> 8"
 gem "redis"
 gem "sidekiq", "7.3.2" # until compat with sidekiq-cron is fixed
 gem "sidekiq-cron"
