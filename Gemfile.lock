@@ -166,7 +166,6 @@ GEM
     parser (3.3.6.0)
       ast (~> 2.4.1)
       racc
-    pg (1.5.9)
     pry (0.15.0)
       coderay (~> 1.1)
       method_source (~> 1.0)
@@ -265,6 +264,8 @@ GEM
     slim (5.2.1)
       temple (~> 0.10.0)
       tilt (>= 2.1.0)
+    sqlite3 (2.4.1)
+      mini_portile2 (~> 2.8.0)
     standard (1.43.0)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.0)
@@ -312,7 +313,6 @@ DEPENDENCIES
   m
   minitest
   overcommit
-  pg
   pry-rails
   puma
   rails (~> 8)
@@ -321,6 +321,7 @@ DEPENDENCIES
   sidekiq-cron
   simplecov
   slim
+  sqlite3
   standard
   tenkit!
   time_difference

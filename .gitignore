@@ -11,6 +11,8 @@
 /log/*
 /tmp/*
 
+db/*.sqlite3
+
 .byebug_history
 .DS_Store
 /public/packs
