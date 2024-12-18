@@ -16,7 +16,7 @@ class Api
   end
 
   def save_response(response)
-    Timeframe::Application.redis.set(storage_key, {last_fetched_at: Time.now.utc, response: prepare_response(response)}.to_json)
+    Rails.cache.write(storage_key, {last_fetched_at: Time.now.utc, response: prepare_response(response)}.to_json)
   end
 
   def time_before_unhealthy
@@ -32,7 +32,7 @@ class Api
   end
 
   def value
-    @value ||= JSON.parse(Timeframe::Application.redis.get(storage_key) || "{}", symbolize_names: true)
+    @value ||= JSON.parse(Rails.cache.read(storage_key) || "{}", symbolize_names: true)
   end
 
   def data

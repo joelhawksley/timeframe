@@ -13,15 +13,10 @@ require "action_view/railtie"
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
-require "redis"
-
 module Timeframe
   class Application < Rails::Application
-    def self.redis
-      @redis ||= ConnectionPool::Wrapper.new do
-        Redis.new
-      end
-    end
+    config.cache_store = :file_store, Rails.root.join("tmp/cache/").to_s
+    config.action_controller.perform_caching = false
 
     config.local = YAML.load_file(Rails.root.join("config.yml")).freeze
 

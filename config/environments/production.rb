@@ -39,9 +39,6 @@ Rails.application.configure do
   # Prepend all log lines with the following tags.
   config.log_tags = [:request_id]
 
-  # Use a different cache store in production.
-  config.cache_store = :memory_store
-
   config.active_job.queue_adapter = :solid_queue
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
