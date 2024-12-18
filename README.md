@@ -25,6 +25,8 @@ A web application for displaying information from various APIs on digital signag
 - run Rails server with `launchd`
 - add health checks for home assistant automations
 - Use a pi for kiosk mode instead of a mac mini
+- Drop redis
+- Drop slim
 
 ## Local development
 
