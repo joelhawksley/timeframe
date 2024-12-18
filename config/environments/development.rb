@@ -14,13 +14,8 @@ Rails.application.configure do
   # Show full error reports.
   config.consider_all_requests_local = true
 
-  config.active_job.queue_adapter = :solid_queue
-
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
-
-  # Raise an error on page load if there are pending migrations.
-  config.active_record.migration_error = :page_load
 
   # Use an evented file watcher to asynchronously detect changes in source code,
   # routes, locales, etc. This feature depends on the listen gem.

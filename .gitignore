@@ -11,10 +11,6 @@
 /log/*
 /tmp/*
 
-db/*.sqlite3
-db/*.sqlite3-wal
-db/*.sqlite3-shm
-
 .byebug_history
 .DS_Store
 /public/packs

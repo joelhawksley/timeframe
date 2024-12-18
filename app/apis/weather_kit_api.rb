@@ -1,5 +1,6 @@
 class WeatherKitApi < Api
   def fetch
+    # :nocov:
     client = Tenkit::Client.new
     local_config = Timeframe::Application.config.local
     hash = client.weather(
@@ -14,18 +15,11 @@ class WeatherKitApi < Api
       ]
     ).raw
 
-    # :nocov:
     # Do not update unless response is well formed
     return unless hash.key?("currentWeather")
 
     save_response(hash)
     # :nocov:
-  rescue => e
-    Log.create(
-      globalid: "WeatherKit",
-      event: "call_error",
-      message: e.message + e.backtrace.join("\n")
-    )
   end
 
   def current_temperature
@@ -155,11 +149,7 @@ class WeatherKitApi < Api
     if icon_mappings[condition_code]
       icon_mappings[condition_code]
     else
-      Log.create(
-        globalid: "WeatherKit",
-        event: "icon_for could not find mapping",
-        message: "condition code: #{condition_code}"
-      )
+      Rails.logger.info("Unknown condition code: #{condition_code}")
 
       "question"
     end
