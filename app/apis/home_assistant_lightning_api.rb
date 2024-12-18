@@ -27,7 +27,7 @@ class HomeAssistantLightningApi < Api
     this_data = data.flatten
     return nil if this_data.empty?
 
-    value = this_data.reject { _1[:state] == "unknown" }.map { _1[:state].to_i }.min
+    value = this_data.reject { ["unknown", "unavailable"].include?(_1[:state]) }.map { _1[:state].to_i }.min
 
     "#{value}mi" if value
   end
