@@ -25,6 +25,7 @@ A web application for displaying information from various APIs on digital signag
 - run Rails server with `launchd`
 - Use a pi for kiosk mode instead of a mac mini
 - replace httparty with https://ruby-doc.org/stdlib-3.0.0/libdoc/net/http/rdoc/Net/HTTP.html#method-c-get_response
+- Lightning api did not register as unhealthy
 
 ## Local development
 
