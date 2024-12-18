@@ -19,7 +19,6 @@ group :development, :test do
   gem "m"
   gem "minitest"
   gem "standard"
-  gem "pry-rails"
 end
 
 group :test do
