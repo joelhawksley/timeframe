@@ -17,15 +17,13 @@ A web application for displaying information from various APIs on digital signag
         - Fetched by [Visionect Software Suite](https://docs.visionect.com/VisionectSoftwareSuite/index.html) running on local network and displayed on [13" Place and Play](https://www.visionect.com/shop/place-play-13/) devices. Fetch interval is currently 10m.
     - Boox Mira Pro (/mira)
         - Fetched by a client Mac Mini with a [Boox Mira Pro](https://shop.boox.com/products/mira) (25.3" 3200x1800px e-Paper display) running Google Chrome full screen.
-        - Self-refreshes entire screen every 1s.
+        - Self-refreshes entire screen every 2s.
 
 ## Todo list
 
 - remove .stub from tests in favor of dependency injection
-- Use PStore instead of SQLite
 - run Rails server with `launchd`
 - add health checks for home assistant automations
-- Dither images using this technique: https://news.ycombinator.com/item?id=37837009
 - Use a pi for kiosk mode instead of a mac mini
 
 ## Local development
