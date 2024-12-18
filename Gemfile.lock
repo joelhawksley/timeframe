@@ -285,7 +285,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  connection_pool
   httparty
   m
   minitest

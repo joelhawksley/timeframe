@@ -3,7 +3,6 @@
 source "https://rubygems.org"
 ruby "3.2.2"
 
-gem "connection_pool"
 gem "httparty"
 gem "puma"
 gem "rails", "~> 8"
