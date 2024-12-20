@@ -242,7 +242,7 @@ class HomeAssistantApiTest < Minitest::Test
       },
       {
         entity_id: "rav4",
-        state: "garage"
+        state: "home"
       }
     ]
 

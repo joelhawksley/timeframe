@@ -102,7 +102,7 @@ class HomeAssistantApi < Api
 
     return false unless rav4_entity.present? && west_charger_entity.present?
 
-    rav4_entity[:state] == "garage" && west_charger_entity[:state] == "not_connected"
+    rav4_entity[:state] == "home" && west_charger_entity[:state] == "not_connected"
   end
 
   def package_present?
