@@ -9,7 +9,6 @@ gem "puma-rufus-scheduler"
 gem "rails", "~> 8"
 gem "rufus-scheduler"
 gem "tenkit", git: "https://github.com/joelhawksley/tenkit", branch: "add-alerts"
-gem "time_difference"
 
 group :development, :test do
   gem "overcommit"
