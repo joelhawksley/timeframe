@@ -46,7 +46,7 @@
   <% end %>
   <% if view_object[:sonos_status].present? %>
     <div class="hide-if-empty" style="background-color: black; color: white; padding: 1rem 2rem; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">
-      <i class="fa-solid fa-volume fa-fw"></i>
+      <i class="fa-solid fa-play fa-fw"></i>
       <strong><%= view_object[:sonos_status][:artist] %></strong>
       <% if view_object[:sonos_status][:track].present? %>
         : <%= view_object[:sonos_status][:track] %>

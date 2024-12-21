@@ -131,9 +131,9 @@ class WeatherKitApi < Api
   def icon_for(condition_code)
     icon_mappings = {
       "Thunderstorms" => "cloud-bolt",
-      "Cloudy" => "clouds",
-      "MostlyCloudy" => "clouds",
-      "PartlyCloudy" => "clouds-sun",
+      "Cloudy" => "cloud",
+      "MostlyCloudy" => "cloud",
+      "PartlyCloudy" => "cloud-sun",
       "MostlyClear" => "cloud-sun",
       "Clear" => "sun",
       "Windy" => "wind",
