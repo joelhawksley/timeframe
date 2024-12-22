@@ -55,7 +55,7 @@ class CalendarEvent
   end
 
   def omit?
-    @description&.include?("timeframe-omit")
+    @summary.blank? || @description&.include?("timeframe-omit") || false
   end
 
   def start_i

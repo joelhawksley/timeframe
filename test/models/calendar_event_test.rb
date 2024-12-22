@@ -203,4 +203,14 @@ class CalendarEventTest < Minitest::Test
 
     assert_equal(event.summary(DateTime.new(2023, 1, 24)), "foo (2/2)")
   end
+
+  def test_omit_if_blank
+    event = CalendarEvent.new(
+      starts_at: DateTime.new(2023, 1, 23),
+      ends_at: DateTime.new(2023, 1, 25),
+      summary: ""
+    )
+
+    assert(event.omit?)
+  end
 end
