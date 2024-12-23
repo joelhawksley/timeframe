@@ -39,11 +39,11 @@ class DisplayContent
       end
 
       home_assistant_api.roborock_errors.each do |error|
-        out[:status_icons_with_labels] << ["vacuum-robot", error]
+        out[:status_icons_with_labels] << ["robot", error]
       end
 
       home_assistant_api.low_batteries.each do |low_battery|
-        out[:status_icons_with_labels] << ["battery-slash", low_battery]
+        out[:status_icons_with_labels] << ["battery-quarter", low_battery]
       end
 
       if !home_assistant_api.nas_online?
