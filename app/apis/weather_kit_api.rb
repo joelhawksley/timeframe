@@ -97,7 +97,7 @@ class WeatherKitApi < Api
         when "snow"
           "snowflake"
         when "rain"
-          "raindrops"
+          "cloud-rain"
         end
 
       CalendarEvent.new(
@@ -137,9 +137,9 @@ class WeatherKitApi < Api
       "MostlyClear" => "cloud-sun",
       "Clear" => "sun",
       "Windy" => "wind",
-      "Drizzle" => "raindrops",
-      "Rain" => "raindrops",
-      "HeavyRain" => "raindrops",
+      "Drizzle" => "cloud-rain",
+      "Rain" => "cloud-rain",
+      "HeavyRain" => "cloud-rain",
       "Haze" => "sun-haze",
       "Snow" => "snowflake",
       "HeavySnow" => "snowflakes",

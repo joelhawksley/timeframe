@@ -75,7 +75,7 @@ class DisplayContent
         condition = weather_kit_api.data.dig(:forecastNextHour, :summary)&.first.to_h[:condition]
 
         if condition != "clear"
-          minutely_weather_minutes_icon = (condition == "snow") ? "snowflake" : "raindrops"
+          minutely_weather_minutes_icon = (condition == "snow") ? "snowflake" : "cloud-rain"
           minutely_weather_minutes = weather_kit_api.data.dig(:forecastNextHour, :minutes)&.first(60)
 
           out[:minutely_weather_minutes] = minutely_weather_minutes
