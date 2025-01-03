@@ -2,7 +2,7 @@ version: "3"
 services:
   vserver3:
     container_name: vss
-    image: visionect/visionect-server-v3
+    image: visionect/visionect-server-v3:7.6.5 # Last version of VSS before rug-pull to require recurring subcription per display!
     privileged: true
     ulimits:
       core: 0

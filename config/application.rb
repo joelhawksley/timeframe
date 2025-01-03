@@ -22,6 +22,7 @@ module Timeframe
     config.secret_key_base = "foo" # Not needed as app runs behind firewall
 
     config.hosts << "hawksley-server.local"
+    config.hosts << "timeframe.local"
     config.hosts << "timeframetesting.com"
   end
 end
