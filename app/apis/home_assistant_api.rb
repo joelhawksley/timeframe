@@ -105,14 +105,6 @@ class HomeAssistantApi < Api
     rav4_entity[:state] == "home" && west_charger_entity[:state] == "not_connected"
   end
 
-  def package_present?
-    entity = data.find { _1[:entity_id] == @config["home_assistant"]["package_box_entity_id"] }
-
-    return false unless entity.present?
-
-    entity[:state] == "on"
-  end
-
   def unavailable_door_sensors
     out = []
 

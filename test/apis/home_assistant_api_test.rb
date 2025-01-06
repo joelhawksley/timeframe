@@ -79,32 +79,6 @@ class HomeAssistantApiTest < Minitest::Test
     end
   end
 
-  def test_package_present_with_state_off
-    config = {
-      "home_assistant" => {
-        "package_box_entity_id" => "package_box"
-      }
-    }
-
-    api = HomeAssistantApi.new(config)
-    api.stub :data, [{entity_id: "package_box", state: "off"}] do
-      refute(api.package_present?)
-    end
-  end
-
-  def test_package_present_with_state_on
-    config = {
-      "home_assistant" => {
-        "package_box_entity_id" => "package_box"
-      }
-    }
-
-    api = HomeAssistantApi.new(config)
-    api.stub :data, [{entity_id: "package_box", state: "on"}] do
-      assert(api.package_present?)
-    end
-  end
-
   def test_feels_like_temperature_no_data
     api = HomeAssistantApi.new
     api.stub :data, [] do

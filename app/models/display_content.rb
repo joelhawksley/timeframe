@@ -19,7 +19,6 @@ class DisplayContent
 
     if home_assistant_api.healthy?
       out[:sonos_status] = home_assistant_api.now_playing
-      out[:status_icons] << "box-open" if home_assistant_api.package_present?
       out[:status_icons] << "garage-open" if home_assistant_api.garage_door_open?
       out[:status_icons] << "washing-machine" if home_assistant_api.washer_needs_attention?
       out[:status_icons] << "dryer-heat" if home_assistant_api.dryer_needs_attention?
