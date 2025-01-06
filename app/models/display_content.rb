@@ -19,10 +19,10 @@ class DisplayContent
 
     if home_assistant_api.healthy?
       out[:sonos_status] = home_assistant_api.now_playing
-      out[:status_icons] << "garage-open" if home_assistant_api.garage_door_open?
-      out[:status_icons] << "washing-machine" if home_assistant_api.washer_needs_attention?
-      out[:status_icons] << "dryer-heat" if home_assistant_api.dryer_needs_attention?
-      out[:status_icons] << "car-side-bolt" if home_assistant_api.car_needs_plugged_in?
+      out[:status_icons] << "warehouse" if home_assistant_api.garage_door_open?
+      out[:status_icons_with_labels] << ["rotate", "Washer"] if home_assistant_api.washer_needs_attention?
+      out[:status_icons_with_labels] << ["rotate", "Dryer"] if home_assistant_api.dryer_needs_attention?
+      out[:status_icons] << "charging-station" if home_assistant_api.car_needs_plugged_in?
       out[:status_icons] << "video" if home_assistant_api.active_video_call?
 
       home_assistant_api.unavailable_door_sensors.each do |door_sensor_name|
