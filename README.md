@@ -19,20 +19,12 @@ A web application for displaying information from various APIs on digital signag
         - Fetched by a client Mac Mini with a [Boox Mira Pro](https://shop.boox.com/products/mira) (25.3" 3200x1800px e-Paper display) running Google Chrome full screen.
         - Self-refreshes entire screen every 2s.
 
-## Todo list
-
-- remove .stub from tests in favor of dependency injection
-- run Rails server with `launchd`
-- replace httparty with https://ruby-doc.org/stdlib-3.0.0/libdoc/net/http/rdoc/Net/HTTP.html#method-c-get_response
-- Lightning api did not register as unhealthy
-
 ## Local development
 
 ### Setup
 
 1) `bundle install`
-2) `rails db:setup`
-3) Copy `.config.yml`from a friend.
+2) Copy `.config.yml`from a friend.
 4) `rails s`
 5) Visit [http://localhost:3000](http://localhost:3000)
 
@@ -41,8 +33,6 @@ A web application for displaying information from various APIs on digital signag
 `bundle exec rake`
 
 ### Deploying
-
-Currently, Timeframe runs on a local Mac Mini in development mode. There is no production deployment.
 
 To fetch the latest version: `git fetch --all && git reset --hard origin/main`
 
