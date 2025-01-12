@@ -21,6 +21,8 @@ module Timeframe
 
     config.secret_key_base = "foo" # Not needed as app runs behind firewall
 
+    config.active_support.to_time_preserves_timezone = :zone
+
     config.hosts << "hawksley-server.local"
     config.hosts << "timeframe.local"
     config.hosts << "timeframetesting.com"
