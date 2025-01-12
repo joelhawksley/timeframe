@@ -25,8 +25,8 @@ A web application for displaying information from various APIs on digital signag
 
 1) `bundle install`
 2) Copy `.config.yml`from a friend.
-4) `rails s`
-5) Visit [http://localhost:3000](http://localhost:3000)
+3) `rails s`
+4) Visit [http://localhost:3000](http://localhost:3000)
 
 ### Testing
 
