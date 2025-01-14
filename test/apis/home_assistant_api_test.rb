@@ -653,4 +653,13 @@ class HomeAssistantApiTest < Minitest::Test
       assert_equal(api.now_playing, {artist: "The Decemberists", track: "The King Is Dead"})
     end
   end
+
+  def test_problems
+    data = [{entity_id: "binary_sensor.timeframe0print0printer_ink_low", state: "on"}]
+
+    api = HomeAssistantApi.new({})
+    api.stub :data, data do
+      assert_equal(api.problems, [{icon: "print", message: "Printer ink low"}])
+    end
+  end
 end

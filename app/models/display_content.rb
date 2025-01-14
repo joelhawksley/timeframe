@@ -28,6 +28,10 @@ class DisplayContent
       out[:status_icons] << "charging-station" if home_assistant_api.car_needs_plugged_in?
       out[:status_icons] << "video" if home_assistant_api.active_video_call?
 
+      home_assistant_api.problems.each do |problem|
+        out[:status_icons_with_labels] << [problem[:icon], problem[:message]]
+      end
+
       home_assistant_api.unavailable_door_sensors.each do |door_sensor_name|
         out[:status_icons_with_labels] << ["triangle-exclamation", door_sensor_name]
       end

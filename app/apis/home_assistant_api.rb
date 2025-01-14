@@ -15,8 +15,24 @@ class HomeAssistantApi < Api
 
     # Only save entity states we are interested in vs. all 1000+ entities
     response.filter do
-      entity_ids.include?(_1["entity_id"]) || _1.dig("attributes", "device_class") == "battery"
+      entity_ids.include?(_1["entity_id"]) ||
+        _1.dig("attributes", "device_class") == "battery" ||
+        _1["entity_id"].include?("binary_sensor.timeframe")
     end
+  end
+
+  def problems
+    data
+      .select { _1[:entity_id].include?("binary_sensor.timeframe") && _1[:state] == "on" }
+      .map { _1[:entity_id] }
+      .map do |entity_id|
+        _, icon, raw_message = entity_id.split("0")
+
+        {
+          icon: icon,
+          message: raw_message.tr("_", " ").humanize
+        }
+      end
   end
 
   def now_playing
