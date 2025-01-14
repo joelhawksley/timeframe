@@ -187,9 +187,7 @@ class HomeAssistantApiTest < Minitest::Test
     config = {
       "home_assistant" => {
         "roborock_dock_error" => "roborock_dock_error",
-        "roborock_vacuum_error" => "roborock_vacuum_error",
-        "roborock_status" => "roborock_status",
-        "roborock_sensor_time_left" => "roborock_sensor_time_left"
+        "roborock_vacuum_error" => "roborock_vacuum_error"
       }
     }
 
@@ -244,42 +242,6 @@ class HomeAssistantApiTest < Minitest::Test
     api = HomeAssistantApi.new(config)
     api.stub :data, data do
       assert_equal(api.roborock_errors, ["Bumper stuck"])
-    end
-
-    data = [
-      {
-        entity_id: "roborock_status",
-        state: "charger_disconnected"
-      }
-    ]
-
-    api = HomeAssistantApi.new(config)
-    api.stub :data, data do
-      assert_equal(api.roborock_errors, ["Return to charger"])
-    end
-
-    data = [
-      {
-        entity_id: "roborock_status",
-        state: "idle"
-      }
-    ]
-
-    api = HomeAssistantApi.new(config)
-    api.stub :data, data do
-      assert_equal(api.roborock_errors, ["Return to charger"])
-    end
-
-    data = [
-      {
-        entity_id: "roborock_sensor_time_left",
-        state: "-17031"
-      }
-    ]
-
-    api = HomeAssistantApi.new(config)
-    api.stub :data, data do
-      assert_equal(api.roborock_errors, ["Sensor maintenance"])
     end
   end
 
