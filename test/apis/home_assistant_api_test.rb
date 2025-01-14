@@ -183,68 +183,6 @@ class HomeAssistantApiTest < Minitest::Test
     end
   end
 
-  def test_online
-    config = {
-      "home_assistant" => {
-        "ping_sensor_entity_id" => "ping_sensor"
-      }
-    }
-
-    data = [
-      {
-        entity_id: "ping_sensor",
-        state: "on"
-      }
-    ]
-
-    api = HomeAssistantApi.new(config)
-    api.stub :data, data do
-      assert(api.online?)
-    end
-
-    api = HomeAssistantApi.new(config)
-    api.stub :data, {} do
-      refute(api.online?)
-    end
-  end
-
-  def test_nas_online
-    config = {
-      "home_assistant" => {
-        "nas_temperature_entity_id" => "nas_temperature"
-      }
-    }
-
-    data = [
-      {
-        entity_id: "nas_temperature",
-        state: "100"
-      }
-    ]
-
-    api = HomeAssistantApi.new(config)
-    api.stub :data, data do
-      assert(api.nas_online?)
-    end
-
-    data = [
-      {
-        entity_id: "nas_temperature",
-        state: "unavailable"
-      }
-    ]
-
-    api = HomeAssistantApi.new(config)
-    api.stub :data, data do
-      refute(api.nas_online?)
-    end
-
-    api = HomeAssistantApi.new(config)
-    api.stub :data, {} do
-      refute(api.nas_online?)
-    end
-  end
-
   def test_roborock_errors
     config = {
       "home_assistant" => {

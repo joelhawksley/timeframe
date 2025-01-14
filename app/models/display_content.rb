@@ -46,14 +46,6 @@ class DisplayContent
       home_assistant_api.low_batteries.each do |low_battery|
         out[:status_icons_with_labels] << ["battery-quarter", low_battery]
       end
-
-      if !home_assistant_api.nas_online?
-        out[:status_icons_with_labels] << ["triangle-exclamation", "NAS offline"]
-      end
-
-      if !home_assistant_api.online?
-        out[:status_icons_with_labels] << ["triangle-exclamation", "Offline"]
-      end
     else
       out[:status_icons_with_labels] << ["triangle-exclamation", "Home Assistant"]
     end
@@ -64,27 +56,25 @@ class DisplayContent
       out[:status_icons_with_labels] << ["triangle-exclamation", "Birdnet"]
     end
 
-    if home_assistant_api.online?
-      if weather_kit_api.healthy?
-        raw_events << (
-          weather_kit_api.daily_calendar_events +
-          weather_kit_api.hourly_calendar_events +
-          weather_kit_api.precip_calendar_events +
-          weather_kit_api.weather_alert_calendar_events
-        )
+    if weather_kit_api.healthy?
+      raw_events << (
+        weather_kit_api.daily_calendar_events +
+        weather_kit_api.hourly_calendar_events +
+        weather_kit_api.precip_calendar_events +
+        weather_kit_api.weather_alert_calendar_events
+      )
 
-        condition = weather_kit_api.data.dig(:forecastNextHour, :summary)&.first.to_h[:condition]
+      condition = weather_kit_api.data.dig(:forecastNextHour, :summary)&.first.to_h[:condition]
 
-        if condition != "clear"
-          minutely_weather_minutes_icon = (condition == "snow") ? "snowflake" : "cloud-rain"
-          minutely_weather_minutes = weather_kit_api.data.dig(:forecastNextHour, :minutes)&.first(60)
+      if condition != "clear"
+        minutely_weather_minutes_icon = (condition == "snow") ? "snowflake" : "cloud-rain"
+        minutely_weather_minutes = weather_kit_api.data.dig(:forecastNextHour, :minutes)&.first(60)
 
-          out[:minutely_weather_minutes] = minutely_weather_minutes
-          out[:minutely_weather_minutes_icon] = minutely_weather_minutes_icon
-        end
-      else
-        out[:status_icons_with_labels] << ["triangle-exclamation", "Apple Weather"]
+        out[:minutely_weather_minutes] = minutely_weather_minutes
+        out[:minutely_weather_minutes_icon] = minutely_weather_minutes_icon
       end
+    else
+      out[:status_icons_with_labels] << ["triangle-exclamation", "Apple Weather"]
     end
 
     if air_now_api.healthy?

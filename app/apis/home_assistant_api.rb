@@ -159,20 +159,4 @@ class HomeAssistantApi < Api
 
     out
   end
-
-  def online?
-    entity = data.find { _1[:entity_id] == @config["home_assistant"]["ping_sensor_entity_id"] }
-
-    return false unless entity.present?
-
-    entity[:state] == "on"
-  end
-
-  def nas_online?
-    entity = data.find { _1[:entity_id] == @config["home_assistant"]["nas_temperature_entity_id"] }
-
-    return false unless entity.present?
-
-    entity[:state].to_i > 0
-  end
 end
