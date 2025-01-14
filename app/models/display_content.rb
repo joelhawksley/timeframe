@@ -15,7 +15,10 @@ class DisplayContent
     out[:status_icons_with_labels] = []
     out[:timestamp] = current_time.strftime("%-l:%M %p")
     out[:current_temperature] = home_assistant_api.feels_like_temperature if home_assistant_api.healthy?
-    raw_events = [[calendar_feed.baby_age_event]]
+    raw_events = [
+      [calendar_feed.baby_age_event(Timeframe::Application.config.local["birthdate"], "J")],
+      [calendar_feed.baby_age_event(Timeframe::Application.config.local["due_date"], "baby-carriage")]
+    ]
 
     if home_assistant_api.healthy?
       out[:sonos_status] = home_assistant_api.now_playing

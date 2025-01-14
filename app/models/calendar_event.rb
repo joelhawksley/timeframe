@@ -1,8 +1,8 @@
 class CalendarEvent
   DAY_IN_SECONDS = 86_400
 
-  attr_reader :id, :starts_at, :ends_at, :multi_day, :icon, :location
-  attr_accessor :letter
+  attr_reader :id, :starts_at, :ends_at, :multi_day, :location
+  attr_accessor :icon
 
   def initialize(
     starts_at:,
@@ -10,13 +10,12 @@ class CalendarEvent
     summary:,
     description: nil,
     icon: nil,
-    letter: nil,
     location: nil,
     daily: false,
     id: SecureRandom.hex
   )
-    @id, @icon, @letter, @summary, @description, @location, @daily =
-      id, icon, letter, summary, description, location, daily
+    @id, @icon, @summary, @description, @location, @daily =
+      id, icon, summary, description, location, daily
 
     @starts_at = case starts_at
     when Integer

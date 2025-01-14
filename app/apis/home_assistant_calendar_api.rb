@@ -23,7 +23,6 @@ class HomeAssistantCalendarApi < Api
         event["ends_at"] = event["end"]["date"] || event["end"]["dateTime"]
 
         event["icon"] = calendar["icon"]
-        event["letter"] = calendar["letter"]
 
         event["id"] = event["uid"]
 

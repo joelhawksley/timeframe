@@ -6,8 +6,8 @@
         <% event_day[:events][:daily].each do |event| %>
           <tr>
             <td style="width: 1%; text-align: center; font-size: 1.25rem; font-weight: bold; padding-right: 0.25rem;">
-              <% if event.letter.present? %>
-                <%= event.letter %>
+              <% if event.icon == event.icon.upcase %>
+                <%= event.icon %>
               <% else %>
                 <i class="fa-fw fa-solid fa-<%= event.icon %>"></i>
               <% end %>
@@ -27,8 +27,8 @@
         <% event_day[:events][:periodic].each do |event| %>
           <tr>
             <td style="width: 2rem; text-align: center; font-size: 1.25rem; font-weight: bold; padding-left: 1rem;">
-              <% if event.letter.present? %>
-                <%= event.letter %>
+              <% if event.icon == event.icon.upcase %>
+                <%= event.icon %>
               <% else %>
                 <i class="fa-fw fa-solid fa-<%= event.icon %>"></i>
               <% end %>

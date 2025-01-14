@@ -75,7 +75,7 @@ class CalendarFeedTest < Minitest::Test
         starts_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),
         ends_at: DateTime.new(2023, 8, 27, 23, 0, 0, "-0600"),
         summary: "dupe",
-        letter: "+"
+        icon: "+"
       )
     ]
 
@@ -94,14 +94,14 @@ class CalendarFeedTest < Minitest::Test
         starts_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),
         ends_at: DateTime.new(2023, 8, 27, 23, 0, 0, "-0600"),
         summary: "dupe",
-        letter: "+"
+        icon: "+"
       ),
       CalendarEvent.new(
         id: "foo",
         starts_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),
         ends_at: DateTime.new(2023, 8, 27, 23, 0, 0, "-0600"),
         summary: "dupe",
-        letter: "J"
+        icon: "J"
       )
     ]
 
@@ -113,25 +113,25 @@ class CalendarFeedTest < Minitest::Test
       events = result[:periodic].select { _1.id == "foo" }
 
       assert(events.length == 1)
-      assert(events[0].letter == "+")
+      assert(events[0].icon == "+")
     end
   end
 
-  def test_events_for_duplicate_same_letter
+  def test_events_for_duplicate_same_icon
     calendar_events = [
       CalendarEvent.new(
         id: "foo",
         starts_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),
         ends_at: DateTime.new(2023, 8, 27, 23, 0, 0, "-0600"),
         summary: "dupe",
-        letter: "J"
+        icon: "J"
       ),
       CalendarEvent.new(
         id: "foo",
         starts_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),
         ends_at: DateTime.new(2023, 8, 27, 23, 0, 0, "-0600"),
         summary: "dupe",
-        letter: "J"
+        icon: "J"
       )
     ]
 
@@ -143,25 +143,25 @@ class CalendarFeedTest < Minitest::Test
       events = result[:periodic].select { _1.id == "foo" }
 
       assert(events.length == 1)
-      assert(events[0].letter == "J")
+      assert(events[0].icon == "J")
     end
   end
 
-  def test_events_for_duplicate_different_letter
+  def test_events_for_duplicate_different_icon
     calendar_events = [
       CalendarEvent.new(
         id: "foo",
         starts_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),
         ends_at: DateTime.new(2023, 8, 27, 23, 0, 0, "-0600"),
         summary: "dupe",
-        letter: "C"
+        icon: "C"
       ),
       CalendarEvent.new(
         id: "foo",
         starts_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),
         ends_at: DateTime.new(2023, 8, 27, 23, 0, 0, "-0600"),
         summary: "dupe",
-        letter: "J"
+        icon: "J"
       )
     ]
 
@@ -173,7 +173,7 @@ class CalendarFeedTest < Minitest::Test
       events = result[:periodic].select { _1.id == "foo" }
 
       assert(events.length == 1)
-      assert(events[0].letter == "C")
+      assert(events[0].icon == "C")
     end
   end
 
@@ -186,7 +186,7 @@ class CalendarFeedTest < Minitest::Test
         starts_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),
         ends_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),
         summary: "momentary events should not be filtered out!",
-        letter: "C"
+        icon: "C"
       )
     ]
 
@@ -205,7 +205,7 @@ class CalendarFeedTest < Minitest::Test
         starts_at: DateTime.new(2023, 8, 27, 0, 0, 0, "-0600"),
         ends_at: DateTime.new(2023, 8, 28, 0, 0, 0, "-0600"),
         summary: "daily events should not be filtered out!",
-        letter: "C"
+        icon: "C"
       )
     ]
 
@@ -229,7 +229,7 @@ class CalendarFeedTest < Minitest::Test
         starts_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),
         ends_at: DateTime.new(2023, 8, 29, 22, 20, 0, "-0600"),
         summary: "multi-day periodic events should not be filtered out!",
-        letter: "C"
+        icon: "C"
       )
     ]
 
