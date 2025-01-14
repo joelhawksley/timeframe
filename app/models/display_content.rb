@@ -24,7 +24,6 @@ class DisplayContent
       out[:sonos_status] = home_assistant_api.now_playing
       out[:status_icons] << "warehouse" if home_assistant_api.garage_door_open?
       out[:status_icons] << "charging-station" if home_assistant_api.car_needs_plugged_in?
-      out[:status_icons] << "video" if home_assistant_api.active_video_call?
 
       home_assistant_api.problems.each do |problem|
         out[:status_icons_with_labels] << [problem[:icon], problem[:message]]

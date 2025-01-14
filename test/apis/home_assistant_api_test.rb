@@ -282,31 +282,6 @@ class HomeAssistantApiTest < Minitest::Test
     end
   end
 
-  def test_active_video_call
-    config = {
-      "home_assistant" => {
-        "audio_input_in_use" => "audio_input"
-      }
-    }
-
-    data = [
-      {
-        entity_id: "audio_input",
-        state: "on"
-      }
-    ]
-
-    api = HomeAssistantApi.new(config)
-    api.stub :data, data do
-      assert(api.active_video_call?)
-    end
-
-    api = HomeAssistantApi.new(config)
-    api.stub :data, {} do
-      refute(api.active_video_call?)
-    end
-  end
-
   def test_online
     config = {
       "home_assistant" => {

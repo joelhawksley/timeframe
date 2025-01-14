@@ -178,14 +178,6 @@ class HomeAssistantApi < Api
     out
   end
 
-  def active_video_call?
-    entity = data.find { _1[:entity_id] == @config["home_assistant"]["audio_input_in_use"] }
-
-    return false unless entity.present?
-
-    entity[:state] == "on"
-  end
-
   def online?
     entity = data.find { _1[:entity_id] == @config["home_assistant"]["ping_sensor_entity_id"] }
 
