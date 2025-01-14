@@ -133,31 +133,6 @@ class HomeAssistantApiTest < Minitest::Test
     end
   end
 
-  def test_car_needs_plugged_in
-    config = {
-      "home_assistant" => {
-        "west_charger_entity_id" => "west_charger",
-        "rav4_entity_id" => "rav4"
-      }
-    }
-
-    data = [
-      {
-        entity_id: "west_charger",
-        state: "not_connected"
-      },
-      {
-        entity_id: "rav4",
-        state: "home"
-      }
-    ]
-
-    api = HomeAssistantApi.new(config)
-    api.stub :data, data do
-      assert(api.car_needs_plugged_in?)
-    end
-  end
-
   def test_open_doors
     config = {
       "home_assistant" => {

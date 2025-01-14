@@ -29,7 +29,7 @@ class HomeAssistantApi < Api
         _, icon, raw_message = entity_id.split("0")
 
         {
-          icon: icon,
+          icon: icon.tr("_", "-"),
           message: raw_message.tr("_", " ").humanize
         }
       end
@@ -87,15 +87,6 @@ class HomeAssistantApi < Api
     return false unless entity.present? && entity_2.present?
 
     entity[:state] == "open" || entity_2[:state] == "open"
-  end
-
-  def car_needs_plugged_in?
-    rav4_entity = data.find { _1[:entity_id] == @config["home_assistant"]["rav4_entity_id"] }
-    west_charger_entity = data.find { _1[:entity_id] == @config["home_assistant"]["west_charger_entity_id"] }
-
-    return false unless rav4_entity.present? && west_charger_entity.present?
-
-    rav4_entity[:state] == "home" && west_charger_entity[:state] == "not_connected"
   end
 
   def unavailable_door_sensors
