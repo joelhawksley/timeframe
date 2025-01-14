@@ -80,28 +80,6 @@ class HomeAssistantApi < Api
     "#{entity[:state].to_i}°"
   end
 
-  def dryer_needs_attention?
-    door_entity = data.find { _1[:entity_id] == @config["home_assistant"]["dryer_door_entity_id"] }
-    state_entity = data.find { _1[:entity_id] == @config["home_assistant"]["dryer_state_entity_id"] }
-
-    return nil unless door_entity.present? && state_entity.present?
-
-    door_entity[:state] == "off" &&
-      state_entity[:state] == "Off" &&
-      Time.parse(state_entity[:last_changed]) > Time.parse(door_entity[:last_changed])
-  end
-
-  def washer_needs_attention?
-    door_entity = data.find { _1[:entity_id] == @config["home_assistant"]["washer_door_entity_id"] }
-    state_entity = data.find { _1[:entity_id] == @config["home_assistant"]["washer_state_entity_id"] }
-
-    return nil unless door_entity.present? && state_entity.present?
-
-    door_entity[:state] == "off" &&
-      state_entity[:state] == "Off" &&
-      Time.parse(state_entity[:last_changed]) > Time.parse(door_entity[:last_changed])
-  end
-
   def garage_door_open?
     entity = data.find { _1[:entity_id] == @config["home_assistant"]["garage_door_entity_id"] }
     entity_2 = data.find { _1[:entity_id] == @config["home_assistant"]["garage_door_2_entity_id"] }
