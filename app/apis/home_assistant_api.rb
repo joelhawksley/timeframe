@@ -15,8 +15,7 @@ class HomeAssistantApi < Api
 
     # Only save entity states we are interested in vs. all 1000+ entities
     response.filter do
-      !@config["home_assistant"]["ignored_entity_ids"].include?(_1["entity_id"]) &&
-        (entity_ids.include?(_1["entity_id"]) || _1.dig("attributes", "device_class") == "battery")
+      entity_ids.include?(_1["entity_id"]) || _1.dig("attributes", "device_class") == "battery"
     end
   end
 
