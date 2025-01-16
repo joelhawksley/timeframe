@@ -140,7 +140,7 @@ class WeatherKitApi < Api
       "Drizzle" => "cloud-rain",
       "Rain" => "cloud-rain",
       "HeavyRain" => "cloud-rain",
-      "Haze" => "sun-haze",
+      "Haze" => "smog",
       "Snow" => "snowflake",
       "HeavySnow" => "snowflakes",
       "Flurries" => "snowflake"
