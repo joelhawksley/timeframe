@@ -194,6 +194,12 @@ class CalendarEventTest < Minitest::Test
     assert_equal("foo", event.summary)
   end
 
+  def test_does_not_strip_spaces
+    event = CalendarEvent.new(starts_at: "2023-11-01", ends_at: "2023-11-08", summary: "foo bar")
+
+    assert_equal("foo bar", event.summary)
+  end
+
   def test_strips_non_ascii
     event = CalendarEvent.new(starts_at: "2023-11-01", ends_at: "2023-11-08", summary: " ‍ meeting")
 
