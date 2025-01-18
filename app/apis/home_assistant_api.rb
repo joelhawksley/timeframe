@@ -40,7 +40,7 @@ class HomeAssistantApi < Api
             message: _1[:state]
           }
         end
-      end
+      end.compact
   end
 
   def now_playing
