@@ -17,21 +17,29 @@ class HomeAssistantApi < Api
     response.filter do
       entity_ids.include?(_1["entity_id"]) ||
         _1.dig("attributes", "device_class") == "battery" ||
-        _1["entity_id"].include?("binary_sensor.timeframe")
+        _1["entity_id"].include?("sensor.timeframe")
     end
   end
 
   def problems
     data
-      .select { _1[:entity_id].include?("binary_sensor.timeframe") && _1[:state] == "on" }
-      .map { _1[:entity_id] }
-      .map do |entity_id|
-        _, icon, raw_message = entity_id.split("0")
+      .select { _1[:entity_id].include?("sensor.timeframe") }
+      .map do
+        if _1[:state] == "on"
+          _, icon, raw_message = _1[:entity_id].split("0")
 
-        {
-          icon: icon.tr("_", "-"),
-          message: raw_message.tr("_", " ").humanize
-        }
+          {
+            icon: icon.tr("_", "-"),
+            message: raw_message.tr("_", " ").humanize
+          }
+        elsif !["on", "off", ""].include?(_1[:state])
+          _, icon, _ = _1[:entity_id].split("0")
+
+          {
+            icon: icon.tr("_", "-"),
+            message: _1[:state]
+          }
+        end
       end
   end
 
