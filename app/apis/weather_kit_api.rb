@@ -142,7 +142,7 @@ class WeatherKitApi < Api
       "HeavyRain" => "cloud-rain",
       "Haze" => "smog",
       "Snow" => "snowflake",
-      "HeavySnow" => "snowflakes",
+      "HeavySnow" => "snowflake",
       "Flurries" => "snowflake"
     }
 
