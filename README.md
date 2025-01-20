@@ -39,3 +39,7 @@ To fetch the latest version: `git fetch --all && git reset --hard origin/main`
 To upgrade Visionect: `docker-compose pull && docker-compose up -d`
 
 Rails server: `RAILS_ENV=production rails s -p 80 -b 0.0.0.0 --no-log-to-stdout`
+
+## TODO
+
+- Add lightning template sensor once it's storm season
