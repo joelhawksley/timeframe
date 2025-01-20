@@ -299,7 +299,7 @@ class HomeAssistantApiTest < Minitest::Test
   end
 
   def test_problems_unavailable
-    data = [{entity_id: "sensor.foo_bar", state: "unavailable"}]
+    data = [{entity_id: "sensor.foo_bar", state: "unavailable", last_updated: 30.minutes.ago}]
 
     api = HomeAssistantApi.new({})
     api.stub :data, data do

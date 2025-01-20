@@ -44,7 +44,7 @@ class HomeAssistantApi < Api
       end.compact
 
     unavailable_entity_problems = data
-      .select { _1[:state] == "unavailable" }
+      .select { _1[:state] == "unavailable" && Time.parse(_1[:last_updated].to_s) < 15.minutes.ago }
       .map do
         {
           icon: "triangle-exclamation",
