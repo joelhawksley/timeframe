@@ -100,24 +100,6 @@ class HomeAssistantApi < Api
     "#{entity[:state].to_i}°"
   end
 
-  def roborock_errors
-    out = []
-
-    entity = data.find { _1[:entity_id] == @config["home_assistant"]["roborock_dock_error"] }
-
-    if entity.present? && entity[:state] != "ok"
-      out << entity[:state].humanize
-    end
-
-    entity = data.find { _1[:entity_id] == @config["home_assistant"]["roborock_vacuum_error"] }
-
-    if entity.present? && entity[:state] != "none"
-      out << entity[:state].humanize
-    end
-
-    out.uniq
-  end
-
   def open_doors
     out = []
 

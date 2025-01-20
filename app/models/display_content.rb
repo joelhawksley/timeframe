@@ -35,10 +35,6 @@ class DisplayContent
         out[:status_icons_with_labels] << ["door-open", door_name]
       end
 
-      home_assistant_api.roborock_errors.each do |error|
-        out[:status_icons_with_labels] << ["robot", error]
-      end
-
       home_assistant_api.low_batteries.each do |low_battery|
         out[:status_icons_with_labels] << ["battery-quarter", low_battery]
       end

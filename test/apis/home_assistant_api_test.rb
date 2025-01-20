@@ -163,68 +163,6 @@ class HomeAssistantApiTest < Minitest::Test
     end
   end
 
-  def test_roborock_errors
-    config = {
-      "home_assistant" => {
-        "roborock_dock_error" => "roborock_dock_error",
-        "roborock_vacuum_error" => "roborock_vacuum_error"
-      }
-    }
-
-    api = HomeAssistantApi.new(config)
-    api.stub :data, {} do
-      assert_equal(api.roborock_errors, [])
-    end
-
-    data = [
-      {
-        entity_id: "roborock_dock_error",
-        state: "ok"
-      }
-    ]
-
-    api = HomeAssistantApi.new(config)
-    api.stub :data, data do
-      assert_equal(api.roborock_errors, [])
-    end
-
-    data = [
-      {
-        entity_id: "roborock_dock_error",
-        state: "water_empty"
-      }
-    ]
-
-    api = HomeAssistantApi.new(config)
-    api.stub :data, data do
-      assert_equal(api.roborock_errors, ["Water empty"])
-    end
-
-    data = [
-      {
-        entity_id: "roborock_vacuum_error",
-        state: "none"
-      }
-    ]
-
-    api = HomeAssistantApi.new(config)
-    api.stub :data, data do
-      assert_equal(api.roborock_errors, [])
-    end
-
-    data = [
-      {
-        entity_id: "roborock_vacuum_error",
-        state: "bumper_stuck"
-      }
-    ]
-
-    api = HomeAssistantApi.new(config)
-    api.stub :data, data do
-      assert_equal(api.roborock_errors, ["Bumper stuck"])
-    end
-  end
-
   def test_now_playing_no_data
     config = {
       "home_assistant" => {
