@@ -17,12 +17,13 @@ class HomeAssistantApi < Api
     response.filter do
       entity_ids.include?(_1["entity_id"]) ||
         _1.dig("attributes", "device_class") == "battery" ||
-        _1["entity_id"].include?("sensor.timeframe")
+        _1["entity_id"].include?("sensor.timeframe") ||
+        _1["state"] == "unavailable"
     end
   end
 
   def problems
-    data
+    timeframe_sensor_problems = data
       .select { _1[:entity_id].include?("sensor.timeframe") }
       .map do
         if _1[:state] == "on"
@@ -41,6 +42,17 @@ class HomeAssistantApi < Api
           }
         end
       end.compact
+
+    unavailable_entity_problems = data
+      .select { _1[:state] == "unavailable" }
+      .map do
+        {
+          icon: "triangle-exclamation",
+          message: "#{_1[:entity_id].split(".").last.humanize} unavailable"
+        }
+      end
+
+    timeframe_sensor_problems + unavailable_entity_problems
   end
 
   def now_playing

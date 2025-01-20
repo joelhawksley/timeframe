@@ -379,4 +379,13 @@ class HomeAssistantApiTest < Minitest::Test
       assert_equal(api.problems, [{icon: "print", message: "Ink low"}])
     end
   end
+
+  def test_problems_unavailable
+    data = [{entity_id: "sensor.foo_bar", state: "unavailable"}]
+
+    api = HomeAssistantApi.new({})
+    api.stub :data, data do
+      assert_equal(api.problems, [{icon: "triangle-exclamation", message: "Foo bar unavailable"}])
+    end
+  end
 end
