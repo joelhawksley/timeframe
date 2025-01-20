@@ -100,18 +100,6 @@ class HomeAssistantApi < Api
     "#{entity[:state].to_i}°"
   end
 
-  def unavailable_door_sensors
-    out = []
-
-    @config["home_assistant"]["exterior_door_sensors"].each do |entity_id|
-      if data.find { _1[:entity_id] == entity_id }&.fetch(:state) == "unavailable"
-        out << entity_id.split(".").last.gsub("_opening", "").humanize
-      end
-    end
-
-    out.uniq
-  end
-
   def roborock_errors
     out = []
 

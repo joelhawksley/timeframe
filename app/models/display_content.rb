@@ -27,10 +27,6 @@ class DisplayContent
         out[:status_icons_with_labels] << [problem[:icon], problem[:message]]
       end
 
-      home_assistant_api.unavailable_door_sensors.each do |door_sensor_name|
-        out[:status_icons_with_labels] << ["triangle-exclamation", door_sensor_name]
-      end
-
       home_assistant_api.unlocked_doors.each do |door_name|
         out[:status_icons_with_labels] << ["lock-open", door_name]
       end
