@@ -18,7 +18,7 @@ class HomeAssistantApi < Api
       entity_ids.include?(_1["entity_id"]) ||
         _1.dig("attributes", "device_class") == "battery" ||
         _1["entity_id"].include?("sensor.timeframe") ||
-        _1["state"] == "unavailable"
+        _1["state"] == "unavailable" && !_1["entity_id"].include?("image.")
     end
   end
 
