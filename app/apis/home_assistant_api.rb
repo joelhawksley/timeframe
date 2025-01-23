@@ -44,8 +44,11 @@ class HomeAssistantApi < Api
       end.compact
 
     unavailable_entity_problems = data
-      .select { _1[:state] == "unavailable" && Time.parse(_1[:last_updated].to_s) < 15.minutes.ago }
-      .map do
+      .select {
+        _1[:state] == "unavailable" &&
+          Time.parse(_1[:last_updated].to_s) < 15.minutes.ago &&
+          !@config.dig("home_assistant", "allowed_unavailable").to_a.include?(_1[:entity_id])
+      }.map do
         {
           icon: "triangle-exclamation",
           message: "#{_1[:entity_id].split(".").last.humanize} unavailable"
