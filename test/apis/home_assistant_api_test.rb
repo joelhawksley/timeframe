@@ -290,7 +290,7 @@ class HomeAssistantApiTest < Minitest::Test
   end
 
   def test_problems_non_binary
-    data = [{entity_id: "sensor.timeframe0print0printer_ink_low", state: "Ink low"}]
+    data = [{entity_id: "sensor.timeframe0print0printer_ink_low", state: "ink_low"}]
 
     api = HomeAssistantApi.new({})
     api.stub :data, data do

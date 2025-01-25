@@ -38,7 +38,7 @@ class HomeAssistantApi < Api
 
           {
             icon: icon.tr("_", "-"),
-            message: _1[:state]
+            message: _1[:state].humanize
           }
         end
       end.compact
