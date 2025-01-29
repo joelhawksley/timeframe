@@ -306,4 +306,17 @@ class HomeAssistantApiTest < Minitest::Test
       assert_equal(api.problems, [{icon: "triangle-exclamation", message: "Foo bar unavailable"}])
     end
   end
+
+  def test_problems_overflow
+    data = [
+      {entity_id: "sensor.foo_bar", state: "unavailable", last_updated: 30.minutes.ago},
+      {entity_id: "sensor.foo_bar2", state: "unavailable", last_updated: 30.minutes.ago},
+      {entity_id: "sensor.foo_bar3", state: "unavailable", last_updated: 30.minutes.ago}
+    ]
+
+    api = HomeAssistantApi.new({})
+    api.stub :data, data do
+      assert_equal(api.problems, [{icon: "triangle-exclamation", message: "Foo bar unavailable +2"}])
+    end
+  end
 end
