@@ -22,10 +22,6 @@ class DisplayContent
     if home_assistant_api.healthy?
       out[:sonos_status] = home_assistant_api.now_playing
 
-      home_assistant_api.problems.each do |problem|
-        out[:status_icons_with_labels] << [problem[:icon], problem[:message]]
-      end
-
       home_assistant_api.unlocked_doors.each do |door_name|
         out[:status_icons_with_labels] << ["lock-open", door_name]
       end
@@ -36,6 +32,10 @@ class DisplayContent
 
       home_assistant_api.low_batteries.each do |low_battery|
         out[:status_icons_with_labels] << ["battery-quarter", low_battery]
+      end
+
+      home_assistant_api.problems.each do |problem|
+        out[:status_icons_with_labels] << [problem[:icon], problem[:message]]
       end
     else
       out[:status_icons_with_labels] << ["triangle-exclamation", "Home Assistant"]
