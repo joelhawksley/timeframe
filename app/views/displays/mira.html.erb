@@ -57,7 +57,7 @@
 
 <div style="margin-top: 1.5rem;"></div>
 <div style="display: flex; justify-content: space-between; margin-bottom: .5rem;">
-  <div>
+  <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 1rem;">
     <% view_object[:status_icons_with_labels].each do |status_icon, label| %>
       <span style="margin-right: .5rem;">
         <i class="fa-solid fa-<%= status_icon %>"></i>
@@ -65,7 +65,7 @@
       </span>
     <% end %>
   </div>
-  <div style="text-align: right;">
+  <div style="text-align: right; flex-shrink: 0;">
     <% if view_object[:birdnet_most_unusual_species_trailing_24h].present? %>
       <i class="fa-solid fa-crow"></i>
       <%= view_object[:birdnet_most_unusual_species_trailing_24h] %>
