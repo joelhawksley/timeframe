@@ -49,18 +49,55 @@ class WeatherKitApi < Api
 
         next if !weather_hour.present?
 
-        wind_suffix = if weather_hour[:windGust].to_f * 0.621371 > 20
-          " / #{(weather_hour[:windGust] * 0.621371).round}mph"
-        end
-
         CalendarEvent.new(
           id: "_weather_hour_#{hour.to_i}",
           starts_at: hour,
           ends_at: hour,
           icon: icon_for(weather_hour[:conditionCode]),
-          summary: "#{celsius_fahrenheit(weather_hour[:temperature])}°#{wind_suffix}".html_safe
+          summary: "#{celsius_fahrenheit(weather_hour[:temperature])}°".html_safe
         )
       end.compact
+    end
+  end
+
+  def wind_calendar_events
+    events = []
+
+    hours_forecast = data.dig(:forecastHourly, :hours)
+
+    return events unless hours_forecast.present?
+
+    hours = data[:forecastHourly][:hours]
+
+    hours.each_with_index do |hour, index|
+      next if hour[:windGust].to_f * 0.621371 < 20
+
+      hour_i = DateTime.parse(hour[:forecastStart]).to_i
+
+      existing_event =
+        events.find { _1[:end_i] == hour_i }
+
+      if existing_event
+        existing_event[:end_i] += 3600
+        existing_event[:wind_max] = [existing_event[:wind_max], hour[:windGust]].max
+      else
+        events <<
+          {
+            start_i: hour_i,
+            end_i: (DateTime.parse(hour[:forecastStart]) + 1.hour).to_i,
+            wind_max: hour[:windGust].to_f * 0.621371
+          }
+      end
+    end
+
+    events.select { _1[:precipitation_type] != "clear" }.map do
+      CalendarEvent.new(
+        id: "#{_1[:start_i]}_wind",
+        starts_at: _1[:start_i],
+        ends_at: _1[:end_i],
+        icon: "wind",
+        summary: "Gusts up to #{_1[:wind_max].round}mph"
+      )
     end
   end
 

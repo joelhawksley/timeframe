@@ -52,6 +52,7 @@ class DisplayContent
         weather_kit_api.daily_calendar_events +
         weather_kit_api.hourly_calendar_events +
         weather_kit_api.precip_calendar_events +
+        weather_kit_api.wind_calendar_events +
         weather_kit_api.weather_alert_calendar_events
       )
 
