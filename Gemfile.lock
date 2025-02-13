@@ -1,9 +1,9 @@
 GIT
-  remote: https://github.com/joelhawksley/tenkit
-  revision: 058e91fe8cc61f0556b34fe7ecc269ca83464330
-  branch: add-alerts
+  remote: https://github.com/superbasicxyz/tenkit
+  revision: 1bfcae26933f2bf1aaad81e7dd05823853f25287
+  tag: v0.0.7
   specs:
-    tenkit (0.0.5)
+    tenkit (0.0.7)
       httparty (~> 0.21.0)
       jwt (~> 2.7.0)
 

@@ -8,7 +8,7 @@ gem "puma"
 gem "puma-rufus-scheduler"
 gem "rails", "~> 8"
 gem "rufus-scheduler"
-gem "tenkit", git: "https://github.com/joelhawksley/tenkit", branch: "add-alerts"
+gem "tenkit", git: "https://github.com/superbasicxyz/tenkit", tag: "v0.0.7"
 
 group :development, :test do
   gem "overcommit"
