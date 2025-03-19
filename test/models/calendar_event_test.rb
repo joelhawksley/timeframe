@@ -195,9 +195,9 @@ class CalendarEventTest < Minitest::Test
   end
 
   def test_does_not_strip_things_we_should_keep
-    event = CalendarEvent.new(starts_at: "2023-11-01", ends_at: "2023-11-08", summary: "foo bar / \\ ° - _ & : + , ()@ <>")
+    event = CalendarEvent.new(starts_at: "2023-11-01", ends_at: "2023-11-08", summary: "foo bar / \\ ° - _ & : + , ()@ <> '")
 
-    assert_equal("foo bar / \\ ° - _ & : + , ()@ <>", event.summary)
+    assert_equal("foo bar / \\ ° - _ & : + , ()@ <> '", event.summary)
   end
 
   def test_strips_non_ascii
