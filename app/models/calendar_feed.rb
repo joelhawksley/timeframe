@@ -3,7 +3,12 @@ class CalendarFeed
     date = Date.parse(date) if date.is_a?(String)
     today = Time.now.in_time_zone(Timeframe::Application.config.local["timezone"]).to_date
 
-    day_count = today - 1.day - date
+    day_count = if date > today
+      date - 1.day - today
+    else
+      today - 1.day - date
+    end
+
     week_count = (day_count / 7).to_i
 
     if week_count > 104

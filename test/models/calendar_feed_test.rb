@@ -5,6 +5,11 @@ require "test_helper"
 class CalendarFeedTest < Minitest::Test
   include ActiveSupport::Testing::TimeHelpers
 
+  def test_age_in_future
+    result = CalendarFeed.new.baby_age_event(Date.today + 10.weeks + 1.day)
+    assert_equal("10w", result.summary)
+  end
+
   def test_baby_age_event
     result = CalendarFeed.new.baby_age_event(Date.today - 8.days)
 
