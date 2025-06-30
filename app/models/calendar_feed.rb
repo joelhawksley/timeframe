@@ -101,31 +101,10 @@ class CalendarFeed
     filtered_events = filtered_events.select { !_1.private? } if private_mode
 
     {
-      daily: filtered_events.select(&:daily?).sort_by { |event| meal_priority_sort_key(event) },
+      daily: filtered_events.select(&:daily?),
       periodic: filtered_events
         .reject(&:daily?)
         .sort_by(&:start_i)
     }
-  end
-
-  private
-
-  def meal_priority_sort_key(event)
-    summary = event.summary.downcase
-
-    # Assign priority values for meal events (lower numbers = higher priority)
-    meal_priority = if summary.downcase.start_with?("breakfast")
-      1
-    elsif summary.downcase.start_with?("lunch")
-      2
-    elsif summary.downcase.start_with?("dinner")
-      3
-    else
-      # For non-meal events, use start time as secondary sort
-      999999999 + event.start_i
-    end
-
-    # Return array with priority first, then start time for tie-breaking
-    [meal_priority, event.start_i]
   end
 end

@@ -315,48 +315,4 @@ class CalendarFeedTest < Minitest::Test
       assert(CalendarFeed.new.events_for(start_time_utc, end_time_utc, calendar_events)[:periodic].length == 0)
     end
   end
-
-  def test_meal_events_sorting_order
-    calendar_events = [
-      CalendarEvent.new(
-        id: "dinner",
-        starts_at: DateTime.new(2023, 8, 27, 0, 0, 0, "-0600"),
-        ends_at: DateTime.new(2023, 8, 28, 0, 0, 0, "-0600"),
-        summary: "Dinner with friends"
-      ),
-      CalendarEvent.new(
-        id: "lunch",
-        starts_at: DateTime.new(2023, 8, 27, 0, 0, 0, "-0600"),
-        ends_at: DateTime.new(2023, 8, 28, 0, 0, 0, "-0600"),
-        summary: "Lunch meeting"
-      ),
-      CalendarEvent.new(
-        id: "breakfast",
-        starts_at: DateTime.new(2023, 8, 27, 0, 0, 0, "-0600"),
-        ends_at: DateTime.new(2023, 8, 28, 0, 0, 0, "-0600"),
-        summary: "Breakfast preparation"
-      ),
-      CalendarEvent.new(
-        id: "other",
-        starts_at: DateTime.new(2023, 8, 27, 0, 0, 0, "-0600"),
-        ends_at: DateTime.new(2023, 8, 28, 0, 0, 0, "-0600"),
-        summary: "Other event"
-      )
-    ]
-
-    travel_to DateTime.new(2023, 8, 27, 17, 20, 0, "-0600") do
-      start_time_utc = DateTime.new(2023, 8, 27, 0, 20, 0, "-0600").utc.to_time
-      end_time_utc = DateTime.new(2023, 8, 28, 0, 0, 0, "-0600").utc.to_time
-
-      result = CalendarFeed.new.events_for(start_time_utc, end_time_utc, calendar_events)
-      daily_events = result[:daily]
-
-      # Check that events are sorted in the correct meal order: Breakfast, Lunch, Dinner, then others
-      assert_equal(4, daily_events.length)
-      assert_equal("Breakfast preparation", daily_events[0].summary)
-      assert_equal("Lunch meeting", daily_events[1].summary)
-      assert_equal("Dinner with friends", daily_events[2].summary)
-      assert_equal("Other event", daily_events[3].summary)
-    end
-  end
 end
