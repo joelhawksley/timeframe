@@ -96,6 +96,7 @@ GEM
       bigdecimal
       rexml
     crass (1.0.6)
+    csv (3.3.5)
     date (3.4.1)
     docile (1.4.1)
     drb (2.2.1)
@@ -279,6 +280,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  csv
   httparty
   m
   minitest
@@ -294,7 +296,7 @@ DEPENDENCIES
   webmock
 
 RUBY VERSION
-   ruby 3.2.2p53
+   ruby 3.4.3p32
 
 BUNDLED WITH
    2.5.11
