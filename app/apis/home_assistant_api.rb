@@ -22,6 +22,15 @@ class HomeAssistantApi < Api
     end
   end
 
+  def demo_mode?
+    return false unless @config["home_assistant"].present?
+
+    entity = data.find { _1[:entity_id] == @config["home_assistant"]["demo_mode_entity_id"] }
+    return false unless entity.present?
+
+    entity[:state] == "on"
+  end
+
   def problems
     timeframe_sensor_problems = data
       .select { _1[:entity_id].include?("sensor.timeframe") }
