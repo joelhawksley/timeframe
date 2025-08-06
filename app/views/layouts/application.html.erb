@@ -1,0 +1,7 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <% flash.each do |key, value| %><%= value %><% end %>
+    <%= yield %>
+  </body>
+</html>

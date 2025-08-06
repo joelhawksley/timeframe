@@ -1,0 +1,98 @@
+<div class="fade-bottom"></div>
+<style>
+  html { font-size: 46px }
+  body { padding: 0 2rem }
+  .hide-if-empty:empty {display: none;}
+</style>
+
+<% if @refresh && DateTime.now.minute == 0 %>
+  <% if [0,1,4,5].include?(DateTime.now.second) %>
+    <div style="background-color: black; position: absolute; left: 0; right: 0; top: 0; bottom: 0; z-index: 100"></div>
+  <% elsif [2,3,6,7].include?(DateTime.now.second) %>
+    <div style="background-color: white; position: absolute; left: 0; right: 0; top: 0; bottom: 0; z-index: 100"></div>
+  <% end %>
+<% end %>
+
+<div class="hide-if-empty" style="font-size: 1.75rem; position:absolute; left: 0; right: 0; bottom: 0; z-index: 5">
+  <div style="position: relative">
+    <div style="background:-webkit-gradient(linear,left top,left bottom,color-stop(0%, rgba(255,255,255,0)),color-stop(100%,rgba(255,255,255,1)));position: absolute;left: 0;right: 0; top: -2rem;height: 2rem;z-index: 5;"></div>
+  </div>
+  <% if view_object[:minutely_weather_minutes].present? %>
+    <div class="hide-if-empty" style="background-color: #ddd; color: black; padding: 0.5rem 2rem; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">
+      <div>
+        <div style="display: inline-block; padding-right: 1rem; vertical-align: super">
+          <i class="fa-solid fa-fw fa-<%= view_object[:minutely_weather_minutes_icon] %>"></i>
+        </div>
+        <div style="display: inline-block">
+          <table class="minutely" border="0" cellpadding="0" cellspacing="0">
+            <tr>
+              <% view_object[:minutely_weather_minutes].each_with_index do |minute, i| %>
+                <td>
+                  <div style="height: 100px; position:relative; width: 25px;">
+                    <div style="background-color:black; position: absolute; height: <%= (minute[:precipitationChance] * minute[:precipitationIntensity] * 50).clamp(3,100) %>px; left: 0; right: 10px; bottom: 0; border-radius: 25px;"></div>
+                  </div>
+                </td>
+              <% end %>
+            </tr>
+            <tr style="font-size: .75rem;">
+              <td colspan="20">Now</td>
+              <td colspan="20">20m</td>
+              <td colspan="20">40m</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  <% end %>
+  <% if view_object[:sonos_status].present? %>
+    <div class="hide-if-empty" style="background-color: black; color: white; padding: 1rem 2rem; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">
+      <i class="fa-solid fa-volume-high fa-fw"></i>
+      <strong><%= view_object[:sonos_status][:artist] %></strong>
+      <% if view_object[:sonos_status][:track].present? %>
+        : <%= view_object[:sonos_status][:track] %>
+      <% end %>
+    </div>
+  <% end %>
+</div>
+
+<div style="margin-top: 1.5rem;"></div>
+<div style="display: flex; justify-content: space-between; margin-bottom: .5rem;">
+  <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 1rem;">
+    <% view_object[:status_icons_with_labels].each do |status_icon, label| %>
+      <span style="margin-right: .5rem;">
+        <i class="fa-solid fa-<%= status_icon %>"></i>
+        <%= label %>
+      </span>
+    <% end %>
+  </div>
+  <div style="text-align: right; flex-shrink: 0;">
+    <% if view_object[:birdnet_most_unusual_species_trailing_24h].present? %>
+      <i class="fa-solid fa-crow"></i>
+      <%= view_object[:birdnet_most_unusual_species_trailing_24h] %>
+    <% else %>
+      &nbsp;
+    <% end %>
+  </div>
+</div>
+
+<div style="display: flex; justify-content: space-between; line-height: 2rem; font-size: 2rem;">
+  <div>
+    <% view_object[:status_icons].each do |status_icon| %>
+      <i class="fa-solid fa-<%= status_icon %>" style="margin-right: 1rem"></i>
+    <% end %>
+  </div>
+  <div><%= DateTime.now.strftime("%A, %B %-d") %></div>
+</div>
+
+<div style="margin: 1rem 0 2rem; display: flex; justify-content: space-between; line-height: .7">
+  <div style="font-size: 5.5rem;"><%= view_object[:current_temperature] %></div>
+  <div style="text-align: right; font-size: 5.5rem;"><%= DateTime.now.strftime("%l:%M%P") %></div>
+</div>
+
+<hr style="margin: 1rem 0 1rem; border: none; background-color: #ccc; color: #ccc; height: 2px;">
+
+<% unless HomeAssistantCalendarApi.new.private_mode? %>
+  <div style="position: absolute; top: 13rem; bottom: 0; left: 2rem; right: 2rem; overflow: hidden;">
+    <%= render "timeline", view_object: view_object %>
+  </div>
+<% end %>

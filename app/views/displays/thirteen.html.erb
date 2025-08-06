@@ -1,0 +1,39 @@
+<div class="fade-bottom"></div>
+<div class="timestamp" style="position: absolute; bottom: .25rem; right: .25rem; font-size: .4rem; color: #777; z-index: 10">
+  <%= view_object[:timestamp] %>
+</div>
+<div style="clear: both; line-height: .7; margin-bottom: 1rem; font-size: 1rem">
+  <div style="float: left;">
+    <% view_object[:status_icons].each do |status_icon| %>
+      <i class="fa-solid fa-<%= status_icon %>" style="margin-right: 1rem"></i>
+    <% end %>
+    <% view_object[:status_icons_with_labels].each do |status_icon, label| %>
+      <span style="margin-right: 1rem;">
+        <i class="fa-solid fa-<%= status_icon %>"></i>
+        <%= label %>
+      </span>
+    <% end %>
+  </div>
+  <div style="float: right; text-align: right;">
+    <% if view_object[:birdnet_most_unusual_species_trailing_24h].present? %>
+      <div style="display: inline-block;">
+        <i class="fa-solid fa-crow"></i>
+        <%= view_object[:birdnet_most_unusual_species_trailing_24h] %>
+      </div>
+    <% end %>
+  </div>
+  <div>&nbsp;</div>
+</div>
+<div style="clear: both; line-height: .7; margin-bottom: 1rem; padding-bottom: .5rem; font-size: 3rem;">
+  <div style="float: left;">
+    <%= view_object[:current_temperature] %>
+  </div>
+  <div style="float: right; text-align: right;">
+    <%= DateTime.now.strftime("%A, %b. %-d") %>
+  </div>
+  <div>&nbsp;</div>
+</div>
+<% unless HomeAssistantCalendarApi.new.private_mode? %>
+  <hr style="margin: 1rem 0 1rem; border: none; background-color: #ccc; color: #ccc; height: 2px;">
+  <%= render "timeline", view_object: view_object %>
+<% end %>
