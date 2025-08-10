@@ -76,7 +76,10 @@ class DisplayContent
       out[:status_icons] << "eye-slash"
     end
 
-    raw_events << [CalendarEvent.for_duration(date: Timeframe::Application.config.local["birthdate"], icon: "J")]
+    raw_events << [
+      CalendarEvent.for_duration(date: Timeframe::Application.config.local["birthdate"], icon: "J"),
+      CalendarEvent.for_duration(date: Timeframe::Application.config.local["birthdate_2"], icon: "C")
+    ]
 
     raw_events << home_assistant_calendar_api.data
 
