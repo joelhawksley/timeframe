@@ -16,7 +16,6 @@ class HomeAssistantApi < Api
     # Only save entity states we are interested in vs. all 1000+ entities
     response.filter do
       entity_ids.include?(it["entity_id"]) ||
-        it.dig("attributes", "device_class") == "battery" ||
         it["entity_id"].include?("sensor.timeframe") ||
         it["state"] == "unavailable" && !it["entity_id"].include?("image.")
     end
