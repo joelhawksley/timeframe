@@ -81,58 +81,6 @@ class HomeAssistantApiTest < Minitest::Test
     end
   end
 
-  def test_unlocked_doors_ignores_open_doors
-    config = {
-      "home_assistant" => {
-        "exterior_door_sensors" => [
-          "alley_door_sensor"
-        ],
-        "exterior_door_locks" => [
-          "alley_door_lock"
-        ]
-      }
-    }
-
-    data = [
-      {
-        entity_id: "alley_door_sensor",
-        state: "on"
-      },
-      {
-        entity_id: "alley_door_lock",
-        state: "off"
-      }
-    ]
-
-    api = HomeAssistantApi.new(config)
-    api.stub :data, data do
-      assert_equal(api.unlocked_doors, [])
-    end
-  end
-
-  def test_unlocked_doors
-    config = {
-      "home_assistant" => {
-        "exterior_door_sensors" => [],
-        "exterior_door_locks" => [
-          "patio_door_lock"
-        ]
-      }
-    }
-
-    data = [
-      {
-        entity_id: "patio_door_lock",
-        state: "off"
-      }
-    ]
-
-    api = HomeAssistantApi.new(config)
-    api.stub :data, data do
-      assert_equal(api.unlocked_doors, ["Patio"])
-    end
-  end
-
   def test_low_batteries
     data = [
       {

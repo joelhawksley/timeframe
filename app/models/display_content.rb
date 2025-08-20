@@ -19,10 +19,6 @@ class DisplayContent
       out[:status_icons_with_labels] << ["lock-open", "demo mode"] if home_assistant_api.demo_mode?
       out[:sonos_status] = home_assistant_api.now_playing
 
-      home_assistant_api.unlocked_doors.each do |door_name|
-        out[:status_icons_with_labels] << ["lock-open", door_name]
-      end
-
       home_assistant_api.open_doors.each do |door_name|
         out[:status_icons_with_labels] << ["door-open", door_name]
       end

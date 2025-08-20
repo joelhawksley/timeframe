@@ -141,18 +141,6 @@ class HomeAssistantApi < Api
     out
   end
 
-  def unlocked_doors
-    out = []
-
-    @config["home_assistant"]["exterior_door_locks"].map do |entity_id|
-      if data.find { it[:entity_id] == entity_id }&.fetch(:state) == "off"
-        out << entity_id.split(".").last.split("_door").first.humanize
-      end
-    end
-
-    out - open_doors
-  end
-
   def low_batteries
     out = []
 
