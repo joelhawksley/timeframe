@@ -59,36 +59,6 @@ class HomeAssistantApiTest < Minitest::Test
     end
   end
 
-  def test_low_batteries
-    data = [
-      {
-        entity_id: "sensor.laundry_room_washer_leak_sensor_battery",
-        state: "100",
-        attributes: {device_class: "battery"}
-      },
-      {
-        entity_id: "sensor.laundry_room_sink_leak_sensor_battery",
-        state: "5",
-        attributes: {device_class: "battery"}
-      },
-      {
-        entity_id: "sensor.unknown_leak_sensor_battery",
-        state: "unknown",
-        attributes: {device_class: "battery"}
-      },
-      {
-        entity_id: "sensor.unknown_leak_sensor_battery",
-        state: "unavailable",
-        attributes: {device_class: "battery"}
-      }
-    ]
-
-    api = HomeAssistantApi.new({})
-    api.stub :data, data do
-      assert_equal(api.low_batteries, ["Laundry room sink leak sensor"])
-    end
-  end
-
   def test_now_playing_no_data
     config = {
       "home_assistant" => {

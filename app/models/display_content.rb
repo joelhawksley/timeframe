@@ -19,10 +19,6 @@ class DisplayContent
       out[:status_icons_with_labels] << ["lock-open", "demo mode"] if home_assistant_api.demo_mode?
       out[:sonos_status] = home_assistant_api.now_playing
 
-      home_assistant_api.low_batteries.each do |low_battery|
-        out[:status_icons_with_labels] << ["battery-quarter", low_battery]
-      end
-
       home_assistant_api.problems.each do |problem|
         out[:status_icons_with_labels] << [problem[:icon], problem[:message]]
       end

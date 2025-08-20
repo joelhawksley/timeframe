@@ -128,18 +128,4 @@ class HomeAssistantApi < Api
 
     "#{entity[:state].to_i}°"
   end
-
-  def low_batteries
-    out = []
-
-    data.select { it.dig(:attributes, :device_class) == "battery" }.each do |entity|
-      next if entity[:state] == "unknown" || entity[:state] == "unavailable"
-
-      if entity[:state].to_f <= 5
-        out << entity[:entity_id].split(".").last.split("_battery").first.humanize
-      end
-    end
-
-    out
-  end
 end
