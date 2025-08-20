@@ -35,20 +35,20 @@ class HomeAssistantApi < Api
     timeframe_sensor_problems = data
       .select { it[:entity_id].include?("sensor.timeframe") }
       .map do
-        if it[:state] == "on"
-          _, icon, raw_message = it[:entity_id].split("0")
-
-          {
-            icon: icon.tr("_", "-"),
-            message: raw_message.tr("_", " ").humanize
-          }
-        elsif it[:state].include?(",")
+        if it[:state].include?(",")
           it[:state].split("\n").reject(&:empty?).map do |line|
             {
               icon: line.split(",").first,
               message: line.split(",").last
             }
           end
+        elsif it[:state] == "on"
+          _, icon, raw_message = it[:entity_id].split("0")
+
+          {
+            icon: icon.tr("_", "-"),
+            message: raw_message.tr("_", " ").humanize
+          }
         elsif !["on", "off", ""].include?(it[:state])
           _, icon, _ = it[:entity_id].split("0")
 
@@ -127,18 +127,6 @@ class HomeAssistantApi < Api
     return nil unless entity.present?
 
     "#{entity[:state].to_i}°"
-  end
-
-  def open_doors
-    out = []
-
-    @config["home_assistant"]["exterior_door_sensors"].map do |entity_id|
-      if data.find { it[:entity_id] == entity_id }&.fetch(:state) == "on"
-        out << entity_id.split(".").last.split("_door").first.humanize
-      end
-    end
-
-    out
   end
 
   def low_batteries

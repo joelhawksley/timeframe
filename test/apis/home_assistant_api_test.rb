@@ -59,28 +59,6 @@ class HomeAssistantApiTest < Minitest::Test
     end
   end
 
-  def test_open_doors
-    config = {
-      "home_assistant" => {
-        "exterior_door_sensors" => [
-          "alley_door_sensor"
-        ]
-      }
-    }
-
-    data = [
-      {
-        entity_id: "alley_door_sensor",
-        state: "on"
-      }
-    ]
-
-    api = HomeAssistantApi.new(config)
-    api.stub :data, data do
-      assert_equal(api.open_doors, ["Alley"])
-    end
-  end
-
   def test_low_batteries
     data = [
       {
