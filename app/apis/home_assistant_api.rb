@@ -43,10 +43,12 @@ class HomeAssistantApi < Api
             message: raw_message.tr("_", " ").humanize
           }
         elsif it[:state].include?(",")
-          {
-            icon: it[:state].split(",").first,
-            message: it[:state].split(",").last
-          }
+          it[:state].split("\n").reject(&:empty?).map do |line|
+            {
+              icon: line.split(",").first,
+              message: line.split(",").last
+            }
+          end
         elsif !["on", "off", ""].include?(it[:state])
           _, icon, _ = it[:entity_id].split("0")
 
@@ -55,7 +57,7 @@ class HomeAssistantApi < Api
             message: it[:state].humanize
           }
         end
-      end.compact
+      end.flatten.compact
 
     unavailable_entity_problems = data
       .select {
