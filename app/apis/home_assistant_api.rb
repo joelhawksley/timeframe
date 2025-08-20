@@ -42,6 +42,11 @@ class HomeAssistantApi < Api
             icon: icon.tr("_", "-"),
             message: raw_message.tr("_", " ").humanize
           }
+        elsif it[:state].include?(",")
+          {
+            icon: it[:state].split(",").first,
+            message: it[:state].split(",").last
+          }
         elsif !["on", "off", ""].include?(it[:state])
           _, icon, _ = it[:entity_id].split("0")
 

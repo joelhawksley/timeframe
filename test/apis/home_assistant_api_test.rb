@@ -320,6 +320,24 @@ class HomeAssistantApiTest < Minitest::Test
     end
   end
 
+  def test_problems_csv
+    data = [{entity_id: "sensor.timeframe_front_door", state: "door-open,Front"}]
+
+    api = HomeAssistantApi.new({})
+    api.stub :data, data do
+      assert_equal(api.problems, [{icon: "door-open", message: "Front"}])
+    end
+  end
+
+  def test_problems_csv_empty
+    data = [{entity_id: "sensor.timeframe_front_door", state: ""}]
+
+    api = HomeAssistantApi.new({})
+    api.stub :data, data do
+      assert_equal(api.problems, [])
+    end
+  end
+
   def test_demo_mode_on
     config = {
       "home_assistant" => {
