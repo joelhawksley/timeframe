@@ -176,24 +176,6 @@ class HomeAssistantApiTest < Minitest::Test
     end
   end
 
-  def test_problems
-    data = [{entity_id: "binary_sensor.timeframe0print0printer_ink_low", state: "on"}]
-
-    api = HomeAssistantApi.new({})
-    api.stub :data, data do
-      assert_equal(api.problems, [{icon: "print", message: "Printer ink low"}])
-    end
-  end
-
-  def test_problems_non_binary
-    data = [{entity_id: "sensor.timeframe0print0printer_ink_low", state: "ink_low"}]
-
-    api = HomeAssistantApi.new({})
-    api.stub :data, data do
-      assert_equal(api.problems, [{icon: "print", message: "Ink low"}])
-    end
-  end
-
   def test_problems_unavailable
     data = [{entity_id: "sensor.foo_bar", state: "unavailable", last_updated: 30.minutes.ago}]
 

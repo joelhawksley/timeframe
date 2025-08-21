@@ -34,26 +34,10 @@ class HomeAssistantApi < Api
     timeframe_sensor_problems = data
       .select { it[:entity_id].include?("sensor.timeframe") }
       .map do
-        if it[:state].include?(",")
-          it[:state].split("\n").map(&:strip).reject(&:empty?).map do |line|
-            {
-              icon: line.split(",").first.strip,
-              message: line.split(",").last.strip.humanize
-            }
-          end
-        elsif it[:state] == "on"
-          _, icon, raw_message = it[:entity_id].split("0")
-
+        it[:state].split("\n").map(&:strip).reject(&:empty?).map do |line|
           {
-            icon: icon.tr("_", "-"),
-            message: raw_message.tr("_", " ").humanize
-          }
-        elsif !["on", "off", ""].include?(it[:state])
-          _, icon, _ = it[:entity_id].split("0")
-
-          {
-            icon: icon.tr("_", "-"),
-            message: it[:state].humanize
+            icon: line.split(",").first.strip,
+            message: line.split(",").last.strip.humanize
           }
         end
       end.flatten.compact
