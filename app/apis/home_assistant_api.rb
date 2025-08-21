@@ -35,7 +35,7 @@ class HomeAssistantApi < Api
       .select { it[:entity_id].include?("sensor.timeframe") }
       .map do
         if it[:state].include?(",")
-          it[:state].split("\n").reject(&:empty?).map do |line|
+          it[:state].split("\n").map(&:strip).reject(&:empty?).map do |line|
             {
               icon: line.split(",").first.strip,
               message: line.split(",").last.strip
