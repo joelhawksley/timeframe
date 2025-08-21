@@ -5,12 +5,10 @@ class DisplayContent
     calendar_feed: CalendarFeed.new,
     home_assistant_api: HomeAssistantApi.new,
     home_assistant_calendar_api: HomeAssistantCalendarApi.new,
-    birdnet_api: BirdnetApi.new,
     air_now_api: AirNowApi.new
   )
     # :nocov:
     out = {}
-    out[:status_icons] = []
     out[:status_icons_with_labels] = []
     out[:timestamp] = current_time.strftime("%-l:%M %p")
     out[:current_temperature] = home_assistant_api.feels_like_temperature if home_assistant_api.healthy?
@@ -24,12 +22,6 @@ class DisplayContent
       end
     else
       out[:status_icons_with_labels] << ["triangle-exclamation", "Home Assistant"]
-    end
-
-    if birdnet_api.healthy?
-      out[:birdnet_most_unusual_species_trailing_24h] = birdnet_api.most_unusual_species_trailing_24h
-    else
-      out[:status_icons_with_labels] << ["triangle-exclamation", "Birdnet"]
     end
 
     raw_events = []
@@ -61,7 +53,7 @@ class DisplayContent
     end
 
     if home_assistant_calendar_api.healthy? && home_assistant_calendar_api.private_mode?
-      out[:status_icons] << "eye-slash"
+      out[:status_icons_with_labels] << ["eye-slash", "Private mode"]
     end
 
     raw_events << [

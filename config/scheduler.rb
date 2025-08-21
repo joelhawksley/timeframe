@@ -13,10 +13,6 @@ scheduler.every "1m" do
 end
 
 scheduler.every "1m" do
-  BirdnetApi.new.fetch
-end
-
-scheduler.every "1m" do
   AirNowApi.new.fetch
 end
 
