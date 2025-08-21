@@ -226,7 +226,7 @@ class HomeAssistantApiTest < Minitest::Test
   end
 
   def test_problems_csv_newlines
-    data = [{entity_id: "sensor.timeframe_states", state: "door-open,Front\n\n\nlock-open,Patio"}]
+    data = [{entity_id: "sensor.timeframe_states", state: "door-open,Front\n\n\n      lock-open,Patio"}]
 
     api = HomeAssistantApi.new({})
     api.stub :data, data do

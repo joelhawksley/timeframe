@@ -37,8 +37,8 @@ class HomeAssistantApi < Api
         if it[:state].include?(",")
           it[:state].split("\n").reject(&:empty?).map do |line|
             {
-              icon: line.split(",").first,
-              message: line.split(",").last
+              icon: line.split(",").first.strip,
+              message: line.split(",").last.strip
             }
           end
         elsif it[:state] == "on"
