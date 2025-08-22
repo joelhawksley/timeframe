@@ -31,7 +31,7 @@ class HomeAssistantApi < Api
   end
 
   def problems
-    timeframe_sensor_problems = data
+    data
       .select { it[:entity_id].include?("sensor.timeframe") }
       .map do
         it[:state].split("\n").map(&:strip).reject(&:empty?).map do |line|
@@ -41,30 +41,6 @@ class HomeAssistantApi < Api
           }
         end
       end.flatten.compact
-
-    unavailable_entity_problems = data
-      .select {
-        it[:state] == "unavailable" &&
-          Time.parse(it[:last_updated].to_s) < 15.minutes.ago &&
-          !@config.dig("home_assistant", "allowed_unavailable").to_a.include?(it[:entity_id])
-      }
-
-    if unavailable_entity_problems.any?
-      message = "#{unavailable_entity_problems[0][:entity_id].split(".").last.humanize} unavailable"
-
-      if unavailable_entity_problems.size > 1
-        message += " +#{unavailable_entity_problems.size - 1}"
-      end
-
-      unavailable_entity_problems = [
-        {
-          icon: "triangle-exclamation",
-          message: message
-        }
-      ]
-    end
-
-    timeframe_sensor_problems + unavailable_entity_problems
   end
 
   def now_playing
