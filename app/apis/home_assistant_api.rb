@@ -37,7 +37,7 @@ class HomeAssistantApi < Api
         it[:state].split("\n").map(&:strip).reject(&:empty?).map do |line|
           {
             icon: line.split(",").first.strip,
-            message: line.split(",").last.strip.humanize
+            message: line.split(",").last.strip.then { it.include?("_") ? it.humanize : it }
           }
         end
       end.flatten.compact
