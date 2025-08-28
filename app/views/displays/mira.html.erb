@@ -58,8 +58,17 @@
 <div style="margin-top: 1.5rem;"></div>
 <div style="display: flex; justify-content: space-between; margin-bottom: .5rem;">
   <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 1rem;">
-    <% view_object[:status_icons_with_labels].each do |status_icon, label| %>
+    <% view_object[:status_icons_with_labels][1..-1].each do |status_icon, label| %>
       <span style="margin-right: .5rem;">
+        <i class="fa-solid fa-<%= status_icon %>"></i>
+        <%= label %>
+      </span>
+    <% end %>
+  </div>
+
+  <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+    <% view_object[:status_icons_with_labels].first(1).each do |status_icon, label| %>
+      <span>
         <i class="fa-solid fa-<%= status_icon %>"></i>
         <%= label %>
       </span>
@@ -70,7 +79,7 @@
 <div style="line-height: 2rem; font-size: 2rem;"><%= DateTime.now.strftime("%A, %B %-d") %></div>
 
 <div style="margin: 1rem 0 2rem; display: flex; justify-content: space-between; line-height: .7">
-  <div style="font-size: 5.5rem;"><%= DateTime.now.strftime("%l:%M%P") %></div>
+  <div style="font-size: 5.5rem; margin-left: -.5rem"><%= DateTime.now.strftime("%l:%M%P") %></div>
   <div style="font-size: 5.5rem; text-align: right;"><%= view_object[:current_temperature] %></div>
 </div>
 
