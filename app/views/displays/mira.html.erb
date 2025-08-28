@@ -76,6 +76,8 @@
   </div>
 </div>
 
+<hr style="margin: 1rem 0 1rem; border: none; background-color: #ccc; color: #ccc; height: 2px;">
+
 <div style="line-height: 2rem; font-size: 2rem;"><%= DateTime.now.strftime("%A, %B %-d") %></div>
 
 <div style="margin: 1rem 0 2rem; display: flex; justify-content: space-between; line-height: .7">
@@ -86,7 +88,7 @@
 <hr style="margin: 1rem 0 1rem; border: none; background-color: #ccc; color: #ccc; height: 2px;">
 
 <% unless HomeAssistantCalendarApi.new.private_mode? %>
-  <div style="position: absolute; top: 13rem; bottom: 0; left: 2rem; right: 2rem; overflow: hidden;">
+  <div style="position: absolute; top: 15rem; bottom: 0; left: 2rem; right: 2rem; overflow: hidden;">
     <%= render "timeline", view_object: view_object %>
   </div>
 <% end %>
