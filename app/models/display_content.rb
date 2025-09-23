@@ -14,7 +14,6 @@ class DisplayContent
     out[:current_temperature] = home_assistant_api.feels_like_temperature if home_assistant_api.healthy?
 
     if home_assistant_api.healthy?
-      out[:status_icons_with_labels] << ["lock-open", "demo mode"] if home_assistant_api.demo_mode?
       out[:sonos_status] = home_assistant_api.now_playing
 
       home_assistant_api.problems.each do |problem|
