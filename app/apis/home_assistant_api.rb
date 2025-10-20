@@ -40,7 +40,7 @@ class HomeAssistantApi < Api
             message: line.split(",").last.strip.then { it.include?("_") ? it.humanize : it }
           }
         end
-      end.flatten.compact
+      end.flatten.compact.uniq
   end
 
   def now_playing
