@@ -103,6 +103,16 @@ class CalendarEventTest < Minitest::Test
     assert_equal(true, event.multi_day?)
   end
 
+  def test_multi_day_time_change
+    event = CalendarEvent.new(
+      starts_at: 1762063200,
+      ends_at: 1762153200,
+      summary: "foo"
+    )
+
+    assert_equal(false, event.multi_day?)
+  end
+
   def test_sets_counter
     event = CalendarEvent.new(
       starts_at: 1675123200,

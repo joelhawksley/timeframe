@@ -133,7 +133,11 @@ class CalendarEvent
   end
 
   def multi_day?
-    ((end_i - start_i) > DAY_IN_SECONDS)
+    (end_i - start_i) > if starts_at.to_time.dst? && !ends_at.to_time.dst?
+      (DAY_IN_SECONDS + 3600)
+    else
+      DAY_IN_SECONDS
+    end
   end
 
   def time
