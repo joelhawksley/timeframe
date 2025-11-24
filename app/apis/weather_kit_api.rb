@@ -131,7 +131,7 @@ class WeatherKitApi < Api
     events.select { it[:precipitation_type] != "clear" }.map do
       icon =
         case it[:precipitation_type]
-        when "snow"
+        when "snow", "mixed", "wintrymix"
           "snowflake"
         when "rain"
           "cloud-rain"
@@ -180,7 +180,9 @@ class WeatherKitApi < Api
       "Haze" => "smog",
       "Snow" => "snowflake",
       "HeavySnow" => "snowflake",
-      "Flurries" => "snowflake"
+      "Flurries" => "snowflake",
+      "WintryMix" => "snowflake",
+      "Mixed" => "snowflake"
     }
 
     if icon_mappings[condition_code]
