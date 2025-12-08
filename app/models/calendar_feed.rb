@@ -34,6 +34,8 @@ class CalendarFeed
         end
       end
 
+    filtered_events = filtered_events.uniq { [it.icon, it.start_i, it.end_i, it.summary] }
+
     filtered_events = filtered_events.select { !it.private? } if private_mode
 
     {

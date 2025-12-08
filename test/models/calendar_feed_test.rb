@@ -88,6 +88,36 @@ class CalendarFeedTest < Minitest::Test
     end
   end
 
+  def test_events_for_duplicate_same_icon_diff_id
+    calendar_events = [
+      CalendarEvent.new(
+        id: "foo2",
+        starts_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),
+        ends_at: DateTime.new(2023, 8, 27, 23, 0, 0, "-0600"),
+        summary: "dupe",
+        icon: "J"
+      ),
+      CalendarEvent.new(
+        id: "foo",
+        starts_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),
+        ends_at: DateTime.new(2023, 8, 27, 23, 0, 0, "-0600"),
+        summary: "dupe",
+        icon: "J"
+      )
+    ]
+
+    travel_to DateTime.new(2023, 8, 27, 22, 20, 0, "-0600") do
+      start_time_utc = DateTime.new(2023, 8, 27, 20, 20, 0, "-0600").utc.to_time
+      end_time_utc = DateTime.new(2023, 8, 28, 0, 0, 0, "-0600").utc.to_time
+
+      result = CalendarFeed.new.events_for(start_time_utc, end_time_utc, calendar_events)
+      events = result[:periodic].select { it.id.include? "foo" }
+
+      assert(events.length == 1)
+      assert(events[0].icon == "J")
+    end
+  end
+
   def test_events_for_duplicate_different_icon
     calendar_events = [
       CalendarEvent.new(
