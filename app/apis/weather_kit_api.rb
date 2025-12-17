@@ -69,8 +69,9 @@ class WeatherKitApi < Api
 
     hours = data[:forecastHourly][:hours]
 
-    hours.each_with_index do |hour, index|
-      next if hour[:windGust].to_f * 0.621371 < 20
+    hours.each do |hour|
+      hour_wind_mph = hour[:windGust].to_f * 0.621371
+      next if hour_wind_mph < 20.0
 
       hour_i = DateTime.parse(hour[:forecastStart]).to_i
 
@@ -79,13 +80,13 @@ class WeatherKitApi < Api
 
       if existing_event
         existing_event[:end_i] += 3600
-        existing_event[:wind_max] = [existing_event[:wind_max], hour[:windGust]].max
+        existing_event[:wind_max] = [existing_event[:wind_max], hour_wind_mph].max
       else
         events <<
           {
             start_i: hour_i,
             end_i: (DateTime.parse(hour[:forecastStart]) + 1.hour).to_i,
-            wind_max: hour[:windGust].to_f * 0.621371
+            wind_max: hour_wind_mph
           }
       end
     end
