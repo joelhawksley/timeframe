@@ -116,6 +116,8 @@ class WeatherKitApi < Api
     hours.each_with_index do |hour, index|
       hour_i = DateTime.parse(hour[:forecastStart]).to_i
 
+      next if hour_i < Time.now.to_i
+
       existing_event =
         events.find { it[:end_i] == hour_i && it[:precipitation_type] == hour[:precipitationType] }
 

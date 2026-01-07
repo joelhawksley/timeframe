@@ -2120,7 +2120,7 @@ class WeatherKitApiTest < Minitest::Test
 
     api = WeatherKitApi.new
     api.stub :data, weather do
-      travel_to DateTime.new(2023, 8, 27, 16, 20, 0, "-0600") do
+      travel_to DateTime.new(2023, 8, 26, 16, 20, 0, "-0600") do
         assert_equal(7, api.precip_calendar_events.length)
       end
     end
