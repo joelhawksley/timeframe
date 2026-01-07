@@ -158,7 +158,7 @@ class WeatherKitApi < Api
     return [] unless alerts.present?
 
     alerts.map do |alert|
-      next if ["Red Flag Warning", "Air Quality Alert", "Heat Advisory"].any? { alert[:description].include?(it) }
+      next if ["Air Quality Alert", "Heat Advisory"].any? { alert[:description].include?(it) }
 
       CalendarEvent.new(
         id: alert["id"],

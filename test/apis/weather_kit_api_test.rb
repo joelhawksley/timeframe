@@ -2804,7 +2804,7 @@ class WeatherKitApiTest < Minitest::Test
 
     api = WeatherKitApi.new
     api.stub :data, weather do
-      assert_equal(1, api.weather_alert_calendar_events.length)
+      assert_equal(2, api.weather_alert_calendar_events.length)
     end
   end
 end
