@@ -75,6 +75,8 @@ class WeatherKitApi < Api
 
       hour_i = DateTime.parse(hour[:forecastStart]).to_i
 
+      next if hour_i < Time.now.to_i
+
       existing_event =
         events.find { it[:end_i] == hour_i }
 
