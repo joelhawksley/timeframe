@@ -78,7 +78,15 @@
 
 <hr style="margin: 1rem 0 1rem; border: none; background-color: #ccc; color: #ccc; height: 2px;">
 
-<div style="line-height: 2rem; font-size: 2rem;"><%= DateTime.now.strftime("%A, %B %-d") %></div>
+<div style="margin: 1rem 0 1.5rem; display: flex; justify-content: space-between; line-height: 2rem; font-size: 2rem;">
+  <div><%= DateTime.now.strftime("%A, %B %-d") %></div>
+  <% if view_object[:wind_gust_speed].present? && view_object[:wind_gust_speed].to_i > 10 %>
+  <div>
+    <%= view_object[:wind_gust_speed] %>
+    <i class="fa-solid fa-arrow-up" style="transform: rotate(<%= view_object[:wind_gust_direction].to_i - 45 %>deg);"></i>
+  </div>
+  <% end %>
+</div>
 
 <div style="margin: 1rem 0 2rem; display: flex; justify-content: space-between; line-height: .7">
   <div style="font-size: 5.5rem; margin-left: -.25rem"><%= DateTime.now.strftime("%l:%M%P") %></div>

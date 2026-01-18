@@ -11,9 +11,12 @@ class DisplayContent
     out = {}
     out[:status_icons_with_labels] = []
     out[:timestamp] = current_time.strftime("%-l:%M %p")
-    out[:current_temperature] = home_assistant_api.feels_like_temperature if home_assistant_api.healthy?
 
     if home_assistant_api.healthy?
+      out[:current_temperature] = home_assistant_api.feels_like_temperature
+      out[:wind_gust_speed] = home_assistant_api.wind_gust_speed
+      out[:wind_gust_direction] = home_assistant_api.wind_gust_direction
+
       out[:sonos_status] = home_assistant_api.now_playing
 
       home_assistant_api.problems.each do |problem|

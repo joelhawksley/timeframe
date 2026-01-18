@@ -259,4 +259,44 @@ class HomeAssistantApiTest < Minitest::Test
       refute(api.demo_mode?)
     end
   end
+
+  def test_wind_gust_speed_no_data
+    api = HomeAssistantApi.new
+    api.stub :data, [] do
+      assert_nil(api.wind_gust_speed)
+    end
+  end
+
+  def test_wind_gust_speed
+    config = {
+      "home_assistant" => {
+        "weather_wind_gust_entity_id" => "wind_gust"
+      }
+    }
+
+    api = HomeAssistantApi.new(config)
+    api.stub :data, [{entity_id: "wind_gust", state: "15.3"}] do
+      assert_equal(15, api.wind_gust_speed)
+    end
+  end
+
+  def test_wind_direction_no_data
+    api = HomeAssistantApi.new
+    api.stub :data, [] do
+      assert_nil(api.wind_gust_direction)
+    end
+  end
+
+  def test_wind_direction
+    config = {
+      "home_assistant" => {
+        "weather_wind_direction_entity_id" => "wind_direction"
+      }
+    }
+
+    api = HomeAssistantApi.new(config)
+    api.stub :data, [{entity_id: "wind_direction", state: "90"}] do
+      assert_equal(270, api.wind_gust_direction)
+    end
+  end
 end

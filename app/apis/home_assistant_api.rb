@@ -87,4 +87,20 @@ class HomeAssistantApi < Api
 
     "#{entity[:state].to_i}°"
   end
+
+  def wind_gust_speed
+    entity = data.find { it[:entity_id] == @config["home_assistant"]["weather_wind_gust_entity_id"] }
+
+    return nil unless entity.present?
+
+    entity[:state].to_i
+  end
+
+  def wind_gust_direction
+    entity = data.find { it[:entity_id] == @config["home_assistant"]["weather_wind_direction_entity_id"] }
+
+    return nil unless entity.present?
+
+    entity[:state].to_i + 180
+  end
 end
