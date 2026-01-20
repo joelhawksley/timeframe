@@ -1,7 +1,7 @@
 class CalendarEvent
   DAY_IN_SECONDS = 86_400
 
-  attr_reader :id, :starts_at, :ends_at, :multi_day, :location
+  attr_reader :id, :starts_at, :ends_at, :multi_day, :location, :icon_rotation
   attr_accessor :icon
 
   def self.for_duration(
@@ -77,12 +77,13 @@ class CalendarEvent
     summary:,
     description: nil,
     icon: nil,
+    icon_rotation: nil,
     location: nil,
     daily: false,
     id: SecureRandom.hex
   )
-    @id, @icon, @summary, @description, @location, @daily =
-      id, icon, summary.gsub(/[^a-zA-Z0-9\.\-\"\ \_\°\/\\\&\:\+\,\?\(\)\<\>\'’@#]/, ""), description, location, daily
+    @id, @icon, @icon_rotation, @summary, @description, @location, @daily =
+      id, icon, icon_rotation, summary.gsub(/[^a-zA-Z0-9\.\-\"\  \_\°\/\\\&\:\+\,\?\(\)\<\>\’\''@#]/, ""), description, location, daily
 
     @starts_at = case starts_at
     when Integer

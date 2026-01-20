@@ -83,22 +83,31 @@ class WeatherKitApi < Api
       if existing_event
         existing_event[:end_i] += 3600
         existing_event[:wind_max] = [existing_event[:wind_max], hour_wind_mph].max
+        existing_event[:wind_directions] << hour[:windDirection]
       else
         events <<
           {
             start_i: hour_i,
             end_i: (DateTime.parse(hour[:forecastStart]) + 1.hour).to_i,
-            wind_max: hour_wind_mph
+            wind_max: hour_wind_mph,
+            wind_directions: [hour[:windDirection]]
           }
       end
     end
 
-    events.select { it[:precipitation_type] != "clear" }.map do
+    events.map do
+      # Convert angles to unit vectors, average, then convert back to angle
+      radians = it[:wind_directions].map { |d| d * Math::PI / 180 }
+      avg_x = radians.sum { |r| Math.cos(r) } / radians.size
+      avg_y = radians.sum { |r| Math.sin(r) } / radians.size
+      avg_wind_direction = (Math.atan2(avg_y, avg_x) * 180 / Math::PI).round
+
       CalendarEvent.new(
         id: "#{it[:start_i]}_wind",
         starts_at: it[:start_i],
         ends_at: it[:end_i],
-        icon: "wind",
+        icon: "arrow-up",
+        icon_rotation: avg_wind_direction,
         summary: "Gusts up to #{it[:wind_max].round}mph"
       )
     end

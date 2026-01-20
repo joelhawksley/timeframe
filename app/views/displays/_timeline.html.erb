@@ -9,7 +9,7 @@
               <% if event.icon == event.icon.upcase %>
                 <%= event.icon %>
               <% else %>
-                <i class="fa-fw fa-solid fa-<%= event.icon %>"></i>
+                <i class="fa-fw fa-solid fa-<%= event.icon %>"<%= " style=\"transform: rotate(#{event.icon_rotation + 180}deg)\"".html_safe if event.icon_rotation %>></i>
               <% end %>
             </td>
             <td>
@@ -30,7 +30,7 @@
               <% if event.icon == event.icon.upcase %>
                 <%= event.icon %>
               <% else %>
-                <i class="fa-fw fa-solid fa-<%= event.icon %>"></i>
+                <i class="fa-fw fa-solid fa-<%= event.icon %>"<%= " style=\"transform: rotate(#{event.icon_rotation + 180}deg)\"".html_safe if event.icon_rotation %>></i>
               <% end %>
             </td>
             <td style="white-space: nowrap; font-size: .75rem; padding: 0 .5rem; width: 5.5rem;">
