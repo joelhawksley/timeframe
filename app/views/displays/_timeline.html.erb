@@ -1,0 +1,48 @@
+<% view_object[:day_groups].each_with_index do |event_day, index| %>
+  <div style="display: flex; margin-bottom: 1rem">
+    <div style="width: 15.5rem; vertical-align: top; padding-right: 1rem; border-right: 2px solid #ccc;">
+      <div style="font-size: 2rem; font-weight: 700; line-height: 1"><%= event_day[:day_name] %></div>
+      <table>
+        <% event_day[:events][:daily].each do |event| %>
+          <tr>
+            <td style="width: 1%; text-align: center; font-size: 1.25rem; font-weight: bold; padding-right: 0.25rem;">
+              <% if event.icon == event.icon.upcase %>
+                <%= event.icon %>
+              <% else %>
+                <i class="fa-fw fa-solid fa-<%= event.icon %>"<%= " style=\"transform: rotate(#{event.icon_rotation + 180}deg)\"".html_safe if event.icon_rotation %>></i>
+              <% end %>
+            </td>
+            <td>
+              <div>
+                <%= event.summary(event_day[:date]) %>
+                <div style="font-size: .5rem;"><%= event.location %></div>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </table>
+    </div>
+    <div style="width: 30rem;">
+      <table style="width: 100%">
+        <% event_day[:events][:periodic].each do |event| %>
+          <tr>
+            <td style="width: 2rem; text-align: center; font-size: 1.25rem; font-weight: bold; padding-left: 1rem;">
+              <% if event.icon == event.icon.upcase %>
+                <%= event.icon %>
+              <% else %>
+                <i class="fa-fw fa-solid fa-<%= event.icon %>"<%= " style=\"transform: rotate(#{event.icon_rotation + 180}deg)\"".html_safe if event.icon_rotation %>></i>
+              <% end %>
+            </td>
+            <td style="white-space: nowrap; font-size: .75rem; padding: 0 .5rem; width: 5.5rem;">
+              <%= event.time.to_s.html_safe %>
+            </td>
+            <td style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden; max-width: 0;">
+              <%= event.summary %>
+            </td>
+          </tr>
+        <% end %>
+      </table>
+    </div>
+  </div>
+  <hr style="margin: 0 0 1rem; border: none; background-color: #ccc; color: #ccc; height: 2px;">
+<% end %>
