@@ -1,11 +1,11 @@
 # Timeframe
 
-A web application for displaying information from various APIs on digital signage.
+An e-paper calendar, weather, and smart home family dashboard
 
 ## Project goals
 
 - Serve as a test bed for learning new technologies.
-- Long term: I expect to run this application for years, if not decades.
+- Longevity: I expect to run this application for years, if not decades.
 - Stability: I expect the application to run without maintenance indefinitely.
 - Availability: 100% uptime.
 - Fault tolerance: the application functions when no internet connection is available.
