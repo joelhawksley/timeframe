@@ -2,25 +2,27 @@
   <div style="display: flex; margin-bottom: 1rem">
     <div style="width: 15.5rem; vertical-align: top; padding-right: 1rem; border-right: 2px solid #ccc;">
       <div style="font-size: 2rem; font-weight: 700; line-height: 1"><%= event_day[:day_name] %></div>
-      <table>
-        <% event_day[:events][:daily].each do |event| %>
-          <tr>
-            <td style="width: 1%; text-align: center; font-size: 1.25rem; font-weight: bold; padding-right: 0.25rem;">
-              <% if event.icon == event.icon.upcase %>
-                <%= event.icon %>
-              <% else %>
-                <i class="fa-fw fa-solid fa-<%= event.icon %>"<%= " style=\"transform: rotate(#{event.icon_rotation + 180}deg)\"".html_safe if event.icon_rotation %>></i>
-              <% end %>
-            </td>
-            <td>
-              <div>
-                <%= event.summary(event_day[:date]) %>
-                <div style="font-size: .5rem;"><%= event.location %></div>
-              </div>
-            </td>
-          </tr>
-        <% end %>
-      </table>
+      <% if event_day[:is_today] && current_time.hour < 20 %>
+        <table>
+          <% event_day[:events][:daily].each do |event| %>
+            <tr>
+              <td style="width: 1%; text-align: center; font-size: 1.25rem; font-weight: bold; padding-right: 0.25rem;">
+                <% if event.icon == event.icon.upcase %>
+                  <%= event.icon %>
+                <% else %>
+                  <i class="fa-fw fa-solid fa-<%= event.icon %>"<%= " style=\"transform: rotate(#{event.icon_rotation + 180}deg)\"".html_safe if event.icon_rotation %>></i>
+                <% end %>
+              </td>
+              <td>
+                <div>
+                  <%= event.summary(event_day[:date]) %>
+                  <div style="font-size: .5rem;"><%= event.location %></div>
+                </div>
+              </td>
+            </tr>
+          <% end %>
+        </table>
+      <% end %>
     </div>
     <div style="width: 30rem;">
       <table style="width: 100%">
