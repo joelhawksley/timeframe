@@ -10,6 +10,7 @@ class DisplayContent
     # :nocov:
     out = {}
     out[:status_icons_with_labels] = []
+    out[:current_time] = current_time
     out[:timestamp] = current_time.strftime("%-l:%M %p")
 
     if home_assistant_api.healthy?

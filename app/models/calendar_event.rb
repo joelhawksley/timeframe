@@ -174,14 +174,18 @@ class CalendarEvent
       end_date = ""
 
       if start.to_date != endtime.to_date
-        start_date = "#{start.strftime("%a")} "
-        end_date = "#{endtime.strftime("%a")} "
+        start_date = "#{short_weekday_label(start)} "
+        end_date = "#{short_weekday_label(endtime)} "
 
         "#{start_date}#{start_label}#{start_suffix} -<br />#{end_date}#{end_label.gsub("AM", "a").gsub("PM", "p")}"
       else
         "#{start_date}#{start_label}#{start_suffix} - #{end_date}#{end_label.gsub("AM", "a").gsub("PM", "p")}"
       end
     end
+  end
+
+  def short_weekday_label(value)
+    %w[Su M Tu W Th F Sa][value.wday]
   end
 
   def summary(as_of = nil)

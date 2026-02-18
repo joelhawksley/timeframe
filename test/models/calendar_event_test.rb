@@ -246,7 +246,7 @@ class CalendarEventTest < Minitest::Test
 
     event = CalendarEvent.new(starts_at: start, ends_at: finish, summary: "foo")
 
-    assert_equal("Sun 8:53p -<br />Mon 4p", event.time)
+    assert_equal("Su 8:53p -<br />M 4p", event.time)
   end
 
   def test_event_different_days
@@ -255,7 +255,7 @@ class CalendarEventTest < Minitest::Test
 
     event = CalendarEvent.new(starts_at: start, ends_at: finish, summary: "foo")
 
-    assert_equal("Sun 8p -<br />Mon 4p", event.time)
+    assert_equal("Su 8p -<br />M 4p", event.time)
   end
 
   def test_event_over_time_change
