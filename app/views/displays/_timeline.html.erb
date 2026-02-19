@@ -2,7 +2,7 @@
   <div style="display: flex; margin-bottom: 1rem">
     <div style="width: 15.5rem; vertical-align: top; padding-right: 1rem; border-right: 2px solid #ccc;">
       <div style="font-size: 2rem; font-weight: 700; line-height: 1"><%= event_day[:day_name] %></div>
-      <% if event_day[:is_today] && view_object[:current_time].hour < 20 %>
+      <% if (event_day[:is_today] && view_object[:current_time].hour < 20) || !event_day[:is_today] %>
         <table>
           <% event_day[:events][:daily].each do |event| %>
             <tr>
