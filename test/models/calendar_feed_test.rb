@@ -16,7 +16,7 @@ class CalendarFeedTest < Minitest::Test
         starts_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),
         ends_at: DateTime.new(2023, 8, 27, 23, 0, 0, "-0600"),
         summary: "dupe",
-        icon: "+"
+        icon: "plus"
       )
     ]
 
@@ -35,14 +35,14 @@ class CalendarFeedTest < Minitest::Test
         starts_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),
         ends_at: DateTime.new(2023, 8, 27, 23, 0, 0, "-0600"),
         summary: "dupe",
-        icon: "+"
+        icon: "plus"
       ),
       CalendarEvent.new(
         id: "foo",
         starts_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),
         ends_at: DateTime.new(2023, 8, 27, 23, 0, 0, "-0600"),
         summary: "dupe",
-        icon: "J"
+        icon: "alpha-j"
       )
     ]
 
@@ -54,7 +54,7 @@ class CalendarFeedTest < Minitest::Test
       events = result[:periodic].select { it.id == "foo" }
 
       assert(events.length == 1)
-      assert(events[0].icon == "+")
+      assert(events[0].icon == "plus")
     end
   end
 
@@ -65,14 +65,14 @@ class CalendarFeedTest < Minitest::Test
         starts_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),
         ends_at: DateTime.new(2023, 8, 27, 23, 0, 0, "-0600"),
         summary: "dupe",
-        icon: "J"
+        icon: "alpha-j"
       ),
       CalendarEvent.new(
         id: "foo",
         starts_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),
         ends_at: DateTime.new(2023, 8, 27, 23, 0, 0, "-0600"),
         summary: "dupe",
-        icon: "J"
+        icon: "alpha-j"
       )
     ]
 
@@ -84,7 +84,7 @@ class CalendarFeedTest < Minitest::Test
       events = result[:periodic].select { it.id == "foo" }
 
       assert(events.length == 1)
-      assert(events[0].icon == "J")
+      assert(events[0].icon == "alpha-j")
     end
   end
 
@@ -95,14 +95,14 @@ class CalendarFeedTest < Minitest::Test
         starts_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),
         ends_at: DateTime.new(2023, 8, 27, 23, 0, 0, "-0600"),
         summary: "dupe",
-        icon: "J"
+        icon: "alpha-j"
       ),
       CalendarEvent.new(
         id: "foo",
         starts_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),
         ends_at: DateTime.new(2023, 8, 27, 23, 0, 0, "-0600"),
         summary: "dupe",
-        icon: "J"
+        icon: "alpha-j"
       )
     ]
 
@@ -114,7 +114,7 @@ class CalendarFeedTest < Minitest::Test
       events = result[:periodic].select { it.id.include? "foo" }
 
       assert(events.length == 1)
-      assert(events[0].icon == "J")
+      assert(events[0].icon == "alpha-j")
     end
   end
 
@@ -125,14 +125,14 @@ class CalendarFeedTest < Minitest::Test
         starts_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),
         ends_at: DateTime.new(2023, 8, 27, 23, 0, 0, "-0600"),
         summary: "dupe",
-        icon: "C"
+        icon: "alpha-c"
       ),
       CalendarEvent.new(
         id: "foo",
         starts_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),
         ends_at: DateTime.new(2023, 8, 27, 23, 0, 0, "-0600"),
         summary: "dupe",
-        icon: "J"
+        icon: "alpha-j"
       )
     ]
 
@@ -144,7 +144,7 @@ class CalendarFeedTest < Minitest::Test
       events = result[:periodic].select { it.id == "foo" }
 
       assert(events.length == 1)
-      assert(events[0].icon == "C")
+      assert(events[0].icon == "alpha-c")
     end
   end
 
@@ -157,7 +157,7 @@ class CalendarFeedTest < Minitest::Test
         starts_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),
         ends_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),
         summary: "momentary events should not be filtered out!",
-        icon: "C"
+        icon: "alpha-c"
       )
     ]
 
@@ -176,7 +176,7 @@ class CalendarFeedTest < Minitest::Test
         starts_at: DateTime.new(2023, 8, 27, 0, 0, 0, "-0600"),
         ends_at: DateTime.new(2023, 8, 28, 0, 0, 0, "-0600"),
         summary: "daily events should not be filtered out!",
-        icon: "C"
+        icon: "alpha-c"
       )
     ]
 
@@ -200,7 +200,7 @@ class CalendarFeedTest < Minitest::Test
         starts_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),
         ends_at: DateTime.new(2023, 8, 29, 22, 20, 0, "-0600"),
         summary: "multi-day periodic events should not be filtered out!",
-        icon: "C"
+        icon: "alpha-c"
       )
     ]
 

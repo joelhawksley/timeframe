@@ -55,8 +55,8 @@ class DisplayContent
     end
 
     raw_events << [
-      CalendarEvent.for_duration(date: Timeframe::Application.config.local["birthdate"], icon: "J"),
-      CalendarEvent.for_duration(date: Timeframe::Application.config.local["birthdate_2"], icon: "C")
+      CalendarEvent.for_duration(date: Timeframe::Application.config.local["birthdate"], icon: "alpha-j"),
+      CalendarEvent.for_duration(date: Timeframe::Application.config.local["birthdate_2"], icon: "alpha-c")
     ]
 
     raw_events << home_assistant_calendar_api.data

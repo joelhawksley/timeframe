@@ -10,22 +10,20 @@ class HomeAssistantCalendarApi < Api
     end_time = (Time.now + 5.days).utc.iso8601
 
     out = []
-    icons = fetch_calendar_icons
+    calendars = fetch_calendars
+    icons = fetch_calendar_icons(calendars)
 
-    Timeframe::Application.config.local["calendars"].each do |calendar|
-      next unless calendar["entity_id"].present?
+    calendars.each do |calendar|
+      entity_id = calendar["entity_id"]
 
-      res = HTTParty.get("#{url}/#{calendar["entity_id"]}?start=#{start_time}&end=#{end_time}", headers: headers)
+      res = HTTParty.get("#{url}/#{entity_id}?start=#{start_time}&end=#{end_time}", headers: headers)
 
       res.map! do |event|
-        event["calendar_entity_id"] = calendar["entity_id"]
-        event["calendar_name"] = calendar["name"]
-
         event["starts_at"] = event["start"]["date"] || event["start"]["dateTime"]
 
         event["ends_at"] = event["end"]["date"] || event["end"]["dateTime"]
 
-        event["icon"] = calendar["icon"] || icons[calendar["entity_id"]] || "calendar"
+        event["icon"] = icons[entity_id] || "calendar"
 
         event["id"] = event["uid"]
 
@@ -34,8 +32,6 @@ class HomeAssistantCalendarApi < Api
         event.delete("end")
         event.delete("recurrence_id")
         event.delete("rrule")
-        event.delete("calendar_entity_id")
-        event.delete("calendar_name")
 
         event
       end
@@ -50,21 +46,26 @@ class HomeAssistantCalendarApi < Api
     response
   end
 
-  def fetch_calendar_icons
+  def fetch_calendars
+    res = HTTParty.get(url, headers: headers)
+    return [] unless res.code == 200
+    res.parsed_response
+  end
+
+  def fetch_calendar_icons(calendars)
     states_url = @config["home_assistant_api_url"]
     icons = {}
 
-    Timeframe::Application.config.local["calendars"].each do |calendar|
-      next unless calendar["entity_id"].present?
-      next if calendar["icon"].present?
+    calendars.each do |calendar|
+      entity_id = calendar["entity_id"]
 
       begin
-        res = HTTParty.get("#{states_url}/#{calendar["entity_id"]}", headers: headers)
+        res = HTTParty.get("#{states_url}/#{entity_id}", headers: headers)
         if res.code == 200
           icon = res.dig("attributes", "icon")
           if icon.present?
             icon_name = icon.sub("mdi:", "")
-            icons[calendar["entity_id"]] = icon_name if MDI_CSS.include?(".mdi-#{icon_name}::before")
+            icons[entity_id] = icon_name if MDI_CSS.include?(".mdi-#{icon_name}::before")
           end
         end
       rescue

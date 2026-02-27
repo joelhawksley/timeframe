@@ -6,14 +6,14 @@ module Demo
           id: SecureRandom.uuid,
           starts_at: (Time.now - 1.hour).beginning_of_hour.in_time_zone(HomeAssistantConfigApi.new.time_zone),
           ends_at: (Time.now + 2.hours).beginning_of_hour.in_time_zone(HomeAssistantConfigApi.new.time_zone),
-          icon: "J",
+          icon: "alpha-j",
           summary: "Smart Home Solver demo"
         ),
         CalendarEvent.new(
           id: SecureRandom.uuid,
           starts_at: DateTime.now.in_time_zone(HomeAssistantConfigApi.new.time_zone).beginning_of_day,
           ends_at: DateTime.tomorrow.in_time_zone(HomeAssistantConfigApi.new.time_zone).beginning_of_day,
-          icon: "J",
+          icon: "alpha-j",
           summary: "Smart Home Solver tour"
         ),
         CalendarEvent.new(

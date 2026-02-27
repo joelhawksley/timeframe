@@ -20,8 +20,8 @@ class CalendarFeed
           icon =
             if icons.uniq.length == 1
               icons[0]
-            elsif icons.include?("+")
-              "+"
+            elsif icons.include?("plus")
+              "plus"
             else
               icons[0]
             end
