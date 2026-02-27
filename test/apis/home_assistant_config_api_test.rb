@@ -40,6 +40,21 @@ class HomeAssistantConfigApiTest < Minitest::Test
 
       assert_equal("38.4937", api.latitude)
       assert_equal("-98.7675", api.longitude)
+      assert_equal("America/Chicago", api.time_zone)
+    end
+  end
+
+  def test_time_zone
+    api = HomeAssistantConfigApi.new
+    api.stub :data, {time_zone: "America/Denver"} do
+      assert_equal("America/Denver", api.time_zone)
+    end
+  end
+
+  def test_time_zone_no_data
+    api = HomeAssistantConfigApi.new
+    api.stub :data, {} do
+      assert_nil(api.time_zone)
     end
   end
 

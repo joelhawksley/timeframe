@@ -55,7 +55,7 @@ class HomeAssistantCalendarApi < Api
   end
 
   def private_mode?
-    current_time = DateTime.now.in_time_zone(Timeframe::Application.config.local["timezone"])
+    current_time = DateTime.now.in_time_zone(HomeAssistantConfigApi.new.time_zone)
 
     data.any? { it.summary == "timeframe-private" && it.starts_at <= current_time && it.ends_at >= current_time }
   end

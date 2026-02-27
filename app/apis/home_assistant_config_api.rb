@@ -17,4 +17,8 @@ class HomeAssistantConfigApi < Api
   def longitude
     data[:longitude]&.to_s
   end
+
+  def time_zone
+    data[:time_zone]
+  end
 end

@@ -1,6 +1,6 @@
 class DisplayContent
   def call(
-    current_time: Time.now.utc.in_time_zone(Timeframe::Application.config.local["timezone"]),
+    current_time: Time.now.utc.in_time_zone(HomeAssistantConfigApi.new.time_zone),
     weather_kit_api: WeatherKitApi.new,
     calendar_feed: CalendarFeed.new,
     home_assistant_api: HomeAssistantApi.new,

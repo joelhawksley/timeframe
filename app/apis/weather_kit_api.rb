@@ -34,7 +34,7 @@ class WeatherKitApi < Api
   end
 
   def hourly_calendar_events
-    today = Date.today.in_time_zone(Timeframe::Application.config.local["timezone"])
+    today = Date.today.in_time_zone(HomeAssistantConfigApi.new.time_zone)
 
     hours_forecast = data.dig(:forecastHourly, :hours)
 
