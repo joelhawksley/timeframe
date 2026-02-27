@@ -4,7 +4,8 @@ class DisplayContent
     weather_kit_api: WeatherKitApi.new,
     calendar_feed: CalendarFeed.new,
     home_assistant_api: HomeAssistantApi.new,
-    home_assistant_calendar_api: HomeAssistantCalendarApi.new
+    home_assistant_calendar_api: HomeAssistantCalendarApi.new,
+    home_assistant_weather_api: HomeAssistantWeatherApi.new
   )
     # :nocov:
     out = {}
@@ -28,12 +29,17 @@ class DisplayContent
 
     raw_events = []
 
+    if home_assistant_weather_api.healthy?
+      raw_events << home_assistant_weather_api.daily_calendar_events
+      raw_events << home_assistant_weather_api.hourly_calendar_events
+      raw_events << home_assistant_weather_api.precip_calendar_events
+      raw_events << home_assistant_weather_api.wind_calendar_events
+    else
+      out[:status_icons_with_labels] << ["alert", "Home Assistant Weather"]
+    end
+
     if weather_kit_api.healthy?
       raw_events << (
-        weather_kit_api.daily_calendar_events +
-        weather_kit_api.hourly_calendar_events +
-        weather_kit_api.precip_calendar_events +
-        weather_kit_api.wind_calendar_events +
         weather_kit_api.weather_alert_calendar_events
       )
 
