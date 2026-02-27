@@ -12,10 +12,6 @@ scheduler.every "1m" do
   WeatherKitApi.new.fetch
 end
 
-scheduler.every "1m" do
-  AirNowApi.new.fetch
-end
-
 # This will attach scheduler thread to Puma's background thread.
 # Dont forget to add this line!
 scheduler.join

@@ -4,8 +4,7 @@ class DisplayContent
     weather_kit_api: WeatherKitApi.new,
     calendar_feed: CalendarFeed.new,
     home_assistant_api: HomeAssistantApi.new,
-    home_assistant_calendar_api: HomeAssistantCalendarApi.new,
-    air_now_api: AirNowApi.new
+    home_assistant_calendar_api: HomeAssistantCalendarApi.new
   )
     # :nocov:
     out = {}
@@ -49,10 +48,6 @@ class DisplayContent
       end
     else
       out[:status_icons_with_labels] << ["triangle-exclamation", "Apple Weather"]
-    end
-
-    if air_now_api.healthy?
-      raw_events << air_now_api.daily_calendar_events
     end
 
     if home_assistant_calendar_api.healthy? && home_assistant_calendar_api.private_mode?
