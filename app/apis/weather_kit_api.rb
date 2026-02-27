@@ -1,11 +1,14 @@
 class WeatherKitApi < Api
+  def initialize(home_assistant_config_api: HomeAssistantConfigApi.new)
+    @home_assistant_config_api = home_assistant_config_api
+  end
+
   def fetch
     # :nocov:
     client = Tenkit::Client.new
-    local_config = Timeframe::Application.config.local
     hash = client.weather(
-      local_config["latitude"],
-      local_config["longitude"],
+      @home_assistant_config_api.latitude,
+      @home_assistant_config_api.longitude,
       data_sets: [
         :current_weather,
         :forecast_next_hour,
