@@ -1,5 +1,6 @@
 class DisplaysController < ApplicationController
   layout "display"
+  after_action { response.headers["X-Deploy-Time"] = DEPLOY_TIME.to_s }
 
   def thirteen
     render "thirteen", locals: {view_object: view_object}

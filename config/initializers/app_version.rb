@@ -6,3 +6,5 @@ APP_VERSION =
   else
     Rails.env
   end
+
+DEPLOY_TIME = Time.now.to_i
