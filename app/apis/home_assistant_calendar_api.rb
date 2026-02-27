@@ -15,7 +15,6 @@ class HomeAssistantCalendarApi < Api
 
     calendars.each do |calendar|
       entity_id = calendar["entity_id"]
-      next unless @enabled_entity_ids.include?(entity_id)
 
       res = HTTParty.get("#{url}/#{entity_id}?start=#{start_time}&end=#{end_time}", headers: headers)
 
@@ -56,7 +55,6 @@ class HomeAssistantCalendarApi < Api
   def fetch_calendar_icons(calendars)
     states_url = @config["home_assistant_api_url"]
     icons = {}
-    @enabled_entity_ids = []
 
     calendars.each do |calendar|
       entity_id = calendar["entity_id"]
@@ -64,11 +62,6 @@ class HomeAssistantCalendarApi < Api
       begin
         res = HTTParty.get("#{states_url}/#{entity_id}", headers: headers)
         if res.code == 200
-          state = res.dig("state")
-          next if state == "off"
-
-          @enabled_entity_ids << entity_id
-
           icon = res.dig("attributes", "icon")
           if icon.present?
             icon_name = icon.sub("mdi:", "")
@@ -77,7 +70,6 @@ class HomeAssistantCalendarApi < Api
         end
       rescue
         # Fall back to default icon if state lookup fails
-        @enabled_entity_ids << entity_id
       end
     end
 
