@@ -1,4 +1,6 @@
 class HomeAssistantCalendarApi < Api
+  MDI_CSS = File.read(Rails.root.join("public/css/mdi/materialdesignicons.css")).freeze
+
   def initialize(config = Timeframe::Application.config.local)
     @config = config
   end
@@ -8,6 +10,7 @@ class HomeAssistantCalendarApi < Api
     end_time = (Time.now + 5.days).utc.iso8601
 
     out = []
+    icons = fetch_calendar_icons
 
     Timeframe::Application.config.local["calendars"].each do |calendar|
       next unless calendar["entity_id"].present?
@@ -22,7 +25,7 @@ class HomeAssistantCalendarApi < Api
 
         event["ends_at"] = event["end"]["date"] || event["end"]["dateTime"]
 
-        event["icon"] = calendar["icon"]
+        event["icon"] = calendar["icon"] || icons[calendar["entity_id"]] || "calendar"
 
         event["id"] = event["uid"]
 
@@ -45,6 +48,31 @@ class HomeAssistantCalendarApi < Api
 
   def prepare_response(response)
     response
+  end
+
+  def fetch_calendar_icons
+    states_url = @config["home_assistant_api_url"]
+    icons = {}
+
+    Timeframe::Application.config.local["calendars"].each do |calendar|
+      next unless calendar["entity_id"].present?
+      next if calendar["icon"].present?
+
+      begin
+        res = HTTParty.get("#{states_url}/#{calendar["entity_id"]}", headers: headers)
+        if res.code == 200
+          icon = res.dig("attributes", "icon")
+          if icon.present?
+            icon_name = icon.sub("mdi:", "")
+            icons[calendar["entity_id"]] = icon_name if MDI_CSS.include?(".mdi-#{icon_name}::before")
+          end
+        end
+      rescue
+        # Fall back to default icon if state lookup fails
+      end
+    end
+
+    icons
   end
 
   def headers

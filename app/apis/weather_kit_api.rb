@@ -151,7 +151,7 @@ class WeatherKitApi < Api
         when "snow", "mixed", "wintrymix"
           "snowflake"
         when "rain"
-          "cloud-rain"
+          "weather-rainy"
         end
 
       CalendarEvent.new(
@@ -176,7 +176,7 @@ class WeatherKitApi < Api
         id: alert["id"],
         starts_at: alert[:effectiveTime],
         ends_at: alert[:expireTime],
-        icon: "triangle-exclamation",
+        icon: "alert",
         summary: alert[:description]
       )
     end.compact
@@ -184,17 +184,17 @@ class WeatherKitApi < Api
 
   def icon_for(condition_code)
     icon_mappings = {
-      "Thunderstorms" => "cloud-bolt",
+      "Thunderstorms" => "weather-lightning",
       "Cloudy" => "cloud",
       "MostlyCloudy" => "cloud",
-      "PartlyCloudy" => "cloud-sun",
-      "MostlyClear" => "cloud-sun",
-      "Clear" => "sun",
-      "Windy" => "wind",
-      "Drizzle" => "cloud-rain",
-      "Rain" => "cloud-rain",
-      "HeavyRain" => "cloud-rain",
-      "Haze" => "smog",
+      "PartlyCloudy" => "weather-partly-cloudy",
+      "MostlyClear" => "weather-partly-cloudy",
+      "Clear" => "weather-sunny",
+      "Windy" => "weather-windy",
+      "Drizzle" => "weather-rainy",
+      "Rain" => "weather-rainy",
+      "HeavyRain" => "weather-rainy",
+      "Haze" => "weather-fog",
       "Snow" => "snowflake",
       "HeavySnow" => "snowflake",
       "Flurries" => "snowflake",
@@ -207,7 +207,7 @@ class WeatherKitApi < Api
     else
       Rails.logger.info("Unknown condition code: #{condition_code}")
 
-      "question"
+      "help-circle"
     end
   end
 

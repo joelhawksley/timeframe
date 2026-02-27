@@ -21,7 +21,7 @@
     <div class="hide-if-empty" style="background-color: #ddd; color: black; padding: 0.5rem 2rem; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">
       <div>
         <div style="display: inline-block; padding-right: 1rem; vertical-align: super">
-          <i class="fa-solid fa-fw fa-<%= view_object[:minutely_weather_minutes_icon] %>"></i>
+          <i class="mdi mdi-<%= view_object[:minutely_weather_minutes_icon] %>"></i>
         </div>
         <div style="display: inline-block">
           <table class="minutely" border="0" cellpadding="0" cellspacing="0">
@@ -46,7 +46,7 @@
   <% end %>
   <% if view_object[:sonos_status].present? %>
     <div class="hide-if-empty" style="background-color: black; color: white; padding: 1rem 2rem; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">
-      <i class="fa-solid fa-volume-high fa-fw"></i>
+      <i class="mdi mdi-volume-high"></i>
       <strong><%= view_object[:sonos_status][:artist] %></strong>
       <% if view_object[:sonos_status][:track].present? %>
         : <%= view_object[:sonos_status][:track] %>
@@ -60,7 +60,7 @@
   <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 1rem;">
     <% view_object[:status_icons_with_labels][1..-1].each do |status_icon, label| %>
       <span style="margin-right: .5rem;">
-        <i class="fa-solid fa-<%= status_icon %>"></i>
+        <i class="mdi mdi-<%= status_icon %>"></i>
         <%= label %>
       </span>
     <% end %>
@@ -69,7 +69,7 @@
   <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
     <% view_object[:status_icons_with_labels].first(1).each do |status_icon, label| %>
       <span>
-        <i class="fa-solid fa-<%= status_icon %>"></i>
+        <i class="mdi mdi-<%= status_icon %>"></i>
         <%= label %>
       </span>
     <% end %>
@@ -83,7 +83,7 @@
   <% if view_object[:wind_gust_speed].present? && view_object[:wind_gust_speed].to_i > 10 %>
   <div>
     <%= view_object[:wind_gust_speed] %>
-    <i class="fa-solid fa-arrow-up" style="transform: rotate(<%= view_object[:wind_gust_direction].to_i - 45 %>deg);"></i>
+    <i class="mdi mdi-arrow-up" style="transform: rotate(<%= view_object[:wind_gust_direction].to_i - 45 %>deg);"></i>
   </div>
   <% end %>
 </div>

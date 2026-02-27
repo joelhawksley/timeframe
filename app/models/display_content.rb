@@ -23,7 +23,7 @@ class DisplayContent
         out[:status_icons_with_labels] << [problem[:icon], problem[:message]]
       end
     else
-      out[:status_icons_with_labels] << ["triangle-exclamation", "Home Assistant"]
+      out[:status_icons_with_labels] << ["alert", "Home Assistant"]
     end
 
     raw_events = []
@@ -40,18 +40,18 @@ class DisplayContent
       condition = weather_kit_api.data.dig(:forecastNextHour, :summary)&.first.to_h[:condition]
 
       if condition != "clear"
-        minutely_weather_minutes_icon = (condition == "snow") ? "snowflake" : "cloud-rain"
+        minutely_weather_minutes_icon = (condition == "snow") ? "snowflake" : "weather-rainy"
         minutely_weather_minutes = weather_kit_api.data.dig(:forecastNextHour, :minutes)&.first(60)
 
         out[:minutely_weather_minutes] = minutely_weather_minutes
         out[:minutely_weather_minutes_icon] = minutely_weather_minutes_icon
       end
     else
-      out[:status_icons_with_labels] << ["triangle-exclamation", "Apple Weather"]
+      out[:status_icons_with_labels] << ["alert", "Apple Weather"]
     end
 
     if home_assistant_calendar_api.healthy? && home_assistant_calendar_api.private_mode?
-      out[:status_icons_with_labels] << ["eye-slash", "Private mode"]
+      out[:status_icons_with_labels] << ["eye-off", "Private mode"]
     end
 
     raw_events << [

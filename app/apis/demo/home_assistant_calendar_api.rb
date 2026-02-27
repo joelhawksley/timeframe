@@ -20,7 +20,7 @@ module Demo
           id: SecureRandom.uuid,
           starts_at: DateTime.now.in_time_zone(HomeAssistantConfigApi.new.time_zone).beginning_of_day,
           ends_at: DateTime.tomorrow.in_time_zone(HomeAssistantConfigApi.new.time_zone).beginning_of_day,
-          icon: "birthday-cake",
+          icon: "cake-variant",
           summary: "Reed",
           description: "1980"
         )

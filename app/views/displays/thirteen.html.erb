@@ -6,7 +6,7 @@
   <div style="float: left;">
     <% view_object[:status_icons_with_labels][1..-1].each do |status_icon, label| %>
     <span style="margin-right: 1rem;">
-      <i class="fa-solid fa-<%= status_icon %>"></i>
+      <i class="mdi mdi-<%= status_icon %>"></i>
       <%= label %>
     </span>
   <% end %>
@@ -14,7 +14,7 @@
   <div style="float: right; text-align: right;">
     <% view_object[:status_icons_with_labels].first(1).each do |status_icon, label| %>
     <span>
-      <i class="fa-solid fa-<%= status_icon %>"></i>
+      <i class="mdi mdi-<%= status_icon %>"></i>
       <%= label %>
     </span>
   <% end %>
