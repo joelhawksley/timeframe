@@ -4,6 +4,7 @@ def fetch_weather
   config_api = HomeAssistantConfigApi.new
   config_api.fetch
   WeatherKitApi.new(home_assistant_config_api: config_api).fetch
+  HomeAssistantWeatherApi.new.fetch
 end
 
 def fetch_calendar
