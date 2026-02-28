@@ -29,14 +29,13 @@ class DisplayContent
 
     raw_events = []
 
-    # if home_assistant_weather_api.healthy?
-    #   raw_events << home_assistant_weather_api.hourly_calendar_events
-    #   raw_events << home_assistant_weather_api.daily_calendar_events
-    # end
+    if home_assistant_weather_api.healthy?
+      # raw_events << home_assistant_weather_api.hourly_calendar_events
+      raw_events << home_assistant_weather_api.daily_calendar_events
+    end
 
     if weather_kit_api.healthy?
       raw_events << (
-        weather_kit_api.daily_calendar_events +
         weather_kit_api.hourly_calendar_events +
         weather_kit_api.precip_calendar_events +
         weather_kit_api.wind_calendar_events +
