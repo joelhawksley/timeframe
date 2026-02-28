@@ -7,7 +7,11 @@
           <% event_day[:events][:daily].each do |event| %>
             <tr>
               <td style="width: 1%; text-align: center; font-size: 1.25rem; font-weight: bold; padding-right: 0.25rem;">
-                <i class="mdi mdi-<%= event.icon %>" style="<%= "font-size: 140%; line-height: 1; " if event.icon&.start_with?("alpha-") %><%= "transform: rotate(#{event.icon_rotation + 180}deg); " if event.icon_rotation %>"></i>
+                <% if event.icon&.start_with?("alpha-") %>
+                  <span><%= event.icon.delete_prefix("alpha-").upcase %></span>
+                <% else %>
+                  <i class="mdi mdi-<%= event.icon %>" style="<%= "transform: rotate(#{event.icon_rotation + 180}deg); " if event.icon_rotation %>"></i>
+                <% end %>
               </td>
               <td>
                 <div>
@@ -25,7 +29,11 @@
         <% event_day[:events][:periodic].each do |event| %>
           <tr>
             <td style="width: 2rem; text-align: center; font-size: 1.25rem; font-weight: bold; padding-left: 1rem;">
-              <i class="mdi mdi-<%= event.icon %>" style="<%= "font-size: 140%; line-height: 1; " if event.icon&.start_with?("alpha-") %><%= "transform: rotate(#{event.icon_rotation + 180}deg); " if event.icon_rotation %>"></i>
+              <% if event.icon&.start_with?("alpha-") %>
+                <span><%= event.icon.delete_prefix("alpha-").upcase %></span>
+              <% else %>
+                <i class="mdi mdi-<%= event.icon %>" style="<%= "transform: rotate(#{event.icon_rotation + 180}deg); " if event.icon_rotation %>"></i>
+              <% end %>
             </td>
             <td style="white-space: nowrap; font-size: .75rem; padding: 0 .5rem; width: 5.5rem;">
               <%= event.time.to_s.html_safe %>
