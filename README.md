@@ -19,14 +19,28 @@ An e-paper calendar, weather, and smart home family dashboard
         - Fetched by a client Mac Mini with a [Boox Mira Pro](https://shop.boox.com/products/mira) (25.3" 3200x1800px e-Paper display) running Google Chrome full screen.
         - Self-refreshes entire screen every 2s.
 
+## Dependencies
+
+- Home Assistant + API
+    - Calendar integration
+        - Required for scheduled tasks
+        - If you do not have a Home Assistance instance (yet!) you can run a Dockerized version for local development purposes:
+            - ```bash
+          docker run -d --restart=always -p 8123:8123 homeassistant/home-assistant
+          ```
+
 ## Local development
+
+### Configuration
+
+1) Create `config.yml` from `config.yml.example`
+    1) Fill out `home_assistant_token` by creating a long-lived access token under Home Assistant > Profile > Security
 
 ### Setup
 
 1) `bundle install`
-2) Copy `config.yml`from a friend.
-3) `rails s`
-4) Visit [http://localhost:3000](http://localhost:3000)
+2) `rails s`
+3) Visit [http://localhost:3000](http://localhost:3000)
 
 ### Testing
 
