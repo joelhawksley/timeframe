@@ -11,12 +11,13 @@ class HomeAssistantApi < Api
   end
 
   def prepare_response(response)
-    entity_ids = @config["home_assistant"].values.flatten
+    entity_ids = @config["home_assistant"]&.values&.flatten || []
 
     # Only save entity states we are interested in vs. all 1000+ entities
     response.filter do
       entity_ids.include?(it["entity_id"]) ||
         it["entity_id"].include?("sensor.timeframe") ||
+        it["entity_id"].start_with?("weather.") ||
         it["state"] == "unavailable" && !it["entity_id"].include?("image.")
     end
   end
@@ -119,11 +120,30 @@ class HomeAssistantApi < Api
     1.minute
   end
 
+  def weather_entity_id
+    # First, look for a sensor whose entity_id ends with timeframe_weather_entity_id
+    override = data.find { it[:entity_id].end_with?("timeframe_weather_entity_id") }
+    return override[:state] if override.present? && override[:state].present?
+
+    # Fall back to the first weather.* entity
+    weather = data.find { it[:entity_id].start_with?("weather.") }
+    weather&.dig(:entity_id)
+  end
+
   def feels_like_temperature
-    entity = data.find { it[:entity_id] == @config["home_assistant"]["weather_feels_like_entity_id"] }
+    # First, look for a sensor whose entity_id ends with timeframe_weather_feels_like_entity_id
+    override = data.find { it[:entity_id].end_with?("timeframe_weather_feels_like_entity_id") }
 
-    return nil unless entity.present?
+    if override.present? && override[:state].present?
+      entity = data.find { it[:entity_id] == override[:state] }
+      return "#{entity[:state].to_i}°" if entity.present?
+    end
 
-    "#{entity[:state].to_i}°"
+    # Fall back to apparent_temperature attribute from the weather entity
+    weather = data.find { it[:entity_id] == weather_entity_id }
+    apparent = weather&.dig(:attributes, :apparent_temperature)
+    return "#{apparent.to_i}°" if apparent.present?
+
+    nil
   end
 end

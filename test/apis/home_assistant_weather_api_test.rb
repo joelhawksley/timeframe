@@ -5,9 +5,16 @@ require "test_helper"
 class HomeAssistantWeatherApiTest < Minitest::Test
   def setup
     Rails.cache.delete(APP_VERSION + "home_assistant_weather_api")
+    Rails.cache.delete(APP_VERSION + "home_assistant_api")
   end
 
   def test_fetch
+    # Pre-populate HomeAssistantApi cache so weather entity can be discovered
+    Rails.cache.write(
+      APP_VERSION + "home_assistant_api",
+      {last_fetched_at: Time.now.utc, response: [{entity_id: "weather.honeysuckle_weather", state: "sunny"}]}.to_json
+    )
+
     VCR.use_cassette(:home_assistant_weather) do
       api = HomeAssistantWeatherApi.new
       api.fetch

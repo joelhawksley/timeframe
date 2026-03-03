@@ -4,7 +4,7 @@ class HomeAssistantWeatherApi < Api
   end
 
   def fetch
-    entity_id = @config.dig("home_assistant", "weather_entity_id")
+    entity_id = HomeAssistantApi.new(@config).weather_entity_id
     return unless entity_id.present?
 
     hourly = fetch_forecast(entity_id, "hourly")

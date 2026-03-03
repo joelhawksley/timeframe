@@ -13,15 +13,47 @@ class HomeAssistantApiTest < Minitest::Test
   end
 
   def test_feels_like_temperature
-    config = {
-      "home_assistant" => {
-        "weather_feels_like_entity_id" => "feels_like"
-      }
-    }
-
-    api = HomeAssistantApi.new(config)
-    api.stub :data, [{entity_id: "feels_like", state: "49.712"}] do
+    api = HomeAssistantApi.new
+    api.stub :data, [
+      {entity_id: "sensor.timeframe_weather_feels_like_entity_id", state: "sensor.feels_like"},
+      {entity_id: "sensor.feels_like", state: "49.712"}
+    ] do
       assert_equal("49°", api.feels_like_temperature)
+    end
+  end
+
+  def test_feels_like_temperature_falls_back_to_weather_entity
+    api = HomeAssistantApi.new
+    api.stub :data, [
+      {entity_id: "weather.my_weather", state: "sunny", attributes: {apparent_temperature: 72.3}}
+    ] do
+      assert_equal("72°", api.feels_like_temperature)
+    end
+  end
+
+  def test_weather_entity_id_from_timeframe_sensor
+    api = HomeAssistantApi.new
+    api.stub :data, [
+      {entity_id: "sensor.timeframe_weather_entity_id", state: "weather.custom"},
+      {entity_id: "weather.default", state: "sunny"}
+    ] do
+      assert_equal("weather.custom", api.weather_entity_id)
+    end
+  end
+
+  def test_weather_entity_id_falls_back_to_first_weather_entity
+    api = HomeAssistantApi.new
+    api.stub :data, [
+      {entity_id: "weather.my_weather", state: "sunny"}
+    ] do
+      assert_equal("weather.my_weather", api.weather_entity_id)
+    end
+  end
+
+  def test_weather_entity_id_returns_nil_when_no_weather
+    api = HomeAssistantApi.new
+    api.stub :data, [] do
+      assert_nil(api.weather_entity_id)
     end
   end
 
