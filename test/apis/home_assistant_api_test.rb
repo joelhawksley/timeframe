@@ -371,4 +371,76 @@ class HomeAssistantApiTest < Minitest::Test
     end
   end
 
+  def test_daily_events_no_data
+    api = HomeAssistantApi.new({})
+    api.stub :data, [] do
+      assert_equal([], api.daily_events)
+    end
+  end
+
+  def test_daily_events_empty_state
+    data = [{entity_id: "sensor.timeframe_daily_event_test", state: ""}]
+
+    api = HomeAssistantApi.new({})
+    api.stub :data, data do
+      assert_equal([], api.daily_events)
+    end
+  end
+
+  def test_daily_events
+    data = [{entity_id: "sensor.timeframe_daily_event_trash", state: "trash-can,Trash day"}]
+
+    api = HomeAssistantApi.new({})
+    travel_to DateTime.new(2023, 8, 27, 12, 0, 0, "-0600") do
+      api.stub :data, data do
+        events = api.daily_events
+        assert_equal(1, events.length)
+        assert_equal("trash-can", events.first.icon)
+        assert_equal("Trash day", events.first.summary)
+        assert(events.first.daily?)
+      end
+    end
+  end
+
+  def test_daily_events_with_underscore
+    data = [{entity_id: "sensor.timeframe_daily_event_recycle", state: "recycle,recycling_day"}]
+
+    api = HomeAssistantApi.new({})
+    travel_to DateTime.new(2023, 8, 27, 12, 0, 0, "-0600") do
+      api.stub :data, data do
+        events = api.daily_events
+        assert_equal(1, events.length)
+        assert_equal("Recycling day", events.first.summary)
+      end
+    end
+  end
+
+  def test_daily_events_multiple_sensors
+    data = [
+      {entity_id: "sensor.timeframe_daily_event_trash", state: "trash-can,Trash day"},
+      {entity_id: "sensor.timeframe_daily_event_recycle", state: "recycle,Recycling"}
+    ]
+
+    api = HomeAssistantApi.new({})
+    travel_to DateTime.new(2023, 8, 27, 12, 0, 0, "-0600") do
+      api.stub :data, data do
+        events = api.daily_events
+        assert_equal(2, events.length)
+        assert_equal("trash-can", events[0].icon)
+        assert_equal("Trash day", events[0].summary)
+        assert_equal("recycle", events[1].icon)
+        assert_equal("Recycling", events[1].summary)
+      end
+    end
+  end
+
+  def test_daily_events_invalid_format
+    data = [{entity_id: "sensor.timeframe_daily_event_test", state: "just-an-icon"}]
+
+    api = HomeAssistantApi.new({})
+    api.stub :data, data do
+      assert_equal([], api.daily_events)
+    end
+  end
+
 end

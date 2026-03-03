@@ -32,6 +32,10 @@ class DisplayContent
       raw_events << home_assistant_weather_api.daily_calendar_events
     end
 
+    if home_assistant_api.healthy?
+      raw_events << home_assistant_api.daily_events(current_time: current_time)
+    end
+
     if weather_kit_api.healthy?
       raw_events << (
         weather_kit_api.hourly_calendar_events +
@@ -56,11 +60,6 @@ class DisplayContent
     if home_assistant_calendar_api.healthy? && home_assistant_calendar_api.private_mode?
       out[:top_left] << {icon: "eye-off", label: "Private mode"}
     end
-
-    raw_events << [
-      CalendarEvent.for_duration(date: Timeframe::Application.config.local["birthdate"], icon: "alpha-j"),
-      CalendarEvent.for_duration(date: Timeframe::Application.config.local["birthdate_2"], icon: "alpha-c")
-    ]
 
     raw_events << home_assistant_calendar_api.data
 

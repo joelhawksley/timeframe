@@ -65,6 +65,25 @@ class HomeAssistantApi < Api
       end
   end
 
+  def daily_events(current_time: Time.now.in_time_zone(HomeAssistantConfigApi.new.time_zone))
+    today = current_time.to_date
+
+    data
+      .select { it[:entity_id].start_with?("sensor.timeframe_daily_event") && it[:state].present? }
+      .filter_map do
+        parts = it[:state].split(",").map(&:strip)
+        next if parts.length < 2
+
+        CalendarEvent.new(
+          id: "_daily_event_#{it[:entity_id]}",
+          starts_at: today.to_time,
+          ends_at: (today + 1.day).to_time,
+          icon: parts.first,
+          summary: parts.last.then { it.include?("_") ? it.humanize : it }
+        )
+      end
+  end
+
   def now_playing
     entity = data.find { it[:entity_id] == @config["home_assistant"]["media_player_entity_id"] }
 
