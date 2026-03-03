@@ -176,57 +176,70 @@ class HomeAssistantApiTest < Minitest::Test
     end
   end
 
-  def test_problems_csv_dedupe
-    data = [{entity_id: "sensor.timeframe_front_door", state: "door-open,Front\n\n  \n      door-open,Front"}]
+  def test_top_left_csv_dedupe
+    data = [{entity_id: "sensor.timeframe_top_left_front_door", state: "door-open,Front\n\n  \n      door-open,Front"}]
 
     api = HomeAssistantApi.new({})
     api.stub :data, data do
-      assert_equal(api.problems, [{icon: "door-open", message: "Front"}])
+      assert_equal([{icon: "door-open", label: "Front"}], api.top_left)
     end
   end
 
-  def test_problems_csv
-    data = [{entity_id: "sensor.timeframe_front_door", state: "door-open,Front"}]
+  def test_top_left
+    data = [{entity_id: "sensor.timeframe_top_left_front_door", state: "door-open,Front"}]
 
     api = HomeAssistantApi.new({})
     api.stub :data, data do
-      assert_equal(api.problems, [{icon: "door-open", message: "Front"}])
+      assert_equal([{icon: "door-open", label: "Front"}], api.top_left)
     end
   end
 
-  def test_problems_csv_underscore
-    data = [{entity_id: "sensor.timeframe_front_door", state: "door-open,front_door_open"}]
+  def test_top_left_with_underscore
+    data = [{entity_id: "sensor.timeframe_top_left_front_door", state: "door-open,front_door_open"}]
 
     api = HomeAssistantApi.new({})
     api.stub :data, data do
-      assert_equal(api.problems, [{icon: "door-open", message: "Front door open"}])
+      assert_equal([{icon: "door-open", label: "Front door open"}], api.top_left)
     end
   end
 
-  def test_problems_csv_capitalization
-    data = [{entity_id: "sensor.timeframe_front_door", state: "crow,Great Horned"}]
+  def test_top_left_capitalization
+    data = [{entity_id: "sensor.timeframe_top_left_front_door", state: "crow,Great Horned"}]
 
     api = HomeAssistantApi.new({})
     api.stub :data, data do
-      assert_equal(api.problems, [{icon: "crow", message: "Great Horned"}])
+      assert_equal([{icon: "crow", label: "Great Horned"}], api.top_left)
     end
   end
 
-  def test_problems_csv_newlines
-    data = [{entity_id: "sensor.timeframe_states", state: "door-open,Front\n\n  \n      lock-open,Patio"}]
+  def test_top_left_empty
+    data = [{entity_id: "sensor.timeframe_top_left_front_door", state: ""}]
 
     api = HomeAssistantApi.new({})
     api.stub :data, data do
-      assert_equal(api.problems, [{icon: "door-open", message: "Front"}, {icon: "lock-open", message: "Patio"}])
+      assert_equal([], api.top_left)
     end
   end
 
-  def test_problems_csv_empty
-    data = [{entity_id: "sensor.timeframe_front_door", state: ""}]
+  def test_top_left_no_data
+    api = HomeAssistantApi.new({})
+    api.stub :data, [] do
+      assert_equal([], api.top_left)
+    end
+  end
+
+  def test_top_left_multiple_sensors
+    data = [
+      {entity_id: "sensor.timeframe_top_left_front_door", state: "door-open,Front"},
+      {entity_id: "sensor.timeframe_top_left_patio", state: "lock-open,Patio"}
+    ]
 
     api = HomeAssistantApi.new({})
     api.stub :data, data do
-      assert_equal(api.problems, [])
+      assert_equal([
+        {icon: "door-open", label: "Front"},
+        {icon: "lock-open", label: "Patio"}
+      ], api.top_left)
     end
   end
 
@@ -260,43 +273,102 @@ class HomeAssistantApiTest < Minitest::Test
     end
   end
 
-  def test_wind_gust_speed_no_data
-    api = HomeAssistantApi.new
+  def test_top_right_no_data
+    api = HomeAssistantApi.new({})
     api.stub :data, [] do
-      assert_nil(api.wind_gust_speed)
+      assert_equal([], api.top_right)
     end
   end
 
-  def test_wind_gust_speed
-    config = {
-      "home_assistant" => {
-        "weather_wind_gust_entity_id" => "wind_gust"
-      }
-    }
+  def test_top_right_empty_state
+    data = [{entity_id: "sensor.timeframe_top_right", state: ""}]
 
-    api = HomeAssistantApi.new(config)
-    api.stub :data, [{entity_id: "wind_gust", state: "15.3"}] do
-      assert_equal(15, api.wind_gust_speed)
+    api = HomeAssistantApi.new({})
+    api.stub :data, data do
+      assert_equal([], api.top_right)
     end
   end
 
-  def test_wind_direction_no_data
-    api = HomeAssistantApi.new
+  def test_top_right
+    data = [{entity_id: "sensor.timeframe_top_right", state: "thermometer,72°"}]
+
+    api = HomeAssistantApi.new({})
+    api.stub :data, data do
+      assert_equal([{icon: "thermometer", label: "72°"}], api.top_right)
+    end
+  end
+
+  def test_top_right_with_underscore
+    data = [{entity_id: "sensor.timeframe_top_right", state: "thermometer,feels_like"}]
+
+    api = HomeAssistantApi.new({})
+    api.stub :data, data do
+      assert_equal([{icon: "thermometer", label: "Feels like"}], api.top_right)
+    end
+  end
+
+  def test_top_right_multiple_sensors
+    data = [
+      {entity_id: "sensor.timeframe_top_right_temperature", state: "thermometer,72°"},
+      {entity_id: "sensor.timeframe_top_right_humidity", state: "water-percent,45%"}
+    ]
+
+    api = HomeAssistantApi.new({})
+    api.stub :data, data do
+      assert_equal([
+        {icon: "thermometer", label: "72°"},
+        {icon: "water-percent", label: "45%"}
+      ], api.top_right)
+    end
+  end
+
+  def test_weather_status_no_data
+    api = HomeAssistantApi.new({})
     api.stub :data, [] do
-      assert_nil(api.wind_gust_direction)
+      assert_equal([], api.weather_status)
     end
   end
 
-  def test_wind_direction
-    config = {
-      "home_assistant" => {
-        "weather_wind_direction_entity_id" => "wind_direction"
-      }
-    }
+  def test_weather_status_empty_state
+    data = [{entity_id: "sensor.timeframe_weather_status_aqi", state: ""}]
 
-    api = HomeAssistantApi.new(config)
-    api.stub :data, [{entity_id: "wind_direction", state: "90"}] do
-      assert_equal(270, api.wind_gust_direction)
+    api = HomeAssistantApi.new({})
+    api.stub :data, data do
+      assert_equal([], api.weather_status)
     end
   end
+
+  def test_weather_status
+    data = [{entity_id: "sensor.timeframe_weather_status_aqi", state: "air-filter,AQI 42"}]
+
+    api = HomeAssistantApi.new({})
+    api.stub :data, data do
+      assert_equal([{icon: "air-filter", label: "AQI 42"}], api.weather_status)
+    end
+  end
+
+  def test_weather_status_with_rotation
+    data = [{entity_id: "sensor.timeframe_weather_status_wind", state: "arrow-up,15,225"}]
+
+    api = HomeAssistantApi.new({})
+    api.stub :data, data do
+      assert_equal([{icon: "arrow-up", label: "15", rotation: 225}], api.weather_status)
+    end
+  end
+
+  def test_weather_status_multiple_sensors
+    data = [
+      {entity_id: "sensor.timeframe_weather_status_aqi", state: "air-filter,AQI 42"},
+      {entity_id: "sensor.timeframe_weather_status_uv", state: "white-balance-sunny,UV 6"}
+    ]
+
+    api = HomeAssistantApi.new({})
+    api.stub :data, data do
+      assert_equal([
+        {icon: "air-filter", label: "AQI 42"},
+        {icon: "white-balance-sunny", label: "UV 6"}
+      ], api.weather_status)
+    end
+  end
+
 end

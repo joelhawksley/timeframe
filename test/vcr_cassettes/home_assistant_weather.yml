@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: post
-    uri: http://homeassistant.local:8123/api/services/weather/get_forecasts
+    uri: http://homeassistant.local:8123/api/services/weather/get_forecasts?return_response
     body:
       encoding: UTF-8
       string: '{"entity_id":"weather.honeysuckle_weather","type":"hourly"}'
@@ -24,11 +24,11 @@ http_interactions:
       - application/json
     body:
       encoding: UTF-8
-      string: '{"response":{"weather.honeysuckle_weather":{"forecast":[{"datetime":"2024-09-06T00:00:00+00:00","condition":"cloudy","temperature":72,"templow":null,"wind_bearing":180,"wind_speed":8.5,"precipitation":0.0,"precipitation_probability":10,"humidity":45},{"datetime":"2024-09-06T01:00:00+00:00","condition":"partlycloudy","temperature":68,"templow":null,"wind_bearing":170,"wind_speed":6.3,"precipitation":0.0,"precipitation_probability":5,"humidity":50}]}}}'
+      string: '{"service_response":{"weather.honeysuckle_weather":{"forecast":[{"datetime":"2024-09-06T00:00:00+00:00","condition":"cloudy","temperature":72,"templow":null,"wind_bearing":180,"wind_speed":8.5,"precipitation":0.0,"precipitation_probability":10,"humidity":45},{"datetime":"2024-09-06T01:00:00+00:00","condition":"partlycloudy","temperature":68,"templow":null,"wind_bearing":170,"wind_speed":6.3,"precipitation":0.0,"precipitation_probability":5,"humidity":50}]}}}'
   recorded_at: Fri, 06 Sep 2024 00:00:00 GMT
 - request:
     method: post
-    uri: http://homeassistant.local:8123/api/services/weather/get_forecasts
+    uri: http://homeassistant.local:8123/api/services/weather/get_forecasts?return_response
     body:
       encoding: UTF-8
       string: '{"entity_id":"weather.honeysuckle_weather","type":"daily"}'
@@ -50,6 +50,6 @@ http_interactions:
       - application/json
     body:
       encoding: UTF-8
-      string: '{"response":{"weather.honeysuckle_weather":{"forecast":[{"datetime":"2024-09-06T06:00:00+00:00","condition":"partlycloudy","temperature":75,"templow":54,"wind_bearing":170,"wind_speed":8.5,"precipitation":0.0,"precipitation_probability":10,"humidity":40},{"datetime":"2024-09-07T06:00:00+00:00","condition":"sunny","temperature":78,"templow":50,"wind_bearing":180,"wind_speed":6.0,"precipitation":0.0,"precipitation_probability":0,"humidity":35}]}}}'
+      string: '{"service_response":{"weather.honeysuckle_weather":{"forecast":[{"datetime":"2024-09-06T06:00:00+00:00","condition":"partlycloudy","temperature":75,"templow":54,"wind_bearing":170,"wind_speed":8.5,"precipitation":0.0,"precipitation_probability":10,"humidity":40},{"datetime":"2024-09-07T06:00:00+00:00","condition":"sunny","temperature":78,"templow":50,"wind_bearing":180,"wind_speed":6.0,"precipitation":0.0,"precipitation_probability":0,"humidity":35}]}}}'
   recorded_at: Fri, 06 Sep 2024 00:00:00 GMT
 recorded_with: VCR 6.2.0

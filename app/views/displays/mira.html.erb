@@ -58,19 +58,19 @@
 <div style="margin-top: 1.5rem;"></div>
 <div style="display: flex; justify-content: space-between; margin-bottom: .5rem;">
   <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 1rem;">
-    <% view_object[:status_icons_with_labels][1..-1].each do |status_icon, label| %>
+    <% view_object[:top_left].each do |top_left| %>
       <span style="margin-right: .5rem;">
-        <i class="mdi mdi-<%= status_icon %>"></i>
-        <%= label %>
+        <i class="mdi mdi-<%= top_left[:icon] %>"></i>
+        <%= top_left[:label] %>
       </span>
     <% end %>
   </div>
 
   <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-    <% view_object[:status_icons_with_labels].first(1).each do |status_icon, label| %>
+    <% view_object[:top_right].each do |top_right| %>
       <span>
-        <i class="mdi mdi-<%= status_icon %>"></i>
-        <%= label %>
+        <i class="mdi mdi-<%= top_right[:icon] %>"></i>
+        <%= top_right[:label] %>
       </span>
     <% end %>
   </div>
@@ -80,12 +80,14 @@
 
 <div style="margin: 1rem 0 1.5rem; display: flex; justify-content: space-between; line-height: 2rem; font-size: 2rem;">
   <div><%= DateTime.now.strftime("%A, %B %-d") %></div>
-  <% if view_object[:wind_gust_speed].present? && view_object[:wind_gust_speed].to_i > 10 %>
-  <div>
-    <%= view_object[:wind_gust_speed] %>
-    <i class="mdi mdi-arrow-up" style="transform: rotate(<%= view_object[:wind_gust_direction].to_i - 45 %>deg);"></i>
+  <div style="white-space: nowrap;">
+    <% view_object[:weather_status].each do |weather_status| %>
+      <span style="margin-left: .5rem;">
+        <i class="mdi mdi-<%= weather_status[:icon] %>"<%= " style=\"transform: rotate(#{weather_status[:rotation]}deg);\"" if weather_status[:rotation] %>></i>
+        <%= weather_status[:label] %>
+      </span>
+    <% end %>
   </div>
-  <% end %>
 </div>
 
 <div style="margin: 1rem 0 2rem; display: flex; justify-content: space-between; line-height: .7">

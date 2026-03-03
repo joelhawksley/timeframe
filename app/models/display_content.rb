@@ -9,22 +9,20 @@ class DisplayContent
   )
     # :nocov:
     out = {}
-    out[:status_icons_with_labels] = []
+    out[:top_left] = []
+    out[:weather_status] = []
     out[:current_time] = current_time
     out[:timestamp] = current_time.strftime("%-l:%M %p")
 
     if home_assistant_api.healthy?
       out[:current_temperature] = home_assistant_api.feels_like_temperature
-      out[:wind_gust_speed] = home_assistant_api.wind_gust_speed
-      out[:wind_gust_direction] = home_assistant_api.wind_gust_direction
 
       out[:sonos_status] = home_assistant_api.now_playing
-
-      home_assistant_api.problems.each do |problem|
-        out[:status_icons_with_labels] << [problem[:icon], problem[:message]]
-      end
+      out[:top_right] = home_assistant_api.top_right
+      out[:top_left] = home_assistant_api.top_left
+      out[:weather_status] = home_assistant_api.weather_status
     else
-      out[:status_icons_with_labels] << ["alert", "Home Assistant"]
+      out[:top_left] << {icon: "alert", label: "Home Assistant"}
     end
 
     raw_events = []
@@ -52,11 +50,11 @@ class DisplayContent
         out[:minutely_weather_minutes_icon] = minutely_weather_minutes_icon
       end
     else
-      out[:status_icons_with_labels] << ["alert", "Apple Weather"]
+      out[:top_left] << {icon: "alert", label: "Apple Weather"}
     end
 
     if home_assistant_calendar_api.healthy? && home_assistant_calendar_api.private_mode?
-      out[:status_icons_with_labels] << ["eye-off", "Private mode"]
+      out[:top_left] << {icon: "eye-off", label: "Private mode"}
     end
 
     raw_events << [

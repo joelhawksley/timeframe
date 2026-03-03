@@ -30,17 +30,39 @@ class HomeAssistantApi < Api
     entity[:state] == "on"
   end
 
-  def problems
+  def top_right
     data
-      .select { it[:entity_id].include?("sensor.timeframe") }
-      .map do
-        it[:state].split("\n").map(&:strip).reject(&:empty?).map do |line|
-          {
-            icon: line.split(",").first.strip,
-            message: line.split(",").last.strip.then { it.include?("_") ? it.humanize : it }
-          }
-        end
-      end.flatten.compact.uniq
+      .select { it[:entity_id].start_with?("sensor.timeframe_top_right") && it[:state].present? }
+      .filter_map do
+        parts = it[:state].split(",").map(&:strip)
+        next if parts.length < 2
+
+        {icon: parts.first, label: parts.last.then { it.include?("_") ? it.humanize : it }}
+      end
+  end
+
+  def top_left
+    data
+      .select { it[:entity_id].start_with?("sensor.timeframe_top_left") && it[:state].present? }
+      .filter_map do
+        parts = it[:state].split(",").map(&:strip)
+        next if parts.length < 2
+
+        {icon: parts.first, label: parts.last.then { it.include?("_") ? it.humanize : it }}
+      end
+  end
+
+  def weather_status
+    data
+      .select { it[:entity_id].start_with?("sensor.timeframe_weather_status") && it[:state].present? }
+      .filter_map do
+        parts = it[:state].split(",").map(&:strip)
+        next if parts.length < 2
+
+        result = {icon: parts.first, label: parts[1].then { it.include?("_") ? it.humanize : it }}
+        result[:rotation] = parts[2].to_i if parts.length >= 3
+        result
+      end
   end
 
   def now_playing
@@ -86,21 +108,5 @@ class HomeAssistantApi < Api
     return nil unless entity.present?
 
     "#{entity[:state].to_i}°"
-  end
-
-  def wind_gust_speed
-    entity = data.find { it[:entity_id] == @config["home_assistant"]["weather_wind_gust_entity_id"] }
-
-    return nil unless entity.present?
-
-    entity[:state].to_i
-  end
-
-  def wind_gust_direction
-    entity = data.find { it[:entity_id] == @config["home_assistant"]["weather_wind_direction_entity_id"] }
-
-    return nil unless entity.present?
-
-    entity[:state].to_i + 180
   end
 end

@@ -5,6 +5,17 @@ require "test_helper"
 class HomeAssistantConfigApiTest < Minitest::Test
   include ActiveSupport::Testing::TimeHelpers
 
+  def teardown
+    # Re-seed cache after tests that may overwrite it (e.g. test_fetch with VCR cassette)
+    Rails.cache.write(
+      "testhome_assistant_config_api",
+      {
+        last_fetched_at: Time.now.utc,
+        response: {latitude: 38.4937, longitude: -98.7675, time_zone: "America/Denver"}
+      }.to_json
+    )
+  end
+
   def test_latitude
     api = HomeAssistantConfigApi.new
     api.stub :data, {latitude: 38.4937, longitude: -98.7675} do
