@@ -28,7 +28,7 @@ class Api
   end
 
   def storage_key
-    APP_VERSION + self.class.name.underscore.to_s
+    DEPLOY_TIME.to_s + self.class.name.underscore.to_s
   end
 
   def value
