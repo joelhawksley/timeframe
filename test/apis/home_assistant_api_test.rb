@@ -244,30 +244,18 @@ class HomeAssistantApiTest < Minitest::Test
   end
 
   def test_demo_mode_on
-    config = {
-      "home_assistant" => {
-        "demo_mode_entity_id" => "input_boolean.timeframe_demo_mode"
-      }
-    }
-
     data = [{entity_id: "input_boolean.timeframe_demo_mode", state: "on"}]
 
-    api = HomeAssistantApi.new(config)
+    api = HomeAssistantApi.new
     api.stub :data, data do
       assert(api.demo_mode?)
     end
   end
 
   def test_demo_mode_off
-    config = {
-      "home_assistant" => {
-        "demo_mode_entity_id" => "input_boolean.timeframe_demo_mode"
-      }
-    }
-
     data = [{entity_id: "input_boolean.timeframe_demo_mode", state: "off"}]
 
-    api = HomeAssistantApi.new(config)
+    api = HomeAssistantApi.new
     api.stub :data, data do
       refute(api.demo_mode?)
     end

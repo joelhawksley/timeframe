@@ -22,9 +22,7 @@ class HomeAssistantApi < Api
   end
 
   def demo_mode?
-    return false unless @config["home_assistant"].present?
-
-    entity = data.find { it[:entity_id] == @config["home_assistant"]["demo_mode_entity_id"] }
+    entity = data.find { it[:entity_id].end_with?(".timeframe_demo_mode") }
     return false unless entity.present?
 
     entity[:state] == "on"
