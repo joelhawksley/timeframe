@@ -72,36 +72,26 @@ class HomeAssistantApi < Api
   end
 
   def now_playing
-    entity = data.find { it[:entity_id] == @config["home_assistant"]["media_player_entity_id"] }
+    override = data.find { it[:entity_id].end_with?("timeframe_media_player_entity_id") }
+
+    entity = if override.present? && override[:state].present?
+      data.find { it[:entity_id] == override[:state] }
+    else
+      data.find { it[:entity_id].start_with?("media_player.") }
+    end
 
     return {} unless entity.present?
-    return {} if entity[:state] == "paused" || entity[:state] == "idle"
+    return {} if %w[paused idle].include?(entity[:state])
 
-    if entity.dig(:attributes, :media_artist)&.include?("CPR News")
-      {
-        artist: "CPR News",
-        track: entity.dig(:attributes, :media_title).split(" -- ").last
-      }
-    elsif entity.dig(:attributes, :media_channel)&.include?("Colorado Public Radio Classical")
-      track, artist = entity.dig(:attributes, :media_title).split(" -- ").first.split(" by ")
+    attrs = entity[:attributes] || {}
+    artist = attrs[:media_artist]
+    track = attrs[:media_title]
+    return {} unless artist.present? || track.present?
 
-      {
-        artist: artist,
-        track: track
-      }
-    elsif entity.dig(:attributes, :media_channel)&.include?("WKSU-HD2")
-      title_parts = entity.dig(:attributes, :media_title).split(" - ")
-
-      {
-        artist: title_parts[0],
-        track: title_parts[1]
-      }
-    else
-      {
-        artist: entity.dig(:attributes, :media_artist),
-        track: entity.dig(:attributes, :media_title)
-      }
-    end
+    {
+      artist: artist,
+      track: track
+    }
   end
 
   def time_before_unhealthy

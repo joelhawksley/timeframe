@@ -18,7 +18,7 @@ class DisplayContent
     if home_assistant_api.healthy?
       out[:current_temperature] = home_assistant_api.feels_like_temperature
 
-      out[:sonos_status] = home_assistant_api.now_playing
+      out[:now_playing] = home_assistant_api.now_playing
       out[:top_right] = home_assistant_api.top_right
       out[:top_left] = home_assistant_api.top_left
       out[:weather_status] = home_assistant_api.weather_status

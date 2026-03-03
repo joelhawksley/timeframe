@@ -44,12 +44,12 @@
       </div>
     </div>
   <% end %>
-  <% if view_object[:sonos_status].present? %>
+  <% if view_object[:now_playing].present? %>
     <div class="hide-if-empty" style="background-color: black; color: white; padding: 1rem 2rem; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">
       <i class="mdi mdi-volume-high"></i>
-      <strong><%= view_object[:sonos_status][:artist] %></strong>
-      <% if view_object[:sonos_status][:track].present? %>
-        : <%= view_object[:sonos_status][:track] %>
+      <strong><%= view_object[:now_playing][:artist] %></strong>
+      <% if view_object[:now_playing][:track].present? %>
+        : <%= view_object[:now_playing][:track] %>
       <% end %>
     </div>
   <% end %>
