@@ -10,18 +10,6 @@ class HomeAssistantApi < Api
     }
   end
 
-  def prepare_response(response)
-    entity_ids = @config["home_assistant"]&.values&.flatten || []
-
-    # Only save entity states we are interested in vs. all 1000+ entities
-    response.filter do
-      entity_ids.include?(it["entity_id"]) ||
-        it["entity_id"].include?("sensor.timeframe") ||
-        it["entity_id"].start_with?("weather.") ||
-        it["state"] == "unavailable" && !it["entity_id"].include?("image.")
-    end
-  end
-
   def demo_mode?
     entity = data.find { it[:entity_id].end_with?(".timeframe_demo_mode") }
     return false unless entity.present?

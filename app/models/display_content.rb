@@ -10,6 +10,7 @@ class DisplayContent
     # :nocov:
     out = {}
     out[:top_left] = []
+    out[:top_right] = []
     out[:weather_status] = []
     out[:current_time] = current_time
     out[:timestamp] = current_time.strftime("%-l:%M %p")
