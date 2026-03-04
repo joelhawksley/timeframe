@@ -4,7 +4,8 @@ class HomeAssistantWeatherApi < Api
   end
 
   def fetch
-    entity_id = HomeAssistantApi.new(@config).weather_entity_id
+    ha_api = HomeAssistantApi.new(@config)
+    entity_id = ha_api.weather_entity_id
     return unless entity_id.present?
 
     hourly = fetch_forecast(entity_id, "hourly")
@@ -12,10 +13,14 @@ class HomeAssistantWeatherApi < Api
 
     return unless hourly.present? || daily.present?
 
+    entity = ha_api.data.find { it[:entity_id] == entity_id }
+    attribution = entity&.dig(:attributes, :attribution)
+
     save_response({
       entity_id: entity_id,
       hourly: hourly,
-      daily: daily
+      daily: daily,
+      attribution: attribution
     })
   end
 
@@ -32,6 +37,10 @@ class HomeAssistantWeatherApi < Api
 
   def hourly_forecast
     data[:hourly] || []
+  end
+
+  def attribution
+    data[:attribution]&.gsub(%r{\s*https?://\S+}, "")&.strip
   end
 
   def daily_forecast

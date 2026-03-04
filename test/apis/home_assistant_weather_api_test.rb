@@ -12,7 +12,7 @@ class HomeAssistantWeatherApiTest < Minitest::Test
     # Pre-populate HomeAssistantApi cache so weather entity can be discovered
     Rails.cache.write(
       DEPLOY_TIME.to_s + "home_assistant_api",
-      {last_fetched_at: Time.now.utc, response: [{entity_id: "weather.honeysuckle_weather", state: "sunny"}]}.to_json
+      {last_fetched_at: Time.now.utc, response: [{entity_id: "weather.honeysuckle_weather", state: "sunny", attributes: {attribution: "Powered by WeatherFlow https://weatherflow.com"}}]}.to_json
     )
 
     VCR.use_cassette(:home_assistant_weather) do
@@ -22,6 +22,7 @@ class HomeAssistantWeatherApiTest < Minitest::Test
       assert api.healthy?
       assert api.hourly_forecast.length > 0
       assert api.daily_forecast.length > 0
+      assert_equal "Powered by WeatherFlow", api.attribution
     end
   end
 

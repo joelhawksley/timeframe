@@ -31,6 +31,7 @@ class DisplayContent
     if home_assistant_weather_api.healthy?
       # raw_events << home_assistant_weather_api.hourly_calendar_events
       raw_events << home_assistant_weather_api.daily_calendar_events
+      out[:attribution] = home_assistant_weather_api.attribution
     end
 
     if home_assistant_api.healthy?
