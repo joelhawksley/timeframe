@@ -34,10 +34,6 @@ class DisplayContent
       # out[:attribution] = home_assistant_weather_api.attribution
     end
 
-    if home_assistant_api.healthy?
-      raw_events << home_assistant_api.daily_events(current_time: current_time)
-    end
-
     if weather_kit_api.healthy?
       raw_events << (
         weather_kit_api.daily_calendar_events +
@@ -58,6 +54,10 @@ class DisplayContent
       end
     else
       out[:top_left] << {icon: "alert", label: "Apple Weather"}
+    end
+
+    if home_assistant_api.healthy?
+      raw_events << home_assistant_api.daily_events(current_time: current_time)
     end
 
     if home_assistant_calendar_api.healthy? && home_assistant_calendar_api.private_mode?
