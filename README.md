@@ -16,31 +16,26 @@ An e-paper calendar, weather, and smart home family dashboard
     - Visionect 13" displays (/thirteen)
         - Fetched by [Visionect Software Suite](https://docs.visionect.com/VisionectSoftwareSuite/index.html) running on local network and displayed on [13" Place and Play](https://www.visionect.com/shop/place-play-13/) devices. Fetch interval is currently 10m.
     - Boox Mira Pro (/mira)
-        - Fetched by a client Mac Mini with a [Boox Mira Pro](https://shop.boox.com/products/mira) (25.3" 3200x1800px e-Paper display) running Google Chrome full screen.
+        - Fetched by a client Mac Mini with a [Boox Mira Pro](https://shop.boox.com/products/boox-mira-procolor-version) (25.3" 3200x1800px e-Paper display) running Google Chrome full screen.
         - Self-refreshes entire screen every 2s.
 
 ## Dependencies
 
-- Home Assistant + API
-    - Calendar integration
-        - Required for scheduled tasks
-        - If you do not have a Home Assistance instance (yet!) you can run a Dockerized version for local development purposes:
-            - ```bash
-          docker run -d --restart=always -p 8123:8123 homeassistant/home-assistant
-          ```
+- Home Assistant installation (If you do not have a Home Assistance instance you can run a Dockerized version for local development purposes with `docker run -d --restart=always -p 8123:8123 homeassistant/home-assistant`)
+- Apple WeatherKit API key
 
 ## Local development
 
 ### Configuration
 
 1) Create `config.yml` from `config.yml.example`
-    1) Fill out `home_assistant_token` by creating a long-lived access token under Home Assistant > Profile > Security
+2) Fill out `home_assistant_token` by creating a long-lived access token under Home Assistant > Profile > Security
 
 ### Setup
 
 1) `bundle install`
 2) `rails s`
-3) Visit [http://localhost:3000](http://localhost:3000)
+3) Visit [http://localhost:3000/mira](http://localhost:3000/mira) or [http://localhost:3000/thirteen](http://localhost:3000/thirteen)
 
 ### Testing
 
