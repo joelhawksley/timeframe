@@ -21,7 +21,7 @@ An e-paper calendar, weather, and smart home family dashboard
 
 ## Dependencies
 
-- Home Assistant installation (If you do not have a Home Assistance instance you can run a Dockerized version for local development purposes with `docker run -d --restart=always -p 8123:8123 homeassistant/home-assistant`)
+- Home Assistant installation (If you do not have a Home Assistant instance you can run a Dockerized version for local development purposes with `docker run -d --restart=always -p 8123:8123 homeassistant/home-assistant`)
 - Apple WeatherKit API key
 
 ## Local development
