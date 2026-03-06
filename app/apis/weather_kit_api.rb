@@ -1,7 +1,6 @@
 class WeatherKitApi < Api
   def initialize(home_assistant_config_api: HomeAssistantConfigApi.new)
     @home_assistant_config_api = home_assistant_config_api
-    @home_assistant_config_api.fetch
   end
 
   def fetch

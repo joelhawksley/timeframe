@@ -16,7 +16,7 @@ class CalendarEvent
     id: SecureRandom.hex
   )
     @id, @icon, @icon_rotation, @summary, @description, @location, @daily =
-      id, icon, icon_rotation, summary.gsub(/[^a-zA-Z0-9\.\-\"\  \_\°\/\\\&\:\+\,\?\(\)\<\>\’\''@#]/, ""), description, location, daily
+      id, icon, icon_rotation, summary.gsub(/[^a-zA-Z0-9.\-"\  _°\/\\&:+,?()<>’'@#]/, ""), description, location, daily
 
     @starts_at = case starts_at
     when Integer

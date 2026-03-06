@@ -3,6 +3,10 @@ class HomeAssistantApi < Api
     @config = config
   end
 
+  def url
+    "#{home_assistant_base_url}/api/states"
+  end
+
   def headers
     {
       Authorization: "Bearer #{@config["home_assistant_token"]}",
@@ -99,8 +103,6 @@ class HomeAssistantApi < Api
   end
 
   def weather_entity_id
-    fetch
-    
     # First, look for a sensor whose entity_id ends with timeframe_weather_entity_id
     override = data.find { it[:entity_id].end_with?("timeframe_weather_entity_id") }
     return override[:state] if override.present? && override[:state].present?

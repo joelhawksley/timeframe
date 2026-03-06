@@ -8,7 +8,7 @@ class HomeAssistantConfigApiTest < Minitest::Test
   def teardown
     # Re-seed cache after tests that may overwrite it (e.g. test_fetch with VCR cassette)
     Rails.cache.write(
-      "testhome_assistant_config_api",
+      "#{DEPLOY_TIME}home_assistant_config_api",
       {
         last_fetched_at: Time.now.utc,
         response: {latitude: 38.4937, longitude: -98.7675, time_zone: "America/Denver"}

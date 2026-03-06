@@ -15,6 +15,7 @@ group :development, :test do
   gem "overcommit"
   gem "m"
   gem "minitest"
+  gem "minitest-mock"
   gem "standard"
 end
 

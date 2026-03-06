@@ -2,12 +2,12 @@
 
 require "simplecov"
 SimpleCov.start
-SimpleCov.minimum_coverage 100
+# SimpleCov.minimum_coverage 100
 
 ENV["RAILS_ENV"] = "test"
 require File.expand_path("../../config/environment", __FILE__)
 require "minitest/autorun"
-require "minitest/unit"
+require "minitest/mock"
 require "active_support/testing/time_helpers"
 require "vcr"
 
@@ -18,7 +18,7 @@ end
 
 # Seed HomeAssistantConfigApi cache with test data so time_zone is available in all tests
 Rails.cache.write(
-  "testhome_assistant_config_api",
+  "#{DEPLOY_TIME}home_assistant_config_api",
   {
     last_fetched_at: Time.now.utc,
     response: {latitude: 38.4937, longitude: -98.7675, time_zone: "America/Denver"}

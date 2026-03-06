@@ -5,6 +5,10 @@ class HomeAssistantCalendarApi < Api
     @config = config
   end
 
+  def url
+    "#{home_assistant_base_url}/api/calendars"
+  end
+
   def fetch
     start_time = (Time.now - 1.day).utc.iso8601
     end_time = (Time.now + 5.days).utc.iso8601
@@ -53,7 +57,7 @@ class HomeAssistantCalendarApi < Api
   end
 
   def fetch_calendar_icons(calendars)
-    states_url = @config["home_assistant_api_url"]
+    states_url = "#{home_assistant_base_url}/api/states"
     icons = {}
 
     calendars.each do |calendar|

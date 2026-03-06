@@ -146,6 +146,7 @@ GEM
     minitest (6.0.2)
       drb (~> 2.0)
       prism (~> 1.5)
+    minitest-mock (5.27.0)
     multi_xml (0.8.1)
       bigdecimal (>= 3.1, < 5)
     net-imap (0.6.3)
@@ -300,6 +301,7 @@ DEPENDENCIES
   httparty
   m
   minitest
+  minitest-mock
   overcommit
   puma
   puma-rufus-scheduler

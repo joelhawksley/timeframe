@@ -3,6 +3,10 @@ class HomeAssistantWeatherApi < Api
     @config = config
   end
 
+  def url
+    "#{home_assistant_base_url}/api/services/weather/get_forecasts?return_response"
+  end
+
   def fetch
     ha_api = HomeAssistantApi.new(@config)
     entity_id = ha_api.weather_entity_id

@@ -1,6 +1,12 @@
 class Api
+  DEFAULT_HOME_ASSISTANT_URL = "http://homeassistant.local:8123"
+
   def url
     Timeframe::Application.config.local["#{self.class.name.underscore}_url"]
+  end
+
+  def home_assistant_base_url
+    @config&.fetch("home_assistant_url", nil) || DEFAULT_HOME_ASSISTANT_URL
   end
 
   def fetch

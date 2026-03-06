@@ -3,6 +3,10 @@ class HomeAssistantConfigApi < Api
     @config = config
   end
 
+  def url
+    "#{home_assistant_base_url}/api/config"
+  end
+
   def headers
     {
       Authorization: "Bearer #{@config["home_assistant_token"]}",

@@ -100,7 +100,7 @@ class HomeAssistantApiTest < Minitest::Test
 
   def test_now_playing_no_media_player_entity
     data = [
-      {entity_id: "sensor.timeframe_media_player_entity_id", state: "media_player.living_room"},
+      {entity_id: "sensor.timeframe_media_player_entity_id", state: "media_player.living_room"}
     ]
 
     api = HomeAssistantApi.new({})
@@ -422,5 +422,4 @@ class HomeAssistantApiTest < Minitest::Test
       assert_equal([], api.daily_events)
     end
   end
-
 end

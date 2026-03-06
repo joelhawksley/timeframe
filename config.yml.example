@@ -1,12 +1,8 @@
-timezone: "Mountain Time (US & Canada)"
-home_assistant_calendar_api_url: http://homeassistant.local:8123/api/calendars
-home_assistant_config_api_url: http://homeassistant.local:8123/api/config
-home_assistant_api_url: http://homeassistant.local:8123/api/states
-home_assistant_token:
-home_assistant:
-  demo_mode_entity_id: demo_mode_entity_id
-  media_player_entity_id: media_player_entity_id
-  weather_wind_gust_entity_id: weather_wind_gust_entity_id
-weather_kit_api_url: http://homeassistant.local:8123/api/config
-birthdate: 'August 10'
-birthdate_2: 'August 11'
+home_assistant_token: abcd1234
+apple_developer_team_id:
+apple_developer_service_id:
+apple_developer_key_id:
+apple_developer_private_key: |
+  -----BEGIN PRIVATE KEY-----
+  etc
+  -----END PRIVATE KEY-----
