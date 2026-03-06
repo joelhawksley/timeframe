@@ -30,8 +30,8 @@ class DisplayContent
 
     if home_assistant_weather_api.healthy?
       # raw_events << home_assistant_weather_api.hourly_calendar_events
-      raw_events << home_assistant_weather_api.daily_calendar_events
-      out[:attribution] = home_assistant_weather_api.attribution
+      # raw_events << home_assistant_weather_api.daily_calendar_events
+      # out[:attribution] = home_assistant_weather_api.attribution
     end
 
     if home_assistant_api.healthy?
@@ -40,6 +40,7 @@ class DisplayContent
 
     if weather_kit_api.healthy?
       raw_events << (
+        weather_kit_api.daily_calendar_events +
         weather_kit_api.hourly_calendar_events +
         weather_kit_api.precip_calendar_events +
         weather_kit_api.wind_calendar_events +
