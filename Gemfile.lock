@@ -1,10 +1,10 @@
 GIT
-  remote: https://github.com/superbasicxyz/tenkit
-  revision: 1bfcae26933f2bf1aaad81e7dd05823853f25287
-  tag: v0.0.7
+  remote: https://github.com/joelhawksley/tenkit
+  revision: 3f91e06e87067ec1a4fafd94d96c5405630f2049
+  ref: patch-1
   specs:
     tenkit (0.0.7)
-      httparty (~> 0.21.0)
+      httparty (>= 0.21)
       jwt (~> 2.7.0)
 
 GEM
@@ -112,7 +112,8 @@ GEM
     globalid (1.3.0)
       activesupport (>= 6.1)
     hashdiff (1.2.1)
-    httparty (0.21.0)
+    httparty (0.24.2)
+      csv
       mini_mime (>= 1.0.0)
       multi_xml (>= 0.5.2)
     i18n (1.14.8)
