@@ -1,0 +1,547 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://homeassistant.local:8123/api/calendars
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Referrer-Policy:
+      - no-referrer
+      X-Content-Type-Options:
+      - nosniff
+      Server:
+      - ''
+      X-Frame-Options:
+      - SAMEORIGIN
+      Content-Length:
+      - '689'
+      Date:
+      - Fri, 06 Sep 2024 01:54:38 GMT
+    body:
+      encoding: ASCII-8BIT
+      string: '[{"name":"Birthdays","entity_id":"calendar.birthdays"},{"name":"Caitlin","entity_id":"calendar.caitlin"},{"name":"Caitlin
+        & jack","entity_id":"calendar.caitlin_jack"},{"name":"Captain","entity_id":"calendar.captain"},{"name":"Dinner","entity_id":"calendar.dinner"},{"name":"Friends
+        & family","entity_id":"calendar.friends_family"},{"name":"Holidays in united
+        states","entity_id":"calendar.holidays_in_united_states"},{"name":"Home","entity_id":"calendar.home"},{"name":"Jack","entity_id":"calendar.jack"},{"name":"Joel","entity_id":"calendar.joel"},{"name":"Joel
+        & jack","entity_id":"calendar.joel_jack"},{"name":"Us","entity_id":"calendar.us"},{"name":"Work","entity_id":"calendar.work"}]'
+  recorded_at: Thu, 05 Sep 2024 21:15:00 GMT
+- request:
+    method: get
+    uri: http://homeassistant.local:8123/api/calendars/calendar.birthdays?end=2024-09-10T21:15:00Z&start=2024-09-04T21:15:00Z
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Referrer-Policy:
+      - no-referrer
+      X-Content-Type-Options:
+      - nosniff
+      Server:
+      - ''
+      X-Frame-Options:
+      - SAMEORIGIN
+      Content-Length:
+      - '1306'
+      Date:
+      - Fri, 06 Sep 2024 01:54:38 GMT
+    body:
+      encoding: ASCII-8BIT
+      string: '[{"start":{"date":"2024-09-04"},"end":{"date":"2024-09-05"},"summary":"Juliana
+        Tapper","description":"1976","location":null,"uid":"_60q30c1g60o30e1i60o4ac1g60rj8gp"}]'
+  recorded_at: Thu, 05 Sep 2024 21:15:00 GMT
+- request:
+    method: get
+    uri: http://homeassistant.local:8123/api/calendars/calendar.caitlin?end=2024-09-10T21:15:00Z&start=2024-09-04T21:15:00Z
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Referrer-Policy:
+      - no-referrer
+      X-Content-Type-Options:
+      - nosniff
+      Server:
+      - ''
+      X-Frame-Options:
+      - SAMEORIGIN
+      Content-Length:
+      - '2090'
+      Date:
+      - Fri, 06 Sep 2024 01:54:38 GMT
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        W3sic3RhcnQiOnsiZGF0ZVRpbWUiOiIyMDI0LTA5LTA1VDEzOjAwOjAwLTA2OjAwIn0sImVuZCI6eyJkYXRlVGltZSI6IjIwMjQtMDktMDVUMTQ6MDA6MDAtMDY6MDAifSwic3VtbWFyeSI6IlRoZXJhcHkiLCJkZXNjcmlwdGlvbiI6bnVsbCwibG9jYXRpb24iOm51bGwsInVpZCI6IjM0ZXE5OHNuOTQ5ZmY4dXMxOGVpNXBrdXBwQGdvb2dsZS5jb20iLCJyZWN1cnJlbmNlX2lkIjpudWxsLCJycnVsZSI6bnVsbH0seyJzdGFydCI6eyJkYXRlVGltZSI6IjIwMjQtMDktMDZUMTU6MDA6MDAtMDY6MDAifSwiZW5kIjp7ImRhdGVUaW1lIjoiMjAyNC0wOS0wNlQxNjowMDowMC0wNjowMCJ9LCJzdW1tYXJ5IjoiSGF3a3NsZXkgVFAgfCBNZXJjZXIgQWR2aXNvcnMiLCJkZXNjcmlwdGlvbiI6IiBUb20gTWNOYXJ5IGlzIGludml0aW5nIHlvdSB0byBhIHNjaGVkdWxlZCBab29tIG1lZXRpbmcuXG5cbkpvaW4gWm9vbSBNZWV0aW5nXG5odHRwczovL21lcmNlcmFkdmlzb3JzLnpvb20udXMvai85OTEyNzAyNjI0ND9wd2Q9S3RwYzhjbWFDbjdPNzRpdGF6Ym4xdGV0ZU5rNWZsLjEmZnJvbT1hZGRvblxuXG5NZWV0aW5nIElEOiA5OTEgMjcwMiA2MjQ0XG5QYXNzY29kZTogODg5MTg2XG5cbi0tLVxuXG5PbmUgdGFwIG1vYmlsZVxuKzE3MjA5Mjg5Mjk5LCw5OTEyNzAyNjI0NCMsLCwsKjg4OTE4NiMgVVMgKERlbnZlcilcbisxOTcxMjQ3MTE5NSwsOTkxMjcwMjYyNDQjLCwsLCo4ODkxODYjIFVTIChQb3J0bGFuZClcblxuLS0tXG5cbkRpYWwgYnkgeW91ciBsb2NhdGlvblxu4oCiICsxIDcyMCA5MjggOTI5OSBVUyAoRGVudmVyKVxu4oCiICsxIDk3MSAyNDcgMTE5NSBVUyAoUG9ydGxhbmQpXG7igKIgKzEgMjA2IDMzNyA5NzIzIFVTIChTZWF0dGxlKVxu4oCiICsxIDIxMyAzMzggODQ3NyBVUyAoTG9zIEFuZ2VsZXMpXG7igKIgKzEgMjUzIDIxNSA4NzgyIFVTIChUYWNvbWEpXG7igKIgKzEgMzQ2IDI0OCA3Nzk5IFVTIChIb3VzdG9uKVxu4oCiICsxIDYwMiA3NTMgMDE0MCBVUyAoUGhvZW5peClcbuKAoiArMSA2NjkgOTAwIDkxMjggVVMgKFNhbiBKb3NlKVxu4oCiICsxIDMxMiA2MjYgNjc5OSBVUyAoQ2hpY2FnbylcbuKAoiArMSA0NzAgMjUwIDkzNTggVVMgKEF0bGFudGEpXG7igKIgKzEgNjQ2IDU1OCA4NjU2IFVTIChOZXcgWW9yaylcbuKAoiArMSA3ODYgNjM1IDEwMDMgVVMgKE1pYW1pKVxu4oCiICsxIDMwMSA3MTUgODU5MiBVUyAoV2FzaGluZ3RvbiBEQylcblxuTWVldGluZyBJRDogOTkxIDI3MDIgNjI0NFxuUGFzc2NvZGU6IDg4OTE4NlxuXG5GaW5kIHlvdXIgbG9jYWwgbnVtYmVyOiBodHRwczovL21lcmNlcmFkdmlzb3JzLnpvb20udXMvdS9hYndpaTdJS3ZqXG5cbi0tLVxuXG5Kb2luIGJ5IFNJUFxu4oCiIDk5MTI3MDI2MjQ0QHpvb21jcmMuY29tPG1haWx0bzo5OTEyNzAyNjI0NEB6b29tY3JjLmNvbT5cblxuLS0tXG5cbkpvaW4gYnkgSC4zMjNcbuKAoiAxNjIuMjU1LjM3LjExIChVUyBXZXN0KVxu4oCiIDE2Mi4yNTUuMzYuMTEgKFVTIEVhc3QpXG5cbk1lZXRpbmcgSUQ6IDk5MSAyNzAyIDYyNDRcblBhc3Njb2RlOiA4ODkxODZcbiIsImxvY2F0aW9uIjoiaHR0cHM6Ly9tZXJjZXJhZHZpc29ycy56b29tLnVzL2ovOTkxMjcwMjYyNDQ/cHdkPUt0cGM4Y21hQ243Tzc0aXRhemJuMXRldGVOazVmbC4xJmZyb209YWRkb24iLCJ1aWQiOiIwNDAwMDAwMDgyMDBFMDAwNzRDNUI3MTAxQTgyRTAwODAwMDAwMDAwNEIwQ0NBM0EyQ0I5REEwMTAwMDAwMDAwMDAwMDAwMDAxMDAwMDAwMDM2QTYwN0NEODJBQjMzNEI5NDE0QjQzNDM2Q0I1NjUwIiwicmVjdXJyZW5jZV9pZCI6bnVsbCwicnJ1bGUiOm51bGx9LHsic3RhcnQiOnsiZGF0ZVRpbWUiOiIyMDI0LTA5LTEwVDEyOjAwOjAwLTA2OjAwIn0sImVuZCI6eyJkYXRlVGltZSI6IjIwMjQtMDktMTBUMTM6MDA6MDAtMDY6MDAifSwic3VtbWFyeSI6IlRoZXJhcHkiLCJkZXNjcmlwdGlvbiI6bnVsbCwibG9jYXRpb24iOm51bGwsInVpZCI6IjZvMWVlOGh0NW5uOGQzZHYxYWZoOGVnZXRnQGdvb2dsZS5jb20iLCJyZWN1cnJlbmNlX2lkIjoiNm8xZWU4aHQ1bm44ZDNkdjFhZmg4ZWdldGdfMjAyNDA5MTBUMTgwMDAwWiIsInJydWxlIjpudWxsfV0=
+  recorded_at: Thu, 05 Sep 2024 21:15:00 GMT
+- request:
+    method: get
+    uri: http://homeassistant.local:8123/api/calendars/calendar.caitlin_jack?end=2024-09-10T21:15:00Z&start=2024-09-04T21:15:00Z
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Referrer-Policy:
+      - no-referrer
+      X-Content-Type-Options:
+      - nosniff
+      Server:
+      - ''
+      X-Frame-Options:
+      - SAMEORIGIN
+      Content-Length:
+      - '1580'
+      Date:
+      - Fri, 06 Sep 2024 01:54:38 GMT
+    body:
+      encoding: ASCII-8BIT
+      string: '[]'
+  recorded_at: Thu, 05 Sep 2024 21:15:00 GMT
+- request:
+    method: get
+    uri: http://homeassistant.local:8123/api/calendars/calendar.captain?end=2024-09-10T21:15:00Z&start=2024-09-04T21:15:00Z
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Referrer-Policy:
+      - no-referrer
+      X-Content-Type-Options:
+      - nosniff
+      Server:
+      - ''
+      X-Frame-Options:
+      - SAMEORIGIN
+      Content-Length:
+      - '2'
+      Date:
+      - Fri, 06 Sep 2024 01:54:38 GMT
+    body:
+      encoding: ASCII-8BIT
+      string: "[]"
+  recorded_at: Thu, 05 Sep 2024 21:15:00 GMT
+- request:
+    method: get
+    uri: http://homeassistant.local:8123/api/calendars/calendar.dinner?end=2024-09-10T21:15:00Z&start=2024-09-04T21:15:00Z
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Referrer-Policy:
+      - no-referrer
+      X-Content-Type-Options:
+      - nosniff
+      Server:
+      - ''
+      X-Frame-Options:
+      - SAMEORIGIN
+      Content-Length:
+      - '950'
+      Date:
+      - Fri, 06 Sep 2024 01:54:38 GMT
+    body:
+      encoding: ASCII-8BIT
+      string: '[{"start":{"date":"2024-09-06"},"end":{"date":"2024-09-07"},"summary":"One-pot
+        ratatouille","description":null,"location":null,"uid":"6e9rbonlojavt1kmspcfd7kr28@google.com","recurrence_id":null,"rrule":null}]'
+  recorded_at: Thu, 05 Sep 2024 21:15:00 GMT
+- request:
+    method: get
+    uri: http://homeassistant.local:8123/api/calendars/calendar.friends_family?end=2024-09-10T21:15:00Z&start=2024-09-04T21:15:00Z
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Referrer-Policy:
+      - no-referrer
+      X-Content-Type-Options:
+      - nosniff
+      Server:
+      - ''
+      X-Frame-Options:
+      - SAMEORIGIN
+      Content-Length:
+      - '2'
+      Date:
+      - Fri, 06 Sep 2024 01:54:38 GMT
+    body:
+      encoding: ASCII-8BIT
+      string: "[]"
+  recorded_at: Thu, 05 Sep 2024 21:15:00 GMT
+- request:
+    method: get
+    uri: http://homeassistant.local:8123/api/calendars/calendar.holidays_in_united_states?end=2024-09-10T21:15:00Z&start=2024-09-04T21:15:00Z
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Referrer-Policy:
+      - no-referrer
+      X-Content-Type-Options:
+      - nosniff
+      Server:
+      - ''
+      X-Frame-Options:
+      - SAMEORIGIN
+      Content-Length:
+      - '2'
+      Date:
+      - Fri, 06 Sep 2024 01:54:38 GMT
+    body:
+      encoding: ASCII-8BIT
+      string: "[]"
+  recorded_at: Thu, 05 Sep 2024 21:15:00 GMT
+- request:
+    method: get
+    uri: http://homeassistant.local:8123/api/calendars/calendar.home?end=2024-09-10T21:15:00Z&start=2024-09-04T21:15:00Z
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Referrer-Policy:
+      - no-referrer
+      X-Content-Type-Options:
+      - nosniff
+      Server:
+      - ''
+      X-Frame-Options:
+      - SAMEORIGIN
+      Content-Length:
+      - '967'
+      Date:
+      - Fri, 06 Sep 2024 01:54:38 GMT
+    body:
+      encoding: ASCII-8BIT
+      string: '[{"start":{"date":"2024-09-04"},"end":{"date":"2024-09-05"},"summary":"Solar
+        interface install","description":null,"location":null,"uid":"2s4kjg49etknlqjeg519vbi6cv@google.com","recurrence_id":null,"rrule":null}]'
+  recorded_at: Thu, 05 Sep 2024 21:15:00 GMT
+- request:
+    method: get
+    uri: http://homeassistant.local:8123/api/calendars/calendar.jack?end=2024-09-10T21:15:00Z&start=2024-09-04T21:15:00Z
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Referrer-Policy:
+      - no-referrer
+      X-Content-Type-Options:
+      - nosniff
+      Server:
+      - ''
+      X-Frame-Options:
+      - SAMEORIGIN
+      Content-Length:
+      - '2'
+      Date:
+      - Fri, 06 Sep 2024 01:54:38 GMT
+    body:
+      encoding: ASCII-8BIT
+      string: "[]"
+  recorded_at: Thu, 05 Sep 2024 21:15:00 GMT
+- request:
+    method: get
+    uri: http://homeassistant.local:8123/api/calendars/calendar.joel?end=2024-09-10T21:15:00Z&start=2024-09-04T21:15:00Z
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Referrer-Policy:
+      - no-referrer
+      X-Content-Type-Options:
+      - nosniff
+      Server:
+      - ''
+      X-Frame-Options:
+      - SAMEORIGIN
+      Content-Length:
+      - '2913'
+      Date:
+      - Fri, 06 Sep 2024 01:54:38 GMT
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        W3sic3RhcnQiOnsiZGF0ZSI6IjIwMjQtMDgtMTgifSwiZW5kIjp7ImRhdGUiOiIyMDI0LTExLTAxIn0sInN1bW1hcnkiOiI3NSBTb2Z0IiwiZGVzY3JpcHRpb24iOiI8YSBocmVmPVwiaHR0cHM6Ly9maXp6bmVzc3NoaXp6bmVzcy5jb20vNzUtc29mdC1jaGFsbGVuZ2UtcnVsZXNcIj5odHRwczovL2ZpenpuZXNzc2hpenpuZXNzLmNvbS83NS1zb2Z0LWNoYWxsZW5nZS1ydWxlczwvYT4iLCJsb2NhdGlvbiI6bnVsbCwidWlkIjoiNXVsbW1idDBkZ2M3dW1yZHZmdHQ4bHEyZW9AZ29vZ2xlLmNvbSIsInJlY3VycmVuY2VfaWQiOm51bGwsInJydWxlIjpudWxsfSx7InN0YXJ0Ijp7ImRhdGVUaW1lIjoiMjAyNC0wOS0wNVQwNzowMDowMC0wNjowMCJ9LCJlbmQiOnsiZGF0ZVRpbWUiOiIyMDI0LTA5LTA1VDA4OjMwOjAwLTA2OjAwIn0sInN1bW1hcnkiOiJLYXlhayIsImRlc2NyaXB0aW9uIjpudWxsLCJsb2NhdGlvbiI6bnVsbCwidWlkIjoiYzM2OGE5amYwZmNvaHQ1YXBmZWluNmYxM2tAZ29vZ2xlLmNvbSIsInJlY3VycmVuY2VfaWQiOm51bGwsInJydWxlIjpudWxsfSx7InN0YXJ0Ijp7ImRhdGVUaW1lIjoiMjAyNC0wOS0wNlQxNTowMDowMC0wNjowMCJ9LCJlbmQiOnsiZGF0ZVRpbWUiOiIyMDI0LTA5LTA2VDE2OjAwOjAwLTA2OjAwIn0sInN1bW1hcnkiOiJIYXdrc2xleSBUUCB8IE1lcmNlciBBZHZpc29ycyIsImRlc2NyaXB0aW9uIjoiIFRvbSBNY05hcnkgaXMgaW52aXRpbmcgeW91IHRvIGEgc2NoZWR1bGVkIFpvb20gbWVldGluZy5cblxuSm9pbiBab29tIE1lZXRpbmdcbmh0dHBzOi8vbWVyY2VyYWR2aXNvcnMuem9vbS51cy9qLzk5MTI3MDI2MjQ0P3B3ZD1LdHBjOGNtYUNuN083NGl0YXpibjF0ZXRlTms1ZmwuMSZmcm9tPWFkZG9uXG5cbk1lZXRpbmcgSUQ6IDk5MSAyNzAyIDYyNDRcblBhc3Njb2RlOiA4ODkxODZcblxuLS0tXG5cbk9uZSB0YXAgbW9iaWxlXG4rMTcyMDkyODkyOTksLDk5MTI3MDI2MjQ0IywsLCwqODg5MTg2IyBVUyAoRGVudmVyKVxuKzE5NzEyNDcxMTk1LCw5OTEyNzAyNjI0NCMsLCwsKjg4OTE4NiMgVVMgKFBvcnRsYW5kKVxuXG4tLS1cblxuRGlhbCBieSB5b3VyIGxvY2F0aW9uXG7igKIgKzEgNzIwIDkyOCA5Mjk5IFVTIChEZW52ZXIpXG7igKIgKzEgOTcxIDI0NyAxMTk1IFVTIChQb3J0bGFuZClcbuKAoiArMSAyMDYgMzM3IDk3MjMgVVMgKFNlYXR0bGUpXG7igKIgKzEgMjEzIDMzOCA4NDc3IFVTIChMb3MgQW5nZWxlcylcbuKAoiArMSAyNTMgMjE1IDg3ODIgVVMgKFRhY29tYSlcbuKAoiArMSAzNDYgMjQ4IDc3OTkgVVMgKEhvdXN0b24pXG7igKIgKzEgNjAyIDc1MyAwMTQwIFVTIChQaG9lbml4KVxu4oCiICsxIDY2OSA5MDAgOTEyOCBVUyAoU2FuIEpvc2UpXG7igKIgKzEgMzEyIDYyNiA2Nzk5IFVTIChDaGljYWdvKVxu4oCiICsxIDQ3MCAyNTAgOTM1OCBVUyAoQXRsYW50YSlcbuKAoiArMSA2NDYgNTU4IDg2NTYgVVMgKE5ldyBZb3JrKVxu4oCiICsxIDc4NiA2MzUgMTAwMyBVUyAoTWlhbWkpXG7igKIgKzEgMzAxIDcxNSA4NTkyIFVTIChXYXNoaW5ndG9uIERDKVxuXG5NZWV0aW5nIElEOiA5OTEgMjcwMiA2MjQ0XG5QYXNzY29kZTogODg5MTg2XG5cbkZpbmQgeW91ciBsb2NhbCBudW1iZXI6IGh0dHBzOi8vbWVyY2VyYWR2aXNvcnMuem9vbS51cy91L2Fid2lpN0lLdmpcblxuLS0tXG5cbkpvaW4gYnkgU0lQXG7igKIgOTkxMjcwMjYyNDRAem9vbWNyYy5jb208bWFpbHRvOjk5MTI3MDI2MjQ0QHpvb21jcmMuY29tPlxuXG4tLS1cblxuSm9pbiBieSBILjMyM1xu4oCiIDE2Mi4yNTUuMzcuMTEgKFVTIFdlc3QpXG7igKIgMTYyLjI1NS4zNi4xMSAoVVMgRWFzdClcblxuTWVldGluZyBJRDogOTkxIDI3MDIgNjI0NFxuUGFzc2NvZGU6IDg4OTE4NlxuIiwibG9jYXRpb24iOiJodHRwczovL21lcmNlcmFkdmlzb3JzLnpvb20udXMvai85OTEyNzAyNjI0ND9wd2Q9S3RwYzhjbWFDbjdPNzRpdGF6Ym4xdGV0ZU5rNWZsLjEmZnJvbT1hZGRvbiIsInVpZCI6IjA0MDAwMDAwODIwMEUwMDA3NEM1QjcxMDFBODJFMDA4MDAwMDAwMDA0QjBDQ0EzQTJDQjlEQTAxMDAwMDAwMDAwMDAwMDAwMDEwMDAwMDAwMzZBNjA3Q0Q4MkFCMzM0Qjk0MTRCNDM0MzZDQjU2NTAiLCJyZWN1cnJlbmNlX2lkIjpudWxsLCJycnVsZSI6bnVsbH0seyJzdGFydCI6eyJkYXRlVGltZSI6IjIwMjQtMDktMDhUMTU6MDA6MDAtMDY6MDAifSwiZW5kIjp7ImRhdGVUaW1lIjoiMjAyNC0wOS0wOFQxNzowMDowMC0wNjowMCJ9LCJzdW1tYXJ5IjoiTWljaGFlbD8iLCJkZXNjcmlwdGlvbiI6bnVsbCwibG9jYXRpb24iOm51bGwsInVpZCI6IjR0OHVjbjY3c3ByZjQ2MnRnbHV0MjlyZGc5QGdvb2dsZS5jb20iLCJyZWN1cnJlbmNlX2lkIjpudWxsLCJycnVsZSI6bnVsbH0seyJzdGFydCI6eyJkYXRlVGltZSI6IjIwMjQtMDktMDlUMDk6NDU6MDAtMDY6MDAifSwiZW5kIjp7ImRhdGVUaW1lIjoiMjAyNC0wOS0wOVQxMDo0NTowMC0wNjowMCJ9LCJzdW1tYXJ5IjoiQ29mZmVlIiwiZGVzY3JpcHRpb24iOm51bGwsImxvY2F0aW9uIjpudWxsLCJ1aWQiOiJsYWFoZDM2ZG5uaTVsYjMyZnFtaGVlcnNia0Bnb29nbGUuY29tIiwicmVjdXJyZW5jZV9pZCI6bnVsbCwicnJ1bGUiOm51bGx9LHsic3RhcnQiOnsiZGF0ZVRpbWUiOiIyMDI0LTA5LTEwVDA4OjMwOjAwLTA2OjAwIn0sImVuZCI6eyJkYXRlVGltZSI6IjIwMjQtMDktMTBUMDk6MDA6MDAtMDY6MDAifSwic3VtbWFyeSI6IlBlbG90b24iLCJkZXNjcmlwdGlvbiI6bnVsbCwibG9jYXRpb24iOm51bGwsInVpZCI6IjRva3B1YW9vZ2lvODVlbnBpM2F1aWRyZThzX1IyMDI0MDkwM1QxNDMwMDBAZ29vZ2xlLmNvbSIsInJlY3VycmVuY2VfaWQiOiI0b2twdWFvb2dpbzg1ZW5waTNhdWlkcmU4c19SMjAyNDA5MDNUMTQzMDAwXzIwMjQwOTEwVDE0MzAwMFoiLCJycnVsZSI6IkZSRVE9V0VFS0xZIn1d
+  recorded_at: Thu, 05 Sep 2024 21:15:00 GMT
+- request:
+    method: get
+    uri: http://homeassistant.local:8123/api/calendars/calendar.joel_jack?end=2024-09-10T21:15:00Z&start=2024-09-04T21:15:00Z
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Referrer-Policy:
+      - no-referrer
+      X-Content-Type-Options:
+      - nosniff
+      Server:
+      - ''
+      X-Frame-Options:
+      - SAMEORIGIN
+      Content-Length:
+      - '1569'
+      Date:
+      - Fri, 06 Sep 2024 01:54:38 GMT
+    body:
+      encoding: ASCII-8BIT
+      string: '[{"start":{"dateTime":"2024-09-05T09:00:00-06:00"},"end":{"dateTime":"2024-09-05T09:45:00-06:00"},"summary":"Jack
+        swim lessons","description":null,"location":null,"uid":"0ivj2uhj08bcoth1fikmcmpljb@google.com","recurrence_id":"0ivj2uhj08bcoth1fikmcmpljb_20240905T150000Z","rrule":"FREQ=WEEKLY;WKST=SU;COUNT=12;BYDAY=TH"}]'
+  recorded_at: Thu, 05 Sep 2024 21:15:00 GMT
+- request:
+    method: get
+    uri: http://homeassistant.local:8123/api/calendars/calendar.us?end=2024-09-10T21:15:00Z&start=2024-09-04T21:15:00Z
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Referrer-Policy:
+      - no-referrer
+      X-Content-Type-Options:
+      - nosniff
+      Server:
+      - ''
+      X-Frame-Options:
+      - SAMEORIGIN
+      Content-Length:
+      - '2081'
+      Date:
+      - Fri, 06 Sep 2024 01:54:38 GMT
+    body:
+      encoding: ASCII-8BIT
+      string: '[{"start":{"dateTime":"2024-09-05T16:30:00-06:00"},"end":{"dateTime":"2024-09-05T18:00:00-06:00"},"summary":"Tappsley
+        family dinner","description":null,"location":null,"uid":"9852h5ggtr6893vmnn5cn6mrm7@google.com","recurrence_id":"9852h5ggtr6893vmnn5cn6mrm7_20240905T223000Z","rrule":"FREQ=WEEKLY"}]'
+  recorded_at: Thu, 05 Sep 2024 21:15:00 GMT
+- request:
+    method: get
+    uri: http://homeassistant.local:8123/api/calendars/calendar.work?end=2024-09-10T21:15:00Z&start=2024-09-04T21:15:00Z
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Referrer-Policy:
+      - no-referrer
+      X-Content-Type-Options:
+      - nosniff
+      Server:
+      - ''
+      X-Frame-Options:
+      - SAMEORIGIN
+      Content-Length:
+      - '286'
+      Date:
+      - Fri, 06 Sep 2024 01:54:38 GMT
+    body:
+      encoding: ASCII-8BIT
+      string: '[{"start":{"dateTime":"2024-09-06T07:00:00-06:00"},"end":{"dateTime":"2024-09-06T09:00:00-06:00"},"summary":"Me
+        time: Bike ride","description":null,"location":null,"uid":"qo8nr0boasjdepc0e12htdamjk@google.com","recurrence_id":"qo8nr0boasjdepc0e12htdamjk_20240904T130000Z","rrule":null}]'
+  recorded_at: Thu, 05 Sep 2024 21:15:00 GMT
+recorded_with: VCR 6.2.0

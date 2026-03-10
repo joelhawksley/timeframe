@@ -1,0 +1,99 @@
+class HomeAssistantCalendarApi < Api
+  MDI_CSS = File.read(Rails.root.join("public/css/mdi/materialdesignicons.css")).freeze
+
+  def initialize(config = Timeframe::Application.config.local)
+    @config = config
+  end
+
+  def url
+    "#{home_assistant_base_url}/api/calendars"
+  end
+
+  def fetch
+    start_time = (Time.now - 1.day).utc.iso8601
+    end_time = (Time.now + 5.days).utc.iso8601
+
+    out = []
+    calendars = fetch_calendars
+    icons = fetch_calendar_icons(calendars)
+
+    calendars.each do |calendar|
+      entity_id = calendar["entity_id"]
+
+      res = HTTParty.get("#{url}/#{entity_id}?start=#{start_time}&end=#{end_time}", headers: headers)
+
+      res.map! do |event|
+        event["starts_at"] = event["start"]["date"] || event["start"]["dateTime"]
+
+        event["ends_at"] = event["end"]["date"] || event["end"]["dateTime"]
+
+        event["icon"] = icons[entity_id] || "calendar"
+
+        event["id"] = event["uid"]
+
+        event.delete("uid")
+        event.delete("start")
+        event.delete("end")
+        event.delete("recurrence_id")
+        event.delete("rrule")
+
+        event
+      end
+
+      out.concat(res)
+    end
+
+    save_response(out.compact)
+  end
+
+  def prepare_response(response)
+    response
+  end
+
+  def fetch_calendars
+    res = HTTParty.get(url, headers: headers)
+    return [] unless res.code == 200
+    res.parsed_response
+  end
+
+  def fetch_calendar_icons(calendars)
+    states_url = "#{home_assistant_base_url}/api/states"
+    icons = {}
+
+    calendars.each do |calendar|
+      entity_id = calendar["entity_id"]
+
+      begin
+        res = HTTParty.get("#{states_url}/#{entity_id}", headers: headers)
+        if res.code == 200
+          icon = res.dig("attributes", "icon")
+          if icon.present?
+            icon_name = icon.sub("mdi:", "")
+            icons[entity_id] = icon_name if MDI_CSS.include?(".mdi-#{icon_name}::before")
+          end
+        end
+      rescue
+        # Fall back to default icon if state lookup fails
+      end
+    end
+
+    icons
+  end
+
+  def headers
+    {
+      Authorization: "Bearer #{@config["home_assistant_token"]}",
+      "content-type": "application/json"
+    }
+  end
+
+  def private_mode?
+    current_time = DateTime.now.in_time_zone(HomeAssistantConfigApi.new.time_zone)
+
+    data.any? { it.summary == "timeframe-private" && it.starts_at <= current_time && it.ends_at >= current_time }
+  end
+
+  def data
+    @data ||= super.map { CalendarEvent.new(**it.symbolize_keys!) }
+  end
+end
