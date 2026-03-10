@@ -28,20 +28,14 @@ class DisplayContent
     raw_events = []
 
     if home_assistant_weather_api.healthy?
-      # raw_events << home_assistant_weather_api.hourly_calendar_events
-      # raw_events << home_assistant_weather_api.daily_calendar_events
-      # out[:attribution] = home_assistant_weather_api.attribution
+      raw_events << home_assistant_weather_api.hourly_calendar_events
+      raw_events << home_assistant_weather_api.daily_calendar_events
+      raw_events << home_assistant_weather_api.precip_calendar_events
+      raw_events << home_assistant_weather_api.wind_calendar_events
+      out[:attribution] = home_assistant_weather_api.attribution
     end
 
     if weather_kit_api.healthy?
-      raw_events << (
-        weather_kit_api.daily_calendar_events +
-        weather_kit_api.hourly_calendar_events +
-        weather_kit_api.precip_calendar_events +
-        weather_kit_api.wind_calendar_events +
-        weather_kit_api.weather_alert_calendar_events
-      )
-
       condition = weather_kit_api.data.dig(:forecastNextHour, :summary)&.first.to_h[:condition]
 
       if condition != "clear"
@@ -51,8 +45,6 @@ class DisplayContent
         out[:minutely_weather_minutes] = minutely_weather_minutes
         out[:minutely_weather_minutes_icon] = minutely_weather_minutes_icon
       end
-    else
-      out[:top_left] << {icon: "alert", label: "Apple Weather"}
     end
 
     if home_assistant_api.healthy?

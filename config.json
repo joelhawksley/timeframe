@@ -1,0 +1,26 @@
+{
+  "name": "Timeframe",
+  "version": "1.0.0",
+  "slug": "timeframe",
+  "description": "An e-paper calendar, weather, and smart home family dashboard",
+  "url": "https://github.com/joelhawksley/timeframe",
+  "arch": ["aarch64", "amd64"],
+  "ports": {
+    "8099/tcp": null
+  },
+  "ports_description": {
+    "8099/tcp": "Web interface"
+  },
+  "options": {
+    "apple_developer_team_id": "",
+    "apple_developer_service_id": "",
+    "apple_developer_key_id": "",
+    "apple_developer_private_key": ""
+  },
+  "schema": {
+    "apple_developer_team_id": "str?",
+    "apple_developer_service_id": "str?",
+    "apple_developer_key_id": "str?",
+    "apple_developer_private_key": "str?"
+  }
+}

@@ -21,8 +21,20 @@ An e-paper calendar, weather, and smart home family dashboard
 
 ## Dependencies
 
-- Home Assistant installation (If you do not have a Home Assistant instance you can run a Dockerized version for local development purposes with `docker run -d --restart=always -p 8123:8123 homeassistant/home-assistant`)
-- Apple WeatherKit API key
+- Home Assistant
+- Apple WeatherKit API key (optional, for next-hour precipitation forecast)
+
+## Home Assistant App (add-on) Installation
+
+1. In Home Assistant, go to **Settings → Add-ons → Add-on Store**
+2. Click the three-dot menu (⋮) → **Repositories**
+3. Add this repository URL: `https://github.com/joelhawksley/timeframe`
+4. Find **Timeframe** in the add-on store and click **Install**
+5. (Optional) Add your Apple Weather API key under Configuration to enable next-hour forecasts.
+6. Click **Start**
+7. Access the app at port 8099 (e.g. `http://homeassistant.local:8099`)
+
+No configuration is required — the add-on automatically uses the Home Assistant Supervisor API.
 
 ## Local development
 
@@ -44,7 +56,5 @@ An e-paper calendar, weather, and smart home family dashboard
 ### Deploying
 
 To fetch the latest version: `git fetch --all && git reset --hard origin/main`
-
-To upgrade Visionect: `docker-compose pull && docker-compose up -d`
 
 Rails server: `RAILS_ENV=production rails s -p 80 -b 0.0.0.0 --no-log-to-stdout`

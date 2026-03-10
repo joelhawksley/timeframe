@@ -9,7 +9,7 @@ gem "puma"
 gem "puma-rufus-scheduler"
 gem "rails", "~> 8"
 gem "rufus-scheduler"
-gem "tenkit", git: "https://github.com/joelhawksley/tenkit", tag: "patch-1"
+gem "tenkit", git: "https://github.com/joelhawksley/tenkit", ref: "3f91e06e87067ec1a4fafd94d96c5405630f2049"
 
 group :development, :test do
   gem "overcommit"

@@ -14,17 +14,32 @@ Bundler.require(*Rails.groups)
 
 module Timeframe
   class Application < Rails::Application
+    def self.load_config
+      if ENV["SUPERVISOR_TOKEN"]
+        config = {"home_assistant_token" => ENV["SUPERVISOR_TOKEN"], "home_assistant_url" => "http://supervisor/core"}
+
+        options_path = "/data/options.json"
+        if File.exist?(options_path)
+          config.merge!(JSON.parse(File.read(options_path)))
+        end
+
+        config
+      elsif File.exist?(Rails.root.join("config.yml"))
+        YAML.load_file(Rails.root.join("config.yml"))
+      else
+        {}
+      end
+    end
+
     config.cache_store = :file_store, Rails.root.join("tmp/cache/").to_s
     config.action_controller.perform_caching = false
 
-    config.local = YAML.load_file(Rails.root.join("config.yml")).freeze
+    config.local = load_config.freeze
 
     config.secret_key_base = "foo" # Not needed as app runs behind firewall
 
     config.active_support.to_time_preserves_timezone = :zone
 
-    config.hosts << "hawksley-server.local"
-    config.hosts << "timeframe.local"
-    config.hosts << "timeframetesting.com"
+    config.hosts.clear
   end
 end

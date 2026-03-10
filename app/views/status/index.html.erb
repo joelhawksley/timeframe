@@ -1,0 +1,24 @@
+<h1>Timeframe</h1>
+
+<h2>Displays</h2>
+<ul>
+  <li><a href="/mira">Boox Mira Pro (25.3")</a></li>
+  <li><a href="/thirteen">Visionect Place and Play 13"</a></li>
+</ul>
+
+<h2>API Status</h2>
+<p><a href="/status">JSON endpoint</a></p>
+<table border="1" cellpadding="8" cellspacing="0">
+  <tr>
+    <th>API</th>
+    <th>Status</th>
+    <th>Last Fetched</th>
+  </tr>
+  <% statuses.each do |status| %>
+    <tr>
+      <td><%= status[:name] %></td>
+      <td><%= status[:healthy] ? "✓ Healthy" : "✗ Unhealthy" %></td>
+      <td><%= status[:last_fetched_at] || "Never" %></td>
+    </tr>
+  <% end %>
+</table>

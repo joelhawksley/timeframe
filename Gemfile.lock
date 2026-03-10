@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/joelhawksley/tenkit
   revision: 3f91e06e87067ec1a4fafd94d96c5405630f2049
-  ref: patch-1
+  ref: 3f91e06e87067ec1a4fafd94d96c5405630f2049
   specs:
     tenkit (0.0.7)
       httparty (>= 0.21)

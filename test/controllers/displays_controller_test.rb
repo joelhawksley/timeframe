@@ -3,6 +3,10 @@
 require "test_helper"
 
 class DisplaysControllerTest < ActionDispatch::IntegrationTest
+  def setup
+    Rails.cache.delete(DEPLOY_TIME.to_s + "home_assistant_weather_api")
+  end
+
   test "should get #mira with no data" do
     get "/mira"
 
