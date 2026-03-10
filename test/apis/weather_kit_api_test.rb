@@ -23,6 +23,16 @@ class WeatherKitApiTest < Minitest::Test
     end
   end
 
+  def test_fetch_skips_when_key_blank
+    config = Tenkit.config
+    config.team_id = "test_team"
+    config.key = ""
+    Tenkit.stub :config, config do
+      api = WeatherKitApi.new
+      assert_nil api.fetch
+    end
+  end
+
   def test_fetch_saves_response
     weather_response = Minitest::Mock.new
     weather_response.expect(:raw, {"forecastNextHour" => {"summary" => []}})
@@ -32,6 +42,7 @@ class WeatherKitApiTest < Minitest::Test
 
     config = Tenkit.config
     config.team_id = "test_team"
+    config.key = "test_key"
 
     Tenkit.stub :config, config do
       Tenkit::Client.stub :new, client do

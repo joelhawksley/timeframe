@@ -4,7 +4,8 @@ class WeatherKitApi < Api
   end
 
   def fetch
-    return unless Tenkit.config&.team_id.present?
+    config = Tenkit.config
+    return unless config&.team_id.present? && config.key.present?
 
     client = Tenkit::Client.new
     hash = client.weather(
