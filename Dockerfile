@@ -1,5 +1,4 @@
-ARG BUILD_FROM=ruby:3.4.3-slim
-FROM ${BUILD_FROM}
+FROM ruby:3.4.3-slim
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends build-essential git libffi-dev libyaml-dev && \
