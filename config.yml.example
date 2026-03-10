@@ -1,3 +1,6 @@
+air_temp_format: imperial
+rainfall_format: imperial
+speed_format: imperial
 home_assistant_token: abcd1234
 apple_developer_team_id:
 apple_developer_service_id:

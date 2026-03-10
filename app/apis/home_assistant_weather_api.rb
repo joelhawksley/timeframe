@@ -168,9 +168,14 @@ class HomeAssistantWeatherApi < Api
 
     events = []
 
+    metric_wind = @config["speed_format"] == "metric"
+    wind_threshold = metric_wind ? 32.0 : 20.0
+    wind_unit = metric_wind ? "km/h" : "mph"
+
     hours.each do |hour|
-      wind_speed_mph = hour[:wind_speed].to_f * 0.621371 # km/h to mph
-      next if wind_speed_mph < 20.0
+      wind_speed = hour[:wind_speed].to_f
+      wind_speed *= 0.621371 unless metric_wind
+      next if wind_speed < wind_threshold
 
       hour_i = DateTime.parse(hour[:datetime]).to_i
       next if hour_i < Time.now.to_i
@@ -179,13 +184,13 @@ class HomeAssistantWeatherApi < Api
 
       if existing_event
         existing_event[:end_i] += 3600
-        existing_event[:wind_max] = [existing_event[:wind_max], wind_speed_mph].max
+        existing_event[:wind_max] = [existing_event[:wind_max], wind_speed].max
         existing_event[:wind_directions] << hour[:wind_bearing].to_i
       else
         events << {
           start_i: hour_i,
           end_i: hour_i + 3600,
-          wind_max: wind_speed_mph,
+          wind_max: wind_speed,
           wind_directions: [hour[:wind_bearing].to_i]
         }
       end
@@ -203,7 +208,7 @@ class HomeAssistantWeatherApi < Api
         ends_at: it[:end_i],
         icon: "arrow-up",
         icon_rotation: avg_wind_direction,
-        summary: "Gusts up to #{it[:wind_max].round}mph"
+        summary: "Gusts up to #{it[:wind_max].round}#{wind_unit}"
       )
     end
   end

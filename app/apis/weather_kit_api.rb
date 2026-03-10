@@ -1,6 +1,7 @@
 class WeatherKitApi < Api
-  def initialize(home_assistant_config_api: HomeAssistantConfigApi.new)
+  def initialize(home_assistant_config_api: HomeAssistantConfigApi.new, config: Timeframe::Application.config.local)
     @home_assistant_config_api = home_assistant_config_api
+    @config = config
   end
 
   def fetch
@@ -28,7 +29,7 @@ class WeatherKitApi < Api
 
     return nil unless raw_temp
 
-    "#{celsius_fahrenheit(data.dig(:currentWeather, :temperature))}°"
+    "#{format_temperature(data.dig(:currentWeather, :temperature))}°"
   end
 
   def hourly_calendar_events
@@ -55,7 +56,7 @@ class WeatherKitApi < Api
           starts_at: hour,
           ends_at: hour,
           icon: icon_for(weather_hour[:conditionCode]),
-          summary: "#{celsius_fahrenheit(weather_hour[:temperature])}°".html_safe
+          summary: "#{format_temperature(weather_hour[:temperature])}°".html_safe
         )
       end.compact
     end
@@ -70,9 +71,14 @@ class WeatherKitApi < Api
 
     hours = data[:forecastHourly][:hours]
 
+    metric_wind = @config["speed_format"] == "metric"
+    wind_threshold = metric_wind ? 32.0 : 20.0
+    wind_unit = metric_wind ? "km/h" : "mph"
+
     hours.each do |hour|
-      hour_wind_mph = hour[:windGust].to_f * 0.621371
-      next if hour_wind_mph < 20.0
+      wind_speed = hour[:windGust].to_f
+      wind_speed *= 0.621371 unless metric_wind
+      next if wind_speed < wind_threshold
 
       hour_i = DateTime.parse(hour[:forecastStart]).to_i
 
@@ -83,14 +89,14 @@ class WeatherKitApi < Api
 
       if existing_event
         existing_event[:end_i] += 3600
-        existing_event[:wind_max] = [existing_event[:wind_max], hour_wind_mph].max
+        existing_event[:wind_max] = [existing_event[:wind_max], wind_speed].max
         existing_event[:wind_directions] << hour[:windDirection]
       else
         events <<
           {
             start_i: hour_i,
             end_i: (DateTime.parse(hour[:forecastStart]) + 1.hour).to_i,
-            wind_max: hour_wind_mph,
+            wind_max: wind_speed,
             wind_directions: [hour[:windDirection]]
           }
       end
@@ -109,7 +115,7 @@ class WeatherKitApi < Api
         ends_at: it[:end_i],
         icon: "arrow-up",
         icon_rotation: avg_wind_direction,
-        summary: "Gusts up to #{it[:wind_max].round}mph"
+        summary: "Gusts up to #{it[:wind_max].round}#{wind_unit}"
       )
     end
   end
@@ -215,11 +221,9 @@ class WeatherKitApi < Api
     days.map do |day|
       summary_suffix =
         if day.dig(:precipitationType) == "snow"
-          if day.dig(:snowfallAmount) > 0.05
-            " / #{(day[:snowfallAmount] * 0.0393701).round(1)}\""
-          end
-        elsif (day.dig(:precipitationAmount).to_f * 0.0393701) >= 0.1
-          " / #{(day[:precipitationAmount] * 0.0393701).round(1)}\""
+          format_rainfall(day[:snowfallAmount]) if day.dig(:snowfallAmount) > 0.05
+        elsif day.dig(:precipitationAmount).to_f >= 2.54
+          format_rainfall(day[:precipitationAmount])
         end
 
       CalendarEvent.new(
@@ -227,12 +231,28 @@ class WeatherKitApi < Api
         starts_at: DateTime.parse(day[:forecastStart]).to_i,
         ends_at: DateTime.parse(day[:forecastEnd]).to_i,
         icon: icon_for(day[:conditionCode]),
-        summary: "#{celsius_fahrenheit(day[:temperatureMax])}° / #{celsius_fahrenheit(day[:temperatureMin])}°#{summary_suffix}".html_safe
+        summary: "#{format_temperature(day[:temperatureMax])}° / #{format_temperature(day[:temperatureMin])}°#{summary_suffix}".html_safe
       )
     end
   end
 
-  def celsius_fahrenheit(c)
-    (c * 9 / 5 + 32).round
+  def format_temperature(c)
+    if @config["air_temp_format"] == "metric"
+      c.round
+    else
+      (c * 9 / 5 + 32).round
+    end
+  end
+
+  def format_rainfall(mm)
+    if @config["rainfall_format"] == "metric"
+      if mm >= 10
+        " / #{(mm / 10.0).round(1)}cm"
+      else
+        " / #{mm.round(1)}mm"
+      end
+    else
+      " / #{(mm * 0.0393701).round(1)}\""
+    end
   end
 end

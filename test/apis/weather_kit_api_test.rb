@@ -41,17 +41,50 @@ class WeatherKitApiTest < Minitest::Test
     end
   end
 
-  def test_current_temperature
+  def test_current_temperature_imperial
     weather = {
       currentWeather: {
         temperature: 30.06
       }
     }
 
-    api = WeatherKitApi.new
+    api = WeatherKitApi.new(config: {"air_temp_format" => "imperial"})
     api.stub :data, weather do
       assert_equal("86°", api.current_temperature)
     end
+  end
+
+  def test_current_temperature_metric
+    weather = {
+      currentWeather: {
+        temperature: 30.06
+      }
+    }
+
+    api = WeatherKitApi.new(config: {"air_temp_format" => "metric"})
+    api.stub :data, weather do
+      assert_equal("30°", api.current_temperature)
+    end
+  end
+
+  def test_format_rainfall_imperial
+    api = WeatherKitApi.new(config: {"rainfall_format" => "imperial"})
+    assert_equal(" / 0.5\"", api.send(:format_rainfall, 12.7))
+  end
+
+  def test_format_rainfall_default_is_imperial
+    api = WeatherKitApi.new(config: {})
+    assert_equal(" / 0.5\"", api.send(:format_rainfall, 12.7))
+  end
+
+  def test_format_rainfall_metric_mm
+    api = WeatherKitApi.new(config: {"rainfall_format" => "metric"})
+    assert_equal(" / 5.2mm", api.send(:format_rainfall, 5.2))
+  end
+
+  def test_format_rainfall_metric_cm
+    api = WeatherKitApi.new(config: {"rainfall_format" => "metric"})
+    assert_equal(" / 1.3cm", api.send(:format_rainfall, 12.7))
   end
 
   def test_health_no_data
@@ -2400,6 +2433,38 @@ class WeatherKitApiTest < Minitest::Test
     end
   end
 
+  def test_weather_wind_calendar_events_imperial
+    weather = {
+      forecastHourly: {
+        hours: [{"forecastStart" => "2099-01-01T06:00:00Z",
+                 "windDirection" => 180,
+                 "windGust" => 48.28}.with_indifferent_access]
+      }
+    }
+
+    api = WeatherKitApi.new(config: {"speed_format" => "imperial"})
+    api.stub :data, weather do
+      event = api.wind_calendar_events.first
+      assert(event.summary.include?("30mph"))
+    end
+  end
+
+  def test_weather_wind_calendar_events_metric
+    weather = {
+      forecastHourly: {
+        hours: [{"forecastStart" => "2099-01-01T06:00:00Z",
+                 "windDirection" => 180,
+                 "windGust" => 48.28}.with_indifferent_access]
+      }
+    }
+
+    api = WeatherKitApi.new(config: {"speed_format" => "metric"})
+    api.stub :data, weather do
+      event = api.wind_calendar_events.first
+      assert(event.summary.include?("48km/h"))
+    end
+  end
+
   # This failure was hidden by a caught error, commenting out for now
   # def test_fetch_raises_no_errors
   #   VCR.use_cassette("weatherkit_fetch") do
@@ -2621,9 +2686,27 @@ class WeatherKitApiTest < Minitest::Test
                       name: "DailyForecast"}
     }
 
-    api = WeatherKitApi.new
+    api = WeatherKitApi.new(config: {"rainfall_format" => "imperial"})
     api.stub :data, weather do
       assert(api.daily_calendar_events.first.summary.include?('2.8"'))
+    end
+  end
+
+  def test_daily_calendar_events_snow_precip_metric
+    weather = {
+      forecastDaily: {days: [{forecastStart: "2024-01-15T07:00:00Z",
+                              forecastEnd: "2024-01-16T07:00:00Z",
+                              conditionCode: "Snow",
+                              precipitationType: "snow",
+                              snowfallAmount: 70.09,
+                              temperatureMax: -16.58,
+                              temperatureMin: -24.15}],
+                      name: "DailyForecast"}
+    }
+
+    api = WeatherKitApi.new(config: {"rainfall_format" => "metric"})
+    api.stub :data, weather do
+      assert(api.daily_calendar_events.first.summary.include?("7.0cm"))
     end
   end
 
@@ -2703,9 +2786,28 @@ class WeatherKitApiTest < Minitest::Test
                       name: "DailyForecast"}
     }
 
-    api = WeatherKitApi.new
+    api = WeatherKitApi.new(config: {"rainfall_format" => "imperial"})
     api.stub :data, weather do
       assert(api.daily_calendar_events.first.summary.include?('0.3"'))
+    end
+  end
+
+  def test_daily_calendar_events_rain_precip_metric
+    weather = {
+      forecastDaily: {days: [{forecastStart: "2024-04-26T06:00:00Z",
+                              forecastEnd: "2024-04-27T06:00:00Z",
+                              conditionCode: "Rain",
+                              precipitationAmount: 7.82,
+                              precipitationType: "rain",
+                              snowfallAmount: 0.0,
+                              temperatureMax: 19.92,
+                              temperatureMin: 8.23}],
+                      name: "DailyForecast"}
+    }
+
+    api = WeatherKitApi.new(config: {"rainfall_format" => "metric"})
+    api.stub :data, weather do
+      assert(api.daily_calendar_events.first.summary.include?("7.8mm"))
     end
   end
 
