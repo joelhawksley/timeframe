@@ -5,8 +5,11 @@
   "description": "An e-paper calendar, weather, and smart home family dashboard",
   "url": "https://github.com/joelhawksley/timeframe",
   "arch": ["aarch64", "amd64"],
+  "homeassistant_api": true,
+  "hassio_role": "default",
+  "host_network": true,
   "ports": {
-    "8099/tcp": null
+    "8099/tcp": 8099
   },
   "ports_description": {
     "8099/tcp": "Web interface"
