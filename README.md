@@ -22,7 +22,6 @@ An e-paper calendar, weather, and smart home family dashboard
 ## Dependencies
 
 - Home Assistant
-- Apple WeatherKit API key (optional, for next-hour precipitation forecast)
 
 ## Home Assistant App (add-on) Installation
 
@@ -30,9 +29,8 @@ An e-paper calendar, weather, and smart home family dashboard
 2. Click the three-dot menu (⋮) → **Repositories**
 3. Add this repository URL: `https://github.com/joelhawksley/timeframe`
 4. Find **Timeframe** in the add-on store and click **Install**
-5. (Optional) Add your Apple Weather API key under Configuration to enable next-hour forecasts.
-6. Click **Start**
-7. Access the app at port 8099 (e.g. `http://homeassistant.local:8099`)
+5. Click **Start**
+6. Access the app at port 8099 (e.g. `http://homeassistant.local:8099`)
 
 No configuration is required — the add-on automatically uses the Home Assistant Supervisor API.
 

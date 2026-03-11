@@ -1,12 +1,3 @@
-GIT
-  remote: https://github.com/joelhawksley/tenkit
-  revision: 3f91e06e87067ec1a4fafd94d96c5405630f2049
-  ref: 3f91e06e87067ec1a4fafd94d96c5405630f2049
-  specs:
-    tenkit (0.0.7)
-      httparty (>= 0.21)
-      jwt (~> 2.7.0)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -126,7 +117,6 @@ GEM
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
     json (2.19.0)
-    jwt (2.7.1)
     language_server-protocol (3.17.0.5)
     lint_roller (1.1.0)
     logger (1.7.0)
@@ -310,7 +300,6 @@ DEPENDENCIES
   rufus-scheduler
   simplecov
   standard
-  tenkit!
   vcr
   webmock
 

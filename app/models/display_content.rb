@@ -1,7 +1,6 @@
 class DisplayContent
   def call(
     current_time: Time.now.utc.in_time_zone(HomeAssistantConfigApi.new.time_zone),
-    weather_kit_api: WeatherKitApi.new,
     calendar_feed: CalendarFeed.new,
     home_assistant_api: HomeAssistantApi.new,
     home_assistant_calendar_api: HomeAssistantCalendarApi.new,
@@ -33,18 +32,6 @@ class DisplayContent
       raw_events << home_assistant_weather_api.precip_calendar_events
       raw_events << home_assistant_weather_api.wind_calendar_events
       out[:attribution] = home_assistant_weather_api.attribution
-    end
-
-    if weather_kit_api.healthy?
-      condition = weather_kit_api.data.dig(:forecastNextHour, :summary)&.first.to_h[:condition]
-
-      if condition != "clear"
-        minutely_weather_minutes_icon = (condition == "snow") ? "snowflake" : "weather-rainy"
-        minutely_weather_minutes = weather_kit_api.data.dig(:forecastNextHour, :minutes)&.first(60)
-
-        out[:minutely_weather_minutes] = minutely_weather_minutes
-        out[:minutely_weather_minutes_icon] = minutely_weather_minutes_icon
-      end
     end
 
     if home_assistant_api.healthy?

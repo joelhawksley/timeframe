@@ -3,8 +3,7 @@ class StatusController < ApplicationController
     HomeAssistantApi,
     HomeAssistantCalendarApi,
     HomeAssistantConfigApi,
-    HomeAssistantWeatherApi,
-    WeatherKitApi
+    HomeAssistantWeatherApi
   ].freeze
 
   def index

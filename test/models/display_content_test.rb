@@ -8,7 +8,6 @@ class DisplayContenttTest < Minitest::Test
   def setup
     # Clear API caches to prevent test order pollution
     Rails.cache.delete(DEPLOY_TIME.to_s + "home_assistant_api")
-    Rails.cache.delete(DEPLOY_TIME.to_s + "weather_kit_api")
     Rails.cache.delete(DEPLOY_TIME.to_s + "home_assistant_weather_api")
   end
 
@@ -63,60 +62,6 @@ class DisplayContenttTest < Minitest::Test
               end
             end
           end
-        end
-      end
-    end
-  end
-
-  def test_with_healthy_weather_kit_rain
-    travel_to DateTime.new(2023, 8, 27, 18, 15, 0, "-0600") do
-      wk_api = WeatherKitApi.new
-      wk_api.stub :healthy?, true do
-        wk_api.stub :data, {forecastNextHour: {summary: [{condition: "rain"}], minutes: [{precipitationIntensity: 0.5}]}} do
-          result = DisplayContent.new.call(weather_kit_api: wk_api)
-
-          assert_equal("weather-rainy", result[:minutely_weather_minutes_icon])
-          assert_equal([{precipitationIntensity: 0.5}], result[:minutely_weather_minutes])
-        end
-      end
-    end
-  end
-
-  def test_with_healthy_weather_kit_snow
-    travel_to DateTime.new(2023, 8, 27, 18, 15, 0, "-0600") do
-      wk_api = WeatherKitApi.new
-      wk_api.stub :healthy?, true do
-        wk_api.stub :data, {forecastNextHour: {summary: [{condition: "snow"}], minutes: []}} do
-          result = DisplayContent.new.call(weather_kit_api: wk_api)
-
-          assert_equal("snowflake", result[:minutely_weather_minutes_icon])
-        end
-      end
-    end
-  end
-
-  def test_with_healthy_weather_kit_clear
-    travel_to DateTime.new(2023, 8, 27, 18, 15, 0, "-0600") do
-      wk_api = WeatherKitApi.new
-      wk_api.stub :healthy?, true do
-        wk_api.stub :data, {forecastNextHour: {summary: [{condition: "clear"}]}} do
-          result = DisplayContent.new.call(weather_kit_api: wk_api)
-
-          assert_nil result[:minutely_weather_minutes_icon]
-        end
-      end
-    end
-  end
-
-  def test_with_healthy_weather_kit_nil_summary
-    travel_to DateTime.new(2023, 8, 27, 18, 15, 0, "-0600") do
-      wk_api = WeatherKitApi.new
-      wk_api.stub :healthy?, true do
-        wk_api.stub :data, {} do
-          result = DisplayContent.new.call(weather_kit_api: wk_api)
-
-          # When no forecastNextHour data, condition is nil which != "clear"
-          assert_equal "weather-rainy", result[:minutely_weather_minutes_icon]
         end
       end
     end

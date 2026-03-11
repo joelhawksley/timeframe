@@ -50,7 +50,6 @@ data = json.load(sys.stdin)
 apis = data['apis']
 names = [a['name'] for a in apis]
 assert 'HomeAssistantApi' in names, 'Missing HomeAssistantApi'
-assert 'WeatherKitApi' in names, 'Missing WeatherKitApi'
 for a in apis:
     assert 'healthy' in a, f'Missing healthy key in {a[\"name\"]}'
     assert 'last_fetched_at' in a, f'Missing last_fetched_at key in {a[\"name\"]}'

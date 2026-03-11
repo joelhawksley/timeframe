@@ -25,7 +25,6 @@ class StatusControllerTest < ActionDispatch::IntegrationTest
     api_names = json["apis"].map { it["name"] }
     assert_includes api_names, "HomeAssistantApi"
     assert_includes api_names, "HomeAssistantWeatherApi"
-    assert_includes api_names, "WeatherKitApi"
 
     json["apis"].each do |api|
       assert api.key?("healthy")

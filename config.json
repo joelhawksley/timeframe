@@ -18,16 +18,6 @@
   "ports_description": {
     "8099/tcp": "Web interface"
   },
-  "options": {
-    "apple_developer_team_id": "",
-    "apple_developer_service_id": "",
-    "apple_developer_key_id": "",
-    "apple_developer_private_key": ""
-  },
-  "schema": {
-    "apple_developer_team_id": "str?",
-    "apple_developer_service_id": "str?",
-    "apple_developer_key_id": "str?",
-    "apple_developer_private_key": "str?"
-  }
+  "options": {},
+  "schema": {}
 }

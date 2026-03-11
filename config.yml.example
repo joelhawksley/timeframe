@@ -1,8 +1,1 @@
 home_assistant_token: abcd1234
-apple_developer_team_id:
-apple_developer_service_id:
-apple_developer_key_id:
-apple_developer_private_key: |
-  -----BEGIN PRIVATE KEY-----
-  etc
-  -----END PRIVATE KEY-----
