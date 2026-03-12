@@ -153,7 +153,7 @@ class HomeAssistantWeatherApiTest < Minitest::Test
 
     api = HomeAssistantWeatherApi.new
     api.stub :hourly_forecast, [
-      {datetime: future_time, wind_speed: 40.0, wind_bearing: 180}
+      {datetime: future_time, wind_gust_speed: 40.0, wind_bearing: 180}
     ] do
       events = api.wind_calendar_events
       assert_equal 1, events.length
@@ -167,7 +167,19 @@ class HomeAssistantWeatherApiTest < Minitest::Test
 
     api = HomeAssistantWeatherApi.new
     api.stub :hourly_forecast, [
-      {datetime: future_time, wind_speed: 10.0, wind_bearing: 180}
+      {datetime: future_time, wind_gust_speed: 10.0, wind_bearing: 180}
+    ] do
+      events = api.wind_calendar_events
+      assert_equal 0, events.length
+    end
+  end
+
+  def test_wind_calendar_events_skips_past_hours
+    past_time = (Time.now - 2.hours).utc.beginning_of_hour.iso8601
+
+    api = HomeAssistantWeatherApi.new
+    api.stub :hourly_forecast, [
+      {datetime: past_time, wind_gust_speed: 40.0, wind_bearing: 180}
     ] do
       events = api.wind_calendar_events
       assert_equal 0, events.length
@@ -180,8 +192,8 @@ class HomeAssistantWeatherApiTest < Minitest::Test
 
     api = HomeAssistantWeatherApi.new
     api.stub :hourly_forecast, [
-      {datetime: hour1.iso8601, wind_speed: 40.0, wind_bearing: 180},
-      {datetime: hour2.iso8601, wind_speed: 50.0, wind_bearing: 90}
+      {datetime: hour1.iso8601, wind_gust_speed: 40.0, wind_bearing: 180},
+      {datetime: hour2.iso8601, wind_gust_speed: 50.0, wind_bearing: 90}
     ] do
       events = api.wind_calendar_events
       assert_equal 1, events.length

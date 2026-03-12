@@ -169,8 +169,8 @@ class HomeAssistantWeatherApi < Api
     events = []
 
     hours.each do |hour|
-      wind_speed_mph = hour[:wind_speed].to_f * 0.621371 # km/h to mph
-      next if wind_speed_mph < 20.0
+      wind_gust_mph = hour[:wind_gust_speed].to_f * 0.621371 # km/h to mph
+      next if wind_gust_mph < 20.0
 
       hour_i = DateTime.parse(hour[:datetime]).to_i
       next if hour_i < Time.now.to_i
@@ -179,13 +179,13 @@ class HomeAssistantWeatherApi < Api
 
       if existing_event
         existing_event[:end_i] += 3600
-        existing_event[:wind_max] = [existing_event[:wind_max], wind_speed_mph].max
+        existing_event[:wind_max] = [existing_event[:wind_max], wind_gust_mph].max
         existing_event[:wind_directions] << hour[:wind_bearing].to_i
       else
         events << {
           start_i: hour_i,
           end_i: hour_i + 3600,
-          wind_max: wind_speed_mph,
+          wind_max: wind_gust_mph,
           wind_directions: [hour[:wind_bearing].to_i]
         }
       end
