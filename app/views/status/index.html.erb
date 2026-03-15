@@ -18,7 +18,7 @@
     <tr>
       <td><%= status[:name] %></td>
       <td><%= status[:healthy] ? "✓ Healthy" : "✗ Unhealthy" %></td>
-      <td><%= status[:last_fetched_at] || "Never" %></td>
+      <td><%= status[:last_fetched_at] ? "#{time_ago_in_words(DateTime.parse(status[:last_fetched_at]))} ago" : "Never" %></td>
     </tr>
   <% end %>
 </table>

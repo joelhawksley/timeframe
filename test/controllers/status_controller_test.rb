@@ -10,7 +10,7 @@ class StatusControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "Timeframe"
     assert_includes response.body, "/mira"
     assert_includes response.body, "/thirteen"
-    assert_includes response.body, "HomeAssistantApi"
+    assert_includes response.body, "States"
     assert_includes response.body, "Unhealthy"
   end
 
@@ -23,8 +23,8 @@ class StatusControllerTest < ActionDispatch::IntegrationTest
     assert json["apis"].is_a?(Array)
 
     api_names = json["apis"].map { it["name"] }
-    assert_includes api_names, "HomeAssistantApi"
-    assert_includes api_names, "HomeAssistantWeatherApi"
+    assert_includes api_names, "States"
+    assert_includes api_names, "Weather"
 
     json["apis"].each do |api|
       assert api.key?("healthy")
