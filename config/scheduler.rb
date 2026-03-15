@@ -1,20 +1,20 @@
 scheduler = Rufus::Scheduler.new
 
 def fetch_weather
-  config_api = HomeAssistantConfigApi.new
-  config_api.fetch
-  HomeAssistantWeatherApi.new.fetch
+  api = HomeAssistantApi.new
+  api.fetch_config
+  api.fetch_weather
 end
 
 def fetch_calendar
-  HomeAssistantCalendarApi.new.fetch
+  HomeAssistantApi.new.fetch_calendars
 end
 
 fetch_weather
 fetch_calendar
 
 scheduler.every "2s" do
-  HomeAssistantApi.new.fetch
+  HomeAssistantApi.new.fetch_states
 end
 
 scheduler.every "1m" do

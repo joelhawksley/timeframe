@@ -21,10 +21,6 @@ class DisplaysController < ApplicationController
   private
 
   def view_object
-    if HomeAssistantApi.new.demo_mode?
-      DisplayContent.new.call(home_assistant_calendar_api: Demo::HomeAssistantCalendarApi.new)
-    else
-      DisplayContent.new.call
-    end
+    DisplayContent.new.call
   end
 end

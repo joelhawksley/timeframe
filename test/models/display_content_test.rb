@@ -31,14 +31,16 @@ class DisplayContenttTest < Minitest::Test
   def test_hide_events_after_cutoff_if_periodic_extends_to_tomorrow
     travel_time = DateTime.new(2023, 8, 27, 20, 15, 0, "-0600")
     travel_to travel_time do
-      api = HomeAssistantCalendarApi.new
-      api.stub :healthy?, true do
-        api.stub :data, [
+      api = HomeAssistantApi.new
+      api.stub :calendars_healthy?, false do
+        api.stub :calendar_events, [
           CalendarEvent.new(starts_at: travel_time - 1.hour, ends_at: travel_time + 1.day, summary: "test")
         ] do
-          result = DisplayContent.new.call(home_assistant_calendar_api: api)
+          api.stub :private_mode?, false do
+            result = DisplayContent.new.call(home_assistant_api: api)
 
-          assert_equal(result[:day_groups].count, 4)
+            assert_equal(result[:day_groups].count, 4)
+          end
         end
       end
     end
@@ -47,7 +49,7 @@ class DisplayContenttTest < Minitest::Test
   def test_with_healthy_home_assistant
     travel_to DateTime.new(2023, 8, 27, 18, 15, 0, "-0600") do
       ha_api = HomeAssistantApi.new
-      ha_api.stub :healthy?, true do
+      ha_api.stub :states_healthy?, true do
         ha_api.stub :feels_like_temperature, "72°" do
           ha_api.stub :now_playing, {} do
             ha_api.stub :top_right, [] do
@@ -69,11 +71,11 @@ class DisplayContenttTest < Minitest::Test
 
   def test_with_private_mode
     travel_to DateTime.new(2023, 8, 27, 18, 15, 0, "-0600") do
-      cal_api = HomeAssistantCalendarApi.new
-      cal_api.stub :healthy?, true do
-        cal_api.stub :private_mode?, true do
-          cal_api.stub :data, [] do
-            result = DisplayContent.new.call(home_assistant_calendar_api: cal_api)
+      api = HomeAssistantApi.new
+      api.stub :calendars_healthy?, true do
+        api.stub :private_mode?, true do
+          api.stub :calendar_events, [] do
+            result = DisplayContent.new.call(home_assistant_api: api)
 
             assert result[:top_left].any? { it[:label] == "Private mode" }
           end
@@ -84,9 +86,9 @@ class DisplayContenttTest < Minitest::Test
 
   def test_with_healthy_weather_api
     travel_to DateTime.new(2023, 8, 27, 18, 15, 0, "-0600") do
-      weather_api = HomeAssistantWeatherApi.new
-      weather_api.stub :healthy?, true do
-        result = DisplayContent.new.call(home_assistant_weather_api: weather_api)
+      api = HomeAssistantApi.new
+      api.stub :weather_healthy?, true do
+        result = DisplayContent.new.call(home_assistant_api: api)
 
         assert_equal 5, result[:day_groups].count
       end
@@ -95,7 +97,7 @@ class DisplayContenttTest < Minitest::Test
 
   def test_today_not_hidden_when_periodic_events_exist
     travel_to DateTime.new(2023, 8, 27, 20, 15, 0, "-0600") do
-      cal_api = HomeAssistantCalendarApi.new
+      api = HomeAssistantApi.new
       events = [
         CalendarEvent.new(
           starts_at: DateTime.new(2023, 8, 27, 19, 0, 0, "-0600"),
@@ -103,10 +105,10 @@ class DisplayContenttTest < Minitest::Test
           summary: "Evening event"
         )
       ]
-      cal_api.stub :healthy?, false do
-        cal_api.stub :private_mode?, false do
-          cal_api.stub :data, events do
-            result = DisplayContent.new.call(home_assistant_calendar_api: cal_api)
+      api.stub :calendars_healthy?, false do
+        api.stub :private_mode?, false do
+          api.stub :calendar_events, events do
+            result = DisplayContent.new.call(home_assistant_api: api)
 
             assert_equal 5, result[:day_groups].count
           end

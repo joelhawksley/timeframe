@@ -1,9 +1,9 @@
 class StatusController < ApplicationController
-  APIS = [
-    HomeAssistantApi,
-    HomeAssistantCalendarApi,
-    HomeAssistantConfigApi,
-    HomeAssistantWeatherApi
+  DOMAIN_CHECKS = [
+    {name: "HomeAssistantApi", healthy: :states_healthy?, last_fetched_at: :states_last_fetched_at},
+    {name: "HomeAssistantCalendarApi", healthy: :calendars_healthy?, last_fetched_at: :calendars_last_fetched_at},
+    {name: "HomeAssistantConfigApi", healthy: :config_healthy?, last_fetched_at: :config_last_fetched_at},
+    {name: "HomeAssistantWeatherApi", healthy: :weather_healthy?, last_fetched_at: :weather_last_fetched_at}
   ].freeze
 
   def index
@@ -17,12 +17,12 @@ class StatusController < ApplicationController
   private
 
   def api_statuses
-    APIS.map do |api_class|
-      api = api_class.new
+    api = HomeAssistantApi.new
+    DOMAIN_CHECKS.map do |check|
       {
-        name: api_class.name,
-        healthy: api.healthy?,
-        last_fetched_at: api.last_fetched_at&.iso8601
+        name: check[:name],
+        healthy: api.send(check[:healthy]),
+        last_fetched_at: api.send(check[:last_fetched_at])&.iso8601
       }
     end
   end

@@ -56,18 +56,4 @@ class DisplaysControllerTest < ActionDispatch::IntegrationTest
       assert_includes response.body, "Test error message"
     end
   end
-
-  test "should run demo mode" do
-    mock_api = HomeAssistantApi.new
-    def mock_api.demo_mode?
-      true
-    end
-
-    HomeAssistantApi.stub :new, mock_api do
-      get "/mira"
-
-      assert_response :success
-      assert_includes response.body, "Smart Home Solver demo"
-    end
-  end
 end

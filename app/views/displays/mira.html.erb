@@ -88,7 +88,7 @@
 
 <hr style="margin: 1rem 0 1rem; border: none; background-color: #ccc; color: #ccc; height: 2px;">
 
-<% unless HomeAssistantCalendarApi.new.private_mode? %>
+<% unless HomeAssistantApi.new.private_mode? %>
   <div style="position: absolute; top: 15rem; bottom: 0; left: 2rem; right: 2rem; overflow: hidden;">
     <%= render "timeline", view_object: view_object %>
   </div>

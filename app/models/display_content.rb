@@ -1,11 +1,11 @@
 class DisplayContent
   def call(
-    current_time: Time.now.utc.in_time_zone(HomeAssistantConfigApi.new.time_zone),
-    calendar_feed: CalendarFeed.new,
     home_assistant_api: HomeAssistantApi.new,
-    home_assistant_calendar_api: HomeAssistantCalendarApi.new,
-    home_assistant_weather_api: HomeAssistantWeatherApi.new
+    calendar_feed: CalendarFeed.new,
+    current_time: nil
   )
+    current_time ||= Time.now.utc.in_time_zone(home_assistant_api.time_zone)
+
     out = {}
     out[:top_left] = []
     out[:top_right] = []
@@ -13,7 +13,7 @@ class DisplayContent
     out[:current_time] = current_time
     out[:timestamp] = current_time.strftime("%-l:%M %p")
 
-    if home_assistant_api.healthy?
+    if home_assistant_api.states_healthy?
       out[:current_temperature] = home_assistant_api.feels_like_temperature
 
       out[:now_playing] = home_assistant_api.now_playing
@@ -26,23 +26,23 @@ class DisplayContent
 
     raw_events = []
 
-    if home_assistant_weather_api.healthy?
-      raw_events << home_assistant_weather_api.hourly_calendar_events
-      raw_events << home_assistant_weather_api.daily_calendar_events
-      raw_events << home_assistant_weather_api.precip_calendar_events
-      raw_events << home_assistant_weather_api.wind_calendar_events
-      out[:attribution] = home_assistant_weather_api.attribution
+    if home_assistant_api.weather_healthy?
+      raw_events << home_assistant_api.hourly_calendar_events
+      raw_events << home_assistant_api.daily_calendar_events
+      raw_events << home_assistant_api.precip_calendar_events
+      raw_events << home_assistant_api.wind_calendar_events
+      out[:attribution] = home_assistant_api.attribution
     end
 
-    if home_assistant_api.healthy?
+    if home_assistant_api.states_healthy?
       raw_events << home_assistant_api.daily_events(current_time: current_time)
     end
 
-    if home_assistant_calendar_api.healthy? && home_assistant_calendar_api.private_mode?
+    if home_assistant_api.calendars_healthy? && home_assistant_api.private_mode?
       out[:top_left] << {icon: "eye-off", label: "Private mode"}
     end
 
-    raw_events << home_assistant_calendar_api.data
+    raw_events << home_assistant_api.calendar_events
 
     out[:day_groups] =
       (0...5).to_a.map do |day_index|
@@ -62,7 +62,7 @@ class DisplayContent
           (day_index.zero? ? current_time : date.beginning_of_day).utc,
           date.end_of_day.utc,
           raw_events.flatten,
-          home_assistant_calendar_api.private_mode?
+          home_assistant_api.private_mode?
         )
 
         # Attempt to hide Today if it's after 8pm and there are no events

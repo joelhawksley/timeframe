@@ -20,10 +20,10 @@ class CalendarEvent
 
     @starts_at = case starts_at
     when Integer
-      Time.at(starts_at).in_time_zone(HomeAssistantConfigApi.new.time_zone)
+      Time.at(starts_at).in_time_zone(HomeAssistantApi.new.time_zone)
     when String
       ActiveSupport::TimeZone[
-          HomeAssistantConfigApi.new.time_zone
+          HomeAssistantApi.new.time_zone
         ].parse(starts_at)
     else
       starts_at
@@ -31,10 +31,10 @@ class CalendarEvent
 
     @ends_at = case ends_at
     when Integer
-      Time.at(ends_at).in_time_zone(HomeAssistantConfigApi.new.time_zone)
+      Time.at(ends_at).in_time_zone(HomeAssistantApi.new.time_zone)
     when String
       ActiveSupport::TimeZone[
-          HomeAssistantConfigApi.new.time_zone
+          HomeAssistantApi.new.time_zone
         ].parse(ends_at)
     else
       ends_at
@@ -76,7 +76,7 @@ class CalendarEvent
 
   def time
     @time ||= begin
-      start = Time.at(start_i).in_time_zone(HomeAssistantConfigApi.new.time_zone)
+      start = Time.at(start_i).in_time_zone(HomeAssistantApi.new.time_zone)
 
       if start_i == end_i
         label = start.min.positive? ? start.strftime("%-l:%M") : start.strftime("%-l")
@@ -85,7 +85,7 @@ class CalendarEvent
         return "#{label}#{suffix}"
       end
 
-      endtime = Time.at(end_i).in_time_zone(HomeAssistantConfigApi.new.time_zone)
+      endtime = Time.at(end_i).in_time_zone(HomeAssistantApi.new.time_zone)
 
       # If the time is not the top of the hour, include the minutes past the hour in the label (4:01 vs. 4)
       start_label = start.min.positive? ? start.strftime("%-l:%M") : start.strftime("%-l")
