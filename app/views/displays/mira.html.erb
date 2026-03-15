@@ -76,7 +76,7 @@
   <div><%= DateTime.now.strftime("%A, %B %-d") %></div>
   <div style="white-space: nowrap;">
 <%- view_object[:weather_status].each do |weather_status| -%>
-<span style="margin-left: .5rem;"><i class="mdi mdi-<%= weather_status[:icon] %>" style="<%= " transform: rotate(#{weather_status[:rotation]}deg);" if weather_status[:rotation] %>"></i><%= weather_status[:label] %></span>
+<span style="margin-left: .5rem;"><i class="mdi mdi-<%= weather_status[:icon] %>" style="<%= " display: inline-block; transform: rotate(#{weather_status[:rotation]}deg);" if weather_status[:rotation] %>"></i><%= weather_status[:label] %></span>
 <%- end -%>
   </div>
 </div>
