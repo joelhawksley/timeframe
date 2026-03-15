@@ -1,4 +1,4 @@
-home_assistant_token: abcd1234
-speed_unit: mph
-precipitation_unit: in
-temperature_unit: F
+home_assistant_token: # abcd1234
+speed_unit: # mph or kph
+precipitation_unit: # in or mm
+temperature_unit: # F or C
