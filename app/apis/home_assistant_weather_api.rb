@@ -73,6 +73,63 @@ class HomeAssistantWeatherApi < Api
     CONDITION_ICONS[condition] || "help-circle"
   end
 
+  def speed_unit
+    @config["speed_unit"] || "mph"
+  end
+
+  def precipitation_unit
+    @config["precipitation_unit"] || "in"
+  end
+
+  def temperature_unit
+    @config["temperature_unit"] || "F"
+  end
+
+  def ha_config
+    @ha_config ||= HomeAssistantConfigApi.new(@config)
+  end
+
+  def convert_speed(value)
+    ha_unit = ha_config.ha_speed_unit
+    return value.to_f if ha_unit == speed_unit
+
+    if ha_unit == "kph" && speed_unit == "mph"
+      value.to_f * 0.621371
+    else
+      value.to_f * 1.60934
+    end
+  end
+
+  def convert_temperature(value)
+    ha_unit = ha_config.ha_temperature_unit
+    return value.to_i if ha_unit == temperature_unit
+
+    if ha_unit == "C" && temperature_unit == "F"
+      (value.to_f * 9.0 / 5.0 + 32).round
+    else
+      ((value.to_f - 32) * 5.0 / 9.0).round
+    end
+  end
+
+  def convert_precipitation(value, target_unit)
+    ha_unit = ha_config.ha_precipitation_unit
+    return value.to_f if ha_unit == target_unit
+
+    case [ha_unit, target_unit]
+    when ["mm", "in"] then value.to_f / 25.4
+    when ["mm", "cm"] then value.to_f / 10.0
+    when ["cm", "in"] then value.to_f / 2.54
+    when ["cm", "mm"] then value.to_f * 10.0
+    when ["in", "mm"] then value.to_f * 25.4
+    when ["in", "cm"] then value.to_f * 2.54
+    else value.to_f
+    end
+  end
+
+  def wind_gust_threshold
+    (speed_unit == "kph") ? 32.0 : 20.0
+  end
+
   def hourly_calendar_events
     today = Date.today.in_time_zone(HomeAssistantConfigApi.new.time_zone)
     hours = hourly_forecast
@@ -96,7 +153,7 @@ class HomeAssistantWeatherApi < Api
           starts_at: hour,
           ends_at: hour,
           icon: icon_for(weather_hour[:condition]),
-          summary: "#{weather_hour[:temperature].to_i}°"
+          summary: "#{convert_temperature(weather_hour[:temperature])}°"
         )
       end.compact
     end
@@ -115,7 +172,7 @@ class HomeAssistantWeatherApi < Api
         starts_at: dt.to_i,
         ends_at: (dt + 1.day).to_i,
         icon: icon_for(day[:condition]),
-        summary: "#{day[:temperature].to_i}° / #{day[:templow].to_i}°"
+        summary: "#{convert_temperature(day[:temperature])}° / #{convert_temperature(day[:templow])}°"
       )
     end
   end
@@ -138,26 +195,45 @@ class HomeAssistantWeatherApi < Api
 
       existing_event = events.find { it[:end_i] == hour_i && it[:precipitation_type] == precip_type }
 
+      target_unit = if precipitation_unit == "in"
+        "in"
+      else
+        (precip_type == "snow") ? "cm" : "mm"
+      end
+
       if existing_event
         existing_event[:end_i] += 3600
+        existing_event[:precipitation_total] += convert_precipitation(hour[:precipitation], target_unit)
       else
         events << {
           start_i: hour_i,
           end_i: hour_i + 3600,
-          precipitation_type: precip_type
+          precipitation_type: precip_type,
+          precipitation_total: convert_precipitation(hour[:precipitation], target_unit)
         }
       end
     end
 
     events.map do
       icon = (it[:precipitation_type] == "snow") ? "snowflake" : "weather-rainy"
+      display_unit = if precipitation_unit == "in"
+        "in"
+      else
+        (it[:precipitation_type] == "snow") ? "cm" : "mm"
+      end
+      amount = it[:precipitation_total]
+      label = if amount > 0
+        "#{it[:precipitation_type].capitalize} #{format_precipitation(amount, display_unit)}"
+      else
+        it[:precipitation_type].capitalize
+      end
 
       CalendarEvent.new(
         id: "#{it[:start_i]}_ha_precip",
         starts_at: it[:start_i],
         ends_at: it[:end_i],
         icon: icon,
-        summary: it[:precipitation_type].capitalize
+        summary: label
       )
     end
   end
@@ -169,8 +245,8 @@ class HomeAssistantWeatherApi < Api
     events = []
 
     hours.each do |hour|
-      wind_gust_mph = hour[:wind_gust_speed].to_f * 0.621371 # km/h to mph
-      next if wind_gust_mph < 20.0
+      wind_gust = convert_speed(hour[:wind_gust_speed])
+      next if wind_gust < wind_gust_threshold
 
       hour_i = DateTime.parse(hour[:datetime]).to_i
       next if hour_i < Time.now.to_i
@@ -179,13 +255,13 @@ class HomeAssistantWeatherApi < Api
 
       if existing_event
         existing_event[:end_i] += 3600
-        existing_event[:wind_max] = [existing_event[:wind_max], wind_gust_mph].max
+        existing_event[:wind_max] = [existing_event[:wind_max], wind_gust].max
         existing_event[:wind_directions] << hour[:wind_bearing].to_i
       else
         events << {
           start_i: hour_i,
           end_i: hour_i + 3600,
-          wind_max: wind_gust_mph,
+          wind_max: wind_gust,
           wind_directions: [hour[:wind_bearing].to_i]
         }
       end
@@ -203,12 +279,18 @@ class HomeAssistantWeatherApi < Api
         ends_at: it[:end_i],
         icon: "arrow-up",
         icon_rotation: avg_wind_direction,
-        summary: "Gusts up to #{it[:wind_max].round}mph"
+        summary: "Gusts up to #{it[:wind_max].round}#{speed_unit}"
       )
     end
   end
 
   private
+
+  def format_precipitation(amount, unit)
+    rounded = sprintf("%.1f", amount)
+    label = (unit == "in") ? "\"" : unit
+    "#{rounded}#{label}"
+  end
 
   def fetch_forecast(entity_id, forecast_type)
     response = HTTParty.post(

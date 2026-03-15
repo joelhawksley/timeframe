@@ -11,7 +11,16 @@ class HomeAssistantConfigApiTest < Minitest::Test
       "#{DEPLOY_TIME}home_assistant_config_api",
       {
         last_fetched_at: Time.now.utc,
-        response: {latitude: 38.4937, longitude: -98.7675, time_zone: "America/Chicago"}
+        response: {
+          latitude: 38.4937,
+          longitude: -98.7675,
+          time_zone: "America/Chicago",
+          unit_system: {
+            temperature: "°F",
+            wind_speed: "mph",
+            accumulated_precipitation: "in"
+          }
+        }
       }.to_json
     )
   end
@@ -104,5 +113,40 @@ class HomeAssistantConfigApiTest < Minitest::Test
     headers = api.headers
     assert_equal "Bearer test_token", headers[:Authorization]
     assert_equal "application/json", headers[:"content-type"]
+  end
+
+  def test_unit_system_defaults
+    api = HomeAssistantConfigApi.new
+    api.stub :data, {} do
+      assert_equal({}, api.unit_system)
+      assert_equal "mph", api.ha_speed_unit
+      assert_equal "F", api.ha_temperature_unit
+      assert_equal "in", api.ha_precipitation_unit
+    end
+  end
+
+  def test_unit_system_imperial
+    api = HomeAssistantConfigApi.new
+    api.stub :data, {unit_system: {temperature: "°F", wind_speed: "mph", accumulated_precipitation: "in"}} do
+      assert_equal "mph", api.ha_speed_unit
+      assert_equal "F", api.ha_temperature_unit
+      assert_equal "in", api.ha_precipitation_unit
+    end
+  end
+
+  def test_unit_system_metric
+    api = HomeAssistantConfigApi.new
+    api.stub :data, {unit_system: {temperature: "°C", wind_speed: "km/h", accumulated_precipitation: "mm"}} do
+      assert_equal "kph", api.ha_speed_unit
+      assert_equal "C", api.ha_temperature_unit
+      assert_equal "mm", api.ha_precipitation_unit
+    end
+  end
+
+  def test_unit_system_cm_precipitation
+    api = HomeAssistantConfigApi.new
+    api.stub :data, {unit_system: {accumulated_precipitation: "cm"}} do
+      assert_equal "cm", api.ha_precipitation_unit
+    end
   end
 end

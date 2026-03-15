@@ -105,12 +105,13 @@ class HomeAssistantWeatherApiTest < Minitest::Test
     future_time = (Time.now + 1.hour).utc.beginning_of_hour.iso8601
 
     api = HomeAssistantWeatherApi.new
+    # HA sends 2.0in, default precipitation_unit is "in" so no conversion
     api.stub :hourly_forecast, [
       {datetime: future_time, condition: "rainy", precipitation_probability: 80, precipitation: 2.0}
     ] do
       events = api.precip_calendar_events
       assert_equal 1, events.length
-      assert_equal "Rain", events.first.summary
+      assert_equal "Rain 2.0\"", events.first.summary
       assert_equal "weather-rainy", events.first.icon
     end
   end
@@ -119,12 +120,13 @@ class HomeAssistantWeatherApiTest < Minitest::Test
     future_time = (Time.now + 1.hour).utc.beginning_of_hour.iso8601
 
     api = HomeAssistantWeatherApi.new
+    # HA sends 2.0in, default precipitation_unit is "in" so no conversion
     api.stub :hourly_forecast, [
       {datetime: future_time, condition: "snowy", precipitation_probability: 80, precipitation: 2.0}
     ] do
       events = api.precip_calendar_events
       assert_equal 1, events.length
-      assert_equal "Snow", events.first.summary
+      assert_equal "Snow 2.0\"", events.first.summary
       assert_equal "snowflake", events.first.icon
     end
   end
@@ -197,7 +199,7 @@ class HomeAssistantWeatherApiTest < Minitest::Test
     ] do
       events = api.wind_calendar_events
       assert_equal 1, events.length
-      assert_includes events.first.summary, "31" # 50 km/h * 0.621371 ≈ 31 mph
+      assert_includes events.first.summary, "50" # max of 40 and 50
     end
   end
 
@@ -309,5 +311,353 @@ class HomeAssistantWeatherApiTest < Minitest::Test
       result = api.send(:fetch_forecast, "weather.test", "hourly")
       assert_nil result
     end
+  end
+
+  def test_wind_calendar_events_with_kph_unit
+    future_time = (Time.now + 1.hour).utc.beginning_of_hour.iso8601
+
+    config = Timeframe::Application.config.local.dup
+    config["speed_unit"] = "kph"
+    api = HomeAssistantWeatherApi.new(config)
+    api.stub :hourly_forecast, [
+      {datetime: future_time, wind_gust_speed: 40.0, wind_bearing: 180}
+    ] do
+      events = api.wind_calendar_events
+      assert_equal 1, events.length
+      assert_includes events.first.summary, "kph"
+    end
+  end
+
+  def test_wind_calendar_events_kph_threshold
+    future_time = (Time.now + 1.hour).utc.beginning_of_hour.iso8601
+
+    config = Timeframe::Application.config.local.dup
+    config["speed_unit"] = "kph"
+    api = HomeAssistantWeatherApi.new(config)
+    # HA sends in mph (seeded unit_system), 15mph = 24.1kph < 32 threshold
+    api.stub :hourly_forecast, [
+      {datetime: future_time, wind_gust_speed: 15.0, wind_bearing: 180}
+    ] do
+      events = api.wind_calendar_events
+      assert_equal 0, events.length
+    end
+  end
+
+  def test_precip_calendar_events_zero_amount_high_probability
+    future_time = (Time.now + 1.hour).utc.beginning_of_hour.iso8601
+
+    api = HomeAssistantWeatherApi.new
+    api.stub :hourly_forecast, [
+      {datetime: future_time, condition: "rainy", precipitation_probability: 80, precipitation: 0.0}
+    ] do
+      events = api.precip_calendar_events
+      assert_equal 1, events.length
+      assert_equal "Rain", events.first.summary
+    end
+  end
+
+  def test_precip_small_amount
+    future_time = (Time.now + 1.hour).utc.beginning_of_hour.iso8601
+
+    api = HomeAssistantWeatherApi.new
+    # HA sends 0.05in, default precipitation_unit is "in"
+    api.stub :hourly_forecast, [
+      {datetime: future_time, condition: "rainy", precipitation_probability: 80, precipitation: 0.05}
+    ] do
+      events = api.precip_calendar_events
+      assert_equal 1, events.length
+      assert_equal "Rain 0.1\"", events.first.summary
+    end
+  end
+
+  def test_convert_speed_mph_to_kph
+    future_time = (Time.now + 1.hour).utc.beginning_of_hour.iso8601
+
+    config = Timeframe::Application.config.local.dup
+    config["speed_unit"] = "kph"
+    api = HomeAssistantWeatherApi.new(config)
+    # HA sends 25mph, converts to ~40.2kph which is above 32 threshold
+    api.stub :hourly_forecast, [
+      {datetime: future_time, wind_gust_speed: 25.0, wind_bearing: 180}
+    ] do
+      events = api.wind_calendar_events
+      assert_equal 1, events.length
+      assert_includes events.first.summary, "40kph"
+    end
+  end
+
+  def test_convert_speed_kph_to_mph
+    future_time = (Time.now + 1.hour).utc.beginning_of_hour.iso8601
+
+    # Seed HA config with metric
+    Rails.cache.write(
+      "#{DEPLOY_TIME}home_assistant_config_api",
+      {last_fetched_at: Time.now.utc, response: {time_zone: "America/Chicago", unit_system: {temperature: "°C", wind_speed: "km/h", accumulated_precipitation: "mm"}}}.to_json
+    )
+
+    config = Timeframe::Application.config.local.dup
+    config["speed_unit"] = "mph"
+    api = HomeAssistantWeatherApi.new(config)
+    # HA sends 50kph, converts to ~31mph which is above 20 threshold
+    api.stub :hourly_forecast, [
+      {datetime: future_time, wind_gust_speed: 50.0, wind_bearing: 180}
+    ] do
+      events = api.wind_calendar_events
+      assert_equal 1, events.length
+      assert_includes events.first.summary, "31mph"
+    end
+  ensure
+    Rails.cache.write(
+      "#{DEPLOY_TIME}home_assistant_config_api",
+      {last_fetched_at: Time.now.utc, response: {latitude: 38.4937, longitude: -98.7675, time_zone: "America/Chicago", unit_system: {temperature: "°F", wind_speed: "mph", accumulated_precipitation: "in"}}}.to_json
+    )
+  end
+
+  def test_precip_rain_converts_in_to_mm
+    future_time = (Time.now + 1.hour).utc.beginning_of_hour.iso8601
+
+    config = Timeframe::Application.config.local.dup
+    config["precipitation_unit"] = "mm"
+    api = HomeAssistantWeatherApi.new(config)
+    # HA sends 1.0in, rain converts to mm: 1.0 * 25.4 = 25.4mm
+    api.stub :hourly_forecast, [
+      {datetime: future_time, condition: "rainy", precipitation_probability: 80, precipitation: 1.0}
+    ] do
+      events = api.precip_calendar_events
+      assert_equal 1, events.length
+      assert_equal "Rain 25.4mm", events.first.summary
+    end
+  end
+
+  def test_precip_snow_converts_in_to_cm
+    future_time = (Time.now + 1.hour).utc.beginning_of_hour.iso8601
+
+    config = Timeframe::Application.config.local.dup
+    config["precipitation_unit"] = "mm"
+    api = HomeAssistantWeatherApi.new(config)
+    # HA sends 1.0in, snow converts to cm: 1.0 * 2.54 = 2.5cm
+    api.stub :hourly_forecast, [
+      {datetime: future_time, condition: "snowy", precipitation_probability: 80, precipitation: 1.0}
+    ] do
+      events = api.precip_calendar_events
+      assert_equal 1, events.length
+      assert_equal "Snow 2.5cm", events.first.summary
+    end
+  end
+
+  def test_precip_rain_from_mm_ha
+    future_time = (Time.now + 1.hour).utc.beginning_of_hour.iso8601
+
+    # Seed HA config with metric mm
+    Rails.cache.write(
+      "#{DEPLOY_TIME}home_assistant_config_api",
+      {last_fetched_at: Time.now.utc, response: {time_zone: "America/Chicago", unit_system: {temperature: "°C", wind_speed: "km/h", accumulated_precipitation: "mm"}}}.to_json
+    )
+
+    config = Timeframe::Application.config.local.dup
+    config["precipitation_unit"] = "mm"
+    api = HomeAssistantWeatherApi.new(config)
+    # HA sends 25.4mm, rain stays in mm (no conversion needed)
+    api.stub :hourly_forecast, [
+      {datetime: future_time, condition: "rainy", precipitation_probability: 80, precipitation: 25.4}
+    ] do
+      events = api.precip_calendar_events
+      assert_equal 1, events.length
+      assert_equal "Rain 25.4mm", events.first.summary
+    end
+  ensure
+    Rails.cache.write(
+      "#{DEPLOY_TIME}home_assistant_config_api",
+      {last_fetched_at: Time.now.utc, response: {latitude: 38.4937, longitude: -98.7675, time_zone: "America/Chicago", unit_system: {temperature: "°F", wind_speed: "mph", accumulated_precipitation: "in"}}}.to_json
+    )
+  end
+
+  def test_precip_snow_from_mm_ha
+    future_time = (Time.now + 1.hour).utc.beginning_of_hour.iso8601
+
+    # Seed HA config with metric mm
+    Rails.cache.write(
+      "#{DEPLOY_TIME}home_assistant_config_api",
+      {last_fetched_at: Time.now.utc, response: {time_zone: "America/Chicago", unit_system: {temperature: "°C", wind_speed: "km/h", accumulated_precipitation: "mm"}}}.to_json
+    )
+
+    config = Timeframe::Application.config.local.dup
+    config["precipitation_unit"] = "mm"
+    api = HomeAssistantWeatherApi.new(config)
+    # HA sends 50mm, snow converts to cm: 50 / 10 = 5.0cm
+    api.stub :hourly_forecast, [
+      {datetime: future_time, condition: "snowy", precipitation_probability: 80, precipitation: 50.0}
+    ] do
+      events = api.precip_calendar_events
+      assert_equal 1, events.length
+      assert_equal "Snow 5.0cm", events.first.summary
+    end
+  ensure
+    Rails.cache.write(
+      "#{DEPLOY_TIME}home_assistant_config_api",
+      {last_fetched_at: Time.now.utc, response: {latitude: 38.4937, longitude: -98.7675, time_zone: "America/Chicago", unit_system: {temperature: "°F", wind_speed: "mph", accumulated_precipitation: "in"}}}.to_json
+    )
+  end
+
+  def test_precip_snow_from_cm_ha
+    future_time = (Time.now + 1.hour).utc.beginning_of_hour.iso8601
+
+    # Seed HA config with cm
+    Rails.cache.write(
+      "#{DEPLOY_TIME}home_assistant_config_api",
+      {last_fetched_at: Time.now.utc, response: {time_zone: "America/Chicago", unit_system: {temperature: "°C", wind_speed: "km/h", accumulated_precipitation: "cm"}}}.to_json
+    )
+
+    config = Timeframe::Application.config.local.dup
+    config["precipitation_unit"] = "mm"
+    api = HomeAssistantWeatherApi.new(config)
+    # HA sends 5.0cm, snow stays in cm (no conversion needed)
+    api.stub :hourly_forecast, [
+      {datetime: future_time, condition: "snowy", precipitation_probability: 80, precipitation: 5.0}
+    ] do
+      events = api.precip_calendar_events
+      assert_equal 1, events.length
+      assert_equal "Snow 5.0cm", events.first.summary
+    end
+  ensure
+    Rails.cache.write(
+      "#{DEPLOY_TIME}home_assistant_config_api",
+      {last_fetched_at: Time.now.utc, response: {latitude: 38.4937, longitude: -98.7675, time_zone: "America/Chicago", unit_system: {temperature: "°F", wind_speed: "mph", accumulated_precipitation: "in"}}}.to_json
+    )
+  end
+
+  def test_precip_rain_from_cm_ha
+    future_time = (Time.now + 1.hour).utc.beginning_of_hour.iso8601
+
+    # Seed HA config with cm
+    Rails.cache.write(
+      "#{DEPLOY_TIME}home_assistant_config_api",
+      {last_fetched_at: Time.now.utc, response: {time_zone: "America/Chicago", unit_system: {temperature: "°C", wind_speed: "km/h", accumulated_precipitation: "cm"}}}.to_json
+    )
+
+    config = Timeframe::Application.config.local.dup
+    config["precipitation_unit"] = "mm"
+    api = HomeAssistantWeatherApi.new(config)
+    # HA sends 5.0cm, rain converts to mm: 5.0 * 10 = 50.0mm
+    api.stub :hourly_forecast, [
+      {datetime: future_time, condition: "rainy", precipitation_probability: 80, precipitation: 5.0}
+    ] do
+      events = api.precip_calendar_events
+      assert_equal 1, events.length
+      assert_equal "Rain 50.0mm", events.first.summary
+    end
+  ensure
+    Rails.cache.write(
+      "#{DEPLOY_TIME}home_assistant_config_api",
+      {last_fetched_at: Time.now.utc, response: {latitude: 38.4937, longitude: -98.7675, time_zone: "America/Chicago", unit_system: {temperature: "°F", wind_speed: "mph", accumulated_precipitation: "in"}}}.to_json
+    )
+  end
+
+  def test_convert_precipitation_unknown_unit_passthrough
+    api = HomeAssistantWeatherApi.new
+    ha_config = api.send(:ha_config)
+    ha_config.stub :ha_precipitation_unit, "liters" do
+      assert_equal 5.0, api.send(:convert_precipitation, 5.0, "gallons")
+    end
+  end
+
+  def test_convert_temperature_same_unit
+    api = HomeAssistantWeatherApi.new
+    # HA sends F, display unit is F (default) — no conversion
+    api.stub :daily_forecast, [
+      {datetime: "2023-08-27T06:00:00Z", condition: "sunny", temperature: 90, templow: 65}
+    ] do
+      events = api.daily_calendar_events
+      assert_equal "90° / 65°", events.first.summary
+    end
+  end
+
+  def test_convert_temperature_f_to_c
+    config = Timeframe::Application.config.local.dup
+    config["temperature_unit"] = "C"
+    api = HomeAssistantWeatherApi.new(config)
+
+    api.stub :daily_forecast, [
+      {datetime: "2023-08-27T06:00:00Z", condition: "sunny", temperature: 90, templow: 68}
+    ] do
+      events = api.daily_calendar_events
+      assert_equal "32° / 20°", events.first.summary
+    end
+  end
+
+  def test_convert_temperature_c_to_f
+    config = Timeframe::Application.config.local.dup
+    config["temperature_unit"] = "F"
+    api = HomeAssistantWeatherApi.new(config)
+
+    # Seed HA config with Celsius
+    Rails.cache.write(
+      "#{DEPLOY_TIME}home_assistant_config_api",
+      {last_fetched_at: Time.now.utc, response: {time_zone: "America/Chicago", unit_system: {temperature: "°C", wind_speed: "km/h", accumulated_precipitation: "mm"}}}.to_json
+    )
+
+    api.stub :daily_forecast, [
+      {datetime: "2023-08-27T06:00:00Z", condition: "sunny", temperature: 32, templow: 20}
+    ] do
+      events = api.daily_calendar_events
+      assert_equal "90° / 68°", events.first.summary
+    end
+  ensure
+    Rails.cache.write(
+      "#{DEPLOY_TIME}home_assistant_config_api",
+      {last_fetched_at: Time.now.utc, response: {latitude: 38.4937, longitude: -98.7675, time_zone: "America/Chicago", unit_system: {temperature: "°F", wind_speed: "mph", accumulated_precipitation: "in"}}}.to_json
+    )
+  end
+
+  def test_precip_in_mode_with_mm_ha
+    future_time = (Time.now + 1.hour).utc.beginning_of_hour.iso8601
+
+    # Seed HA config with metric mm
+    Rails.cache.write(
+      "#{DEPLOY_TIME}home_assistant_config_api",
+      {last_fetched_at: Time.now.utc, response: {time_zone: "America/Chicago", unit_system: {temperature: "°C", wind_speed: "km/h", accumulated_precipitation: "mm"}}}.to_json
+    )
+
+    # precipitation_unit defaults to "in", HA sends mm
+    api = HomeAssistantWeatherApi.new
+    # HA sends 25.4mm, converts to 1.0in
+    api.stub :hourly_forecast, [
+      {datetime: future_time, condition: "rainy", precipitation_probability: 80, precipitation: 25.4}
+    ] do
+      events = api.precip_calendar_events
+      assert_equal 1, events.length
+      assert_equal "Rain 1.0\"", events.first.summary
+    end
+  ensure
+    Rails.cache.write(
+      "#{DEPLOY_TIME}home_assistant_config_api",
+      {last_fetched_at: Time.now.utc, response: {latitude: 38.4937, longitude: -98.7675, time_zone: "America/Chicago", unit_system: {temperature: "°F", wind_speed: "mph", accumulated_precipitation: "in"}}}.to_json
+    )
+  end
+
+  def test_precip_in_mode_snow_with_cm_ha
+    future_time = (Time.now + 1.hour).utc.beginning_of_hour.iso8601
+
+    # Seed HA config with cm
+    Rails.cache.write(
+      "#{DEPLOY_TIME}home_assistant_config_api",
+      {last_fetched_at: Time.now.utc, response: {time_zone: "America/Chicago", unit_system: {temperature: "°C", wind_speed: "km/h", accumulated_precipitation: "cm"}}}.to_json
+    )
+
+    # precipitation_unit defaults to "in", HA sends cm
+    api = HomeAssistantWeatherApi.new
+    # HA sends 2.54cm, converts to 1.0in
+    api.stub :hourly_forecast, [
+      {datetime: future_time, condition: "snowy", precipitation_probability: 80, precipitation: 2.54}
+    ] do
+      events = api.precip_calendar_events
+      assert_equal 1, events.length
+      assert_equal "Snow 1.0\"", events.first.summary
+    end
+  ensure
+    Rails.cache.write(
+      "#{DEPLOY_TIME}home_assistant_config_api",
+      {last_fetched_at: Time.now.utc, response: {latitude: 38.4937, longitude: -98.7675, time_zone: "America/Chicago", unit_system: {temperature: "°F", wind_speed: "mph", accumulated_precipitation: "in"}}}.to_json
+    )
   end
 end

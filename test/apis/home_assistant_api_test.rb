@@ -18,7 +18,7 @@ class HomeAssistantApiTest < Minitest::Test
       {entity_id: "sensor.timeframe_weather_feels_like_entity_id", state: "sensor.feels_like"},
       {entity_id: "sensor.feels_like", state: "49.712"}
     ] do
-      assert_equal("49°", api.feels_like_temperature)
+      assert_equal("50°", api.feels_like_temperature)
     end
   end
 
@@ -28,6 +28,40 @@ class HomeAssistantApiTest < Minitest::Test
       {entity_id: "weather.my_weather", state: "sunny", attributes: {apparent_temperature: 72.3}}
     ] do
       assert_equal("72°", api.feels_like_temperature)
+    end
+  end
+
+  def test_feels_like_temperature_converts_c_to_f
+    # Seed HA config with Celsius
+    Rails.cache.write(
+      "#{DEPLOY_TIME}home_assistant_config_api",
+      {last_fetched_at: Time.now.utc, response: {time_zone: "America/Chicago", unit_system: {temperature: "°C", wind_speed: "km/h", accumulated_precipitation: "mm"}}}.to_json
+    )
+
+    config = Timeframe::Application.config.local.dup
+    config["temperature_unit"] = "F"
+    api = HomeAssistantApi.new(config)
+    api.stub :data, [
+      {entity_id: "weather.my_weather", state: "sunny", attributes: {apparent_temperature: 20.0}}
+    ] do
+      assert_equal("68°", api.feels_like_temperature)
+    end
+  ensure
+    Rails.cache.write(
+      "#{DEPLOY_TIME}home_assistant_config_api",
+      {last_fetched_at: Time.now.utc, response: {latitude: 38.4937, longitude: -98.7675, time_zone: "America/Chicago", unit_system: {temperature: "°F", wind_speed: "mph", accumulated_precipitation: "in"}}}.to_json
+    )
+  end
+
+  def test_feels_like_temperature_converts_f_to_c
+    config = Timeframe::Application.config.local.dup
+    config["temperature_unit"] = "C"
+    api = HomeAssistantApi.new(config)
+    api.stub :data, [
+      {entity_id: "sensor.timeframe_weather_feels_like_entity_id", state: "sensor.feels_like"},
+      {entity_id: "sensor.feels_like", state: "68"}
+    ] do
+      assert_equal("20°", api.feels_like_temperature)
     end
   end
 

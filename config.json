@@ -18,6 +18,14 @@
   "ports_description": {
     "8099/tcp": "Web interface"
   },
-  "options": {},
-  "schema": {}
+  "options": {
+    "speed_unit": "mph",
+    "precipitation_unit": "in",
+    "temperature_unit": "F"
+  },
+  "schema": {
+    "speed_unit": "list(mph|kph)",
+    "precipitation_unit": "list(in|mm)",
+    "temperature_unit": "list(F|C)"
+  }
 }

@@ -113,19 +113,35 @@ class HomeAssistantApi < Api
   end
 
   def feels_like_temperature
+    ha_config = HomeAssistantConfigApi.new(@config)
+    ha_unit = ha_config.ha_temperature_unit
+    display_unit = @config["temperature_unit"] || "F"
+
     # First, look for a sensor whose entity_id ends with timeframe_weather_feels_like_entity_id
     override = data.find { it[:entity_id].end_with?("timeframe_weather_feels_like_entity_id") }
 
     if override.present? && override[:state].present?
       entity = data.find { it[:entity_id] == override[:state] }
-      return "#{entity[:state].to_i}°" if entity.present?
+      return "#{convert_temp(entity[:state].to_f, ha_unit, display_unit)}°" if entity.present?
     end
 
     # Fall back to apparent_temperature attribute from the weather entity
     weather = data.find { it[:entity_id] == weather_entity_id }
     apparent = weather&.dig(:attributes, :apparent_temperature)
-    return "#{apparent.to_i}°" if apparent.present?
+    return "#{convert_temp(apparent.to_f, ha_unit, display_unit)}°" if apparent.present?
 
     nil
+  end
+
+  private
+
+  def convert_temp(value, from, to)
+    return value.round if from == to
+
+    if from == "C" && to == "F"
+      (value * 9.0 / 5.0 + 32).round
+    else
+      ((value - 32) * 5.0 / 9.0).round
+    end
   end
 end

@@ -23,6 +23,15 @@ Rails.cache.write(
   "#{DEPLOY_TIME}home_assistant_config_api",
   {
     last_fetched_at: Time.now.utc,
-    response: {latitude: 38.4937, longitude: -98.7675, time_zone: "America/Chicago"}
+    response: {
+      latitude: 38.4937,
+      longitude: -98.7675,
+      time_zone: "America/Chicago",
+      unit_system: {
+        temperature: "°F",
+        wind_speed: "mph",
+        accumulated_precipitation: "in"
+      }
+    }
   }.to_json
 )
