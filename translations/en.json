@@ -1,0 +1,16 @@
+{
+  "configuration": {
+    "speed_unit": {
+      "name": "Speed unit",
+      "description": "Unit for wind speed display (mph or kph)"
+    },
+    "precipitation_unit": {
+      "name": "Precipitation unit",
+      "description": "Unit for precipitation display (in or mm)"
+    },
+    "temperature_unit": {
+      "name": "Temperature unit",
+      "description": "Unit for temperature display (F or C)"
+    }
+  }
+}

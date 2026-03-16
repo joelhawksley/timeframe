@@ -1,0 +1,37 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://homeassistant.local:8123/api/config
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Referrer-Policy:
+      - no-referrer
+      X-Content-Type-Options:
+      - nosniff
+      Server:
+      - ''
+      X-Frame-Options:
+      - SAMEORIGIN
+      Date:
+      - Mon, 11 Sep 2023 23:23:26 GMT
+    body:
+      encoding: UTF-8
+      string: '{"latitude":38.4937,"longitude":-98.7675,"elevation":566,"unit_system":{"length":"mi","accumulated_precipitation":"in","mass":"lb","pressure":"psi","temperature":"°F","volume":"gal","wind_speed":"mph"},"location_name":"Home","time_zone":"America/Chicago","components":["homeassistant","persistent_notification"],"config_dir":"/config","allowlist_external_dirs":[],"allowlist_external_urls":[],"version":"2023.9.0","config_source":"storage","recovery_mode":false,"state":"RUNNING","external_url":null,"internal_url":null,"currency":"USD","country":"US","language":"en","safe_mode":false}'
+  recorded_at: Mon, 11 Sep 2023 23:23:26 GMT
+recorded_with: VCR 6.2.0
