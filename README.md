@@ -56,3 +56,7 @@ No configuration is required — the add-on automatically uses the Home Assistan
 To fetch the latest version: `git fetch --all && git reset --hard origin/main`
 
 Rails server: `RAILS_ENV=production rails s -p 80 -b 0.0.0.0 --no-log-to-stdout`
+
+## License
+
+This project is licensed under the [O'Saasy License](https://osaasy.dev/) — see [LICENSE.md](LICENSE.md) for details.
