@@ -2,6 +2,8 @@
 
 An e-paper calendar, weather, and smart home family dashboard
 
+![Timeframe display in phone nook](https://hawksley.org/img/posts/2026-02-17-timeframe/nook-wide.jpg)
+
 ## Project goals
 
 - Serve as a test bed for learning new technologies.
@@ -10,14 +12,10 @@ An e-paper calendar, weather, and smart home family dashboard
 - Availability: 100% uptime.
 - Fault tolerance: the application functions when no internet connection is available.
 
-## Architecture
+## Supported displays
 
-- Signage endpoints
-    - Visionect 13" displays (/thirteen)
-        - Fetched by [Visionect Software Suite](https://docs.visionect.com/VisionectSoftwareSuite/index.html) running on local network and displayed on [13" Place and Play](https://www.visionect.com/shop/place-play-13/) devices. Fetch interval is currently 10m.
-    - Boox Mira Pro (/mira)
-        - Fetched by a client Mac Mini with a [Boox Mira Pro](https://shop.boox.com/products/boox-mira-procolor-version) (25.3" 3200x1800px e-Paper display) running Google Chrome full screen.
-        - Self-refreshes entire screen every 2s.
+- Visionect [Place & Play 13](https://www.visionect.com/shop/place-play-13/) / [Joan 13 Pro](https://getjoan.com/shop/joan-13-pro/) - designed for 10m update interval
+- Boox [Mira Pro](https://shop.boox.com/products/boox-mira-procolor-version) - Self-refreshes every 2s for realtime updates
 
 ## Dependencies
 
@@ -32,8 +30,6 @@ An e-paper calendar, weather, and smart home family dashboard
 5. Click **Start**
 6. Access the app at port 8099 (e.g. `http://homeassistant.local:8099`)
 
-No configuration is required — the add-on automatically uses the Home Assistant Supervisor API.
-
 ## Local development
 
 ### Configuration
@@ -45,17 +41,11 @@ No configuration is required — the add-on automatically uses the Home Assistan
 
 1) `bundle install`
 2) `rails s`
-3) Visit [http://localhost:3000/mira](http://localhost:3000/mira) or [http://localhost:3000/thirteen](http://localhost:3000/thirteen)
+3) Visit [http://localhost:3000](http://localhost:3000)
 
 ### Testing
 
 `bundle exec rake`
-
-### Deploying
-
-To fetch the latest version: `git fetch --all && git reset --hard origin/main`
-
-Rails server: `RAILS_ENV=production rails s -p 80 -b 0.0.0.0 --no-log-to-stdout`
 
 ## License
 
