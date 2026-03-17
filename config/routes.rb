@@ -5,7 +5,7 @@ Rails.application.routes.draw do
 
   resources :devices, only: [:create, :destroy]
 
-  get "d/:name", to: "displays#show", as: :display
+  get "accounts/me/displays/:name", to: "displays#show", as: :display
 
   get :status_page, to: "status#index"
   get :status, to: "status#show", defaults: {format: :json}

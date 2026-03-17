@@ -14,6 +14,6 @@ class Device < ActiveRecord::Base
   end
 
   def display_path
-    "/d/#{name}"
+    "/accounts/me/displays/#{name}"
   end
 end

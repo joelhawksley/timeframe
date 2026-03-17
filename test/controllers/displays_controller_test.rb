@@ -10,7 +10,7 @@ class DisplaysControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should get mira display with no data" do
-    get "/d/#{@mira.name}"
+    get "/accounts/me/displays/#{@mira.name}"
 
     # look for tomorrow's day name, as current day is not always shown
     assert_includes response.body, "Tomorrow"
@@ -19,7 +19,7 @@ class DisplaysControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should get thirteen display with no data" do
-    get "/d/#{@thirteen.name}"
+    get "/accounts/me/displays/#{@thirteen.name}"
 
     # look for tomorrow's day name, as current day is not always shown
     assert_includes response.body, "Tomorrow"
@@ -35,7 +35,7 @@ class DisplaysControllerTest < ActionDispatch::IntegrationTest
       end
       obj
     } do
-      get "/d/#{@thirteen.name}"
+      get "/accounts/me/displays/#{@thirteen.name}"
 
       assert_response :success
       assert_includes response.body, "StandardError"
@@ -51,7 +51,7 @@ class DisplaysControllerTest < ActionDispatch::IntegrationTest
       end
       obj
     } do
-      get "/d/#{@mira.name}"
+      get "/accounts/me/displays/#{@mira.name}"
 
       assert_response :success
       assert_includes response.body, "StandardError"
@@ -60,7 +60,7 @@ class DisplaysControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "returns 404 for unknown device" do
-    get "/d/nonexistent"
+    get "/accounts/me/displays/nonexistent"
     assert_response :not_found
   end
 end
