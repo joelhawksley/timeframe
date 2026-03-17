@@ -13,7 +13,11 @@ class Device < ActiveRecord::Base
     SUPPORTED_MODELS.dig(model, :name)
   end
 
+  def slug
+    name.parameterize(separator: "_")
+  end
+
   def display_path
-    "/accounts/me/displays/#{name}"
+    "/accounts/me/displays/#{slug}"
   end
 end

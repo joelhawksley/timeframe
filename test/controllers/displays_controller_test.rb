@@ -10,7 +10,7 @@ class DisplaysControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should get mira display with no data" do
-    get "/accounts/me/displays/#{@mira.name}"
+    get "/accounts/me/displays/#{@mira.slug}"
 
     # look for tomorrow's day name, as current day is not always shown
     assert_includes response.body, "Tomorrow"
@@ -19,7 +19,7 @@ class DisplaysControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should get thirteen display with no data" do
-    get "/accounts/me/displays/#{@thirteen.name}"
+    get "/accounts/me/displays/#{@thirteen.slug}"
 
     # look for tomorrow's day name, as current day is not always shown
     assert_includes response.body, "Tomorrow"
@@ -35,7 +35,7 @@ class DisplaysControllerTest < ActionDispatch::IntegrationTest
       end
       obj
     } do
-      get "/accounts/me/displays/#{@thirteen.name}"
+      get "/accounts/me/displays/#{@thirteen.slug}"
 
       assert_response :success
       assert_includes response.body, "StandardError"
@@ -51,7 +51,7 @@ class DisplaysControllerTest < ActionDispatch::IntegrationTest
       end
       obj
     } do
-      get "/accounts/me/displays/#{@mira.name}"
+      get "/accounts/me/displays/#{@mira.slug}"
 
       assert_response :success
       assert_includes response.body, "StandardError"

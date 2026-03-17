@@ -3,7 +3,9 @@ class DisplaysController < ApplicationController
   after_action { response.headers["X-Deploy-Time"] = DEPLOY_TIME.to_s }
 
   def show
-    @device = Device.find_by!(name: params[:name])
+    @device = Device.all.find { |d| d.slug == params[:name] }
+    raise ActiveRecord::RecordNotFound unless @device
+
     template = Device::SUPPORTED_MODELS.dig(@device.model, :template)
 
     if template == "mira"
