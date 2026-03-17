@@ -1,0 +1,67 @@
+<style>
+  body { margin: 8px; font-family: -apple-system, system-ui, sans-serif; }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; margin-bottom: 24px; }
+  th, td { padding: 8px 12px; border: 1px solid #ccc; text-align: left; }
+  th { background: #f5f5f5; }
+  form.inline { display: inline; }
+  .add-form { margin-bottom: 24px; }
+  .add-form label { display: block; margin-bottom: 4px; font-weight: bold; font-size: 14px; }
+  .add-form input[type="text"], .add-form select { padding: 6px 8px; font-size: 14px; margin-bottom: 12px; width: 300px; }
+  .add-form input[type="submit"] { padding: 6px 16px; font-size: 14px; }
+  .error { color: #c00; margin-bottom: 12px; font-size: 14px; }
+  a.status-link { display: inline-block; margin-top: 16px; font-size: 14px; }
+</style>
+
+<h1>Timeframe</h1>
+
+<h2>Devices</h2>
+
+<% if @devices.any? %>
+  <table>
+    <tr>
+      <th>Name</th>
+      <th>Model</th>
+      <th>Display</th>
+      <th></th>
+    </tr>
+    <% @devices.each do |device| %>
+      <tr>
+        <td><%= device.name %></td>
+        <td><%= device.model_name_label %></td>
+        <td><a href="<%= device.display_path %>">Open</a></td>
+        <td>
+          <%= form_with url: device_path(device), method: :delete, class: "inline" do |f| %>
+            <input type="text" name="name_confirmation" placeholder="Type name to delete" size="18">
+            <%= submit_tag "Delete" %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </table>
+<% else %>
+  <p>No devices added yet.</p>
+<% end %>
+
+<h2>Add Device</h2>
+
+<% if @device&.errors&.any? %>
+  <div class="error">
+    <% @device.errors.full_messages.each do |msg| %>
+      <p><%= msg %></p>
+    <% end %>
+  </div>
+<% end %>
+
+<div class="add-form">
+  <%= form_with model: Device.new, url: devices_path do |f| %>
+    <label for="device_name">Name</label>
+    <%= f.text_field :name, placeholder: "e.g. Kitchen Display" %>
+
+    <label for="device_model">Model</label>
+    <%= f.select :model, Device::SUPPORTED_MODELS.map { |k, v| [v[:name], k] }, prompt: "Select a model..." %>
+
+    <%= f.submit "Add Device" %>
+  <% end %>
+</div>
+
+<a href="/status_page" class="status-link">Status Dashboard →</a>

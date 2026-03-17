@@ -11,6 +11,8 @@ RUN bundle install --without development test --jobs 4
 
 COPY . .
 
+RUN mkdir -p /data
+
 ENV RAILS_ENV=production
 ENV PORT=8099
 

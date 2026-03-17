@@ -3,13 +3,12 @@
 require "test_helper"
 
 class StatusControllerTest < ActionDispatch::IntegrationTest
-  test "root shows display links and api status" do
-    get "/"
+  test "status page shows display links and api status" do
+    get "/status_page"
 
     assert_response :success
     assert_includes response.body, "Timeframe"
-    assert_includes response.body, "/mira"
-    assert_includes response.body, "/thirteen"
+    assert_includes response.body, "Devices"
     assert_includes response.body, "States"
     assert_includes response.body, "Unhealthy"
   end

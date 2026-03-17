@@ -2,20 +2,19 @@ class DisplaysController < ApplicationController
   layout "display"
   after_action { response.headers["X-Deploy-Time"] = DEPLOY_TIME.to_s }
 
-  def thirteen
-    render "thirteen", locals: {view_object: view_object}
+  def show
+    @device = Device.find_by!(name: params[:name])
+    template = Device::SUPPORTED_MODELS.dig(@device.model, :template)
+
+    if template == "mira"
+      @refresh = params[:refresh] != "false"
+    end
+
+    render template, locals: {view_object: view_object}, layout: params[:layout] != "false"
+  rescue ActiveRecord::RecordNotFound
+    render plain: "Device not found", status: :not_found
   rescue => e
     render "error", locals: {klass: e.class.to_s, message: e.message, backtrace: e.backtrace}
-  end
-
-  def mira
-    @refresh = params[:refresh] != "false"
-
-    begin
-      render("mira", locals: {view_object: view_object}, layout: params[:layout] != "false")
-    rescue => e
-      render "error", locals: {klass: e.class.to_s, message: e.message, backtrace: e.backtrace}
-    end
   end
 
   private

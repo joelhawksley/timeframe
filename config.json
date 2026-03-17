@@ -12,6 +12,7 @@
   "panel_icon": "mdi:calendar-clock",
   "panel_title": "Timeframe",
   "host_network": true,
+  "map": ["data:rw"],
   "ports": {
     "8099/tcp": 8099
   },
