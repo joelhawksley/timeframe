@@ -3,7 +3,7 @@
 Rails.application.routes.draw do
   root to: "devices#index"
 
-  resources :devices, only: [:create, :destroy]
+  resources :devices, only: [:create, :update, :destroy]
 
   get "accounts/me/displays/:name", to: "displays#show", as: :display
 

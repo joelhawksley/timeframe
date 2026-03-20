@@ -7,6 +7,8 @@ class DisplaysControllerTest < ActionDispatch::IntegrationTest
     Rails.cache.delete(DEPLOY_TIME.to_s + HomeAssistantApi::WEATHER_DOMAIN)
     @mira = Device.find_or_create_by!(name: "test-mira", model: "boox_mira_pro")
     @thirteen = Device.find_or_create_by!(name: "test-thirteen", model: "visionect_13")
+    @mira.update!(demo_mode_enabled: false)
+    @thirteen.update!(demo_mode_enabled: false)
   end
 
   test "should get mira display with no data" do
@@ -62,5 +64,24 @@ class DisplaysControllerTest < ActionDispatch::IntegrationTest
   test "returns 404 for unknown device" do
     get "/accounts/me/displays/nonexistent"
     assert_response :not_found
+  end
+
+  test "should get mira display in demo mode" do
+    @mira.update!(demo_mode_enabled: true)
+    get "/accounts/me/displays/#{@mira.slug}"
+
+    assert_response :success
+    assert_includes response.body, "Spotted Towhee"
+    assert_includes response.body, "Tycho"
+    assert_includes response.body, "Tomorrow"
+  end
+
+  test "should get thirteen display in demo mode" do
+    @thirteen.update!(demo_mode_enabled: true)
+    get "/accounts/me/displays/#{@thirteen.slug}"
+
+    assert_response :success
+    assert_includes response.body, "Spotted Towhee"
+    assert_includes response.body, "Tomorrow"
   end
 end

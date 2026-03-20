@@ -22,6 +22,10 @@ class DisplaysController < ApplicationController
   private
 
   def view_object
-    DisplayContent.new.call
+    if @device.demo_mode_enabled?
+      DemoDisplayContent.new.call
+    else
+      DisplayContent.new.call
+    end
   end
 end

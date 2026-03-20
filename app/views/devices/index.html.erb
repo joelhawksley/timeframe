@@ -21,6 +21,7 @@
     <tr>
       <th>Name</th>
       <th>Model</th>
+      <th>Demo</th>
       <th>Display</th>
       <th></th>
     </tr>
@@ -28,6 +29,11 @@
       <tr>
         <td><%= device.name %></td>
         <td><%= device.model_name_label %></td>
+        <td>
+          <%= form_with url: device_path(device), method: :patch, class: "inline" do %>
+            <%= submit_tag(device.demo_mode_enabled? ? "Disable" : "Enable") %>
+          <% end %>
+        </td>
         <td><a href="<%= device.display_path %>">Open</a></td>
         <td>
           <%= form_with url: device_path(device), method: :delete, class: "inline" do |f| %>
@@ -59,6 +65,10 @@
 
     <label for="device_model">Model</label>
     <%= f.select :model, Device::SUPPORTED_MODELS.map { |k, v| [v[:name], k] }, prompt: "Select a model..." %>
+
+    <label for="device_demo_mode_enabled">
+      <%= f.check_box :demo_mode_enabled %> Enable demo mode
+    </label>
 
     <%= f.submit "Add Device" %>
   <% end %>

@@ -16,6 +16,12 @@ class DevicesController < ApplicationController
     end
   end
 
+  def update
+    device = Device.find(params[:id])
+    device.update!(demo_mode_enabled: !device.demo_mode_enabled?)
+    redirect_to root_path
+  end
+
   def destroy
     device = Device.find(params[:id])
 
@@ -29,6 +35,6 @@ class DevicesController < ApplicationController
   private
 
   def device_params
-    params.require(:device).permit(:name, :model)
+    params.require(:device).permit(:name, :model, :demo_mode_enabled)
   end
 end
