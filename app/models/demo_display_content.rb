@@ -164,6 +164,7 @@ class DemoDisplayContent
         ends_at: (date + 1.day).beginning_of_day,
         summary: "Recycling",
         icon: "home",
+        location: "Put out by 7am",
         daily: true
       )
 
@@ -375,6 +376,10 @@ class DemoDisplayContent
         summary: "54°",
         icon: "weather-night"
       )
+    end
+
+    if day_index.zero?
+      periodic.reject! { |event| event.ends_at < current_time }
     end
 
     {daily: daily, periodic: periodic}

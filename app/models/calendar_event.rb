@@ -105,11 +105,9 @@ class CalendarEvent
       if start.to_date != endtime.to_date
         start_date = "#{short_weekday_label(start)} "
         end_date = "#{short_weekday_label(endtime)} "
-
-        "#{start_date}#{start_label}#{start_suffix} -<br />#{end_date}#{end_label.gsub("AM", "a").gsub("PM", "p")}"
-      else
-        "#{start_date}#{start_label}#{start_suffix} - #{end_date}#{end_label.gsub("AM", "a").gsub("PM", "p")}"
       end
+
+      "#{start_date}#{start_label}#{start_suffix} - #{end_date}#{end_label.gsub("AM", "a").gsub("PM", "p")}"
     end
   end
 

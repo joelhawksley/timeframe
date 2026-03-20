@@ -1,0 +1,50 @@
+<style>
+  table.single td {
+    padding: .25rem 0;
+  }
+</style>
+<table style="font-size: 1.5rem" class="single">
+  <% view_object[:day_groups].each_with_index do |event_day, index| %>
+    <tr>
+      <td colspan="2"></td>
+      <td style="font-size: 2.5rem; font-weight: 700; line-height: 1; padding-left: .5rem;"><%= event_day[:day_name] %></td>
+    </tr>
+    <% if (event_day[:is_today] && view_object[:current_time].hour < 20) || !event_day[:is_today] %>
+      <% event_day[:events][:daily].each do |event| %>
+        <tr>
+          <td style="width: 1%;"></td>
+          <td style="width: 1%; text-align: center; font-size: 1.5rem; font-weight: bold;">
+            <% if event.icon&.start_with?("alpha-") %>
+              <span><%= event.icon.delete_prefix("alpha-").upcase %></span>
+            <% else %>
+              <i class="mdi mdi-<%= event.icon %>" style="<%= "display: inline-block; transform: rotate(#{event.icon_rotation + 180}deg); " if event.icon_rotation %>"></i>
+            <% end %>
+          </td>
+          <td style="padding-left: .5rem;">
+            <%= event.summary(event_day[:date]) %>
+            <div style="font-size: .75rem;"><%= event.location %></div>
+          </td>
+        </tr>
+      <% end %>
+    <% end %>
+    <% event_day[:events][:periodic].each do |event| %>
+      <tr>
+        <td style="white-space: nowrap; font-size: 1rem; padding: 0 .5rem; text-align: right; width: 1%">
+          <%= event.time.to_s.html_safe %>
+        </td>
+        <td style="text-align: center; font-size: 1.25rem; font-weight: bold; width: 1%;">
+          <% if event.icon&.start_with?("alpha-") %>
+            <span><%= event.icon.delete_prefix("alpha-").upcase %></span>
+          <% else %>
+            <i class="mdi mdi-<%= event.icon %>" style="<%= "display: inline-block; transform: rotate(#{event.icon_rotation + 180}deg); " if event.icon_rotation %>"></i>
+          <% end %>
+        </td>
+
+        <td style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden; max-width: 0; padding-left: .5rem;">
+          <%= event.summary %>
+        </td>
+      </tr>
+    <% end %>
+    <tr><td colspan="3"><hr style="margin: 1rem 0; border: none; background-color: #ccc; color: #ccc; height: 2px;"></td></tr>
+  <% end %>
+</table>

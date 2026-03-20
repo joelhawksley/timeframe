@@ -3,7 +3,8 @@
 class Device < ActiveRecord::Base
   SUPPORTED_MODELS = {
     "visionect_13" => {name: "Visionect Place & Play 13\"", template: "thirteen"},
-    "boox_mira_pro" => {name: "Boox Mira Pro 25.3\"", template: "mira"}
+    "boox_mira_pro" => {name: "Boox Mira Pro 25.3\"", template: "mira"},
+    "trmnl_og" => {name: "TRMNL (OG)", template: "trmnl"}
   }.freeze
 
   validates :name, presence: true, uniqueness: true
