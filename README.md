@@ -16,6 +16,7 @@ An e-paper calendar, weather, and smart home family dashboard
 
 - Visionect [Place & Play 13](https://www.visionect.com/shop/place-play-13/) / [Joan 13 Pro](https://getjoan.com/shop/joan-13-pro/) - designed for 10m update interval
 - Boox [Mira Pro](https://shop.boox.com/products/boox-mira-procolor-version) - Self-refreshes every 2s for realtime updates
+- TRMNL [(OG)](https://shop.trmnl.com/collections/devices/products/trmnl)
 
 ## Dependencies
 
