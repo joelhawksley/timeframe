@@ -28,7 +28,7 @@ module Api
     def display
       Rails.logger.info("[API Display] params=#{params.to_unsafe_h} headers=#{request.headers.env.select { |k, _| k.start_with?("HTTP_") }}")
 
-      @device.refresh_screenshot!(request.base_url) if @device.cached_image.blank?
+      @device.refresh_screenshot!(request.base_url) if @device.cached_image.blank? || params[:force].present?
 
       render json: {
         filename: "display-#{@device.cached_image_at}.png",
