@@ -48,9 +48,9 @@ class ScreenshotService
       image.rotate "90"
       image.combine_options do |c|
         c.colorspace "Gray"
-        c.threshold "50%"
-        c.depth 1
-        c.type "Bilevel"
+        c.dither "FloydSteinberg"
+        c.posterize 4
+        c.depth 2
       end
       image.format "png"
       Base64.strict_encode64(image.to_blob)
