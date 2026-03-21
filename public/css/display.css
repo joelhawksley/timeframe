@@ -14,6 +14,44 @@
   src: url('/fonts/lato-latin-700-normal.woff2') format('woff2');
 }
 
+/* Tamzen bitmap fonts — pixel-perfect at designed sizes */
+@font-face {
+  font-family: 'Tamzen20';
+  font-style: normal;
+  font-weight: 400;
+  src: url('/fonts/Tamzen10x20r.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Tamzen20';
+  font-style: normal;
+  font-weight: 700;
+  src: url('/fonts/Tamzen10x20b.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Tamzen16';
+  font-style: normal;
+  font-weight: 400;
+  src: url('/fonts/Tamzen8x16r.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Tamzen16';
+  font-style: normal;
+  font-weight: 700;
+  src: url('/fonts/Tamzen8x16b.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Tamzen14';
+  font-style: normal;
+  font-weight: 400;
+  src: url('/fonts/Tamzen7x14r.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Tamzen9';
+  font-style: normal;
+  font-weight: 400;
+  src: url('/fonts/Tamzen5x9r.woff2') format('woff2');
+}
+
 * {
   margin: 0;
   padding: 0;

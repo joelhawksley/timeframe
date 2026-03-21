@@ -29,7 +29,9 @@ class ScreenshotService
           "no-sandbox" => nil,
           "disable-gpu" => nil,
           "disable-dev-shm-usage" => nil,
-          "disable-software-rasterizer" => nil
+          "disable-software-rasterizer" => nil,
+          "font-render-hinting" => "none",
+          "disable-font-subpixel-positioning" => nil
         }
       )
     end
