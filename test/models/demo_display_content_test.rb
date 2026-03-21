@@ -6,7 +6,7 @@ class DemoDisplayContentTest < Minitest::Test
   include ActiveSupport::Testing::TimeHelpers
 
   def test_returns_all_required_keys
-    travel_to DateTime.new(2026, 3, 19, 10, 0, 0, "-0600") do
+    travel_to DateTime.new(2026, 3, 19, 8, 0, 0, "-0500") do
       result = DemoDisplayContent.new.call
 
       assert_equal "72°", result[:current_temperature]
@@ -24,7 +24,7 @@ class DemoDisplayContentTest < Minitest::Test
   end
 
   def test_has_five_day_groups
-    travel_to DateTime.new(2026, 3, 19, 10, 0, 0, "-0600") do
+    travel_to DateTime.new(2026, 3, 19, 8, 0, 0, "-0500") do
       result = DemoDisplayContent.new.call
 
       assert_equal 5, result[:day_groups].count
@@ -34,7 +34,7 @@ class DemoDisplayContentTest < Minitest::Test
   end
 
   def test_day_groups_have_required_structure
-    travel_to DateTime.new(2026, 3, 19, 10, 0, 0, "-0600") do
+    travel_to DateTime.new(2026, 3, 19, 8, 0, 0, "-0500") do
       result = DemoDisplayContent.new.call
 
       result[:day_groups].each do |day|
@@ -49,7 +49,7 @@ class DemoDisplayContentTest < Minitest::Test
   end
 
   def test_today_has_birthday_with_age
-    travel_to DateTime.new(2026, 3, 19, 10, 0, 0, "-0600") do
+    travel_to DateTime.new(2026, 3, 19, 8, 0, 0, "-0500") do
       result = DemoDisplayContent.new.call
       today_daily = result[:day_groups][0][:events][:daily]
 
@@ -61,7 +61,7 @@ class DemoDisplayContentTest < Minitest::Test
   end
 
   def test_today_has_multi_day_vacation_with_counter
-    travel_to DateTime.new(2026, 3, 19, 10, 0, 0, "-0600") do
+    travel_to DateTime.new(2026, 3, 19, 8, 0, 0, "-0500") do
       result = DemoDisplayContent.new.call
       today_daily = result[:day_groups][0][:events][:daily]
 
@@ -73,7 +73,7 @@ class DemoDisplayContentTest < Minitest::Test
   end
 
   def test_today_has_events_with_locations
-    travel_to DateTime.new(2026, 3, 19, 10, 0, 0, "-0600") do
+    travel_to DateTime.new(2026, 3, 19, 8, 0, 0, "-0500") do
       result = DemoDisplayContent.new.call
       today_periodic = result[:day_groups][0][:events][:periodic]
 
@@ -83,7 +83,7 @@ class DemoDisplayContentTest < Minitest::Test
   end
 
   def test_tomorrow_has_wind_event_with_rotation
-    travel_to DateTime.new(2026, 3, 19, 10, 0, 0, "-0600") do
+    travel_to DateTime.new(2026, 3, 19, 8, 0, 0, "-0500") do
       result = DemoDisplayContent.new.call
       tomorrow_periodic = result[:day_groups][1][:events][:periodic]
 
@@ -94,7 +94,7 @@ class DemoDisplayContentTest < Minitest::Test
   end
 
   def test_uses_alpha_letter_calendar_icons
-    travel_to DateTime.new(2026, 3, 19, 10, 0, 0, "-0600") do
+    travel_to DateTime.new(2026, 3, 19, 8, 0, 0, "-0500") do
       result = DemoDisplayContent.new.call
       today_periodic = result[:day_groups][0][:events][:periodic]
 
@@ -107,7 +107,7 @@ class DemoDisplayContentTest < Minitest::Test
   end
 
   def test_top_left_sensors
-    travel_to DateTime.new(2026, 3, 19, 10, 0, 0, "-0600") do
+    travel_to DateTime.new(2026, 3, 19, 8, 0, 0, "-0500") do
       result = DemoDisplayContent.new.call
 
       assert_equal 1, result[:top_left].count
@@ -116,7 +116,7 @@ class DemoDisplayContentTest < Minitest::Test
   end
 
   def test_top_right_bird
-    travel_to DateTime.new(2026, 3, 19, 10, 0, 0, "-0600") do
+    travel_to DateTime.new(2026, 3, 19, 8, 0, 0, "-0500") do
       result = DemoDisplayContent.new.call
 
       assert_equal 1, result[:top_right].count
@@ -126,7 +126,7 @@ class DemoDisplayContentTest < Minitest::Test
   end
 
   def test_weather_status_rotated_arrow
-    travel_to DateTime.new(2026, 3, 19, 10, 0, 0, "-0600") do
+    travel_to DateTime.new(2026, 3, 19, 8, 0, 0, "-0500") do
       result = DemoDisplayContent.new.call
 
       assert_equal 1, result[:weather_status].count
@@ -137,7 +137,7 @@ class DemoDisplayContentTest < Minitest::Test
   end
 
   def test_now_playing
-    travel_to DateTime.new(2026, 3, 19, 10, 0, 0, "-0600") do
+    travel_to DateTime.new(2026, 3, 19, 8, 0, 0, "-0500") do
       result = DemoDisplayContent.new.call
 
       assert_equal "Tycho", result[:now_playing][:artist]
@@ -146,7 +146,7 @@ class DemoDisplayContentTest < Minitest::Test
   end
 
   def test_minutely_weather_data
-    travel_to DateTime.new(2026, 3, 19, 10, 0, 0, "-0600") do
+    travel_to DateTime.new(2026, 3, 19, 8, 0, 0, "-0500") do
       result = DemoDisplayContent.new.call
 
       assert_equal 60, result[:minutely_weather_minutes].count
@@ -158,7 +158,7 @@ class DemoDisplayContentTest < Minitest::Test
   end
 
   def test_today_has_long_event_name
-    travel_to DateTime.new(2026, 3, 19, 10, 0, 0, "-0600") do
+    travel_to DateTime.new(2026, 3, 19, 8, 0, 0, "-0500") do
       result = DemoDisplayContent.new.call
       today_periodic = result[:day_groups][0][:events][:periodic]
 
@@ -168,7 +168,7 @@ class DemoDisplayContentTest < Minitest::Test
   end
 
   def test_today_has_past_midnight_event
-    travel_to DateTime.new(2026, 3, 19, 10, 0, 0, "-0600") do
+    travel_to DateTime.new(2026, 3, 19, 8, 0, 0, "-0500") do
       result = DemoDisplayContent.new.call
       today = result[:day_groups][0][:date]
       today_periodic = result[:day_groups][0][:events][:periodic]
@@ -179,7 +179,7 @@ class DemoDisplayContentTest < Minitest::Test
   end
 
   def test_day_3_has_overlapping_events
-    travel_to DateTime.new(2026, 3, 19, 10, 0, 0, "-0600") do
+    travel_to DateTime.new(2026, 3, 19, 8, 0, 0, "-0500") do
       result = DemoDisplayContent.new.call
       day3_periodic = result[:day_groups][2][:events][:periodic]
 

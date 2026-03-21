@@ -84,4 +84,43 @@ class DisplaysControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "Spotted Towhee"
     assert_includes response.body, "Tomorrow"
   end
+
+  test "preview returns device preview page" do
+    get "/accounts/me/displays/#{@thirteen.slug}/preview"
+    assert_response :success
+    assert_includes response.body, @thirteen.slug
+  end
+
+  test "preview returns 404 for unknown device" do
+    get "/accounts/me/displays/nonexistent/preview"
+    assert_response :not_found
+  end
+
+  test "screenshot returns image for device with cached image" do
+    @thirteen.update!(cached_image: Base64.strict_encode64("fake png data"), cached_image_at: Time.current)
+    get "/accounts/me/displays/#{@thirteen.slug}/screenshot"
+    assert_response :success
+    assert_equal "image/png", response.media_type
+  end
+
+  test "screenshot refreshes and returns image when no cache" do
+    @thirteen.update!(cached_image: nil, cached_image_at: nil)
+    fake_b64 = Base64.strict_encode64("fake png data")
+
+    ScreenshotService.stub :capture, fake_b64 do
+      get "/accounts/me/displays/#{@thirteen.slug}/screenshot"
+      assert_response :success
+      assert_equal "image/png", response.media_type
+    end
+  end
+
+  test "screenshot returns 404 for unknown device" do
+    get "/accounts/me/displays/nonexistent/screenshot"
+    assert_response :not_found
+  end
+
+  test "mira display sets refresh parameter" do
+    get "/accounts/me/displays/#{@mira.slug}?refresh=false"
+    assert_response :success
+  end
 end

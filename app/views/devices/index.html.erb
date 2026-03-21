@@ -23,6 +23,8 @@
       <th>Model</th>
       <th>Demo</th>
       <th>Display</th>
+      <th>MAC Address</th>
+      <th>API Key</th>
       <th></th>
     </tr>
     <% @devices.each do |device| %>
@@ -34,7 +36,15 @@
             <%= submit_tag(device.demo_mode_enabled? ? "Disable" : "Enable") %>
           <% end %>
         </td>
-        <td><a href="<%= device.display_path %>">Open</a></td>
+        <td>
+          <a href="<%= device.display_path %>">Open</a>
+          <a href="<%= device.display_path %>/preview">Preview</a>
+          <% if device.trmnl? %>
+            <a href="<%= device.display_path %>/screenshot">Screenshot</a>
+          <% end %>
+        </td>
+        <td><%= device.mac_address if device.trmnl? %></td>
+        <td><code><%= device.api_key if device.trmnl? %></code></td>
         <td>
           <%= form_with url: device_path(device), method: :delete, class: "inline" do |f| %>
             <input type="text" name="name_confirmation" placeholder="Type name to delete" size="18">
@@ -65,6 +75,9 @@
 
     <label for="device_model">Model</label>
     <%= f.select :model, Device::SUPPORTED_MODELS.map { |k, v| [v[:name], k] }, prompt: "Select a model..." %>
+
+    <label for="device_mac_address">MAC Address <small>(TRMNL only, optional — devices self-provision)</small></label>
+    <%= f.text_field :mac_address, placeholder: "e.g. AA:BB:CC:DD:EE:FF" %>
 
     <label for="device_demo_mode_enabled">
       <%= f.check_box :demo_mode_enabled %> Enable demo mode

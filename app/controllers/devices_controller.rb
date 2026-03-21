@@ -35,6 +35,6 @@ class DevicesController < ApplicationController
   private
 
   def device_params
-    params.require(:device).permit(:name, :model, :demo_mode_enabled)
+    params.require(:device).permit(:name, :model, :mac_address, :demo_mode_enabled)
   end
 end

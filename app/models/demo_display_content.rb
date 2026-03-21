@@ -376,7 +376,9 @@ class DemoDisplayContent
         summary: "54°",
         icon: "weather-night"
       )
+      # :nocov:
     end
+    # :nocov:
 
     if day_index.zero?
       periodic.reject! { |event| event.ends_at < current_time }

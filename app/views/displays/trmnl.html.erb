@@ -1,9 +1,60 @@
-<div class="fade-bottom"></div>
-
 <% unless HomeAssistantApi.new.private_mode? %>
-  <%= render "timeline_single", view_object: view_object %>
+  <style>
+    table.single td {
+      padding: 0;
+    }
+    body {
+      padding: .5rem .5rem .5rem 0;
+    }
+  </style>
+  <table style="font-size: .75rem;" class="single">
+    <% view_object[:day_groups].each_with_index do |event_day, index| %>
+      <tr>
+        <td colspan="1"></td>
+        <td colspan="2"style="font-size: 2rem; font-weight: 700; line-height: 1;"><%= event_day[:day_name] %></td>
+      </tr>
+      <% if (event_day[:is_today] && view_object[:current_time].hour < 20) || !event_day[:is_today] %>
+        <% event_day[:events][:daily].each do |event| %>
+          <tr>
+            <td style="width: 1%;"></td>
+            <td style="width: 1%; text-align: center; font-size: 1rem; font-weight: bold;">
+              <% if event.icon&.start_with?("alpha-") %>
+                <span><%= event.icon.delete_prefix("alpha-").upcase %></span>
+              <% else %>
+                <i class="mdi mdi-<%= event.icon %>" style="<%= "display: inline-block; transform: rotate(#{event.icon_rotation + 180}deg); " if event.icon_rotation %>"></i>
+              <% end %>
+            </td>
+            <td style="padding-left: .25rem;">
+              <%= event.summary(event_day[:date]) %>
+              <div style="font-size: .75rem;"><%= event.location %></div>
+            </td>
+          </tr>
+        <% end %>
+      <% end %>
+      <% event_day[:events][:periodic].each do |event| %>
+        <tr>
+          <td style="white-space: nowrap; font-size: .5rem; padding-right: .5rem; text-align: right; width: 1%">
+            <%= event.time.to_s.html_safe %>
+          </td>
+          <td style="text-align: center; font-size: 1rem; font-weight: bold; width: 1%;">
+            <% if event.icon&.start_with?("alpha-") %>
+              <span><%= event.icon.delete_prefix("alpha-").upcase %></span>
+            <% else %>
+              <i class="mdi mdi-<%= event.icon %>" style="<%= "display: inline-block; transform: rotate(#{event.icon_rotation + 180}deg); " if event.icon_rotation %>"></i>
+            <% end %>
+          </td>
+
+          <td style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden; max-width: 0; padding-left: .25rem;">
+            <%= event.summary %>
+          </td>
+        </tr>
+      <% end %>
+      <tr><td colspan="3"><hr style="margin: .5rem 2rem; border: none; background-color: #000; color: #000; height: 2px;"></td></tr>
+    <% end %>
+  </table>
+
 <% end %>
 
-<div class="timestamp" style="position: absolute; bottom: 0.25rem; right: 0.25rem; font-size: 0.35rem; color: #999; z-index: 10; writing-mode: vertical-rl; text-orientation: mixed;">
+<div class="timestamp" style="position: absolute; bottom: 0.25rem; right: 0.25rem; font-size: 0.35rem; z-index: 10; writing-mode: vertical-rl; text-orientation: mixed;">
   <%= view_object[:attribution] if view_object[:attribution].present? %> <%= view_object[:timestamp] %>
 </div>

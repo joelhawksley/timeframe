@@ -19,6 +19,30 @@ class DisplaysController < ApplicationController
     render "error", locals: {klass: e.class.to_s, message: e.message, backtrace: e.backtrace}
   end
 
+  def preview
+    @device = Device.all.find { |d| d.slug == params[:name] }
+    raise ActiveRecord::RecordNotFound unless @device
+
+    @width = @device.display_width
+    @height = @device.display_height
+    @display_url = display_path(name: @device.slug)
+    render layout: false
+  rescue ActiveRecord::RecordNotFound
+    render plain: "Device not found", status: :not_found
+  end
+
+  def screenshot
+    @device = Device.all.find { |d| d.slug == params[:name] }
+    raise ActiveRecord::RecordNotFound unless @device
+
+    @device.refresh_screenshot!(request.base_url) if @device.cached_image.blank?
+    image_data = Base64.strict_decode64(@device.reload.cached_image)
+
+    send_data image_data, type: "image/png", disposition: "inline", filename: "#{@device.slug}.png?#{Time.now.to_i}"
+  rescue ActiveRecord::RecordNotFound
+    render plain: "Device not found", status: :not_found
+  end
+
   private
 
   def view_object
