@@ -5,7 +5,7 @@
     }
     body {
       padding: 16px 16px 16px 0;
-      font-family: 'Tamzen14', monospace;
+      font-family: 'Lato', sans-serif;
       font-size: 28px;
       -webkit-font-smoothing: none;
       -moz-osx-font-smoothing: unset;
@@ -16,13 +16,13 @@
     <% view_object[:day_groups].each_with_index do |event_day, index| %>
       <tr>
         <td colspan="1"></td>
-        <td colspan="2" style="font-family: 'Tamzen20', monospace; font-size: 60px; font-weight: 700; line-height: 1;"><%= event_day[:day_name] %></td>
+        <td colspan="2" style="font-family: 'Lato', sans-serif; font-size: 60px; font-weight: 700; line-height: 1;"><%= event_day[:day_name] %></td>
       </tr>
       <% if (event_day[:is_today] && view_object[:current_time].hour < 20) || !event_day[:is_today] %>
         <% event_day[:events][:daily].each do |event| %>
           <tr>
             <td style="width: 1%;"></td>
-            <td style="width: 1%; text-align: center; font-family: 'Tamzen20', monospace; font-size: 40px; font-weight: bold;">
+            <td style="width: 1%; text-align: center; font-family: 'Lato', sans-serif; font-size: 40px; font-weight: bold;">
               <% if event.icon&.start_with?("alpha-") %>
                 <span><%= event.icon.delete_prefix("alpha-").upcase %></span>
               <% else %>
@@ -31,17 +31,17 @@
             </td>
             <td style="padding-left: 8px;">
               <%= event.summary(event_day[:date]) %>
-              <div style="font-family: 'Tamzen14', monospace; font-size: 14px;"><%= event.location %></div>
+              <div style="font-family: 'Lato', sans-serif; font-size: 14px;"><%= event.location %></div>
             </td>
           </tr>
         <% end %>
       <% end %>
       <% event_day[:events][:periodic].each do |event| %>
         <tr>
-          <td style="white-space: nowrap; font-family: 'Tamzen16', monospace; font-size: 16px; padding-right: 16px; text-align: right; width: 1%">
+          <td style="white-space: nowrap; font-family: 'Lato', sans-serif; font-size: 16px; padding-right: 16px; text-align: right; width: 1%">
             <%= event.time.to_s.html_safe %>
           </td>
-          <td style="text-align: center; font-family: 'Tamzen20', monospace; font-size: 40px; font-weight: bold; width: 1%;">
+          <td style="text-align: center; font-family: 'Lato', sans-serif; font-size: 40px; font-weight: bold; width: 1%;">
             <% if event.icon&.start_with?("alpha-") %>
               <span><%= event.icon.delete_prefix("alpha-").upcase %></span>
             <% else %>
@@ -60,6 +60,6 @@
 
 <% end %>
 
-<div class="timestamp" style="position: absolute; bottom: 4px; right: 4px; font-family: 'Tamzen9', monospace; font-size: 9px; z-index: 10; writing-mode: vertical-rl; text-orientation: mixed;">
+<div class="timestamp" style="position: absolute; bottom: 4px; right: 4px; font-family: 'Lato', sans-serif; font-size: 9px; z-index: 10; writing-mode: vertical-rl; text-orientation: mixed;">
   <%= view_object[:attribution] if view_object[:attribution].present? %> <%= view_object[:timestamp] %>
 </div>

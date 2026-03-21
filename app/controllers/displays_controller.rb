@@ -35,7 +35,7 @@ class DisplaysController < ApplicationController
     @device = Device.all.find { |d| d.slug == params[:name] }
     raise ActiveRecord::RecordNotFound unless @device
 
-    @device.refresh_screenshot!(request.base_url) if @device.cached_image.blank?
+    @device.refresh_screenshot!(request.base_url) if @device.cached_image.blank? || params[:force] == "true"
     image_data = Base64.strict_decode64(@device.reload.cached_image)
 
     send_data image_data, type: "image/png", disposition: "inline", filename: "#{@device.slug}.png?#{Time.now.to_i}"
