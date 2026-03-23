@@ -1,6 +1,6 @@
 {
   "name": "Timeframe",
-  "version": "1.0.22",
+  "version": "1.0.23",
   "slug": "timeframe",
   "description": "An e-paper calendar, weather, and smart home family dashboard",
   "url": "https://github.com/joelhawksley/timeframe",
@@ -24,13 +24,11 @@
   "options": {
     "speed_unit": "mph",
     "precipitation_unit": "in",
-    "temperature_unit": "F",
-    "visionect_port": 11113
+    "temperature_unit": "F"
   },
   "schema": {
     "speed_unit": "list(mph|kph)",
     "precipitation_unit": "list(in|mm)",
-    "temperature_unit": "list(F|C)",
-    "visionect_port": "port"
+    "temperature_unit": "list(F|C)"
   }
 }

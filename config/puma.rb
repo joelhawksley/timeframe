@@ -30,15 +30,7 @@ def start_visionect_server
   return if @visionect_started
 
   require_relative "../app/lib/visionect_protocol/server"
-
-  visionect_port = if ENV["VISIONECT_PORT"]
-    ENV["VISIONECT_PORT"].to_i
-  elsif File.exist?("/data/options.json")
-    options = JSON.parse(File.read("/data/options.json"))
-    options.fetch("visionect_port", 11113).to_i
-  else
-    11113
-  end
+  visionect_port = ENV.fetch("VISIONECT_PORT", 11113).to_i
 
   @visionect_server = VisionectProtocol::Server.new(
     port: visionect_port,
