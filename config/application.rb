@@ -15,6 +15,14 @@ Bundler.require(*Rails.groups)
 
 module Timeframe
   class Application < Rails::Application
+    config.autoloader = :zeitwerk
+
+    initializer "inflections", before: "zeitwerk.eager_load" do
+      Rails.autoloaders.each do |autoloader|
+        autoloader.inflector.inflect("lz4_block" => "LZ4Block")
+      end
+    end
+
     def self.load_config
       if ENV["SUPERVISOR_TOKEN"]
         config = {"home_assistant_token" => ENV["SUPERVISOR_TOKEN"], "home_assistant_url" => "http://supervisor/core"}
