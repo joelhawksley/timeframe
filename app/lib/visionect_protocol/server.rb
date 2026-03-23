@@ -6,7 +6,7 @@ require "zlib"
 require_relative "lz4_block"
 require_relative "image_encoder"
 
-# TCP server implementing the Visionect PV3 device protocol on port 11113.
+# TCP server implementing the Visionect PV3 device protocol on port 11114.
 #
 # Protocol format (20-byte header, little-endian):
 #   Bytes 0-3:   Protocol Version (uint32) = 3
@@ -100,7 +100,7 @@ module VisionectProtocol
   end
 
   class Server
-    def initialize(port: 11113, logger: nil)
+    def initialize(port: 11114, logger: nil)
       @port = port
       @logger = logger || Logger.new($stdout, level: Logger::INFO)
       @running = false

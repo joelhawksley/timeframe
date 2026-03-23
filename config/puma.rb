@@ -30,7 +30,7 @@ def start_visionect_server
   return if @visionect_started
 
   require_relative "../app/lib/visionect_protocol/server"
-  visionect_port = ENV.fetch("VISIONECT_PORT", 11113).to_i
+  visionect_port = ENV.fetch("VISIONECT_PORT", 11114).to_i
 
   @visionect_server = VisionectProtocol::Server.new(
     port: visionect_port,
