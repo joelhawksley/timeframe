@@ -21,13 +21,8 @@ environment ENV.fetch("RAILS_ENV", "development")
 plugin :tmp_restart
 plugin :"rufus-scheduler"
 
-# Start Visionect TCP server on port 11113 alongside Puma
-on_worker_boot do
-  start_visionect_server
-end
-
-# For single-mode (non-clustered) Puma
-before_fork do
+# Start Visionect TCP server alongside Puma (works in both single and cluster mode)
+on_booted do
   start_visionect_server
 end
 
@@ -35,7 +30,15 @@ def start_visionect_server
   return if @visionect_started
 
   require_relative "../app/lib/visionect_protocol/server"
-  visionect_port = ENV.fetch("VISIONECT_PORT", 11113).to_i
+
+  visionect_port = if ENV["VISIONECT_PORT"]
+    ENV["VISIONECT_PORT"].to_i
+  elsif File.exist?("/data/options.json")
+    options = JSON.parse(File.read("/data/options.json"))
+    options.fetch("visionect_port", 11113).to_i
+  else
+    11113
+  end
 
   @visionect_server = VisionectProtocol::Server.new(
     port: visionect_port,
@@ -51,6 +54,6 @@ def start_visionect_server
   @visionect_started = true
 end
 
-on_restart do
+before_restart do
   @visionect_server&.stop
 end

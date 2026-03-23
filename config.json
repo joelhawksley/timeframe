@@ -1,6 +1,6 @@
 {
   "name": "Timeframe",
-  "version": "1.0.21",
+  "version": "1.0.22",
   "slug": "timeframe",
   "description": "An e-paper calendar, weather, and smart home family dashboard",
   "url": "https://github.com/joelhawksley/timeframe",
@@ -14,19 +14,23 @@
   "host_network": true,
   "map": ["data:rw"],
   "ports": {
-    "8099/tcp": 8099
+    "8099/tcp": 8099,
+    "11113/tcp": 11113
   },
   "ports_description": {
-    "8099/tcp": "Web interface"
+    "8099/tcp": "Web interface",
+    "11113/tcp": "Visionect device protocol"
   },
   "options": {
     "speed_unit": "mph",
     "precipitation_unit": "in",
-    "temperature_unit": "F"
+    "temperature_unit": "F",
+    "visionect_port": 11113
   },
   "schema": {
     "speed_unit": "list(mph|kph)",
     "precipitation_unit": "list(in|mm)",
-    "temperature_unit": "list(F|C)"
+    "temperature_unit": "list(F|C)",
+    "visionect_port": "port"
   }
 }
