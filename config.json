@@ -1,6 +1,6 @@
 {
   "name": "Timeframe",
-  "version": "1.0.23",
+  "version": "1.0.24",
   "slug": "timeframe",
   "description": "An e-paper calendar, weather, and smart home family dashboard",
   "url": "https://github.com/joelhawksley/timeframe",
@@ -11,7 +11,6 @@
   "ingress_port": 8099,
   "panel_icon": "mdi:calendar-clock",
   "panel_title": "Timeframe",
-  "host_network": true,
   "map": ["data:rw"],
   "ports": {
     "8099/tcp": 8099,
