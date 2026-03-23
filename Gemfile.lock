@@ -97,6 +97,7 @@ GEM
     erubi (1.13.1)
     et-orbi (1.4.0)
       tzinfo
+    extlz4 (0.3.5)
     ferrum (0.17.1)
       addressable (~> 2.5)
       base64 (~> 0.2)
@@ -300,6 +301,7 @@ PLATFORMS
 
 DEPENDENCIES
   csv
+  extlz4
   ferrum
   httparty
   m

@@ -6,18 +6,18 @@ class ScreenshotService
   VIEWPORT_HEIGHT = 800
 
   class << self
-    def capture(url)
+    def capture(url, width: VIEWPORT_WIDTH, height: VIEWPORT_HEIGHT, grayscale_depth: 2)
       page = browser.create_page
       page.command("Emulation.setDeviceMetricsOverride",
-        width: VIEWPORT_WIDTH,
-        height: VIEWPORT_HEIGHT,
+        width: width,
+        height: height,
         deviceScaleFactor: 1,
         mobile: false)
       page.go_to(url)
       png_base64 = page.screenshot(format: "png")
       page.close
 
-      process_image(Base64.decode64(png_base64))
+      process_image(Base64.decode64(png_base64), grayscale_depth: grayscale_depth)
     end
 
     def browser
@@ -43,14 +43,14 @@ class ScreenshotService
 
     private
 
-    def process_image(png_data)
+    def process_image(png_data, grayscale_depth: 2)
       image = MiniMagick::Image.read(png_data, ".png")
       image.rotate "90"
       image.combine_options do |c|
         c.colorspace "Gray"
         c.dither "FloydSteinberg"
-        c.posterize 4
-        c.depth 2
+        c.posterize(2**grayscale_depth)
+        c.depth grayscale_depth
       end
       image.format "png"
       Base64.strict_encode64(image.to_blob)

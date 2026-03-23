@@ -24,7 +24,7 @@ end
 
 scheduler.every "15m" do
   base_url = "http://localhost:#{ENV.fetch("PORT", 80)}"
-  Device.where(model: "trmnl_og").find_each do |device|
+  Device.where(model: ["trmnl_og", "visionect_13"]).find_each do |device|
     device.refresh_screenshot!(base_url)
   rescue => e
     Rails.logger.error "[Screenshot] Failed for #{device.name}: #{e.message}"

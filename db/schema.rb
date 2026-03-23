@@ -10,19 +10,27 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 4) do
+ActiveRecord::Schema[8.1].define(version: 6) do
   create_table "devices", force: :cascade do |t|
     t.string "api_key"
+    t.float "battery_level"
     t.text "cached_image"
     t.datetime "cached_image_at"
     t.datetime "created_at", null: false
     t.boolean "demo_mode_enabled", default: false, null: false
+    t.integer "display_state_crc", limit: 8
+    t.string "firmware_version"
     t.string "friendly_id"
+    t.datetime "last_connection_at"
     t.string "mac_address"
     t.string "model", null: false
     t.string "name", null: false
+    t.integer "rssi"
+    t.float "temperature"
     t.datetime "updated_at", null: false
+    t.string "visionect_serial"
     t.index ["api_key"], name: "index_devices_on_api_key", unique: true
     t.index ["mac_address"], name: "index_devices_on_mac_address", unique: true
+    t.index ["visionect_serial"], name: "index_devices_on_visionect_serial", unique: true
   end
 end

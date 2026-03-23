@@ -1,0 +1,325 @@
+# frozen_string_literal: true
+
+require "socket"
+require "logger"
+require "zlib"
+require_relative "lz4_block"
+require_relative "image_encoder"
+
+# TCP server implementing the Visionect PV3 device protocol on port 11113.
+#
+# Protocol format (20-byte header, little-endian):
+#   Bytes 0-3:   Protocol Version (uint32) = 3
+#   Bytes 4-7:   Flags (uint32) = 0
+#   Bytes 8-11:  Packet Type (uint32) = 1 (status)
+#   Bytes 12-15: Payload Length (uint32)
+#   Bytes 16-19: Checksum (uint32) = CRC32(payload) for server, device ID for device
+#
+# Payload sub-header (24 bytes):
+#   Bytes 0-7:   Reserved / num_rects field
+#   Bytes 8-11:  Inner data length (uint32)
+#   Bytes 12-15: Capacity (uint32)
+#   Bytes 16-19: Flags (uint32) - 0 normal, 1 final
+#   Bytes 20-23: Reserved (zeros)
+#
+# Inner data starts at payload offset 24, contains device serial and TCLV parameters.
+
+module VisionectProtocol
+  HEADER_SIZE = 20
+  SUB_HEADER_SIZE = 24
+  PROTOCOL_VERSION = 3
+  PACKET_TYPE_STATUS = 1
+
+  # Serial encoding prefix found in all packets
+  SERIAL_PREFIX = [0x2b, 0x00, 0x17, 0x00, 0x06].pack("C5")
+
+  class Packet
+    attr_accessor :version, :flags, :type, :payload
+
+    def initialize(version: PROTOCOL_VERSION, flags: 0, type: PACKET_TYPE_STATUS, payload: nil)
+      @version = version
+      @flags = flags
+      @type = type
+      @payload = payload || String.new(encoding: "BINARY")
+    end
+
+    def checksum
+      Zlib.crc32(@payload) & 0xFFFFFFFF
+    end
+
+    def to_binary
+      header = [@version, @flags, @type, @payload.bytesize, checksum].pack("V5")
+      header + @payload
+    end
+
+    def self.read_from(socket)
+      header_data = read_exact(socket, HEADER_SIZE)
+      return nil unless header_data
+
+      version, flags, pkt_type, payload_len, _checksum = header_data.unpack("V5")
+
+      payload = nil
+      if payload_len > 0
+        payload = read_exact(socket, payload_len)
+        return nil unless payload
+      end
+
+      new(version: version, flags: flags, type: pkt_type, payload: payload || String.new(encoding: "BINARY"))
+    end
+
+    def extract_serial
+      return nil unless @payload && @payload.bytesize > SUB_HEADER_SIZE + 12
+      inner = @payload[SUB_HEADER_SIZE..]
+      idx = inner.index(SERIAL_PREFIX)
+      return nil unless idx
+
+      serial_start = idx + SERIAL_PREFIX.bytesize
+      # Read ASCII characters until a non-printable byte
+      serial = +""
+      while serial_start + serial.length < inner.bytesize
+        byte = inner.getbyte(serial_start + serial.length)
+        break unless byte && byte >= 0x20 && byte < 0x7F
+        serial << byte.chr
+      end
+      serial.empty? ? nil : serial
+    end
+
+    private_class_method def self.read_exact(socket, size)
+      buf = String.new(encoding: "BINARY")
+      remaining = size
+      while remaining > 0
+        chunk = socket.readpartial(remaining)
+        return nil if chunk.nil? || chunk.empty?
+        buf << chunk
+        remaining -= chunk.bytesize
+      end
+      buf
+    rescue IOError, Errno::EINVAL, Errno::ECONNRESET
+      nil
+    end
+  end
+
+  class Server
+    def initialize(port: 11113, logger: nil)
+      @port = port
+      @logger = logger || Logger.new($stdout, level: Logger::INFO)
+      @running = false
+    end
+
+    def start
+      @running = true
+      @server = TCPServer.new("0.0.0.0", @port)
+      @logger.info "[Visionect] Server listening on port #{@port}"
+
+      while @running
+        begin
+          client = @server.accept
+          Thread.new(client) { |c| handle_connection(c) }
+        rescue IOError
+          break unless @running
+        end
+      end
+    rescue => e
+      @logger.error "[Visionect] Server error: #{e.message}"
+    ensure
+      @server&.close
+    end
+
+    def stop
+      @running = false
+      @server&.close
+    end
+
+    private
+
+    def handle_connection(client)
+      remote = "#{client.peeraddr[2]}:#{client.peeraddr[1]}"
+      @logger.info "[Visionect] Connection from #{remote}"
+
+      # Disable Nagle algorithm for low-latency response
+      client.setsockopt(Socket::IPPROTO_TCP, Socket::TCP_NODELAY, 1)
+      # 10-second receive timeout to prevent indefinite blocking
+      client.setsockopt(Socket::SOL_SOCKET, Socket::SO_RCVTIMEO,
+        [10, 0].pack("l_2"))
+
+      # Read device status packet
+      device_pkt = Packet.read_from(client)
+      unless device_pkt
+        @logger.warn "[Visionect] #{remote}: Failed to read device packet"
+        return
+      end
+
+      serial = device_pkt.extract_serial
+      @logger.info "[Visionect] #{remote}: Device #{serial || "unknown"} connected (#{device_pkt.payload.bytesize}B status)"
+
+      # Look up or create the device
+      device = find_or_create_device(serial) if serial
+
+      # Check if we have an image to send
+      image_data = get_device_image(device)
+      config_pkt = build_status_response(serial)
+
+      if image_data
+        # Send config + image back-to-back (device expects both without waiting for ack)
+        image_pkt = build_image_response(serial, image_data)
+        @logger.info "[Visionect] #{remote}: Sending config(#{config_pkt.bytesize}B) + image(#{image_pkt.bytesize}B)"
+        client.write(config_pkt)
+        client.write(image_pkt)
+        client.flush
+
+        # Read optional device acknowledgment
+        ack_pkt = Packet.read_from(client)
+        if ack_pkt
+          @logger.info "[Visionect] #{remote}: Device acknowledged image (#{ack_pkt.payload.bytesize}B)"
+        end
+      else
+        # No image: send config, wait for ack, send final (sleep command)
+        client.write(config_pkt)
+        client.flush
+
+        ack_pkt = Packet.read_from(client)
+        unless ack_pkt
+          @logger.warn "[Visionect] #{remote}: No ack received"
+          return
+        end
+
+        @logger.info "[Visionect] #{remote}: No image available, sending sleep"
+        final_pkt = build_final_response(serial)
+        client.write(final_pkt)
+        client.flush
+      end
+
+      sleep 0.1
+    rescue => e
+      @logger.error "[Visionect] #{remote}: #{e.class}: #{e.message}\n#{e.backtrace.first(3).join("\n")}"
+    ensure
+      client&.close
+      @logger.info "[Visionect] #{remote}: Connection closed"
+    end
+
+    def find_or_create_device(serial)
+      Device.find_or_create_by_visionect_serial(serial).tap do |device|
+        device.record_visionect_connection!
+      end
+    rescue => e
+      @logger.error "[Visionect] DB error: #{e.message}"
+      nil
+    end
+
+    def get_device_image(device)
+      return nil unless device&.cached_image.present?
+
+      png_data = Base64.decode64(device.cached_image)
+      ImageEncoder.png_to_4bpp(png_data)
+    rescue => e
+      @logger.error "[Visionect] Image encoding error: #{e.message}\n#{e.backtrace.first(3).join("\n")}"
+      nil
+    end
+
+    def build_serial_block(serial)
+      SERIAL_PREFIX + serial.encode("BINARY")
+    end
+
+    def build_payload(inner_data, flags: 0, capacity: nil, num_rects: 0)
+      inner_len = inner_data.bytesize
+      capacity ||= inner_len + 4
+      sub_header = [0, num_rects, inner_len, capacity, flags, 0].pack("V6")
+      sub_header + inner_data
+    end
+
+    def build_status_response(serial)
+      serial ||= "unknown"
+      serial_block = build_serial_block(serial)
+
+      marker = [0x01F0].pack("V")
+      padding = [0x0000].pack("v")
+
+      tclv_data = [
+        0x10, 0x00, 0x13, 0x01, 0x04, 0x00, 0x10, 0x08,
+        0x0D, 0x00, 0xB0, 0x00, 0x00, 0x00, 0x01, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+      ].pack("C*")
+
+      inner_data = marker + padding + serial_block + tclv_data
+      payload = build_payload(inner_data, flags: 0)
+
+      Packet.new(payload: payload).to_binary
+    end
+
+    def build_final_response(serial)
+      serial ||= "unknown"
+      serial_block = build_serial_block(serial)
+
+      prefix = [0x00, 0x00, 0x00, 0x00].pack("C4")
+      cmd_data = [
+        0x00, 0x00, 0x00, 0x00,
+        0x01, 0x00, 0x00, 0x00,
+        0x02, 0x00, 0x00, 0x00,
+        0x08, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00,
+        0x01, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00
+      ].pack("C*")
+
+      inner_data = prefix + serial_block + cmd_data
+      payload = build_payload(inner_data, flags: 1, capacity: inner_data.bytesize)
+
+      Packet.new(payload: payload).to_binary
+    end
+
+    def build_image_response(serial, raw_4bpp)
+      serial ||= "unknown"
+      serial_block = build_serial_block(serial)
+      strips = ImageEncoder.compress_strips(raw_4bpp)
+
+      # Build 96-byte inner data block (matches captured VSS format)
+      marker = [0x01F0].pack("V")
+      padding = [0x0000].pack("v")
+
+      # TCLV config for image delivery (from captured image response)
+      tclv_data = [
+        0x10, 0x00, 0xB0, 0x05, 0x00, 0x00, 0x00, 0x01,
+        0x00, 0x00, 0x00, 0x2C, 0xA6, 0x0E, 0x0F, 0x00,
+        0x50, 0x00, 0x26, 0xE7, 0xD9, 0xEC, 0x10, 0x00,
+        0x00, 0x02, 0x00, 0x13, 0x18, 0x14, 0x00, 0x04,
+        0x10, 0x00, 0x90, 0x40, 0x06, 0xB0, 0x04, 0x02,
+        0x01, 0x02, 0x00, 0x04, 0x1D, 0x00, 0x4F, 0xA6,
+        0x0E, 0x00
+      ].pack("C*")
+
+      # Protocol metadata tail (28 bytes, from captured VSS image response)
+      inner_tail = [
+        0xFF, 0x01, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+        0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+        0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x69, 0x50, 0xFF,
+        0xFF, 0xFF, 0xFF, 0xFF
+      ].pack("C*")
+
+      inner_data = marker + padding + serial_block + tclv_data + inner_tail
+
+      # Build rectangle data
+      rect_data = String.new(encoding: Encoding::BINARY)
+      strips.each_with_index do |compressed_strip, i|
+        rect_header = [
+          i + 1,                     # 1-indexed strip number
+          strips.length,             # total number of strips
+          compressed_strip.bytesize, # compressed data length
+          ImageEncoder::STRIP_SIZE,  # decompression buffer size (4800 for all strips)
+          0,                         # flags
+          0                          # reserved
+        ].pack("V6")
+        rect_data << rect_header << compressed_strip
+      end
+
+      # Assemble payload: sub-header + inner_data + rectangles
+      payload = build_payload(
+        inner_data,
+        flags: 0,
+        num_rects: strips.length,
+        capacity: ImageEncoder::STRIP_SIZE
+      ) + rect_data
+
+      Packet.new(payload: payload).to_binary
+    end
+  end
+end
