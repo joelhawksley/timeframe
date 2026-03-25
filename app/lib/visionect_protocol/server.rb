@@ -104,6 +104,8 @@ module VisionectProtocol
       @port = port
       @logger = logger || Logger.new($stdout, level: Logger::INFO)
       @running = false
+      @image_cache = {}
+      @image_cache_mutex = Mutex.new
     end
 
     def start
@@ -159,35 +161,35 @@ module VisionectProtocol
       image_data = get_device_image(device)
       config_pkt = build_status_response(serial)
 
+      # Send config, wait for ack
+      client.write(config_pkt)
+      client.flush
+
+      ack_pkt = Packet.read_from(client)
+      unless ack_pkt
+        @logger.warn "[Visionect] #{remote}: No config ack received"
+        return
+      end
+
       if image_data
-        # Send config + image back-to-back (device expects both without waiting for ack)
+        # Send image, wait for ack
         image_pkt = build_image_response(serial, image_data)
         @logger.info "[Visionect] #{remote}: Sending config(#{config_pkt.bytesize}B) + image(#{image_pkt.bytesize}B)"
-        client.write(config_pkt)
         client.write(image_pkt)
         client.flush
 
-        # Read optional device acknowledgment
         ack_pkt = Packet.read_from(client)
         if ack_pkt
           @logger.info "[Visionect] #{remote}: Device acknowledged image (#{ack_pkt.payload.bytesize}B)"
         end
       else
-        # No image: send config, wait for ack, send final (sleep command)
-        client.write(config_pkt)
-        client.flush
-
-        ack_pkt = Packet.read_from(client)
-        unless ack_pkt
-          @logger.warn "[Visionect] #{remote}: No ack received"
-          return
-        end
-
         @logger.info "[Visionect] #{remote}: No image available, sending sleep"
-        final_pkt = build_final_response(serial)
-        client.write(final_pkt)
-        client.flush
       end
+
+      # Send final/commit packet
+      final_pkt = build_final_response(serial)
+      client.write(final_pkt)
+      client.flush
 
       sleep 0.1
     rescue => e
@@ -209,8 +211,19 @@ module VisionectProtocol
     def get_device_image(device)
       return nil unless device&.cached_image.present?
 
-      png_data = Base64.decode64(device.cached_image)
-      ImageEncoder.png_to_4bpp(png_data)
+      @image_cache_mutex.synchronize do
+        cached = @image_cache[device.id]
+
+        if cached && cached[:cached_at] == device.cached_image_at
+          return cached[:data]
+        end
+
+        png_data = Base64.decode64(device.cached_image)
+        data = ImageEncoder.png_to_4bpp(png_data)
+
+        @image_cache[device.id] = {cached_at: device.cached_image_at, data: data}
+        data
+      end
     rescue => e
       @logger.error "[Visionect] Image encoding error: #{e.message}\n#{e.backtrace.first(3).join("\n")}"
       nil
