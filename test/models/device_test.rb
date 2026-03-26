@@ -4,7 +4,8 @@ require "test_helper"
 
 class DeviceTest < Minitest::Test
   def setup
-    Device.where(model: "visionect_13").destroy_all
+    # Clean up all test-created devices to avoid uniqueness conflicts across tests
+    Device.where("name LIKE 'test_%' OR name LIKE 'Visionect %'").destroy_all
   end
 
   def test_model_name_label
@@ -66,5 +67,68 @@ class DeviceTest < Minitest::Test
     device.reload
 
     assert_in_delta Time.current, device.last_connection_at, 2
+  end
+
+  def test_encode_visionect_image_stores_4bpp_data
+    device = Device.create!(name: "test_encode", model: "visionect_13", visionect_serial: "ENC1")
+    # Create a small white PNG via ImageMagick
+    png = generate_test_png
+    device.update!(cached_image: Base64.strict_encode64(png))
+
+    device.encode_visionect_image!
+
+    stored = VisionectProtocol::Server.fetch_image(device.id)
+    assert_equal 960_000, stored.bytesize
+  end
+
+  def test_encode_visionect_image_skips_non_visionect
+    device = Device.create!(name: "test_trmnl", model: "trmnl_og", mac_address: "AA:BB:CC:DD:EE:FF")
+    device.encode_visionect_image!
+
+    assert_nil VisionectProtocol::Server.fetch_image(device.id)
+  end
+
+  def test_encode_visionect_image_skips_without_cached_image
+    device = Device.create!(name: "test_nocache", model: "visionect_13", visionect_serial: "NC1")
+    device.encode_visionect_image!
+
+    assert_nil VisionectProtocol::Server.fetch_image(device.id)
+  end
+
+  def test_refresh_all_screenshots_calls_refresh_on_each_device
+    Device.create!(name: "test_refresh_all", model: "visionect_13", visionect_serial: "RA1")
+    refreshed_ids = []
+
+    original_method = Device.instance_method(:refresh_screenshot!)
+    Device.define_method(:refresh_screenshot!) { |*| refreshed_ids << id }
+
+    Device.refresh_all_screenshots!
+    assert refreshed_ids.any?
+  ensure
+    Device.define_method(:refresh_screenshot!, original_method)
+  end
+
+  def test_refresh_all_screenshots_handles_errors_gracefully
+    Device.create!(name: "test_error", model: "visionect_13", visionect_serial: "ERR1")
+
+    original_method = Device.instance_method(:refresh_screenshot!)
+    Device.define_method(:refresh_screenshot!) { |*| raise "test error" }
+
+    # Should not raise
+    Device.refresh_all_screenshots!
+    assert true
+  ensure
+    Device.define_method(:refresh_screenshot!, original_method)
+  end
+
+  private
+
+  def generate_test_png
+    require "mini_magick"
+    img = MiniMagick::Image.create(".png") do |f|
+      system("magick", "-size", "1600x1200", "xc:white", f.path,
+        out: File::NULL, err: File::NULL)
+    end
+    img.to_blob
   end
 end

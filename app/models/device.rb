@@ -44,16 +44,18 @@ class Device < ActiveRecord::Base
     model == "visionect_13"
   end
 
-  def refresh_screenshot!(base_url)
+  def refresh_screenshot!(base_url = nil)
+    base_url ||= "http://localhost:#{ENV.fetch("PORT", 3000)}"
     display_url = "#{base_url}#{display_path}"
 
     self.cached_image = if visionect?
-      # Capture at native landscape resolution with 4-bit grayscale (16 levels)
-      # for best quality on the 1200×1600 e-paper display
+      # Capture raw PNG at landscape resolution (1600×1200).
+      # ImageEncoder.png_to_4bpp handles grayscale conversion, dithering,
+      # and -90° rotation to the native portrait buffer (1200×1600).
       ScreenshotService.capture(
         display_url,
         width: display_height, height: display_width,
-        grayscale_depth: 4
+        raw: true
       )
     else
       ScreenshotService.capture(display_url)
@@ -61,6 +63,28 @@ class Device < ActiveRecord::Base
 
     self.cached_image_at = Time.current
     save!
+
+    # Pre-encode 4bpp data for the protocol server so device connections are instant
+    encode_visionect_image! if visionect?
+  end
+
+  def encode_visionect_image!
+    return unless visionect? && cached_image.present?
+
+    png_data = Base64.decode64(cached_image)
+    raw_4bpp = VisionectProtocol::ImageEncoder.png_to_4bpp(png_data)
+    VisionectProtocol::Server.store_image(id, raw_4bpp)
+  rescue => e
+    Rails.logger.error "[Visionect] Image encoding failed for #{name}: #{e.message}"
+  end
+
+  def self.refresh_all_screenshots!(base_url = nil)
+    base_url ||= "http://localhost:#{ENV.fetch("PORT", 3000)}"
+    where(model: ["trmnl_og", "visionect_13"]).find_each do |device|
+      device.refresh_screenshot!(base_url)
+    rescue => e
+      Rails.logger.error "[Screenshot] Failed for #{device.name}: #{e.message}"
+    end
   end
 
   def authenticate_api_key(token)

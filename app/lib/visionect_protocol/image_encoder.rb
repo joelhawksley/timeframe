@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require "mini_magick"
-require_relative "lz4_block"
+require "extlz4"
 
 module VisionectProtocol
   # Encodes a PNG image into the Visionect protocol image packet format.
@@ -21,6 +21,8 @@ module VisionectProtocol
     ROWS_PER_STRIP = 8
     STRIP_SIZE = BYTES_PER_ROW * ROWS_PER_STRIP # 4800 bytes
     NUM_STRIPS = NATIVE_HEIGHT / ROWS_PER_STRIP # 200
+    # VSS sends only 80 bytes (0xFF) for the last strip instead of 4800
+    LAST_STRIP_SIZE = 80
 
     class << self
       # Encode a PNG (as binary string) into Visionect protocol image rectangles.
@@ -31,52 +33,74 @@ module VisionectProtocol
       end
 
       # Encode raw 4bpp pixel data (960,000 bytes for 1200×1600) into strips.
+      # The last strip carries only LAST_STRIP_SIZE bytes (matching VSS behavior).
       def compress_strips(raw_4bpp)
         strips = []
         NUM_STRIPS.times do |i|
-          offset = i * STRIP_SIZE
-          strip_data = raw_4bpp[offset, STRIP_SIZE] || ("\xff" * STRIP_SIZE).b
-          strips << LZ4Block.compress(strip_data)
+          if i == NUM_STRIPS - 1
+            # Last strip: 80 bytes of 0xFF (matches VSS reference)
+            strip_data = ("\xff" * LAST_STRIP_SIZE).b
+          else
+            offset = i * STRIP_SIZE
+            strip_data = raw_4bpp[offset, STRIP_SIZE] || ("\xff" * STRIP_SIZE).b
+          end
+          strips << LZ4.raw_encode(strip_data)
         end
         strips
       end
 
       # Convert PNG binary data to raw 4bpp pixel data in native orientation.
-      # The input PNG should be landscape (1600×1200). We rotate it -90°
-      # to get the native portrait orientation (1200×1600) that the device expects.
+      # Input PNG is landscape (1600×1200); we rotate -90° to get the native
+      # portrait buffer (1200×1600). The device applies its own rotation for display.
+      #
+      # Uses PGM intermediate format for reliable 8bpp output regardless of
+      # input depth, then packs pixel pairs into 4bpp bytes (high nibble first).
       def png_to_4bpp(png_data)
         image = MiniMagick::Image.read(png_data, ".png")
 
-        # Resize to display dimensions if needed
-        image.resize "#{NATIVE_HEIGHT}x#{NATIVE_WIDTH}!" # 1600×1200 landscape
-
-        # Rotate -90° to get native portrait orientation (1200 wide × 1600 tall)
+        # Resize to landscape dimensions, then rotate to native portrait
+        image.resize "#{NATIVE_HEIGHT}x#{NATIVE_WIDTH}!"
         image.rotate "-90"
 
-        # Convert to 16-level grayscale
+        # Convert to 16-level grayscale, output as PGM for reliable 8bpp
         image.combine_options do |c|
           c.colorspace "Gray"
           c.dither "FloydSteinberg"
           c.colors 16
           c.depth 8
         end
-        image.format "gray"
+        image.format "pgm"
 
-        # Read raw 8-bit grayscale pixels
-        raw_8bit = image.to_blob
-        expected_size = NATIVE_WIDTH * NATIVE_HEIGHT
+        pgm_blob = image.to_blob
 
-        if raw_8bit.bytesize != expected_size
-          # Pad or truncate to exact size
-          if raw_8bit.bytesize < expected_size
-            raw_8bit += ("\xff" * (expected_size - raw_8bit.bytesize)).b
-          else
-            raw_8bit = raw_8bit[0, expected_size]
-          end
+        # Parse PGM P5 header: "P5\n<width> <height>\n<maxval>\n<data>"
+        idx = 0
+        3.times { idx = pgm_blob.index("\n", idx) + 1 }
+        raw_8bpp = pgm_blob.byteslice(idx..)
+        maxval = pgm_blob.byteslice(0, idx).split("\n")[2].to_i
+
+        # Scale factor to map pixel values (0..maxval) to 4-bit range (0..15)
+        scale = 15.0 / maxval
+
+        # Pack pairs of 8-bit pixels into 4bpp bytes (high nibble first)
+        expected_4bpp = NATIVE_WIDTH * NATIVE_HEIGHT / 2
+        output = String.new(capacity: expected_4bpp, encoding: Encoding::BINARY)
+        bytes = raw_8bpp.bytes
+        i = 0
+        while i < bytes.length - 1
+          high = ((bytes[i] * scale) + 0.5).to_i.clamp(0, 15)
+          low = ((bytes[i + 1] * scale) + 0.5).to_i.clamp(0, 15)
+          output << ((high << 4) | low).chr
+          i += 2
         end
 
-        # Convert 8bpp to 4bpp (pack two pixels per byte)
-        convert_8bpp_to_4bpp(raw_8bit)
+        # :nocov:
+        while output.bytesize < expected_4bpp
+          output << "\xff"
+        end
+        # :nocov:
+
+        output
       end
 
       # Generate a test pattern (gradient) for protocol testing.
@@ -92,30 +116,6 @@ module VisionectProtocol
           end
         end
         compress_strips(raw)
-      end
-
-      private
-
-      def convert_8bpp_to_4bpp(raw_8bit)
-        bytes = raw_8bit.bytes
-        output = String.new(capacity: bytes.length / 2, encoding: Encoding::BINARY)
-
-        i = 0
-        while i < bytes.length - 1
-          # Quantize 8-bit (0-255) to 4-bit (0-15)
-          high = (bytes[i] * 15 + 127) / 255
-          low = (bytes[i + 1] * 15 + 127) / 255
-          output << ((high << 4) | low).chr
-          i += 2
-        end
-
-        # Pad to expected size if needed
-        expected = NATIVE_WIDTH * NATIVE_HEIGHT / 2
-        while output.bytesize < expected
-          output << "\xff"
-        end
-
-        output
       end
     end
   end

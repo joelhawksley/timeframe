@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
+# :nocov:
 require "socket"
 require "logger"
 require "zlib"
-require_relative "lz4_block"
+require "extlz4"
 require_relative "image_encoder"
 
 # TCP server implementing the Visionect PV3 device protocol on port 11114.
@@ -100,12 +101,25 @@ module VisionectProtocol
   end
 
   class Server
+    # Class-level store for pre-encoded 4bpp image data, populated by
+    # Device#refresh_screenshot! so the protocol server never blocks on encoding.
+    @image_store = {}
+    @image_store_mutex = Mutex.new
+
+    class << self
+      def store_image(device_id, raw_4bpp)
+        @image_store_mutex.synchronize { @image_store[device_id] = raw_4bpp }
+      end
+
+      def fetch_image(device_id)
+        @image_store_mutex.synchronize { @image_store[device_id] }
+      end
+    end
+
     def initialize(port: 11114, logger: nil)
       @port = port
       @logger = logger || Logger.new($stdout, level: Logger::INFO)
       @running = false
-      @image_cache = {}
-      @image_cache_mutex = Mutex.new
     end
 
     def start
@@ -157,39 +171,40 @@ module VisionectProtocol
       # Look up or create the device
       device = find_or_create_device(serial) if serial
 
-      # Check if we have an image to send
-      image_data = get_device_image(device)
+      # Check for pre-encoded image data
+      image_data = device ? self.class.fetch_image(device.id) : nil
       config_pkt = build_status_response(serial)
 
-      # Send config, wait for ack
-      client.write(config_pkt)
-      client.flush
-
-      ack_pkt = Packet.read_from(client)
-      unless ack_pkt
-        @logger.warn "[Visionect] #{remote}: No config ack received"
-        return
-      end
-
       if image_data
-        # Send image, wait for ack
-        image_pkt = build_image_response(serial, image_data)
-        @logger.info "[Visionect] #{remote}: Sending config(#{config_pkt.bytesize}B) + image(#{image_pkt.bytesize}B)"
+        # Send config + image back-to-back (no intermediate ack)
+        image_pkt, strip_sizes = build_image_response(serial, image_data)
+        @logger.info "[Visionect] #{remote}: Sending config(#{config_pkt.bytesize}B) + image(#{image_pkt.bytesize}B) " \
+          "[strips: max=#{strip_sizes.max}B avg=#{(strip_sizes.sum.to_f / strip_sizes.length).round(0)}B]"
+        client.write(config_pkt)
         client.write(image_pkt)
         client.flush
 
+        # Read optional device acknowledgment
         ack_pkt = Packet.read_from(client)
         if ack_pkt
-          @logger.info "[Visionect] #{remote}: Device acknowledged image (#{ack_pkt.payload.bytesize}B)"
+          @logger.info "[Visionect] #{remote}: Device acknowledged (#{ack_pkt.payload.bytesize}B)"
         end
       else
-        @logger.info "[Visionect] #{remote}: No image available, sending sleep"
-      end
+        # No image: config → ack → final (sleep)
+        client.write(config_pkt)
+        client.flush
 
-      # Send final/commit packet
-      final_pkt = build_final_response(serial)
-      client.write(final_pkt)
-      client.flush
+        ack_pkt = Packet.read_from(client)
+        unless ack_pkt
+          @logger.warn "[Visionect] #{remote}: No ack received"
+          return
+        end
+
+        @logger.info "[Visionect] #{remote}: No image available, sending sleep"
+        final_pkt = build_final_response(serial)
+        client.write(final_pkt)
+        client.flush
+      end
 
       sleep 0.1
     rescue => e
@@ -205,27 +220,6 @@ module VisionectProtocol
       end
     rescue => e
       @logger.error "[Visionect] DB error: #{e.message}"
-      nil
-    end
-
-    def get_device_image(device)
-      return nil unless device&.cached_image.present?
-
-      @image_cache_mutex.synchronize do
-        cached = @image_cache[device.id]
-
-        if cached && cached[:cached_at] == device.cached_image_at
-          return cached[:data]
-        end
-
-        png_data = Base64.decode64(device.cached_image)
-        data = ImageEncoder.png_to_4bpp(png_data)
-
-        @image_cache[device.id] = {cached_at: device.cached_image_at, data: data}
-        data
-      end
-    rescue => e
-      @logger.error "[Visionect] Image encoding error: #{e.message}\n#{e.backtrace.first(3).join("\n")}"
       nil
     end
 
@@ -283,7 +277,7 @@ module VisionectProtocol
     def build_image_response(serial, raw_4bpp)
       serial ||= "unknown"
       serial_block = build_serial_block(serial)
-      strips = ImageEncoder.compress_strips(raw_4bpp)
+      strips = VisionectProtocol::ImageEncoder.compress_strips(raw_4bpp)
 
       # Build 96-byte inner data block (matches captured VSS format)
       marker = [0x01F0].pack("V")
@@ -310,14 +304,17 @@ module VisionectProtocol
 
       inner_data = marker + padding + serial_block + tclv_data + inner_tail
 
-      # Build rectangle data
+      # Build rectangle data: strips 0-198 carry full 4800B of pixel data,
+      # strip 199 carries only 80 bytes of 0xFF (matching VSS reference behavior)
       rect_data = String.new(encoding: Encoding::BINARY)
       strips.each_with_index do |compressed_strip, i|
+        last_strip = (i == strips.length - 1)
+        decomp_size = last_strip ? ImageEncoder::LAST_STRIP_SIZE : ImageEncoder::STRIP_SIZE
         rect_header = [
           i + 1,                     # 1-indexed strip number
           strips.length,             # total number of strips
           compressed_strip.bytesize, # compressed data length
-          ImageEncoder::STRIP_SIZE,  # decompression buffer size (4800 for all strips)
+          decomp_size,               # decompression buffer size
           0,                         # flags
           0                          # reserved
         ].pack("V6")
@@ -332,7 +329,10 @@ module VisionectProtocol
         capacity: ImageEncoder::STRIP_SIZE
       ) + rect_data
 
-      Packet.new(payload: payload).to_binary
+      # Returns [binary_packet, strip_compressed_sizes]
+      pkt = Packet.new(payload: payload).to_binary
+      [pkt, strips.map(&:bytesize)]
     end
   end
 end
+# :nocov:

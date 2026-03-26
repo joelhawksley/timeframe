@@ -23,12 +23,11 @@ scheduler.every "1m" do
 end
 
 scheduler.every "15m" do
-  base_url = "http://localhost:#{ENV.fetch("PORT", 80)}"
-  Device.where(model: ["trmnl_og", "visionect_13"]).find_each do |device|
-    device.refresh_screenshot!(base_url)
-  rescue => e
-    Rails.logger.error "[Screenshot] Failed for #{device.name}: #{e.message}"
-  end
+  Device.refresh_all_screenshots!
+end
+
+scheduler.in "30s" do
+  Device.refresh_all_screenshots!
 end
 
 # This will attach scheduler thread to Puma's background thread.
