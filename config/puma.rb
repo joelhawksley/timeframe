@@ -21,7 +21,13 @@ environment ENV.fetch("RAILS_ENV", "development")
 plugin :tmp_restart
 plugin :"rufus-scheduler"
 
-# Start Visionect TCP server alongside Puma (works in both single and cluster mode)
+# Start Visionect TCP server or proxy alongside Puma.
+#
+# Proxy mode: set VISIONECT_PROXY_TARGET to forward device traffic to a real
+# VSS server while logging every byte. Example:
+#   VISIONECT_PROXY_TARGET=192.168.1.91:11113
+#
+# Normal mode: runs the custom protocol server (when VISIONECT_PROXY_TARGET is unset).
 on_booted do
   start_visionect_server
 end
@@ -29,18 +35,33 @@ end
 def start_visionect_server
   return if @visionect_started
 
-  require_relative "../app/lib/visionect_protocol/server"
   visionect_port = ENV.fetch("VISIONECT_PORT", 11114).to_i
+  proxy_target = ENV["VISIONECT_PROXY_TARGET"]
 
-  @visionect_server = VisionectProtocol::Server.new(
-    port: visionect_port,
-    logger: Logger.new($stdout, level: Logger::INFO)
-  )
+  if proxy_target
+    require_relative "../app/lib/visionect_protocol/proxy"
+    host, port = proxy_target.split(":")
+    port = (port || 11113).to_i
+
+    @visionect_server = VisionectProtocol::Proxy.new(
+      target_host: host,
+      target_port: port,
+      listen_port: visionect_port,
+      logger: Logger.new($stdout, level: Logger::INFO)
+    )
+  else
+    require_relative "../app/lib/visionect_protocol/server"
+
+    @visionect_server = VisionectProtocol::Server.new(
+      port: visionect_port,
+      logger: Logger.new($stdout, level: Logger::INFO)
+    )
+  end
 
   @visionect_thread = Thread.new do
     @visionect_server.start
   rescue => e
-    warn "[Visionect] Server thread error: #{e.message}"
+    warn "[Visionect] Server/proxy thread error: #{e.message}"
   end
 
   @visionect_started = true
