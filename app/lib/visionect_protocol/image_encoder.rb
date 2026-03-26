@@ -7,18 +7,18 @@ module VisionectProtocol
   # Encodes a PNG image into the Visionect protocol image packet format.
   #
   # Image format: 4bpp grayscale (16 levels), LZ4-compressed strips.
-  # Each strip covers 8 rows of the display at the native width.
-  # The display native orientation is 1200×1600 (portrait);
-  # the device applies rotation=1 (90° CW) for landscape display.
+  # Each strip covers 6 rows of the display at the native panel width.
+  # The panel's native orientation is 1600×1200 (landscape);
+  # the device applies rotation internally when mounted in portrait mode.
   #
   # Strip data layout within each strip's 4800 bytes:
-  #   Sequential rows: row0[600B] + row1[600B] + ... + row7[600B]
-  #   Each row: 600 bytes at 4bpp = 1200 pixels (2 pixels per byte, high nibble first)
+  #   Sequential rows: row0[800B] + row1[800B] + ... + row5[800B]
+  #   Each row: 800 bytes at 4bpp = 1600 pixels (2 pixels per byte, high nibble first)
   class ImageEncoder
-    NATIVE_WIDTH = 1200
-    NATIVE_HEIGHT = 1600
-    BYTES_PER_ROW = NATIVE_WIDTH / 2 # 600 bytes at 4bpp
-    ROWS_PER_STRIP = 8
+    NATIVE_WIDTH = 1600
+    NATIVE_HEIGHT = 1200
+    BYTES_PER_ROW = NATIVE_WIDTH / 2 # 800 bytes at 4bpp
+    ROWS_PER_STRIP = 6
     STRIP_SIZE = BYTES_PER_ROW * ROWS_PER_STRIP # 4800 bytes
     NUM_STRIPS = NATIVE_HEIGHT / ROWS_PER_STRIP # 200
     # VSS sends only 80 bytes (0xFF) for the last strip instead of 4800
@@ -49,18 +49,18 @@ module VisionectProtocol
         strips
       end
 
-      # Convert PNG binary data to raw 4bpp pixel data in native orientation.
-      # Input PNG is landscape (1600×1200); we rotate -90° to get the native
-      # portrait buffer (1200×1600). The device applies its own rotation for display.
+      # Convert PNG binary data to raw 4bpp pixel data in native panel orientation.
+      # Input PNG is portrait (1200×1600); we rotate 90° CW to get the panel's
+      # native landscape layout (1600×1200) for the protocol.
       #
       # Uses PGM intermediate format for reliable 8bpp output regardless of
       # input depth, then packs pixel pairs into 4bpp bytes (high nibble first).
       def png_to_4bpp(png_data)
         image = MiniMagick::Image.read(png_data, ".png")
 
-        # Resize to landscape dimensions, then rotate to native portrait
+        # Resize to portrait, then rotate 90° CW to native panel landscape
         image.resize "#{NATIVE_HEIGHT}x#{NATIVE_WIDTH}!"
-        image.rotate "-90"
+        image.rotate "90"
 
         # Convert to 16-level grayscale, output as PGM for reliable 8bpp
         image.combine_options do |c|

@@ -103,16 +103,53 @@ module VisionectProtocol
   class Server
     # Class-level store for pre-encoded 4bpp image data, populated by
     # Device#refresh_screenshot! so the protocol server never blocks on encoding.
+    #
+    # Each entry tracks current and previous images so the server can send
+    # both display buffers the device needs for e-paper waveform computation.
     @image_store = {}
     @image_store_mutex = Mutex.new
 
     class << self
       def store_image(device_id, raw_4bpp)
-        @image_store_mutex.synchronize { @image_store[device_id] = raw_4bpp }
+        new_crc = Zlib.crc32(raw_4bpp) & 0xFFFFFFFF
+        @image_store_mutex.synchronize do
+          entry = @image_store[device_id]
+          if entry
+            if entry[:current_crc] != new_crc
+              entry[:previous] = entry[:current]
+              entry[:previous_crc] = entry[:current_crc]
+              entry[:current] = raw_4bpp
+              entry[:current_crc] = new_crc
+              entry[:changed] = true
+            end
+          else
+            @image_store[device_id] = {
+              current: raw_4bpp,
+              current_crc: new_crc,
+              previous: nil,
+              previous_crc: nil,
+              changed: true
+            }
+          end
+        end
       end
 
       def fetch_image(device_id)
-        @image_store_mutex.synchronize { @image_store[device_id] }
+        @image_store_mutex.synchronize do
+          entry = @image_store[device_id]
+          return nil unless entry
+          entry[:current]
+        end
+      end
+
+      def fetch_images(device_id)
+        @image_store_mutex.synchronize do
+          entry = @image_store[device_id]
+          return nil unless entry
+          result = entry.dup
+          entry[:changed] = false
+          result
+        end
       end
     end
 
@@ -171,38 +208,40 @@ module VisionectProtocol
       # Look up or create the device
       device = find_or_create_device(serial) if serial
 
-      # Check for pre-encoded image data
-      image_data = device ? self.class.fetch_image(device.id) : nil
+      # Fetch current and previous image data for dual-buffer delivery
+      images = device ? self.class.fetch_images(device.id) : nil
       config_pkt = build_status_response(serial)
 
-      if image_data
-        # Send config + image back-to-back (no intermediate ack)
-        image_pkt, strip_sizes = build_image_response(serial, image_data)
-        @logger.info "[Visionect] #{remote}: Sending config(#{config_pkt.bytesize}B) + image(#{image_pkt.bytesize}B) " \
-          "[strips: max=#{strip_sizes.max}B avg=#{(strip_sizes.sum.to_f / strip_sizes.length).round(0)}B]"
+      if images
+        current = images[:current]
+        current_crc = images[:current_crc]
+        previous = images[:previous]
+        previous_crc = images[:previous_crc]
+        changed = images[:changed]
+
         client.write(config_pkt)
-        client.write(image_pkt)
+
+        if changed && previous
+          # Image changed and we have the old frame: send both buffers so the
+          # device can compute the correct e-paper waveform for the transition.
+          @logger.info "[Visionect] #{remote}: Image changed, sending buf1 (old) + buf2 (new)"
+          client.write(build_image_packet(serial, previous, buffer_index: 1, image_crc: previous_crc))
+          client.write(build_image_packet(serial, current, buffer_index: 2, image_crc: current_crc))
+        else
+          # Normal case (first image, refresh, or no previous): single full-update
+          # buffer. The device applies a full refresh waveform (mode 0x50).
+          @logger.info "[Visionect] #{remote}: Sending single buffer (full refresh)"
+          client.write(build_image_packet(serial, current, buffer_index: 1, image_crc: current_crc))
+        end
         client.flush
 
-        # Read optional device acknowledgment
+        # Read device acknowledgment(s)
         ack_pkt = Packet.read_from(client)
-        if ack_pkt
-          @logger.info "[Visionect] #{remote}: Device acknowledged (#{ack_pkt.payload.bytesize}B)"
-        end
+        @logger.info "[Visionect] #{remote}: Device acknowledged" if ack_pkt
       else
-        # No image: config → ack → final (sleep)
+        # No image available: send config only (device will reconnect later)
+        @logger.info "[Visionect] #{remote}: No image available"
         client.write(config_pkt)
-        client.flush
-
-        ack_pkt = Packet.read_from(client)
-        unless ack_pkt
-          @logger.warn "[Visionect] #{remote}: No ack received"
-          return
-        end
-
-        @logger.info "[Visionect] #{remote}: No image available, sending sleep"
-        final_pkt = build_final_response(serial)
-        client.write(final_pkt)
         client.flush
       end
 
@@ -274,27 +313,51 @@ module VisionectProtocol
       Packet.new(payload: payload).to_binary
     end
 
-    def build_image_response(serial, raw_4bpp)
+    # Build a complete image packet for one display buffer.
+    #
+    # E-paper displays need two buffers for waveform computation:
+    #   buffer 1 = previous/current frame (what's on screen)
+    #   buffer 2 = new frame (what to transition to)
+    #
+    # TCLV bytes vary per buffer index (derived from captured VSS traffic).
+    # image_crc is CRC32 of the raw 4bpp data, used by the device for cache validation.
+    def build_image_packet(serial, raw_4bpp, buffer_index:, image_crc:)
       serial ||= "unknown"
       serial_block = build_serial_block(serial)
       strips = VisionectProtocol::ImageEncoder.compress_strips(raw_4bpp)
 
-      # Build 96-byte inner data block (matches captured VSS format)
       marker = [0x01F0].pack("V")
       padding = [0x0000].pack("v")
+      crc_bytes = [image_crc].pack("V")
 
-      # TCLV config for image delivery (from captured image response)
-      tclv_data = [
-        0x10, 0x00, 0xB0, 0x05, 0x00, 0x00, 0x00, 0x01,
-        0x00, 0x00, 0x00, 0x2C, 0xA6, 0x0E, 0x0F, 0x00,
-        0x50, 0x00, 0x26, 0xE7, 0xD9, 0xEC, 0x10, 0x00,
-        0x00, 0x02, 0x00, 0x13, 0x18, 0x14, 0x00, 0x04,
-        0x10, 0x00, 0x90, 0x40, 0x06, 0xB0, 0x04, 0x02,
-        0x01, 0x02, 0x00, 0x04, 0x1D, 0x00, 0x4F, 0xA6,
-        0x0E, 0x00
-      ].pack("C*")
+      # TCLV config varies by buffer index (from captured VSS traffic).
+      # Buffer 1: mode=0x50, flags=0x10,0x00, vals=0x02,0x13
+      # Buffer 2: mode=0x61, flags=0x01,0x0A, vals=0x33,0x00
+      tclv_data = if buffer_index == 1
+        [
+          0x10, 0x00, 0xB0, 0x05, 0x00, 0x00, 0x00, 0x01,
+          0x00, 0x00, 0x00, 0x2C, 0xA6, 0x0E, 0x0F, 0x00,
+          0x50, 0x00
+        ].pack("C*") + crc_bytes + [
+          0x10, 0x00, 0x00, 0x02, 0x00, 0x13, 0x18, 0x14,
+          0x00, 0x04, 0x10, 0x00, 0x90, 0x40, 0x06, 0xB0,
+          0x04, 0x02, 0x01, 0x02, 0x00, 0x04, 0x1D, 0x00,
+          0x4F, 0xA6, 0x0E, 0x00
+        ].pack("C*")
+      else
+        [
+          0x10, 0x00, 0xB0, 0x05, 0x00, 0x00, 0x00, 0x02,
+          0x00, 0x00, 0x00, 0x2C, 0xA6, 0x0E, 0x0F, 0x00,
+          0x61, 0x00
+        ].pack("C*") + crc_bytes + [
+          0x01, 0x0A, 0x00, 0x33, 0x00, 0x00, 0x18, 0x14,
+          0x00, 0x04, 0x10, 0x00, 0x90, 0x40, 0x06, 0xB0,
+          0x04, 0x02, 0x01, 0x02, 0x00, 0x04, 0x1D, 0x00,
+          0x4F, 0xA6, 0x0E, 0x00
+        ].pack("C*")
+      end
 
-      # Protocol metadata tail (28 bytes, from captured VSS image response)
+      # Protocol metadata tail (28 bytes, constant across buffers)
       inner_tail = [
         0xFF, 0x01, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
         0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
@@ -329,9 +392,7 @@ module VisionectProtocol
         capacity: ImageEncoder::STRIP_SIZE
       ) + rect_data
 
-      # Returns [binary_packet, strip_compressed_sizes]
-      pkt = Packet.new(payload: payload).to_binary
-      [pkt, strips.map(&:bytesize)]
+      Packet.new(payload: payload).to_binary
     end
   end
 end

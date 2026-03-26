@@ -49,12 +49,12 @@ class Device < ActiveRecord::Base
     display_url = "#{base_url}#{display_path}"
 
     self.cached_image = if visionect?
-      # Capture raw PNG at landscape resolution (1600×1200).
+      # Capture raw PNG in portrait orientation (1200×1600).
       # ImageEncoder.png_to_4bpp handles grayscale conversion, dithering,
-      # and -90° rotation to the native portrait buffer (1200×1600).
+      # and 90° rotation to the panel's native landscape layout (1600×1200).
       ScreenshotService.capture(
         display_url,
-        width: display_height, height: display_width,
+        width: display_width, height: display_height,
         raw: true
       )
     else
