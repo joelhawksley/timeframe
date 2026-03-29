@@ -226,13 +226,14 @@ module VisionectProtocol
           # device can compute the correct e-paper waveform for the transition.
           @logger.info "[Visionect] #{remote}: Image changed, sending buf1 (old) + buf2 (new)"
           client.write(build_image_packet(serial, previous, buffer_index: 1, image_crc: previous_crc))
-          client.write(build_image_packet(serial, current, buffer_index: 2, image_crc: current_crc))
         else
-          # Normal case (first image, refresh, or no previous): single full-update
-          # buffer. The device applies a full refresh waveform (mode 0x50).
-          @logger.info "[Visionect] #{remote}: Sending single buffer (full refresh)"
+          # First image or refresh (no previous): send same image as both buffers.
+          # VSS always sends dual buffers — the EPD needs old+new for waveform
+          # computation. For initial delivery, both buffers carry the same image.
+          @logger.info "[Visionect] #{remote}: Sending dual buffer (same image, full refresh)"
           client.write(build_image_packet(serial, current, buffer_index: 1, image_crc: current_crc))
         end
+        client.write(build_image_packet(serial, current, buffer_index: 2, image_crc: current_crc))
         client.flush
 
         # Read device acknowledgment(s)
