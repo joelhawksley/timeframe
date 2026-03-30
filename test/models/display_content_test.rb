@@ -28,7 +28,7 @@ class DisplayContenttTest < Minitest::Test
       api = new_test_api
       api.stub :calendars_healthy?, false do
         api.stub :calendar_events, [
-          CalendarEvent.new(starts_at: travel_time - 1.hour, ends_at: travel_time + 1.day, summary: "test")
+          DisplayEvent.new(starts_at: travel_time - 1.hour, ends_at: travel_time + 1.day, summary: "test")
         ] do
           api.stub :private_mode?, false do
             result = DisplayContent.new.call(home_assistant_api: api)
@@ -93,7 +93,7 @@ class DisplayContenttTest < Minitest::Test
     travel_to DateTime.new(2023, 8, 27, 20, 15, 0, "-0600") do
       api = new_test_api
       events = [
-        CalendarEvent.new(
+        DisplayEvent.new(
           starts_at: DateTime.new(2023, 8, 27, 19, 0, 0, "-0600"),
           ends_at: DateTime.new(2023, 8, 27, 21, 0, 0, "-0600"),
           summary: "Evening event"

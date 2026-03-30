@@ -669,7 +669,7 @@ class HomeAssistantApiTest < Minitest::Test
     assert_equal(false, api.private_mode?)
 
     data = [
-      CalendarEvent.new(
+      DisplayEvent.new(
         starts_at: DateTime.new(2024, 9, 5, 12, 0, 0, "-0600"),
         ends_at: DateTime.new(2024, 9, 5, 16, 0, 0, "-0600"),
         summary: "timeframe-private"

@@ -107,7 +107,7 @@ class HomeAssistantApi
         parts = it[:state].split(",").map(&:strip)
         next if parts.length < 2
 
-        CalendarEvent.new(
+        DisplayEvent.new(
           id: "_daily_event_#{it[:entity_id]}",
           starts_at: today.to_time,
           ends_at: (today + 1.day).to_time,
@@ -270,7 +270,7 @@ class HomeAssistantApi
   end
 
   def calendar_events
-    @calendar_events ||= (domain_value(CALENDAR_DOMAIN)[:response] || []).map { CalendarEvent.new(**it.symbolize_keys!) }
+    @calendar_events ||= (domain_value(CALENDAR_DOMAIN)[:response] || []).map { DisplayEvent.new(**it.symbolize_keys!) }
   end
 
   def fetch_calendar_list
@@ -432,7 +432,7 @@ class HomeAssistantApi
 
         next unless weather_hour.present?
 
-        CalendarEvent.new(
+        DisplayEvent.new(
           id: "_ha_weather_hour_#{hour.to_i}",
           starts_at: hour,
           ends_at: hour,
@@ -451,7 +451,7 @@ class HomeAssistantApi
     days.map do |day|
       dt = DateTime.parse(day[:datetime])
 
-      CalendarEvent.new(
+      DisplayEvent.new(
         id: "_ha_weather_day_#{dt.to_i}",
         starts_at: dt.to_i,
         ends_at: (dt + 1.day).to_i,
@@ -512,7 +512,7 @@ class HomeAssistantApi
         it[:precipitation_type].capitalize
       end
 
-      CalendarEvent.new(
+      DisplayEvent.new(
         id: "#{it[:start_i]}_ha_precip",
         starts_at: it[:start_i],
         ends_at: it[:end_i],
@@ -557,7 +557,7 @@ class HomeAssistantApi
       avg_y = radians.sum { |r| Math.sin(r) } / radians.size
       avg_wind_direction = (Math.atan2(avg_y, avg_x) * 180 / Math::PI).round
 
-      CalendarEvent.new(
+      DisplayEvent.new(
         id: "#{it[:start_i]}_ha_wind",
         starts_at: it[:start_i],
         ends_at: it[:end_i],

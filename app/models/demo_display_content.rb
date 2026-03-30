@@ -60,7 +60,7 @@ class DemoDisplayContent
 
   def build_day_groups(current_time)
     today = current_time.to_date
-    vacation = CalendarEvent.new(
+    vacation = DisplayEvent.new(
       starts_at: (today - 2.days).beginning_of_day,
       ends_at: (today + 5.days).beginning_of_day,
       summary: "Vacation",
@@ -92,7 +92,7 @@ class DemoDisplayContent
 
     case day_index
     when 0 # Today
-      daily << CalendarEvent.new(
+      daily << DisplayEvent.new(
         starts_at: date.beginning_of_day,
         ends_at: date.end_of_day,
         summary: "Sarah Johnson",
@@ -103,7 +103,7 @@ class DemoDisplayContent
 
       daily << vacation
 
-      periodic << CalendarEvent.new(
+      periodic << DisplayEvent.new(
         starts_at: date.change(hour: 8),
         ends_at: date.change(hour: 9),
         summary: "Morning standup with the entire engineering team and product managers",
@@ -111,7 +111,7 @@ class DemoDisplayContent
         location: "Conference Room A"
       )
 
-      periodic << CalendarEvent.new(
+      periodic << DisplayEvent.new(
         starts_at: date.change(hour: 9),
         ends_at: date.change(hour: 9, min: 30),
         summary: "1:1 with Alex",
@@ -119,21 +119,21 @@ class DemoDisplayContent
         location: "Zoom"
       )
 
-      periodic << CalendarEvent.new(
+      periodic << DisplayEvent.new(
         starts_at: date.change(hour: 12),
         ends_at: date.change(hour: 12),
         summary: "68°",
         icon: "weather-partly-cloudy"
       )
 
-      periodic << CalendarEvent.new(
+      periodic << DisplayEvent.new(
         starts_at: date.change(hour: 16),
         ends_at: date.change(hour: 16),
         summary: "74°",
         icon: "weather-sunny"
       )
 
-      periodic << CalendarEvent.new(
+      periodic << DisplayEvent.new(
         starts_at: date.change(hour: 17),
         ends_at: date.change(hour: 18),
         summary: "Soccer practice",
@@ -141,7 +141,7 @@ class DemoDisplayContent
         location: "Greenfield Park"
       )
 
-      periodic << CalendarEvent.new(
+      periodic << DisplayEvent.new(
         starts_at: date.change(hour: 20),
         ends_at: date.change(hour: 20),
         summary: "64°",
@@ -149,7 +149,7 @@ class DemoDisplayContent
       )
 
       # Event spanning past midnight (edge case)
-      periodic << CalendarEvent.new(
+      periodic << DisplayEvent.new(
         starts_at: date.change(hour: 21),
         ends_at: (date + 1.day).change(hour: 1),
         summary: "Movie night",
@@ -159,7 +159,7 @@ class DemoDisplayContent
     when 1 # Tomorrow
       daily << vacation
 
-      daily << CalendarEvent.new(
+      daily << DisplayEvent.new(
         starts_at: date.beginning_of_day,
         ends_at: (date + 1.day).beginning_of_day,
         summary: "Recycling",
@@ -168,14 +168,14 @@ class DemoDisplayContent
         daily: true
       )
 
-      periodic << CalendarEvent.new(
+      periodic << DisplayEvent.new(
         starts_at: date.change(hour: 8),
         ends_at: date.change(hour: 8),
         summary: "55°",
         icon: "weather-sunny"
       )
 
-      periodic << CalendarEvent.new(
+      periodic << DisplayEvent.new(
         starts_at: date.change(hour: 10),
         ends_at: date.change(hour: 11),
         summary: "Dentist",
@@ -183,14 +183,14 @@ class DemoDisplayContent
         location: "123 Main St"
       )
 
-      periodic << CalendarEvent.new(
+      periodic << DisplayEvent.new(
         starts_at: date.change(hour: 12),
         ends_at: date.change(hour: 12),
         summary: "70°",
         icon: "weather-partly-cloudy"
       )
 
-      periodic << CalendarEvent.new(
+      periodic << DisplayEvent.new(
         starts_at: date.change(hour: 14),
         ends_at: date.change(hour: 15, min: 30),
         summary: "Piano lesson",
@@ -199,7 +199,7 @@ class DemoDisplayContent
       )
 
       # Wind gust event with rotated arrow (edge case)
-      periodic << CalendarEvent.new(
+      periodic << DisplayEvent.new(
         starts_at: date.change(hour: 15),
         ends_at: date.change(hour: 19),
         summary: "Gusts up to 25mph",
@@ -207,14 +207,14 @@ class DemoDisplayContent
         icon_rotation: 225
       )
 
-      periodic << CalendarEvent.new(
+      periodic << DisplayEvent.new(
         starts_at: date.change(hour: 16),
         ends_at: date.change(hour: 16),
         summary: "65°",
         icon: "weather-sunny"
       )
 
-      periodic << CalendarEvent.new(
+      periodic << DisplayEvent.new(
         starts_at: date.change(hour: 20),
         ends_at: date.change(hour: 20),
         summary: "58°",
@@ -224,14 +224,14 @@ class DemoDisplayContent
     when 2
       daily << vacation
 
-      periodic << CalendarEvent.new(
+      periodic << DisplayEvent.new(
         starts_at: date.change(hour: 8),
         ends_at: date.change(hour: 8),
         summary: "60°",
         icon: "cloud"
       )
 
-      periodic << CalendarEvent.new(
+      periodic << DisplayEvent.new(
         starts_at: date.change(hour: 9),
         ends_at: date.change(hour: 10),
         summary: "Team retrospective",
@@ -240,14 +240,14 @@ class DemoDisplayContent
       )
 
       # Precipitation event
-      periodic << CalendarEvent.new(
+      periodic << DisplayEvent.new(
         starts_at: date.change(hour: 11),
         ends_at: date.change(hour: 15),
         summary: "Rain (0.3\")",
         icon: "weather-rainy"
       )
 
-      periodic << CalendarEvent.new(
+      periodic << DisplayEvent.new(
         starts_at: date.change(hour: 12),
         ends_at: date.change(hour: 12),
         summary: "58°",
@@ -255,28 +255,28 @@ class DemoDisplayContent
       )
 
       # Overlapping event (edge case)
-      periodic << CalendarEvent.new(
+      periodic << DisplayEvent.new(
         starts_at: date.change(hour: 13),
         ends_at: date.change(hour: 14),
         summary: "Lunch with Pat",
         icon: "alpha-f"
       )
 
-      periodic << CalendarEvent.new(
+      periodic << DisplayEvent.new(
         starts_at: date.change(hour: 13, min: 30),
         ends_at: date.change(hour: 14, min: 30),
         summary: "Call with client",
         icon: "alpha-j"
       )
 
-      periodic << CalendarEvent.new(
+      periodic << DisplayEvent.new(
         starts_at: date.change(hour: 16),
         ends_at: date.change(hour: 16),
         summary: "55°",
         icon: "cloud"
       )
 
-      periodic << CalendarEvent.new(
+      periodic << DisplayEvent.new(
         starts_at: date.change(hour: 20),
         ends_at: date.change(hour: 20),
         summary: "50°",
@@ -286,28 +286,28 @@ class DemoDisplayContent
     when 3
       daily << vacation
 
-      periodic << CalendarEvent.new(
+      periodic << DisplayEvent.new(
         starts_at: date.change(hour: 8),
         ends_at: date.change(hour: 8),
         summary: "52°",
         icon: "weather-sunny"
       )
 
-      periodic << CalendarEvent.new(
+      periodic << DisplayEvent.new(
         starts_at: date.change(hour: 9),
         ends_at: date.change(hour: 9, min: 45),
         summary: "Yoga",
         icon: "alpha-s"
       )
 
-      periodic << CalendarEvent.new(
+      periodic << DisplayEvent.new(
         starts_at: date.change(hour: 12),
         ends_at: date.change(hour: 12),
         summary: "71°",
         icon: "weather-sunny"
       )
 
-      periodic << CalendarEvent.new(
+      periodic << DisplayEvent.new(
         starts_at: date.change(hour: 15),
         ends_at: date.change(hour: 16),
         summary: "Grocery run",
@@ -315,7 +315,7 @@ class DemoDisplayContent
         location: "Whole Foods"
       )
 
-      periodic << CalendarEvent.new(
+      periodic << DisplayEvent.new(
         starts_at: date.change(hour: 18),
         ends_at: date.change(hour: 19, min: 30),
         summary: "Dinner party",
@@ -323,7 +323,7 @@ class DemoDisplayContent
         location: "The Smiths"
       )
 
-      periodic << CalendarEvent.new(
+      periodic << DisplayEvent.new(
         starts_at: date.change(hour: 20),
         ends_at: date.change(hour: 20),
         summary: "60°",
@@ -333,7 +333,7 @@ class DemoDisplayContent
     when 4
       daily << vacation
 
-      daily << CalendarEvent.new(
+      daily << DisplayEvent.new(
         starts_at: date.beginning_of_day,
         ends_at: (date + 1.day).beginning_of_day,
         summary: "Library books due",
@@ -341,14 +341,14 @@ class DemoDisplayContent
         daily: true
       )
 
-      periodic << CalendarEvent.new(
+      periodic << DisplayEvent.new(
         starts_at: date.change(hour: 8),
         ends_at: date.change(hour: 8),
         summary: "48°",
         icon: "weather-sunny"
       )
 
-      periodic << CalendarEvent.new(
+      periodic << DisplayEvent.new(
         starts_at: date.change(hour: 10),
         ends_at: date.change(hour: 11, min: 30),
         summary: "Hike",
@@ -356,21 +356,21 @@ class DemoDisplayContent
         location: "Mt. Tabor"
       )
 
-      periodic << CalendarEvent.new(
+      periodic << DisplayEvent.new(
         starts_at: date.change(hour: 12),
         ends_at: date.change(hour: 12),
         summary: "66°",
         icon: "weather-partly-cloudy"
       )
 
-      periodic << CalendarEvent.new(
+      periodic << DisplayEvent.new(
         starts_at: date.change(hour: 16),
         ends_at: date.change(hour: 16),
         summary: "62°",
         icon: "weather-partly-cloudy"
       )
 
-      periodic << CalendarEvent.new(
+      periodic << DisplayEvent.new(
         starts_at: date.change(hour: 20),
         ends_at: date.change(hour: 20),
         summary: "54°",
