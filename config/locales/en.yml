@@ -31,3 +31,8 @@
 
 en:
   hello: "Hello world"
+  devise:
+    passwordless:
+      not_found_in_database: "Could not find an account with that email address."
+      magic_link_sent: "Check your email for a sign-in link."
+      magic_link_sent_paranoid: "If an account exists, a sign-in link has been sent."

@@ -5,4 +5,4 @@ coverage
 test
 .github
 docker-compose.yml
-config.yml
+config/timeframe.yml

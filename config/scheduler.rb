@@ -1,25 +1,45 @@
 scheduler = Rufus::Scheduler.new
 
-api = HomeAssistantApi.new
-api.fetch_states
-api.fetch_config
-api.fetch_calendars
-api.fetch_weather
+timeframe_config = TimeframeConfig.new
 
-scheduler.every "2s" do
-  HomeAssistantApi.new.fetch_states
-end
+if timeframe_config.home_assistant?
+  api = HomeAssistantApi.new
+  api.fetch_states
+  api.fetch_config
+  api.fetch_calendars
+  api.fetch_weather
 
-scheduler.every "1m" do
-  HomeAssistantApi.new.fetch_config
-end
+  scheduler.every "2s" do
+    HomeAssistantApi.new.fetch_states
+  end
 
-scheduler.every "1m" do
-  HomeAssistantApi.new.fetch_calendars
-end
+  scheduler.every "1m" do
+    HomeAssistantApi.new.fetch_config
+  end
 
-scheduler.every "1m" do
-  HomeAssistantApi.new.fetch_weather
+  scheduler.every "1m" do
+    HomeAssistantApi.new.fetch_calendars
+  end
+
+  scheduler.every "1m" do
+    HomeAssistantApi.new.fetch_weather
+  end
+elsif timeframe_config.weatherkit?
+  scheduler.every "1m" do
+    Location.find_each do |location|
+      WeatherKitApi.new(location: location).fetch_weather
+    rescue => e
+      Rails.logger.error "[WeatherKit Scheduler] #{location.name}: #{e.message}"
+    end
+  end
+
+  scheduler.in "5s" do
+    Location.find_each do |location|
+      WeatherKitApi.new(location: location).fetch_weather
+    rescue => e
+      Rails.logger.error "[WeatherKit Scheduler] #{location.name}: #{e.message}"
+    end
+  end
 end
 
 scheduler.every "15m" do

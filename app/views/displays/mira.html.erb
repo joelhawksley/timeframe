@@ -90,7 +90,7 @@
 
 <% unless HomeAssistantApi.new.private_mode? %>
   <div style="position: absolute; top: 15rem; bottom: 0; left: 2rem; right: 2rem; overflow: hidden;">
-    <%= render "timeline", view_object: view_object %>
+    <%= render "displays/timeline", view_object: view_object %>
   </div>
 <% end %>
 

@@ -1,0 +1,63 @@
+<div style="min-width: 300px; max-width: 300px;">
+  <div class="card h-100">
+    <div class="card-header">
+      <h5 class="mb-0">Add Device</h5>
+    </div>
+    <div class="card-body">
+      <%= form_tag(account_location_devices_path(account, location), method: :post, id: "add-device-form") do %>
+        <div class="mb-3">
+          <label class="form-label">Name</label>
+          <input type="text" name="device_name" class="form-control" placeholder="e.g. Kitchen Display" required data-field="name">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Device</label>
+          <select name="device_model" class="form-select" required data-field="model">
+            <option value="">Select a device...</option>
+            <% Device::SUPPORTED_MODELS.each do |key, info| %>
+              <option value="<%= key %>"><%= info[:name] %></option>
+            <% end %>
+          </select>
+        </div>
+        <div class="mb-3" data-pairing-code style="display: none;">
+          <label class="form-label">Pairing Code</label>
+          <input type="text" name="pairing_code" class="form-control text-uppercase" placeholder="e.g. A1B2C3" autocomplete="off" minlength="6" maxlength="6" pattern="[A-Za-z0-9]{6}" data-field="pairing">
+        </div>
+        <p class="small text-muted" data-setup-note style="display: none;">On your Boox device, visit <code><%= request.base_url %>/setup</code> to get a pairing code.</p>
+        <p class="small text-muted" data-trmnl-note style="display: none;">During TRMNL WiFi setup, tap Advanced &gt; Custom Server &gt; Yes and enter <code><%= request.base_url %>/api</code> as the API server URL. The device will register and display a pairing code. <a href="https://help.trmnl.com/en/articles/12263392-connect-your-device-to-terminus-byos" target="_blank">Learn more</a></p>
+        <%= submit_tag "Add Device", class: "btn btn-primary w-100", disabled: true, id: "add-device-btn" %>
+      <% end %>
+    </div>
+  </div>
+</div>
+<script>
+(function() {
+  var form = document.getElementById('add-device-form');
+  var nameInput = form.querySelector('[data-field="name"]');
+  var modelSelect = form.querySelector('[data-field="model"]');
+  var pairingInput = form.querySelector('[data-field="pairing"]');
+  var pairingWrap = form.querySelector('[data-pairing-code]');
+  var setupNote = form.querySelector('[data-setup-note]');
+  var trmnlNote = form.querySelector('[data-trmnl-note]');
+  var btn = document.getElementById('add-device-btn');
+
+  function needsPairing() {
+    return modelSelect.value === 'trmnl_og' || modelSelect.value === 'boox_mira_pro';
+  }
+
+  function updateState() {
+    var showPairing = needsPairing();
+    pairingWrap.style.display = showPairing ? '' : 'none';
+    pairingInput.required = showPairing;
+    setupNote.style.display = modelSelect.value === 'boox_mira_pro' ? '' : 'none';
+    trmnlNote.style.display = modelSelect.value === 'trmnl_og' ? '' : 'none';
+
+    var valid = nameInput.value.trim() !== '' && modelSelect.value !== '';
+    if (showPairing) valid = valid && /^[A-Za-z0-9]{6}$/.test(pairingInput.value);
+    btn.disabled = !valid;
+  }
+
+  nameInput.addEventListener('input', updateState);
+  modelSelect.addEventListener('change', updateState);
+  pairingInput.addEventListener('input', updateState);
+})();
+</script>

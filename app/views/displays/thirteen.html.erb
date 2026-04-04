@@ -27,5 +27,5 @@
 </div>
 <% unless HomeAssistantApi.new.private_mode? %>
   <hr style="margin: 1rem 0 1rem; border: none; background-color: #ccc; color: #ccc; height: 2px;">
-  <%= render "timeline", view_object: view_object %>
+  <%= render "displays/timeline", view_object: view_object %>
 <% end %>

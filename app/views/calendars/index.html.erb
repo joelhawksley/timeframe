@@ -1,0 +1,55 @@
+<h2 class="mb-4">Calendars</h2>
+
+<div class="card mb-4">
+  <div class="card-header">
+    <h3 class="h6 mb-0">Google Accounts</h3>
+  </div>
+  <div class="card-body">
+    <% @google_accounts.each do |ga| %>
+      <div class="d-flex flex-wrap justify-content-between align-items-center mb-2">
+        <div>
+          <strong><%= ga.email %></strong>
+          <span class="text-muted">(<%= ga.calendars.count %> calendars)</span>
+          <% if ga.last_synced_at = ga.calendars.maximum(:last_synced_at) %>
+            <span class="text-muted">— last synced <%= time_ago_in_words(ga.last_synced_at) %> ago</span>
+          <% end %>
+        </div>
+        <%= button_to "Disconnect", account_google_account_path(@account, ga), method: :delete, data: {turbo_confirm: "Remove this Google account and all its calendars?"}, class: "btn btn-outline-danger btn-sm" %>
+      </div>
+      <ul class="list-group list-group-flush mb-3">
+        <% ga.calendars.each do |cal| %>
+          <li class="list-group-item"><%= cal.name %> <span class="text-muted">(<%= cal.calendar_events.count %> events)</span></li>
+        <% end %>
+      </ul>
+    <% end %>
+
+    <%= form_tag("/auth/google_oauth2", method: :post) do %>
+      <%= submit_tag "Connect Google Account", class: "btn btn-primary" %>
+    <% end %>
+  </div>
+</div>
+
+<div class="card mb-4">
+  <div class="card-header">
+    <h3 class="h6 mb-0">ICS Calendar URLs</h3>
+  </div>
+  <div class="card-body">
+    <% @url_calendars.each do |cal| %>
+      <div class="d-flex flex-wrap justify-content-between align-items-center mb-2">
+        <div>
+          <strong><%= cal.name %></strong>
+          <span class="text-muted">— <%= cal.url %></span>
+          <span class="text-muted">(<%= cal.calendar_events.count %> events)</span>
+          <% if cal.last_synced_at %>
+            <span class="text-muted">— last synced <%= time_ago_in_words(cal.last_synced_at) %> ago</span>
+          <% end %>
+        </div>
+        <%= button_to "Remove", account_calendar_path(@account, cal), method: :delete, data: {turbo_confirm: "Remove this calendar?"}, class: "btn btn-outline-danger btn-sm" %>
+      </div>
+    <% end %>
+
+    <%= link_to "Add ICS Calendar", new_account_calendar_path(@account), class: "btn btn-primary mt-2" %>
+  </div>
+<% end %>
+
+<%= link_to "Add ICS Calendar", new_account_calendar_path(@account) %>

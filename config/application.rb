@@ -8,6 +8,7 @@ require "active_record/railtie"
 require "active_job/railtie"
 require "action_controller/railtie"
 require "action_view/railtie"
+require "action_mailer/railtie"
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -17,32 +18,54 @@ module Timeframe
   class Application < Rails::Application
     config.autoloader = :zeitwerk
 
-    def self.load_config
-      if ENV["SUPERVISOR_TOKEN"]
-        config = {"home_assistant_token" => ENV["SUPERVISOR_TOKEN"], "home_assistant_url" => "http://supervisor/core"}
+    # Allow anyway_config to load flat YAML files (no environment nesting required)
+    config.anyway_config.future.use :unwrap_known_environments
 
-        options_path = "/data/options.json"
-        if File.exist?(options_path)
-          config.merge!(JSON.parse(File.read(options_path)))
-        end
-
-        config
-      elsif File.exist?(Rails.root.join("config.yml"))
-        YAML.load_file(Rails.root.join("config.yml"))
-      else
-        {}
-      end
+    def self.multi_tenant?
+      require_relative "../app/models/timeframe_config"
+      !TimeframeConfig.new.home_assistant?
     end
 
     config.cache_store = :file_store, Rails.root.join("tmp/cache/").to_s
     config.action_controller.perform_caching = false
 
-    config.local = load_config.freeze
-
-    config.secret_key_base = "foo" # Not needed as app runs behind firewall
+    config.secret_key_base = ENV.fetch("SECRET_KEY_BASE", "foo")
 
     config.active_support.to_time_preserves_timezone = :zone
 
     config.hosts.clear
+
+    config.action_mailer.default_url_options = {host: ENV.fetch("APP_HOST", "localhost"), port: ENV.fetch("PORT", 3000)}
+    config.action_mailer.delivery_method = ENV.fetch("SMTP_ADDRESS", nil) ? :smtp : :log
+    if ENV["SMTP_ADDRESS"]
+      config.action_mailer.smtp_settings = {
+        address: ENV["SMTP_ADDRESS"],
+        port: ENV.fetch("SMTP_PORT", 587).to_i,
+        user_name: ENV["SMTP_USERNAME"],
+        password: ENV["SMTP_PASSWORD"],
+        authentication: :plain,
+        enable_starttls_auto: true
+      }
+    end
+
+    if multi_tenant?
+      config.active_job.queue_adapter = :good_job
+
+      config.good_job.enable_cron = true
+      config.good_job.cron = {
+        sync_calendar_events: {
+          cron: "*/15 * * * *",
+          class: "SyncAllCalendarsJob"
+        },
+        cleanup_past_events: {
+          cron: "0 3 * * *",
+          class: "CleanupPastEventsJob"
+        },
+        renew_google_webhooks: {
+          cron: "0 */6 * * *",
+          class: "RenewGoogleWebhooksJob"
+        }
+      }
+    end
   end
 end

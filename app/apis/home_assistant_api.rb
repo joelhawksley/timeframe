@@ -1,6 +1,5 @@
 class HomeAssistantApi
   MDI_CSS = File.read(Rails.root.join("public/css/mdi/materialdesignicons.css")).freeze
-  DEFAULT_HOME_ASSISTANT_URL = "http://homeassistant.local:8123"
 
   CONDITION_ICONS = {
     "cloudy" => "cloud",
@@ -25,18 +24,18 @@ class HomeAssistantApi
   CALENDAR_DOMAIN = "home_assistant_calendar_api"
   WEATHER_DOMAIN = "home_assistant_weather_api"
 
-  def initialize(config = Timeframe::Application.config.local, store: Rails.cache)
+  def initialize(config = TimeframeConfig.new, store: Rails.cache)
     @config = config
     @store = store
   end
 
   def home_assistant_base_url
-    @config&.fetch("home_assistant_url", nil) || DEFAULT_HOME_ASSISTANT_URL
+    @config.home_assistant_url
   end
 
   def headers
     {
-      Authorization: "Bearer #{@config["home_assistant_token"]}",
+      Authorization: "Bearer #{@config.home_assistant_token}",
       "content-type": "application/json"
     }
   end
@@ -150,7 +149,7 @@ class HomeAssistantApi
 
   def feels_like_temperature
     ha_unit = ha_temperature_unit
-    display_unit = @config["temperature_unit"] || "F"
+    display_unit = @config.temperature_unit
 
     override = data.find { it[:entity_id].end_with?("timeframe_weather_feels_like_entity_id") }
 
@@ -185,6 +184,7 @@ class HomeAssistantApi
   end
 
   def config_data
+    fetch_config unless config_last_fetched_at
     domain_data(CONFIG_DOMAIN)
   end
 
@@ -362,15 +362,15 @@ class HomeAssistantApi
   end
 
   def speed_unit
-    @config["speed_unit"] || "mph"
+    @config.speed_unit
   end
 
   def precipitation_unit
-    @config["precipitation_unit"] || "in"
+    @config.precipitation_unit
   end
 
   def temperature_unit
-    @config["temperature_unit"] || "F"
+    @config.temperature_unit
   end
 
   def convert_speed(value)

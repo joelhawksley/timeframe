@@ -110,4 +110,26 @@ class DisplayContenttTest < Minitest::Test
       end
     end
   end
+
+  def test_with_weather_kit_api
+    travel_to DateTime.new(2023, 8, 27, 18, 15, 0, "-0600") do
+      ha_api = new_test_api
+
+      wk_api = OpenStruct.new(
+        weather_healthy?: true,
+        hourly_calendar_events: [],
+        daily_calendar_events: [],
+        precip_calendar_events: [],
+        wind_calendar_events: [],
+        weather_alert_events: [],
+        attribution: "Apple Weather",
+        current_temperature: "72°"
+      )
+
+      result = DisplayContent.new.call(home_assistant_api: ha_api, weather_kit_api: wk_api)
+
+      assert_equal "72°", result[:current_temperature]
+      assert_equal "Apple Weather", result[:attribution]
+    end
+  end
 end

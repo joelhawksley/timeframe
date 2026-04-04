@@ -9,5 +9,7 @@ Rails.application.config.after_initialize do
   if context.needs_migration?
     context.migrate
   end
+rescue ActiveRecord::NoDatabaseError, ActiveRecord::ConnectionNotEstablished
+  # Database doesn't exist yet — skip auto-migration
 end
 # :nocov:

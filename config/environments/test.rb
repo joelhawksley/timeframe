@@ -10,6 +10,7 @@ Rails.application.configure do
   config.cache_classes = true
 
   config.hosts << "www.example.com"
+  config.hosts << "127.0.0.1"
 
   # Do not eager load code on boot. This avoids loading your whole application
   # just for the purpose of running a single test. If you are using a tool that

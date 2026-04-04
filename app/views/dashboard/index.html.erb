@@ -1,0 +1,386 @@
+<% @accounts.each do |account| %>
+  <div class="card mb-4">
+    <% if @multi_tenant %>
+      <div class="card-header">
+        <h2 class="h5 mb-0"><%= account.name %></h2>
+      </div>
+    <% end %>
+    <div class="card-body">
+      <% account.locations.each do |location| %>
+        <h3 class="h6"><%= location.name %></h3>
+        <p class="text-muted small"><%= location.latitude %>, <%= location.longitude %> — <%= location.time_zone %></p>
+
+        <% devices = location.devices.order(:name) %>
+        <% if devices.any? %>
+          <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3 mb-3">
+            <% devices.each do |device| %>
+              <div class="col">
+                <div class="card h-100">
+                  <div class="card-body">
+                    <h5 class="card-title mb-0"><%= device.name %></h5>
+                    <p class="text-muted small mb-2"><%= device.model_name_label %></p>
+
+                    <% preview_scale = [200.0 / device.display_width, 300.0 / device.display_height].min %>
+                    <div class="mb-2" style="background: #f8f9fa; border-radius: 4px; overflow: hidden; width: <%= (device.display_width * preview_scale).round %>px; height: <%= (device.display_height * preview_scale).round %>px;">
+                      <iframe
+                        src="<%= account_display_path(account, device) %>"
+                        width="<%= device.display_width %>"
+                        height="<%= device.display_height %>"
+                        scrolling="no"
+                        style="border: none; transform: scale(<%= preview_scale.round(4) %>); transform-origin: top left; display: block;"
+                      ></iframe>
+                    </div>
+
+                    <% if device.display_key.present? %>
+                      <p class="small mb-2">
+                        Token: <code><%= device.display_key[0, 5] %>…</code>
+                        <button type="button" class="btn btn-outline-secondary btn-sm py-0 px-1" onclick="navigator.clipboard.writeText('<%= device.token_display_url(host: request.base_url) %>'); this.textContent='Copied!'; setTimeout(() => this.textContent='Copy URL', 1500)">Copy URL</button>
+                      </p>
+                    <% end %>
+
+                    <div class="d-flex flex-wrap gap-1 mb-2">
+                      <a href="<%= account_display_path(account, device) %>" class="btn btn-outline-primary btn-sm">Open</a>
+                      <a href="<%= preview_account_display_path(account, device) %>" class="btn btn-outline-primary btn-sm">Preview</a>
+                      <% if device.trmnl? %>
+                        <a href="<%= screenshot_account_display_path(account, device) %>" class="btn btn-outline-primary btn-sm">Screenshot</a>
+                      <% end %>
+                      <%= form_with url: account_location_device_path(account, location, device), method: :patch, class: "d-inline" do %>
+                        <%= submit_tag(device.demo_mode_enabled? ? "Demo Off" : "Demo On", class: "btn btn-outline-secondary btn-sm") %>
+                      <% end %>
+                    </div>
+
+                    <%= form_with url: regenerate_tokens_account_location_device_path(account, location, device), method: :post, class: "mb-1" do %>
+                      <div class="input-group input-group-sm">
+                        <input type="text" name="name_confirmation" class="form-control form-control-sm" placeholder="Type name to regenerate">
+                        <%= submit_tag "Regenerate URL", class: "btn btn-outline-warning btn-sm" %>
+                      </div>
+                    <% end %>
+                    <%= form_with url: account_location_device_path(account, location, device), method: :delete do |f| %>
+                      <div class="input-group input-group-sm">
+                        <input type="text" name="name_confirmation" class="form-control form-control-sm" placeholder="Type name to delete">
+                        <%= submit_tag "Delete", class: "btn btn-outline-danger btn-sm" %>
+                      </div>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <p class="text-muted">No devices added yet.</p>
+        <% end %>
+
+        <h4 class="h6 mt-3">Add TRMNL Device</h4>
+        <%= form_tag(claim_device_path, method: :post) do %>
+          <input type="hidden" name="location_id" value="<%= location.id %>">
+          <input type="hidden" name="device_model" value="trmnl_og">
+          <div class="row g-2 mb-3">
+            <div class="col-12 col-md-4">
+              <label class="form-label">Pairing Code</label>
+              <input type="text" name="pairing_code" class="form-control text-uppercase" placeholder="e.g. A1B2C3" autocomplete="off">
+            </div>
+            <div class="col-12 col-md-4">
+              <label class="form-label">Device Name</label>
+              <input type="text" name="device_name" class="form-control" placeholder="e.g. Kitchen Display">
+            </div>
+            <div class="col-12 col-md-4 d-flex align-items-end">
+              <%= submit_tag "Pair TRMNL", class: "btn btn-primary w-100" %>
+            </div>
+          </div>
+        <% end %>
+
+        <h4 class="h6 mt-3">Add Visionect Device</h4>
+        <%= form_tag(account_location_devices_path(account, location), method: :post) do %>
+          <input type="hidden" name="device_model" value="visionect_13">
+          <div class="row g-2 mb-3">
+            <div class="col-12 col-md-4">
+              <label class="form-label">Device Name</label>
+              <input type="text" name="device_name" class="form-control" placeholder="e.g. Hallway Display">
+            </div>
+            <div class="col-12 col-md-4 d-flex align-items-end">
+              <%= submit_tag "Add Visionect", class: "btn btn-primary w-100" %>
+            </div>
+          </div>
+        <% end %>
+
+        <h4 class="h6 mt-3">Add Boox Device</h4>
+        <p class="small text-muted">On your Boox device, visit <code><%= request.base_url %>/setup</code> to get a pairing code.</p>
+        <%= form_tag(claim_device_path, method: :post) do %>
+          <input type="hidden" name="location_id" value="<%= location.id %>">
+          <input type="hidden" name="device_model" value="boox_mira_pro">
+          <div class="row g-2 mb-3">
+            <div class="col-12 col-md-4">
+              <label class="form-label">Pairing Code</label>
+              <input type="text" name="pairing_code" class="form-control text-uppercase" placeholder="e.g. A1B2C3" autocomplete="off">
+            </div>
+            <div class="col-12 col-md-4">
+              <label class="form-label">Device Name</label>
+              <input type="text" name="device_name" class="form-control" placeholder="e.g. Office Display">
+            </div>
+            <div class="col-12 col-md-4 d-flex align-items-end">
+              <%= submit_tag "Pair Boox", class: "btn btn-primary w-100" %>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+
+      <% if @multi_tenant %>
+        <h3 class="h6 mt-4">Calendars (<%= account.calendars.count %>)</h3>
+        <% if account.calendars.any? %>
+          <div class="table-responsive mb-3">
+            <table class="table table-bordered table-sm">
+              <thead class="table-light">
+                <tr>
+                  <th>Name</th>
+                  <th>Source</th>
+                  <th>Events</th>
+                  <th>Last Synced</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% account.calendars.order(:name).each do |cal| %>
+                  <tr>
+                    <td><%= cal.name %></td>
+                    <td><%= cal.source_type %></td>
+                    <td><%= cal.calendar_events.count %></td>
+                    <td><%= cal.last_synced_at ? time_ago_in_words(cal.last_synced_at) + " ago" : "Never" %></td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        <% else %>
+          <p class="text-muted">No calendars configured.</p>
+        <% end %>
+
+        <% if account.google_accounts.any? %>
+          <h3 class="h6 mt-4">Google Accounts (<%= account.google_accounts.count %>)</h3>
+          <div class="table-responsive mb-3">
+            <table class="table table-bordered table-sm">
+              <thead class="table-light">
+                <tr>
+                  <th>Email</th>
+                  <th>Calendars</th>
+                  <th>Token Expires</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% account.google_accounts.each do |ga| %>
+                  <tr>
+                    <td><%= ga.email %></td>
+                    <td><%= ga.calendars.count %></td>
+                    <td><%= ga.token_expires_at ? ga.token_expires_at.strftime("%b %-d @ %-l:%M %p") : "N/A" %></td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        <% end %>
+      <% end %>
+
+      <% if @multi_tenant %>
+        <h3 class="h6 mt-4">Add Location</h3>
+        <%= form_with url: account_locations_path(account), method: :post do |f| %>
+          <div class="row g-2 mb-3">
+            <div class="col-12 col-md-3">
+              <label class="form-label">Name</label>
+              <input type="text" name="location[name]" class="form-control" placeholder="e.g. Home">
+            </div>
+            <div class="col-12 col-md-5">
+              <label class="form-label">Address</label>
+              <input type="text" name="location[address]" class="form-control" placeholder="e.g. 123 Main St, Springfield, IL">
+            </div>
+            <div class="col-12 col-md-2 d-flex align-items-end">
+              <%= f.submit "Add Location", class: "btn btn-primary w-100" %>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+
+<% if @multi_tenant %>
+  <div class="card mb-4">
+    <div class="card-header">
+      <h2 class="h5 mb-0">Add Account</h2>
+    </div>
+    <div class="card-body">
+      <%= form_with url: accounts_path, method: :post do |f| %>
+        <div class="row g-2">
+          <div class="col-12 col-md-4">
+            <label class="form-label">Account Name</label>
+            <input type="text" name="account[name]" class="form-control" placeholder="e.g. Home" autofocus>
+          </div>
+          <div class="col-12 col-md-2 d-flex align-items-end">
+            <%= f.submit "Add Account", class: "btn btn-primary w-100" %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+
+<% unless @multi_tenant %>
+  <div class="card mb-4">
+    <div class="card-header">
+      <h2 class="h5 mb-0">Home Assistant API Status</h2>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-bordered table-sm">
+          <thead class="table-light">
+            <tr>
+              <th>API</th>
+              <th>Status</th>
+              <th>Last Fetched</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @statuses.each do |status| %>
+              <tr>
+                <td><%= status[:name] %></td>
+                <td><%= status[:healthy] ? "✓ Healthy" : "✗ Unhealthy" %></td>
+                <td><%= status[:last_fetched_at] ? DateTime.parse(status[:last_fetched_at]).strftime("%b %-d @ %-l:%M:%S %p") : "Never" %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="h6 mt-4">Config</h3>
+      <% config_data = @api.config_data %>
+      <% if config_data.present? %>
+        <div class="table-responsive">
+          <table class="table table-bordered table-sm">
+            <thead class="table-light">
+              <tr>
+                <th>Key</th>
+                <th>Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% config_data.each do |key, value| %>
+                <tr>
+                  <td><%= key %></td>
+                  <td class="text-truncate"><%= value.is_a?(Hash) ? value.to_json : value %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      <% else %>
+        <p class="text-muted">No config data available.</p>
+      <% end %>
+
+      <h3 class="h6 mt-4">Now Playing</h3>
+      <% now_playing = @api.now_playing %>
+      <% if now_playing.present? %>
+        <div class="table-responsive">
+          <table class="table table-bordered table-sm">
+            <thead class="table-light">
+              <tr>
+                <th>Artist</th>
+                <th>Track</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><%= now_playing[:artist] %></td>
+                <td><%= now_playing[:track] %></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      <% else %>
+        <p class="text-muted">Nothing playing.</p>
+      <% end %>
+
+      <h3 class="h6 mt-4">Calendar Events (<%= @api.calendar_events.length %>)</h3>
+      <% if @api.calendar_events.present? %>
+        <div class="table-responsive">
+          <table class="table table-bordered table-sm">
+            <thead class="table-light">
+              <tr>
+                <th>Icon</th>
+                <th>Daily?</th>
+                <th>Summary</th>
+                <th>Starts At</th>
+                <th>Ends At</th>
+                <th>ID</th>
+                <th>Location</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @api.calendar_events.sort_by(&:start_i).each do |event| %>
+                <tr>
+                  <td><%= event.icon %></td>
+                  <td><%= event.daily? %></td>
+                  <td><%= event.summary %></td>
+                  <td><%= event.starts_at.strftime("%b %-d @ %-l:%M %p") %></td>
+                  <td><%= event.ends_at.strftime("%b %-d @ %-l:%M %p") %></td>
+                  <td><%= event.id %></td>
+                  <td><%= event.location %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      <% else %>
+        <p class="text-muted">No calendar events.</p>
+      <% end %>
+
+      <h3 class="h6 mt-4">Hourly Forecast (<%= @api.hourly_forecast.length %>)</h3>
+      <% if @api.hourly_forecast.present? %>
+        <div class="table-responsive">
+          <table class="table table-bordered table-sm">
+            <thead class="table-light">
+              <tr>
+                <% @api.hourly_forecast.first.keys.each do |key| %>
+                  <th><%= key %></th>
+                <% end %>
+              </tr>
+            </thead>
+            <tbody>
+              <% @api.hourly_forecast.each do |hour| %>
+                <tr>
+                  <% hour.values.each do |value| %>
+                    <td><%= value %></td>
+                  <% end %>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      <% else %>
+        <p class="text-muted">No hourly forecast data.</p>
+      <% end %>
+
+      <h3 class="h6 mt-4">Daily Forecast (<%= @api.daily_forecast.length %>)</h3>
+      <% if @api.daily_forecast.present? %>
+        <div class="table-responsive">
+          <table class="table table-bordered table-sm">
+            <thead class="table-light">
+              <tr>
+                <% @api.daily_forecast.first.keys.each do |key| %>
+                  <th><%= key %></th>
+                <% end %>
+              </tr>
+            </thead>
+            <tbody>
+              <% @api.daily_forecast.each do |day| %>
+                <tr>
+                  <% day.values.each do |value| %>
+                    <td><%= value %></td>
+                  <% end %>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      <% else %>
+        <p class="text-muted">No daily forecast data.</p>
+      <% end %>
+    </div>
+  </div>
+<% end %>

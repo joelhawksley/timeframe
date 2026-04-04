@@ -4,23 +4,22 @@ An e-paper calendar, weather, and smart home family dashboard
 
 ![Timeframe display in phone nook](https://hawksley.org/img/posts/2026-02-17-timeframe/nook-wide.jpg)
 
-## Project goals
-
-- Serve as a test bed for learning new technologies.
-- Longevity: I expect to run this application for years, if not decades.
-- Stability: I expect the application to run without maintenance indefinitely.
-- Availability: 100% uptime.
-- Fault tolerance: the application functions when no internet connection is available.
-
 ## Supported displays
 
 - Visionect [Place & Play 13](https://www.visionect.com/shop/place-play-13/) / [Joan 13 Pro](https://getjoan.com/shop/joan-13-pro/) - designed for 10m update interval
 - Boox [Mira Pro](https://shop.boox.com/products/boox-mira-procolor-version) - Self-refreshes every 2s for realtime updates
 - TRMNL [(OG)](https://shop.trmnl.com/collections/devices/products/trmnl)
 
+## Operational modes
+
+The application runs in two modes: single tenant inside home assistant and multi-tenant on Heroku at https://www.timeframe.app.
+
+_Note: Timeframe is licensed under the [O'Saasy License](https://osaasy.dev/)._
+
 ## Dependencies
 
-- Home Assistant
+Home Assistant: none, uses weather and calendar data directly from Home Assistant
+Multi-tenant: Google Calendar API, Apple WeatherKit API
 
 ## Home Assistant App (add-on) Installation
 
@@ -33,10 +32,9 @@ An e-paper calendar, weather, and smart home family dashboard
 
 ## Local development
 
-### Configuration
+### Configuration:
 
-1) Create `config.yml` from `config.yml.example`
-2) Fill out `home_assistant_token` by creating a long-lived access token under Home Assistant > Profile > Security
+Create `config/timeframe.yml` from `config/timeframe.yml.example with your settings.
 
 ### Setup
 
