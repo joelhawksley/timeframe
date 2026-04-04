@@ -31,8 +31,6 @@ module Timeframe
 
     config.secret_key_base = ENV.fetch("SECRET_KEY_BASE", "foo")
 
-    config.active_support.to_time_preserves_timezone = :zone
-
     config.hosts.clear
 
     config.action_mailer.default_url_options = {host: ENV.fetch("APP_HOST", "localhost"), port: ENV.fetch("PORT", 3000)}

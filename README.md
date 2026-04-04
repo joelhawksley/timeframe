@@ -44,7 +44,7 @@ Create `config/timeframe.yml` from `config/timeframe.yml.example with your setti
 
 ### Testing
 
-`bundle exec rake`
+`bin/rails test`
 
 ## License
 

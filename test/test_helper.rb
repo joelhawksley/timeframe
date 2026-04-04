@@ -1,5 +1,14 @@
 # frozen_string_literal: true
 
+# Fail the test suite on any Ruby warnings or deprecation notices
+module WarningBackstop
+  def warn(message, *args, **kwargs)
+    raise "Unexpected warning: #{message}" unless caller_locations.any? { |l| l.path.include?("/gems/") }
+    super
+  end
+end
+Warning.extend(WarningBackstop)
+
 require "simplecov"
 SimpleCov.start do
   command_name "tests"

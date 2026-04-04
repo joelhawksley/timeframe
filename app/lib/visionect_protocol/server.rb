@@ -286,7 +286,7 @@ module VisionectProtocol
       sub_size = [width, height].min / 20
 
       png_data = nil
-      MiniMagick::Tool::Convert.new do |convert|
+      MiniMagick.convert do |convert|
         convert.size "#{width}x#{height}"
         convert << "xc:white"
         convert.gravity "Center"

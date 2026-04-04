@@ -26,6 +26,7 @@ Devise.setup do |config|
 
   # Passwordless configuration
   config.mailer = "Devise::Passwordless::Mailer"
+  config.passwordless_tokenizer = "MessageEncryptorTokenizer"
   config.passwordless_login_within = 15.minutes
   config.passwordless_expire_old_tokens_on_sign_in = true
 end

@@ -1,5 +1,6 @@
 HA addon re-launch
 
+pairing boox redirects to url for device vs. setup url
 release automation
 do not long-poll
 sync weather every 15 minutes

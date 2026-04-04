@@ -201,7 +201,7 @@ class DevicesControllerTest < ActionDispatch::IntegrationTest
       mock_image
     end
 
-    MiniMagick::Tool::Convert.stub(:new, ->(&blk) { blk&.call(null_convert) }) do
+    MiniMagick.stub(:convert, ->(&blk) { blk&.call(null_convert) }) do
       get confirmation_image_account_location_device_path(@account, @location, device)
     end
 

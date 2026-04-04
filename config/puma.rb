@@ -28,7 +28,7 @@ plugin :"rufus-scheduler"
 #   VISIONECT_PROXY_TARGET=192.168.1.91:11113
 #
 # Normal mode: runs the custom protocol server (when VISIONECT_PROXY_TARGET is unset).
-on_booted do
+after_booted do
   start_visionect_server
 end
 

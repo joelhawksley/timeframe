@@ -66,7 +66,7 @@ class DevicesController < ApplicationController
     sub_size = [width, height].min / 20
 
     image = MiniMagick::Image.create(".png") do |f|
-      MiniMagick::Tool::Convert.new do |convert|
+      MiniMagick.convert do |convert|
         convert.size "#{width}x#{height}"
         convert << "xc:white"
         convert.gravity "Center"
