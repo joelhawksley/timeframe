@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class PendingDevice < ActiveRecord::Base
+  EXPIRY_DURATION = 15.minutes
+
   belongs_to :claimed_device, class_name: "Device", optional: true
 
   encrypts :mac_address, deterministic: true
@@ -13,6 +15,22 @@ class PendingDevice < ActiveRecord::Base
 
   def claimed?
     claimed_device_id.present?
+  end
+
+  def expired?
+    created_at < EXPIRY_DURATION.ago
+  end
+
+  def self.find_active_by_code(code)
+    device = find_by(pairing_code: code)
+    return nil unless device
+
+    if device.expired?
+      device.destroy
+      return nil
+    end
+
+    device
   end
 
   def claim!(location:, name:, model:)
@@ -32,6 +50,6 @@ class PendingDevice < ActiveRecord::Base
   private
 
   def generate_pairing_code
-    self.pairing_code ||= SecureRandom.alphanumeric(6).upcase
+    self.pairing_code ||= SecureRandom.random_number(1_000_000).to_s.rjust(6, "0")
   end
 end

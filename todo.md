@@ -1,11 +1,6 @@
 HA addon re-launch
 
-pairing boox redirects to url for device vs. setup url
 release automation
-do not long-poll
-sync weather every 15 minutes
-sync calendars every 15 minutes
-sync config every 15 minutes
 
 support for boox 13"
 scale down TRMNL a little bit to fit more

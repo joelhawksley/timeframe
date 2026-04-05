@@ -17,6 +17,7 @@ class Device < ActiveRecord::Base
   encrypts :api_key, deterministic: true
   encrypts :visionect_serial, deterministic: true
   encrypts :display_key, deterministic: true
+  encrypts :session_token, deterministic: true
   encrypts :cached_image
 
   validates :name, presence: true, uniqueness: true
@@ -49,6 +50,15 @@ class Device < ActiveRecord::Base
 
   def confirmed?
     confirmed_at.present?
+  end
+
+  def disconnected?
+    last_connection_at.nil? || last_connection_at < 1.hour.ago
+  end
+
+  def rotate_session_token!
+    update!(session_token: SecureRandom.urlsafe_base64(32))
+    session_token
   end
 
   def pending_confirmation?
@@ -158,7 +168,7 @@ class Device < ActiveRecord::Base
   end
 
   def generate_confirmation_code
-    self.confirmation_code ||= SecureRandom.alphanumeric(6).upcase
+    self.confirmation_code ||= SecureRandom.random_number(1_000_000).to_s.rjust(6, "0")
   end
 
   def generate_display_key

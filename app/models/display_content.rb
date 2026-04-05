@@ -53,6 +53,8 @@ class DisplayContent
       out[:top_left] << {icon: "eye-off", label: "Private mode"}
     end
 
+    out[:private_mode] = private_mode
+
     raw_events << home_assistant_api.calendar_events
 
     out[:day_groups] =
@@ -82,11 +84,14 @@ class DisplayContent
             events[:periodic].all? { it.ends_at > date.end_of_day.utc }
         end
 
+        show_daily = (day_index.zero? && current_time.hour < 20) || !day_index.zero?
+
         {
           day_name: day_name,
           date: date.to_date,
-          events: events,
-          is_today: day_index.zero?
+          show_daily: show_daily,
+          daily: events[:daily].map { |e| e.as_json(date: date.to_date) },
+          periodic: events[:periodic].map { |e| e.as_json(date: date.to_date) }
         }
       end.compact
 

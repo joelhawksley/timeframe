@@ -66,11 +66,25 @@ class DevicesControllerTest < ActionDispatch::IntegrationTest
 
   test "create with invalid pairing code redirects with alert" do
     post account_location_devices_path(@account, @location),
-      params: {device_model: "trmnl_og", device_name: "Bad TRMNL", pairing_code: "ZZZZZZ"}
+      params: {device_model: "trmnl_og", device_name: "Bad TRMNL", pairing_code: "999999"}
 
     assert_redirected_to root_path
     follow_redirect!
-    assert_includes response.body, "Invalid pairing code"
+    assert_includes response.body, "Invalid or expired pairing code"
+  end
+
+  test "create with expired pairing code redirects with alert" do
+    mac = SecureRandom.hex(6).scan(/../).join(":")
+    pending = PendingDevice.create!(mac_address: mac, api_key: SecureRandom.hex(16), friendly_id: "EX#{SecureRandom.hex(2)}")
+    pending.update_column(:created_at, 20.minutes.ago)
+
+    post account_location_devices_path(@account, @location),
+      params: {device_model: "trmnl_og", device_name: "Expired TRMNL", pairing_code: pending.pairing_code}
+
+    assert_redirected_to root_path
+    follow_redirect!
+    assert_includes response.body, "Invalid or expired pairing code"
+    assert_nil PendingDevice.find_by(id: pending.id), "Expired pending device should be destroyed"
   end
 
   test "create with invalid data redirects with alert" do
@@ -170,6 +184,41 @@ class DevicesControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to root_path
     device.reload
     assert_equal old_key, device.display_key
+  end
+
+  # --- repair ---
+
+  test "repair re-pairs a Boox device with valid pairing code" do
+    device = Device.find_or_create_by!(name: "test-repair-boox", model: "boox_mira_pro") do |d|
+      d.location = @location
+      d.confirmed_at = Time.current
+      d.confirmation_code = nil
+    end
+    pending = PendingDevice.create!
+
+    post repair_account_location_device_path(@account, @location, device),
+      params: {pairing_code: pending.pairing_code}
+
+    assert_redirected_to root_path
+    follow_redirect!
+    assert_includes response.body, "re-paired"
+    pending.reload
+    assert_equal device.id, pending.claimed_device_id
+  end
+
+  test "repair with invalid pairing code shows alert" do
+    device = Device.find_or_create_by!(name: "test-repair-bad", model: "boox_mira_pro") do |d|
+      d.location = @location
+      d.confirmed_at = Time.current
+      d.confirmation_code = nil
+    end
+
+    post repair_account_location_device_path(@account, @location, device),
+      params: {pairing_code: "999999"}
+
+    assert_redirected_to root_path
+    follow_redirect!
+    assert_includes response.body, "Invalid or expired pairing code"
   end
 
   # --- confirmation_image ---

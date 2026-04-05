@@ -3,6 +3,12 @@
 require_relative "../system_test_helper"
 
 class VisionectDisplayFlowTest < ApplicationSystemTestCase
+  def setup
+    super
+    PendingDevice.destroy_all
+    Device.destroy_all
+  end
+
   test "add Visionect device, enable demo mode, and view display via token URL" do
     # Step 1: Visit dashboard — auto-login in single-tenant mode
     visit "/"

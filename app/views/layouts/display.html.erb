@@ -5,30 +5,7 @@
     <link rel="stylesheet" href="/css/mdi/materialdesignicons.css">
     <link rel="stylesheet" href="/css/display.css">
     <% if @refresh %>
-      <script>
-        var knownDeployTime = '<%= DEPLOY_TIME %>';
-
-        setInterval(function() {
-          fetch(window.location.origin + window.location.pathname + '?layout=false')
-            .then(response => {
-              if (!response.ok) {
-                throw new Error('Network response was not ok');
-              }
-              var deployTime = response.headers.get('X-Deploy-Time');
-              if (deployTime && deployTime !== knownDeployTime) {
-                window.location.reload();
-                return;
-              }
-              return response.text();
-            })
-            .then(data => {
-              if (data) document.body.innerHTML = data;
-            })
-            .catch(error => {
-              console.error('There was a problem with the fetch operation:', error);
-            });
-        }, 1000);
-      </script>
+      <%= javascript_include_tag "actioncable" %>
     <% end %>
   </head>
 

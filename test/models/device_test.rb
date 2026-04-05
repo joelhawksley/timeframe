@@ -5,6 +5,7 @@ require "test_helper"
 class DeviceTest < Minitest::Test
   def setup
     # Clean up all test-created devices to avoid uniqueness conflicts across tests
+    PendingDevice.where.not(claimed_device_id: nil).update_all(claimed_device_id: nil)
     Device.where("name LIKE 'test_%' OR name LIKE 'Visionect %'").destroy_all
   end
 

@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 class DemoDisplayContent
-  def call
+  def call(current_time: nil)
     tz = HomeAssistantApi.new.time_zone || "UTC"
-    current_time = Time.now.utc.in_time_zone(tz)
+    current_time ||= Time.now.utc.in_time_zone(tz)
 
     out = {}
     out[:current_temperature] = "72°"
@@ -49,7 +49,12 @@ class DemoDisplayContent
     end
     out[:minutely_weather_minutes_icon] = "weather-rainy"
 
+    out[:minutely_precipitation_bars] = out[:minutely_weather_minutes].map do |minute|
+      (minute[:precipitationChance] * minute[:precipitationIntensity] * 50).clamp(3, 100).round
+    end
+
     out[:attribution] = nil
+    out[:private_mode] = false
 
     out[:day_groups] = build_day_groups(current_time)
 
@@ -77,11 +82,15 @@ class DemoDisplayContent
       else date.strftime("%A")
       end
 
+      show_daily = (day_index.zero? && current_time.hour < 20) || !day_index.zero?
+      events = events_for_day(day_index, date, current_time, vacation)
+
       {
         day_name: day_name,
         date: date.to_date,
-        events: events_for_day(day_index, date, current_time, vacation),
-        is_today: day_index.zero?
+        show_daily: show_daily,
+        daily: events[:daily].map { |e| e.as_json(date: date.to_date) },
+        periodic: events[:periodic].map { |e| e.as_json(date: date.to_date) }
       }
     end
   end

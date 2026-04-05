@@ -7,15 +7,14 @@ class SetupController < ApplicationController
   def index
     redirect_to root_path if warden.authenticated?(:user)
 
-    # If device already claimed, keep showing its display
-    if session[:claimed_device_id]
+    # If device already claimed, redirect to its display URL with device session
+    if session[:claimed_device_id] && session[:device_session_token]
       @device = Device.find_by(id: session[:claimed_device_id])
       if @device
-        template = Device::SUPPORTED_MODELS.dig(@device.model, :template)
-        view_data = DisplayContent.new.call
-        return render "displays/#{template}", locals: {view_object: view_data}, layout: "display"
+        return redirect_to account_display_path(@device.account, @device)
       else
         session.delete(:claimed_device_id)
+        session.delete(:device_session_token)
       end
     end
 
@@ -23,16 +22,16 @@ class SetupController < ApplicationController
       PendingDevice.find_by(id: session[:pending_device_id])
     end
 
-    # If pending device was claimed, switch to display mode
+    # If pending device was claimed, create device session and redirect
     if @pending_device&.claimed?
       @device = @pending_device.claimed_device
+      token = @device.rotate_session_token!
       session[:claimed_device_id] = @device.id
+      session[:device_session_token] = token
       session.delete(:pending_device_id)
       @pending_device.destroy!
 
-      template = Device::SUPPORTED_MODELS.dig(@device.model, :template)
-      view_data = DisplayContent.new.call
-      return render "displays/#{template}", locals: {view_object: view_data}, layout: "display"
+      return redirect_to account_display_path(@device.account, @device)
     end
 
     unless @pending_device

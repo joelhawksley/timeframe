@@ -20,6 +20,8 @@ SimpleCov.start do
   add_filter "app/jobs/"
   add_filter "app/lib/screenshot_service.rb"
   add_filter "app/lib/visionect_protocol/"
+  add_filter "app/lib/display_broadcaster.rb"
+  add_filter "app/channels/"
   add_filter "app/models/audit_log.rb"
   add_filter "app/models/account_user.rb"
   add_filter "app/apis/weather_kit_api.rb"

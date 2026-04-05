@@ -10,6 +10,8 @@ class DisplaysController < ApplicationController
       return
     end
 
+    @device.update_column(:last_connection_at, Time.current)
+
     template = Device::SUPPORTED_MODELS.dig(@device.model, :template)
 
     if template == "mira"
@@ -62,6 +64,12 @@ class DisplaysController < ApplicationController
 
     # Logged-in owner always has access
     return if current_user&.accounts&.exists?(id: @device.account&.id)
+
+    # Device session token auth (for paired Boox devices)
+    if session[:device_session_token].present? && @device.session_token.present? &&
+        ActiveSupport::SecurityUtils.secure_compare(@device.session_token, session[:device_session_token])
+      return
+    end
 
     render plain: "Not authorized", status: :unauthorized
   end

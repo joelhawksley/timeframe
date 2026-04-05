@@ -12,11 +12,11 @@ class DevicesController < ApplicationController
       @location.devices.create!(name: name, model: model)
       redirect_to root_path, notice: "Device \"#{name}\" added."
     else
-      pairing_code = params[:pairing_code].to_s.strip.upcase
-      pending_device = PendingDevice.find_by(pairing_code: pairing_code)
+      pairing_code = params[:pairing_code].to_s.strip
+      pending_device = PendingDevice.find_active_by_code(pairing_code)
 
       unless pending_device
-        return redirect_to root_path, alert: "Invalid pairing code."
+        return redirect_to root_path, alert: "Invalid or expired pairing code."
       end
 
       pending_device.claim!(location: @location, name: name, model: model)
@@ -50,6 +50,20 @@ class DevicesController < ApplicationController
     end
 
     redirect_to root_path
+  end
+
+  def repair
+    device = @location.devices.find(params[:id])
+    pairing_code = params[:pairing_code].to_s.strip
+    pending_device = PendingDevice.find_active_by_code(pairing_code)
+
+    unless pending_device
+      return redirect_to root_path, alert: "Invalid or expired pairing code."
+    end
+
+    pending_device.update!(claimed_device: device)
+    device.rotate_session_token!
+    redirect_to root_path, notice: "\"#{device.name}\" re-paired successfully."
   end
 
   def confirmation_image

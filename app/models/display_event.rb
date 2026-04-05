@@ -129,4 +129,15 @@ class DisplayEvent
       @summary
     end.gsub(/\p{Emoji_Presentation}/, "").strip
   end
+
+  def as_json(date: nil)
+    {
+      icon_text: icon&.start_with?("alpha-") ? icon.delete_prefix("alpha-").upcase : nil,
+      icon_class: icon&.start_with?("alpha-") ? nil : icon,
+      icon_style: icon_rotation ? "display: inline-block; transform: rotate(#{icon_rotation + 180}deg); " : nil,
+      summary: summary(date),
+      location: location,
+      time_html: time.to_s
+    }
+  end
 end

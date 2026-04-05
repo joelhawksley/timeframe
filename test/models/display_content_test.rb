@@ -132,4 +132,37 @@ class DisplayContenttTest < Minitest::Test
       assert_equal "Apple Weather", result[:attribution]
     end
   end
+
+  def test_serializes_events_with_icons_and_locations
+    travel_to DateTime.new(2023, 8, 27, 10, 0, 0, "-0600") do
+      api = new_test_api
+      events = [
+        DisplayEvent.new(
+          starts_at: DateTime.new(2023, 8, 27, 0, 0, 0, "-0600"),
+          ends_at: DateTime.new(2023, 8, 28, 0, 0, 0, "-0600"),
+          summary: "All Day",
+          icon: "cake-variant",
+          daily: true
+        ),
+        DisplayEvent.new(
+          starts_at: DateTime.new(2023, 8, 27, 12, 0, 0, "-0600"),
+          ends_at: DateTime.new(2023, 8, 27, 13, 0, 0, "-0600"),
+          summary: "Lunch",
+          icon: "alpha-j",
+          location: "Room A"
+        )
+      ]
+      api.stub :calendars_healthy?, false do
+        api.stub :private_mode?, false do
+          api.stub :calendar_events, events do
+            result = DisplayContent.new.call(home_assistant_api: api)
+
+            today = result[:day_groups].find { |d| d[:day_name] == "Today" }
+            assert today[:daily].any? { |e| e[:summary] == "All Day" && e[:icon_class] == "cake-variant" }
+            assert today[:periodic].any? { |e| e[:summary] == "Lunch" && e[:icon_text] == "J" && e[:location] == "Room A" }
+          end
+        end
+      end
+    end
+  end
 end

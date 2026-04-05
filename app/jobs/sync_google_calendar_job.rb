@@ -57,6 +57,8 @@ class SyncGoogleCalendarJob < ApplicationJob
 
     calendar.update!(last_synced_at: Time.current)
 
+    DisplayBroadcaster.broadcast_all_mira_displays
+
     AuditLog.create!(
       subject: calendar,
       event_type: "sync_attempted",

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
+  mount ActionCable.server => "/cable"
+
   devise_for :users, controllers: {sessions: "users/sessions", magic_links: "users/magic_links"}
 
   authenticated :user do
@@ -25,6 +27,7 @@ Rails.application.routes.draw do
       resources :devices, only: [:create, :update, :destroy] do
         get :confirmation_image, on: :member
         post :regenerate_tokens, on: :member
+        post :repair, on: :member
       end
     end
     resources :calendars, only: [:index, :new, :create, :destroy]

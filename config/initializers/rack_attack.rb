@@ -14,5 +14,12 @@ class Rack::Attack
     throttle("token_displays/ip", limit: 30, period: 60) do |req|
       req.ip if req.path.start_with?("/d/")
     end
+
+    # Throttle pairing attempts: 5 per minute per IP
+    throttle("pairing/ip", limit: 5, period: 60) do |req|
+      if req.post? && req.path.include?("/devices") && req.path.end_with?("/devices", "/repair")
+        req.ip
+      end
+    end
   end
 end

@@ -11,26 +11,31 @@ if timeframe_config.home_assistant?
 
   scheduler.every "2s" do
     HomeAssistantApi.new.fetch_states
+    DisplayBroadcaster.broadcast_all_mira_displays
   end
 
-  scheduler.every "1m" do
+  scheduler.every "5m" do
     HomeAssistantApi.new.fetch_config
+    DisplayBroadcaster.broadcast_all_mira_displays
   end
 
-  scheduler.every "1m" do
+  scheduler.every "15m" do
     HomeAssistantApi.new.fetch_calendars
+    DisplayBroadcaster.broadcast_all_mira_displays
   end
 
-  scheduler.every "1m" do
+  scheduler.every "15m" do
     HomeAssistantApi.new.fetch_weather
+    DisplayBroadcaster.broadcast_all_mira_displays
   end
 elsif timeframe_config.weatherkit?
-  scheduler.every "1m" do
+  scheduler.every "15m" do
     Location.find_each do |location|
       WeatherKitApi.new(location: location).fetch_weather
     rescue => e
       Rails.logger.error "[WeatherKit Scheduler] #{location.name}: #{e.message}"
     end
+    DisplayBroadcaster.broadcast_all_mira_displays
   end
 
   scheduler.in "5s" do
@@ -39,6 +44,7 @@ elsif timeframe_config.weatherkit?
     rescue => e
       Rails.logger.error "[WeatherKit Scheduler] #{location.name}: #{e.message}"
     end
+    DisplayBroadcaster.broadcast_all_mira_displays
   end
 end
 

@@ -20,7 +20,7 @@
         </div>
         <div class="mb-3" data-pairing-code style="display: none;">
           <label class="form-label">Pairing Code</label>
-          <input type="text" name="pairing_code" class="form-control text-uppercase" placeholder="e.g. A1B2C3" autocomplete="off" minlength="6" maxlength="6" pattern="[A-Za-z0-9]{6}" data-field="pairing">
+          <input type="text" name="pairing_code" class="form-control" placeholder="e.g. 123456" autocomplete="off" inputmode="numeric" minlength="6" maxlength="6" pattern="[0-9]{6}" data-field="pairing">
         </div>
         <p class="small text-muted" data-setup-note style="display: none;">On your Boox device, visit <code><%= request.base_url %>/setup</code> to get a pairing code.</p>
         <p class="small text-muted" data-trmnl-note style="display: none;">During TRMNL WiFi setup, tap Advanced &gt; Custom Server &gt; Yes and enter <code><%= request.base_url %>/api</code> as the API server URL. The device will register and display a pairing code. <a href="https://help.trmnl.com/en/articles/12263392-connect-your-device-to-terminus-byos" target="_blank">Learn more</a></p>
@@ -52,7 +52,7 @@
     trmnlNote.style.display = modelSelect.value === 'trmnl_og' ? '' : 'none';
 
     var valid = nameInput.value.trim() !== '' && modelSelect.value !== '';
-    if (showPairing) valid = valid && /^[A-Za-z0-9]{6}$/.test(pairingInput.value);
+    if (showPairing) valid = valid && /^[0-9]{6}$/.test(pairingInput.value);
     btn.disabled = !valid;
   }
 

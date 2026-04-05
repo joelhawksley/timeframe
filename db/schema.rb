@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_03_194320) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_05_193454) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -102,6 +102,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_03_194320) do
     t.string "model", null: false
     t.string "name", null: false
     t.integer "rssi"
+    t.text "session_token"
     t.float "temperature"
     t.datetime "updated_at", null: false
     t.text "visionect_serial"
@@ -110,6 +111,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_03_194320) do
     t.index ["display_key"], name: "index_devices_on_display_key", unique: true
     t.index ["location_id"], name: "index_devices_on_location_id"
     t.index ["mac_address"], name: "index_devices_on_mac_address", unique: true
+    t.index ["session_token"], name: "index_devices_on_session_token", unique: true
     t.index ["visionect_serial"], name: "index_devices_on_visionect_serial", unique: true
   end
 
