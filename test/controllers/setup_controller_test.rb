@@ -56,7 +56,7 @@ class SetupControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :redirect
     follow_redirect!
-    assert_includes response.body, "Invalid pairing code"
+    assert_includes response.body, "Invalid or expired pairing code"
   end
 
   test "claiming without name shows error" do

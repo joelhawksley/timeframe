@@ -23,10 +23,10 @@ class DashboardController < ApplicationController
 
   def claim_device
     pairing_code = params[:pairing_code].to_s.strip.upcase
-    pending_device = PendingDevice.find_by(pairing_code: pairing_code)
+    pending_device = PendingDevice.find_active_by_code(pairing_code)
 
     unless pending_device
-      return redirect_to root_path, alert: "Invalid pairing code."
+      return redirect_to root_path, alert: "Invalid or expired pairing code."
     end
 
     name = params[:device_name].to_s.strip

@@ -55,6 +55,12 @@ _Note: Timeframe is licensed under the [O'Saasy License](https://osaasy.dev/)._
 
 Create `config/timeframe.yml` from `config/timeframe.yml.example with your settings.
 
+### Environment variables
+
+| Variable | Description |
+|---|---|
+| `VISIONECT_SERVER` | **Experimental.** Set to `"true"` to start the Visionect TCP protocol server alongside Puma. Required for Visionect Place & Play / Joan 13 Pro devices. |
+
 ### Setup
 
 1) `bundle install`

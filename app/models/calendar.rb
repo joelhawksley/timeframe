@@ -43,7 +43,7 @@ class Calendar < ActiveRecord::Base
     stop_webhook! if webhook_channel_id.present?
 
     channel_id = SecureRandom.uuid
-    callback_url = "#{ENV.fetch("APP_HOST")}webhooks/google_calendar"
+    callback_url = URI.join(ENV.fetch("APP_HOST"), "/webhooks/google_calendar").to_s
 
     service = Google::Apis::CalendarV3::CalendarService.new
     service.authorization = google_account.valid_access_token

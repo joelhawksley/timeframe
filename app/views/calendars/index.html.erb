@@ -10,8 +10,9 @@
         <div>
           <strong><%= ga.email %></strong>
           <span class="text-muted">(<%= ga.calendars.count %> calendars)</span>
-          <% if ga.last_synced_at = ga.calendars.maximum(:last_synced_at) %>
-            <span class="text-muted">— last synced <%= time_ago_in_words(ga.last_synced_at) %> ago</span>
+          <% last_synced_at = ga.calendars.maximum(:last_synced_at) %>
+          <% if last_synced_at %>
+            <span class="text-muted">— last synced <%= time_ago_in_words(last_synced_at) %> ago</span>
           <% end %>
         </div>
         <%= button_to "Disconnect", account_google_account_path(@account, ga), method: :delete, data: {turbo_confirm: "Remove this Google account and all its calendars?"}, class: "btn btn-outline-danger btn-sm" %>

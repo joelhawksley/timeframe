@@ -6,13 +6,13 @@ module Api
 
     before_action :authenticate_device!
     skip_before_action :authenticate_device!, only: [:setup]
-    after_action :log_response_payload
+    after_action :log_response_status
 
     # GET /api/setup
     # Auto-provisions a new TRMNL device by MAC address.
     # Returns existing device info if MAC is already registered.
     def setup
-      Rails.logger.info("[API Setup] params=#{params.to_unsafe_h} headers=#{request.headers.env.select { |k, _| k.start_with?("HTTP_") }}")
+      Rails.logger.info("[API Setup] mac=#{request.headers["ID"]}")
 
       mac_address = request.headers["ID"]
       return head :bad_request if mac_address.blank?
@@ -44,7 +44,7 @@ module Api
     # GET /api/display
     # Returns the current display image for the device.
     def display
-      Rails.logger.info("[API Display] params=#{params.to_unsafe_h} headers=#{request.headers.env.select { |k, _| k.start_with?("HTTP_") }}")
+      Rails.logger.info("[API Display] mac=#{request.headers["ID"]} device_id=#{@device&.id}")
 
       if @device.pending_confirmation?
         render json: {
@@ -75,14 +75,14 @@ module Api
     # POST /api/log
     # Accepts device log data. No-op for now.
     def log
-      Rails.logger.info("[API Log] params=#{params.to_unsafe_h} headers=#{request.headers.env.select { |k, _| k.start_with?("HTTP_") }}")
+      Rails.logger.info("[API Log] mac=#{request.headers["ID"]}")
       head :no_content
     end
 
     private
 
-    def log_response_payload
-      Rails.logger.info("[API Response] action=#{action_name} status=#{response.status} body=#{response.body}")
+    def log_response_status
+      Rails.logger.info("[API Response] action=#{action_name} status=#{response.status}")
     end
 
     def authenticate_device!
