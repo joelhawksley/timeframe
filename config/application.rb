@@ -19,6 +19,10 @@ module Timeframe
   class Application < Rails::Application
     config.autoloader = :zeitwerk
 
+    Rails.autoloaders.each do |autoloader|
+      autoloader.inflector.inflect("lz4_block" => "LZ4Block")
+    end
+
     # Allow anyway_config to load flat YAML files (no environment nesting required)
     config.anyway_config.future.use :unwrap_known_environments
 
