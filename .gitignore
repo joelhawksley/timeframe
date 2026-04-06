@@ -20,5 +20,3 @@ config/timeframe.yml
 timeframe_development*
 timeframe_test*
 pgdata
-db/*.sqlite3
-db/*.sqlite3-*

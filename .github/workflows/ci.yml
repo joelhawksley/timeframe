@@ -22,6 +22,18 @@ jobs:
         bundle exec standardrb
   test:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
     steps:
     - uses: actions/checkout@master
     - name: Setup Ruby
@@ -40,4 +52,6 @@ jobs:
         bundle exec rake
       env:
         RAILS_ENV: test
-        DATABASE_URL: "postgres://postgres@localhost:5432/timeframe_test"
+        TIMEFRAME_HOME_ASSISTANT_TOKEN: "ci-test-token"
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: postgres
