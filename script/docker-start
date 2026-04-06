@@ -18,16 +18,25 @@ if [ -f "/etc/postgresql/$PG_VERSION/$PG_CLUSTER/postgresql.conf" ]; then
   sed -i "s|^data_directory.*|data_directory = '$PG_DATA'|" "/etc/postgresql/$PG_VERSION/$PG_CLUSTER/postgresql.conf"
 fi
 
+# Allow local connections without password
+PG_HBA="/etc/postgresql/$PG_VERSION/$PG_CLUSTER/pg_hba.conf"
+if [ -f "$PG_HBA" ]; then
+  echo "local all all trust" > "$PG_HBA"
+  echo "host all all 127.0.0.1/32 trust" >> "$PG_HBA"
+  echo "host all all ::1/128 trust" >> "$PG_HBA"
+fi
+
 chown -R postgres:postgres "$PG_DATA"
 
 # Start PostgreSQL
-pg_ctlcluster $PG_VERSION $PG_CLUSTER start
+pg_ctlcluster $PG_VERSION $PG_CLUSTER start -- -w
 
 # Create database if it doesn't exist
 su postgres -c "createdb timeframe_production" 2>/dev/null || true
 
 # Run migrations
-export DATABASE_URL="postgres:///timeframe_production"
+export POSTGRES_HOST=localhost
+export POSTGRES_USER=postgres
 bundle exec rails db:migrate
 
 # Start Puma
