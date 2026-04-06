@@ -13,7 +13,8 @@ RUN apt-get update && \
 WORKDIR /app
 
 COPY Gemfile Gemfile.lock ./
-RUN bundle install --without development test --jobs 4
+RUN bundle config set --local without 'development test' && \
+    bundle install --jobs 4
 
 COPY . .
 
