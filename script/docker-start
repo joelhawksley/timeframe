@@ -1,19 +1,27 @@
 #!/bin/bash
 set -e
 
-PGDATA="/data/pgdata"
+PG_VERSION=17
+PG_CLUSTER=main
+PG_DATA="/data/pgdata"
 
-# Initialize PostgreSQL if needed
-if [ ! -f "$PGDATA/PG_VERSION" ]; then
-  mkdir -p "$PGDATA"
-  chown postgres:postgres "$PGDATA"
-  su postgres -c "initdb -D $PGDATA"
+# Move Postgres data to persistent storage on first run
+if [ ! -f "$PG_DATA/PG_VERSION" ]; then
+  mkdir -p "$PG_DATA"
+  # Drop the default cluster and recreate with persistent data dir
+  pg_dropcluster --stop $PG_VERSION $PG_CLUSTER 2>/dev/null || true
+  pg_createcluster -d "$PG_DATA" $PG_VERSION $PG_CLUSTER
 fi
 
-chown -R postgres:postgres "$PGDATA"
+# Ensure cluster config points to persistent data
+if [ -f "/etc/postgresql/$PG_VERSION/$PG_CLUSTER/postgresql.conf" ]; then
+  sed -i "s|^data_directory.*|data_directory = '$PG_DATA'|" "/etc/postgresql/$PG_VERSION/$PG_CLUSTER/postgresql.conf"
+fi
+
+chown -R postgres:postgres "$PG_DATA"
 
 # Start PostgreSQL
-su postgres -c "pg_ctl start -D $PGDATA -l /data/postgresql.log -w"
+pg_ctlcluster $PG_VERSION $PG_CLUSTER start
 
 # Create database if it doesn't exist
 su postgres -c "createdb timeframe_production" 2>/dev/null || true
