@@ -7,7 +7,8 @@ RUN apt-get update && \
       libatk-bridge2.0-0 libatk1.0-0 libcups2 libdbus-1-3 \
       libdrm2 libgbm1 libnspr4 libnss3 libx11-xcb1 \
       libxcomposite1 libxdamage1 libxrandr2 libxshmfence1 \
-      fonts-liberation && \
+      fonts-liberation \
+      postgresql postgresql-client && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
@@ -25,4 +26,4 @@ ENV PORT=8099
 
 EXPOSE 8099
 
-CMD ["bundle", "exec", "puma", "-C", "config/puma.rb"]
+CMD ["./script/docker-start"]
