@@ -1,6 +1,3 @@
-HA addon re-launch
-
-
 support for boox 13"
 scale down TRMNL a little bit to fit more
 rack attack for pairing
