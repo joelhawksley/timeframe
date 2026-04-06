@@ -210,6 +210,21 @@ module VisionectProtocol
 
       # Fetch current and previous image data for dual-buffer delivery
       images = device ? self.class.fetch_images(device.id) : nil
+
+      # show confirmation code if device is pending
+      if device&.pending_confirmation?
+        confirmation_4bpp = generate_confirmation_image_4bpp(device)
+        confirmation_crc = Zlib.crc32(confirmation_4bpp) & 0xFFFFFFFF
+        config_pkt = build_status_response(serial)
+        client.write(config_pkt)
+        client.write(build_image_packet(serial, confirmation_4bpp, buffer_index: 1, image_crc: confirmation_crc))
+        client.write(build_image_packet(serial, confirmation_4bpp, buffer_index: 2, image_crc: confirmation_crc))
+        client.flush
+        ack_pkt = Packet.read_from(client)
+        @logger.info "[Visionect] #{remote}: Sent confirmation code image" if ack_pkt
+        return
+      end
+
       config_pkt = build_status_response(serial)
 
       if images
@@ -226,13 +241,14 @@ module VisionectProtocol
           # device can compute the correct e-paper waveform for the transition.
           @logger.info "[Visionect] #{remote}: Image changed, sending buf1 (old) + buf2 (new)"
           client.write(build_image_packet(serial, previous, buffer_index: 1, image_crc: previous_crc))
-          client.write(build_image_packet(serial, current, buffer_index: 2, image_crc: current_crc))
         else
-          # Normal case (first image, refresh, or no previous): single full-update
-          # buffer. The device applies a full refresh waveform (mode 0x50).
-          @logger.info "[Visionect] #{remote}: Sending single buffer (full refresh)"
+          # First image or refresh (no previous): send same image as both buffers.
+          # VSS always sends dual buffers — the EPD needs old+new for waveform
+          # computation. For initial delivery, both buffers carry the same image.
+          @logger.info "[Visionect] #{remote}: Sending dual buffer (same image, full refresh)"
           client.write(build_image_packet(serial, current, buffer_index: 1, image_crc: current_crc))
         end
+        client.write(build_image_packet(serial, current, buffer_index: 2, image_crc: current_crc))
         client.flush
 
         # Read device acknowledgment(s)
@@ -260,6 +276,34 @@ module VisionectProtocol
     rescue => e
       @logger.error "[Visionect] DB error: #{e.message}"
       nil
+    end
+
+    def generate_confirmation_image_4bpp(device)
+      width = device.display_width
+      height = device.display_height
+      title_size = [width, height].min / 15
+      code_size = [width, height].min / 6
+      sub_size = [width, height].min / 20
+
+      png_data = nil
+      MiniMagick.convert do |convert|
+        convert.size "#{width}x#{height}"
+        convert << "xc:white"
+        convert.gravity "Center"
+        convert.font "Helvetica"
+        convert.pointsize title_size
+        convert.annotate("+0-#{height / 6}", "Add this device to your")
+        convert.annotate("+0-#{height / 10}", "Timeframe account:")
+        convert.pointsize code_size
+        convert.annotate("+0+#{height / 12}", device.confirmation_code)
+        convert.pointsize sub_size
+        convert.annotate("+0+#{height / 4}", "Enter this code at")
+        convert.annotate("+0+#{height / 4 + sub_size + 10}", "your Timeframe dashboard")
+        convert << "png:-"
+        png_data = convert.call
+      end
+
+      VisionectProtocol::ImageEncoder.png_to_4bpp(png_data)
     end
 
     def build_serial_block(serial)

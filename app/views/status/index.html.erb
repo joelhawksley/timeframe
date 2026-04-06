@@ -1,233 +1,193 @@
-<style>
-  body { margin: 8px; font-family: -apple-system, system-ui, sans-serif; }
-  .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; max-width: 100%; }
-  table { border-collapse: collapse; width: 100%; white-space: nowrap; font-size: 14px; }
-  th, td { padding: 6px 10px; border: 1px solid #ccc; text-align: left; max-width: 300px; overflow: hidden; text-overflow: ellipsis; }
-  th { background: #f5f5f5; position: sticky; top: 0; }
-  @media (max-width: 600px) {
-    th, td { padding: 4px 6px; font-size: 12px; max-width: 200px; }
-  }
-</style>
+<h2 class="h5 mb-3">Home Assistant Status</h2>
 
-<h1>Timeframe</h1>
-
-<h2>Displays</h2>
-<ul>
-  <li><a href="/">Devices</a></li>
-</ul>
-
-<h2>API Status</h2>
-<div class="table-wrap">
-<table>
-  <tr>
-    <th>API</th>
-    <th>Status</th>
-    <th>Last Fetched</th>
-  </tr>
-  <% statuses.each do |status| %>
-    <tr>
-      <td><%= status[:name] %></td>
-      <td><%= status[:healthy] ? "✓ Healthy" : "✗ Unhealthy" %></td>
-      <td><%= status[:last_fetched_at] ? DateTime.parse(status[:last_fetched_at]).in_time_zone(time_zone).strftime("%b %-d @ %-l:%M:%S %p") : "Never" %></td>
-    </tr>
-  <% end %>
-</table>
+<div class="card mb-4">
+  <div class="card-header">
+    <h3 class="h6 mb-0">API Status</h3>
+  </div>
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-bordered table-sm">
+        <thead class="table-light">
+          <tr>
+            <th>API</th>
+            <th>Status</th>
+            <th>Last Fetched</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @statuses.each do |status| %>
+            <tr>
+              <td><i class="mdi <%= status[:icon] %>"></i> <%= status[:name] %></td>
+              <td><%= status[:healthy] ? "✓ Healthy" : "✗ Unhealthy" %></td>
+              <td><%= status[:last_fetched_at] ? DateTime.parse(status[:last_fetched_at]).strftime("%b %-d @ %-l:%M:%S %p") : "Never" %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
 
-<h2>Config</h2>
-<% if config_data.present? %>
-  <div class="table-wrap">
-  <table>
-    <tr>
-      <th>Key</th>
-      <th>Value</th>
-    </tr>
-    <% config_data.each do |key, value| %>
-      <tr>
-        <td><%= key %></td>
-        <td><%= value.is_a?(Hash) ? value.to_json : value %></td>
-      </tr>
+<div class="card mb-4">
+  <div class="card-header">
+    <h3 class="h6 mb-0">Config</h3>
+  </div>
+  <div class="card-body">
+    <% config_data = @api.config_data %>
+    <% if config_data.present? %>
+      <div class="table-responsive">
+        <table class="table table-bordered table-sm">
+          <thead class="table-light">
+            <tr>
+              <th>Key</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% config_data.each do |key, value| %>
+              <tr>
+                <td><%= key %></td>
+                <td class="text-truncate"><%= value.is_a?(Hash) ? value.to_json : value %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <p class="text-muted">No config data available.</p>
     <% end %>
-  </table>
   </div>
-<% else %>
-  <p>No config data available.</p>
-<% end %>
+</div>
 
-<h2>Now Playing</h2>
-<% if now_playing.present? %>
-  <div class="table-wrap">
-  <table>
-    <tr>
-      <th>Artist</th>
-      <th>Track</th>
-    </tr>
-    <tr>
-      <td><%= now_playing[:artist] %></td>
-      <td><%= now_playing[:track] %></td>
-    </tr>
-  </table>
+<div class="card mb-4">
+  <div class="card-header">
+    <h3 class="h6 mb-0">Now Playing</h3>
   </div>
-<% else %>
-  <p>Nothing playing.</p>
-<% end %>
-
-<h2>Top Left</h2>
-<% if top_left.present? %>
-  <div class="table-wrap">
-  <table>
-    <tr>
-      <th>Icon</th>
-      <th>Label</th>
-    </tr>
-    <% top_left.each do |item| %>
-      <tr>
-        <td><span class="mdi mdi-<%= item[:icon] %>"></span></td>
-        <td><%= item[:label] %></td>
-      </tr>
+  <div class="card-body">
+    <% now_playing = @api.now_playing %>
+    <% if now_playing.present? %>
+      <div class="table-responsive">
+        <table class="table table-bordered table-sm">
+          <thead class="table-light">
+            <tr>
+              <th>Artist</th>
+              <th>Track</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><%= now_playing[:artist] %></td>
+              <td><%= now_playing[:track] %></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <p class="text-muted">Nothing playing.</p>
     <% end %>
-  </table>
   </div>
-<% else %>
-  <p>No items.</p>
-<% end %>
+</div>
 
-<h2>Top Right</h2>
-<% if top_right.present? %>
-  <div class="table-wrap">
-  <table>
-    <tr>
-      <th>Icon</th>
-      <th>Label</th>
-    </tr>
-    <% top_right.each do |item| %>
-      <tr>
-        <td><span class="mdi mdi-<%= item[:icon] %>"></span></td>
-        <td><%= item[:label] %></td>
-      </tr>
-    <% end %>
-  </table>
+<div class="card mb-4">
+  <div class="card-header">
+    <h3 class="h6 mb-0">Calendar Events (<%= @api.calendar_events.length %>)</h3>
   </div>
-<% else %>
-  <p>No items.</p>
-<% end %>
+  <div class="card-body">
+    <% if @api.calendar_events.present? %>
+      <div class="table-responsive">
+        <table class="table table-bordered table-sm">
+          <thead class="table-light">
+            <tr>
+              <th>Icon</th>
+              <th>Daily?</th>
+              <th>Summary</th>
+              <th>Starts At</th>
+              <th>Ends At</th>
+              <th>ID</th>
+              <th>Location</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @api.calendar_events.sort_by(&:start_i).each do |event| %>
+              <tr>
+                <td><%= event.icon %></td>
+                <td><%= event.daily? %></td>
+                <td><%= event.summary %></td>
+                <td><%= event.starts_at.strftime("%b %-d @ %-l:%M %p") %></td>
+                <td><%= event.ends_at.strftime("%b %-d @ %-l:%M %p") %></td>
+                <td><%= event.id %></td>
+                <td><%= event.location %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <p class="text-muted">No calendar events.</p>
+    <% end %>
+  </div>
+</div>
 
-<h2>Weather Status</h2>
-<% if weather_status.present? %>
-  <div class="table-wrap">
-  <table>
-    <tr>
-      <th>Icon</th>
-      <th>Label</th>
-      <th>Rotation</th>
-    </tr>
-    <% weather_status.each do |item| %>
-      <tr>
-        <td><span class="mdi mdi-<%= item[:icon] %>"<%= " style=\"transform: rotate(#{item[:rotation]}deg)\"" if item[:rotation] %>></span></td>
-        <td><%= item[:label] %></td>
-        <td><%= item[:rotation] %></td>
-      </tr>
-    <% end %>
-  </table>
+<div class="card mb-4">
+  <div class="card-header">
+    <h3 class="h6 mb-0">Hourly Forecast (<%= @api.hourly_forecast.length %>)</h3>
   </div>
-<% else %>
-  <p>No weather status data.</p>
-<% end %>
+  <div class="card-body">
+    <% if @api.hourly_forecast.present? %>
+      <div class="table-responsive">
+        <table class="table table-bordered table-sm">
+          <thead class="table-light">
+            <tr>
+              <% @api.hourly_forecast.first.keys.each do |key| %>
+                <th><%= key %></th>
+              <% end %>
+            </tr>
+          </thead>
+          <tbody>
+            <% @api.hourly_forecast.each do |hour| %>
+              <tr>
+                <% hour.values.each do |value| %>
+                  <td><%= value %></td>
+                <% end %>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <p class="text-muted">No hourly forecast data.</p>
+    <% end %>
+  </div>
+</div>
 
-<h2>Calendar Events (<%= calendar_events.length %>)</h2>
-<% if calendar_events.present? %>
-  <div class="table-wrap">
-  <table>
-    <tr>
-      <th>Icon</th>
-      <th>Daily?</th>
-      <th>Summary</th>
-      <th>Starts At</th>
-      <th>Ends At</th>
-      <th>ID</th>
-      <th>Location</th>
-    </tr>
-    <% calendar_events.sort_by(&:start_i).each do |event| %>
-      <tr>
-        <td><span class="mdi mdi-<%= event.icon %>"></span></td>
-        <td><%= event.daily? %></td>
-        <td><%= event.summary %></td>
-        <td><%= event.starts_at.strftime("%b %-d @ %-l:%M %p") %></td>
-        <td><%= event.ends_at.strftime("%b %-d @ %-l:%M %p") %></td>
-        <td><%= event.id %></td>
-        <td><%= event.location %></td>
-      </tr>
-    <% end %>
-  </table>
+<div class="card mb-4">
+  <div class="card-header">
+    <h3 class="h6 mb-0">Daily Forecast (<%= @api.daily_forecast.length %>)</h3>
   </div>
-<% else %>
-  <p>No calendar events.</p>
-<% end %>
-
-<h2>Hourly Forecast (<%= hourly_forecast.length %>)</h2>
-<% if hourly_forecast.present? %>
-  <div class="table-wrap">
-  <table>
-    <tr>
-      <% hourly_forecast.first.keys.each do |key| %>
-        <th><%= key %></th>
-      <% end %>
-    </tr>
-    <% hourly_forecast.each do |hour| %>
-      <tr>
-        <% hour.values.each do |value| %>
-          <td><%= value.is_a?(String) && value.match?(/\A\d{4}-\d{2}-\d{2}/) ? DateTime.parse(value).in_time_zone(time_zone).strftime("%b %-d @ %-l:%M %p") : value %></td>
-        <% end %>
-      </tr>
+  <div class="card-body">
+    <% if @api.daily_forecast.present? %>
+      <div class="table-responsive">
+        <table class="table table-bordered table-sm">
+          <thead class="table-light">
+            <tr>
+              <% @api.daily_forecast.first.keys.each do |key| %>
+                <th><%= key %></th>
+              <% end %>
+            </tr>
+          </thead>
+          <tbody>
+            <% @api.daily_forecast.each do |day| %>
+              <tr>
+                <% day.values.each do |value| %>
+                  <td><%= value %></td>
+                <% end %>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <p class="text-muted">No daily forecast data.</p>
     <% end %>
-  </table>
   </div>
-<% else %>
-  <p>No hourly forecast data.</p>
-<% end %>
-
-<h2>Daily Forecast (<%= daily_forecast.length %>)</h2>
-<% if daily_forecast.present? %>
-  <div class="table-wrap">
-  <table>
-    <tr>
-      <% daily_forecast.first.keys.each do |key| %>
-        <th><%= key %></th>
-      <% end %>
-    </tr>
-    <% daily_forecast.each do |day| %>
-      <tr>
-        <% day.values.each do |value| %>
-          <td><%= value.is_a?(String) && value.match?(/\A\d{4}-\d{2}-\d{2}/) ? DateTime.parse(value).in_time_zone(time_zone).strftime("%b %-d @ %-l:%M %p") : value %></td>
-        <% end %>
-      </tr>
-    <% end %>
-  </table>
-  </div>
-<% else %>
-  <p>No daily forecast data.</p>
-<% end %>
-
-<h2>States (<%= states.is_a?(Array) ? states.length : 0 %>)</h2>
-<% if states.is_a?(Array) && states.present? %>
-  <div class="table-wrap">
-  <table>
-    <tr>
-      <th>entity_id</th>
-      <th>state</th>
-      <th>last_changed</th>
-      <th>last_updated</th>
-    </tr>
-    <% states.sort_by { |s| s[:entity_id].to_s }.each do |entity| %>
-      <tr>
-        <td><%= entity[:entity_id] %></td>
-        <td><%= entity[:state] %></td>
-        <td><%= entity[:last_changed].present? ? DateTime.parse(entity[:last_changed]).in_time_zone(time_zone).strftime("%b %-d @ %-l:%M %p") : entity[:last_changed] %></td>
-        <td><%= entity[:last_updated].present? ? DateTime.parse(entity[:last_updated]).in_time_zone(time_zone).strftime("%b %-d @ %-l:%M %p") : entity[:last_updated] %></td>
-      </tr>
-    <% end %>
-  </table>
-  </div>
-<% else %>
-  <p>No states data.</p>
-<% end %>
+</div>

@@ -1,0 +1,33 @@
+<div class="row justify-content-center mt-4">
+  <div class="col-md-8 col-lg-6">
+    <h2 class="mb-4">Add ICS Calendar</h2>
+
+    <%= form_with(model: @calendar, url: account_calendars_path(@account)) do |f| %>
+      <% if @calendar.errors.any? %>
+        <div class="alert alert-danger">
+          <h3 class="h6"><%= pluralize(@calendar.errors.count, "error") %> prevented this calendar from being saved:</h3>
+          <ul class="mb-0">
+            <% @calendar.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div class="mb-3">
+        <%= f.label :name, class: "form-label" %>
+        <%= f.text_field :name, class: "form-control" %>
+      </div>
+
+      <div class="mb-3">
+        <%= f.label :url, "ICS URL", class: "form-label" %>
+        <%= f.url_field :url, class: "form-control" %>
+      </div>
+
+      <div>
+        <%= f.submit "Add Calendar", class: "btn btn-primary" %>
+        <%= link_to "Back", account_calendars_path(@account), class: "btn btn-outline-secondary ms-2" %>
+      </div>
+    <% end %>
+  </div>
+</div>

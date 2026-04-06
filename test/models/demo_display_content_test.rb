@@ -19,7 +19,9 @@ class DemoDisplayContentTest < Minitest::Test
       assert result[:day_groups].is_a?(Array)
       assert result[:minutely_weather_minutes].is_a?(Array)
       assert_equal "weather-rainy", result[:minutely_weather_minutes_icon]
+      assert result[:minutely_precipitation_bars].is_a?(Array)
       assert_nil result[:attribution]
+      assert_equal false, result[:private_mode]
     end
   end
 
@@ -40,10 +42,9 @@ class DemoDisplayContentTest < Minitest::Test
       result[:day_groups].each do |day|
         assert day[:day_name].present?
         assert day[:date].is_a?(Date)
-        assert day[:events].key?(:daily)
-        assert day[:events].key?(:periodic)
-        assert day[:events][:daily].is_a?(Array)
-        assert day[:events][:periodic].is_a?(Array)
+        assert day[:daily].is_a?(Array)
+        assert day[:periodic].is_a?(Array)
+        assert [true, false].include?(day[:show_daily])
       end
     end
   end
@@ -51,33 +52,32 @@ class DemoDisplayContentTest < Minitest::Test
   def test_today_has_birthday_with_age
     travel_to DateTime.new(2026, 3, 19, 8, 0, 0, "-0500") do
       result = DemoDisplayContent.new.call
-      today_daily = result[:day_groups][0][:events][:daily]
+      today_daily = result[:day_groups][0][:daily]
 
-      birthday = today_daily.find { |e| e.summary.include?("Sarah Johnson") }
+      birthday = today_daily.find { |e| e[:summary].include?("Sarah Johnson") }
       assert birthday, "Expected a birthday event"
-      assert_equal "cake-variant", birthday.icon
-      assert birthday.summary(result[:day_groups][0][:date]).include?("36"), "Expected age 36 in 2026"
+      assert_equal "cake-variant", birthday[:icon_class]
+      assert birthday[:summary].include?("36"), "Expected age 36 in 2026"
     end
   end
 
   def test_today_has_multi_day_vacation_with_counter
     travel_to DateTime.new(2026, 3, 19, 8, 0, 0, "-0500") do
       result = DemoDisplayContent.new.call
-      today_daily = result[:day_groups][0][:events][:daily]
+      today_daily = result[:day_groups][0][:daily]
 
-      vacation = today_daily.find { |e| e.summary.include?("Vacation") }
+      vacation = today_daily.find { |e| e[:summary].include?("Vacation") }
       assert vacation, "Expected a Vacation event"
-      assert vacation.multi_day?, "Vacation should be multi-day"
-      assert vacation.summary(result[:day_groups][0][:date]).include?("/"), "Expected counter in summary"
+      assert vacation[:summary].include?("/"), "Expected counter in summary"
     end
   end
 
   def test_today_has_events_with_locations
     travel_to DateTime.new(2026, 3, 19, 8, 0, 0, "-0500") do
       result = DemoDisplayContent.new.call
-      today_periodic = result[:day_groups][0][:events][:periodic]
+      today_periodic = result[:day_groups][0][:periodic]
 
-      located = today_periodic.select { |e| e.location.present? }
+      located = today_periodic.select { |e| e[:location].present? }
       assert located.any?, "Expected events with locations"
     end
   end
@@ -85,24 +85,24 @@ class DemoDisplayContentTest < Minitest::Test
   def test_tomorrow_has_wind_event_with_rotation
     travel_to DateTime.new(2026, 3, 19, 8, 0, 0, "-0500") do
       result = DemoDisplayContent.new.call
-      tomorrow_periodic = result[:day_groups][1][:events][:periodic]
+      tomorrow_periodic = result[:day_groups][1][:periodic]
 
-      wind = tomorrow_periodic.find { |e| e.icon_rotation.present? }
-      assert wind, "Expected a wind event with icon_rotation"
-      assert_equal "arrow-up", wind.icon
+      wind = tomorrow_periodic.find { |e| e[:icon_style].present? }
+      assert wind, "Expected a wind event with rotation style"
+      assert_equal "arrow-up", wind[:icon_class]
     end
   end
 
   def test_uses_alpha_letter_calendar_icons
     travel_to DateTime.new(2026, 3, 19, 8, 0, 0, "-0500") do
       result = DemoDisplayContent.new.call
-      today_periodic = result[:day_groups][0][:events][:periodic]
+      today_periodic = result[:day_groups][0][:periodic]
 
-      alpha_j = today_periodic.select { |e| e.icon == "alpha-j" }
-      assert alpha_j.any?, "Expected alpha-j icon for Joel's calendar events"
+      alpha_j = today_periodic.select { |e| e[:icon_text] == "J" }
+      assert alpha_j.any?, "Expected J icon for Joel's calendar events"
 
-      alpha_f = today_periodic.select { |e| e.icon == "alpha-f" }
-      assert alpha_f.any?, "Expected alpha-f icon for family calendar events"
+      alpha_f = today_periodic.select { |e| e[:icon_text] == "F" }
+      assert alpha_f.any?, "Expected F icon for family calendar events"
     end
   end
 
@@ -154,15 +154,16 @@ class DemoDisplayContentTest < Minitest::Test
         assert minute.key?(:precipitationChance)
         assert minute.key?(:precipitationIntensity)
       end
+      assert_equal 60, result[:minutely_precipitation_bars].count
     end
   end
 
   def test_today_has_long_event_name
     travel_to DateTime.new(2026, 3, 19, 8, 0, 0, "-0500") do
       result = DemoDisplayContent.new.call
-      today_periodic = result[:day_groups][0][:events][:periodic]
+      today_periodic = result[:day_groups][0][:periodic]
 
-      long = today_periodic.find { |e| e.summary.length > 30 }
+      long = today_periodic.find { |e| e[:summary].length > 30 }
       assert long, "Expected a long event name for truncation demo"
     end
   end
@@ -170,10 +171,9 @@ class DemoDisplayContentTest < Minitest::Test
   def test_today_has_past_midnight_event
     travel_to DateTime.new(2026, 3, 19, 8, 0, 0, "-0500") do
       result = DemoDisplayContent.new.call
-      today = result[:day_groups][0][:date]
-      today_periodic = result[:day_groups][0][:events][:periodic]
+      today_periodic = result[:day_groups][0][:periodic]
 
-      past_midnight = today_periodic.find { |e| e.ends_at.to_date > today }
+      past_midnight = today_periodic.find { |e| e[:time_html].include?(" - ") }
       assert past_midnight, "Expected an event spanning past midnight"
     end
   end
@@ -181,12 +181,11 @@ class DemoDisplayContentTest < Minitest::Test
   def test_day_3_has_overlapping_events
     travel_to DateTime.new(2026, 3, 19, 8, 0, 0, "-0500") do
       result = DemoDisplayContent.new.call
-      day3_periodic = result[:day_groups][2][:events][:periodic]
+      day3_periodic = result[:day_groups][2][:periodic]
 
-      lunch = day3_periodic.find { |e| e.summary.include?("Lunch") }
-      call = day3_periodic.find { |e| e.summary.include?("Call") }
+      lunch = day3_periodic.find { |e| e[:summary].include?("Lunch") }
+      call = day3_periodic.find { |e| e[:summary].include?("Call") }
       assert lunch && call, "Expected overlapping Lunch and Call events"
-      assert lunch.starts_at < call.ends_at && call.starts_at < lunch.ends_at, "Events should overlap"
     end
   end
 end

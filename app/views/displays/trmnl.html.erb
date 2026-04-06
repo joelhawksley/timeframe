@@ -1,4 +1,4 @@
-<% unless HomeAssistantApi.new.private_mode? %>
+<% unless view_object[:private_mode] %>
   <style>
     table.single td {
       padding: 1px 0;
@@ -16,39 +16,39 @@
         <td colspan="1"></td>
         <td colspan="2" style="font-family: 'Lato', sans-serif; font-size: 60px; font-weight: 700; line-height: 1;"><%= event_day[:day_name] %></td>
       </tr>
-      <% if (event_day[:is_today] && view_object[:current_time].hour < 20) || !event_day[:is_today] %>
-        <% event_day[:events][:daily].each do |event| %>
+      <% if event_day[:show_daily] %>
+        <% event_day[:daily].each do |event| %>
           <tr>
             <td style="width: 1%;"></td>
             <td style="width: 1%; text-align: center; font-family: 'Lato', sans-serif; font-size: 40px; font-weight: bold;">
-              <% if event.icon&.start_with?("alpha-") %>
-                <span><%= event.icon.delete_prefix("alpha-").upcase %></span>
+              <% if event[:icon_text] %>
+                <span><%= event[:icon_text] %></span>
               <% else %>
-                <i class="mdi mdi-<%= event.icon %>" style="font-size: 40px; <%= "display: inline-block; transform: rotate(#{event.icon_rotation + 180}deg); " if event.icon_rotation %>"></i>
+                <i class="mdi mdi-<%= event[:icon_class] %>" style="font-size: 40px;<%= " #{event[:icon_style]}" if event[:icon_style] %>"></i>
               <% end %>
             </td>
             <td style="padding-left: 8px;">
-              <%= event.summary(event_day[:date]) %>
-              <div style="font-family: 'Lato', sans-serif; font-size: 14px;"><%= event.location %></div>
+              <%= event[:summary] %>
+              <div style="font-family: 'Lato', sans-serif; font-size: 14px;"><%= event[:location] %></div>
             </td>
           </tr>
         <% end %>
       <% end %>
-      <% event_day[:events][:periodic].each do |event| %>
+      <% event_day[:periodic].each do |event| %>
         <tr>
           <td style="white-space: nowrap; font-family: 'Lato', sans-serif; font-size: 16px; padding-right: 16px; text-align: right; width: 1%">
-            <%= event.time.to_s.html_safe %>
+            <%= event[:time_html].html_safe %>
           </td>
           <td style="text-align: center; font-family: 'Lato', sans-serif; font-size: 40px; font-weight: bold; width: 1%;">
-            <% if event.icon&.start_with?("alpha-") %>
-              <span><%= event.icon.delete_prefix("alpha-").upcase %></span>
+            <% if event[:icon_text] %>
+              <span><%= event[:icon_text] %></span>
             <% else %>
-              <i class="mdi mdi-<%= event.icon %>" style="font-size: 40px; <%= "display: inline-block; transform: rotate(#{event.icon_rotation + 180}deg); " if event.icon_rotation %>"></i>
+              <i class="mdi mdi-<%= event[:icon_class] %>" style="font-size: 40px;<%= " #{event[:icon_style]}" if event[:icon_style] %>"></i>
             <% end %>
           </td>
 
           <td style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden; max-width: 0; padding-left: 8px;">
-            <%= event.summary %>
+            <%= event[:summary] %>
           </td>
         </tr>
       <% end %>

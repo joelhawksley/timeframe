@@ -35,7 +35,7 @@
 PreCommit:
   Testing:
     enabled: true
-    command: ['bundle', 'exec', 'rake']
+    command: ['bundle', 'exec', 'rails', 'test']
   Lint:
     enabled: true
     command: ['bundle', 'exec', 'standardrb']

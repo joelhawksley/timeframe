@@ -1,0 +1,141 @@
+<% @accounts.each do |account| %>
+  <div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h2 class="h5 mb-0"><%= account.name %></h2>
+      <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#delete-account-<%= account.id %>">Delete Account</button>
+    </div>
+    <div class="card-body">
+      <% account.locations.each do |location| %>
+        <h3 class="h6"><%= location.name %></h3>
+        <p class="text-muted small"><%= location.latitude %>, <%= location.longitude %> — <%= location.time_zone %></p>
+
+        <% devices = location.devices.order(:name) %>
+          <div class="d-flex flex-wrap gap-3 mb-3">
+            <% devices.each do |device| %>
+              <%= render "dashboard/device_card", device: device, account: account, location: location %>
+            <% end %>
+            <%= render "dashboard/add_device_forms", account: account, location: location %>
+          </div>
+      <% end %>
+
+      <h3 class="h6 mt-4">Calendars (<%= account.calendars.count %>)</h3>
+      <% if account.calendars.any? %>
+        <div class="table-responsive mb-3">
+          <table class="table table-bordered table-sm">
+            <thead class="table-light">
+              <tr>
+                <th>Name</th>
+                <th>Source</th>
+                <th>Events</th>
+                <th>Last Synced</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% account.calendars.order(:name).each do |cal| %>
+                <tr>
+                  <td><%= cal.name %></td>
+                  <td><%= cal.source_type %></td>
+                  <td><%= cal.calendar_events.count %></td>
+                  <td><%= cal.last_synced_at ? time_ago_in_words(cal.last_synced_at) + " ago" : "Never" %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      <% else %>
+        <p class="text-muted">No calendars configured.</p>
+      <% end %>
+
+      <% if account.google_accounts.any? %>
+        <h3 class="h6 mt-4">Google Accounts (<%= account.google_accounts.count %>)</h3>
+        <div class="table-responsive mb-3">
+          <table class="table table-bordered table-sm">
+            <thead class="table-light">
+              <tr>
+                <th>Email</th>
+                <th>Calendars</th>
+                <th>Token Expires</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% account.google_accounts.each do |ga| %>
+                <tr>
+                  <td><%= ga.email %></td>
+                  <td><%= ga.calendars.count %></td>
+                  <td><%= ga.token_expires_at ? ga.token_expires_at.strftime("%b %-d @ %-l:%M %p") : "N/A" %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      <% end %>
+
+      <h3 class="h6 mt-4">Add Location</h3>
+      <%= form_with url: account_locations_path(account), method: :post do |f| %>
+        <div class="row g-2 mb-3">
+          <div class="col-12 col-md-3">
+            <label class="form-label">Name</label>
+            <input type="text" name="location[name]" class="form-control" placeholder="e.g. Home">
+          </div>
+          <div class="col-12 col-md-5">
+            <label class="form-label">Address</label>
+            <input type="text" name="location[address]" class="form-control" placeholder="e.g. 123 Main St, Springfield, IL">
+          </div>
+          <div class="col-12 col-md-2 d-flex align-items-end">
+            <%= f.submit "Add Location", class: "btn btn-primary w-100" %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="modal fade" id="delete-account-<%= account.id %>" tabindex="-1" aria-labelledby="delete-account-label-<%= account.id %>" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="delete-account-label-<%= account.id %>">Delete "<%= account.name %>"</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <%= form_with url: account_path(account), method: :delete do %>
+            <div class="modal-body">
+              <p>This will permanently delete the account and all its locations, devices, calendars, and connected Google accounts.</p>
+              <p>Type <strong><%= account.name %></strong> to confirm.</p>
+              <input type="text" name="name_confirmation" class="form-control" placeholder="<%= account.name %>" autocomplete="off" data-delete-account-input="<%= account.id %>">
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+              <%= submit_tag "Delete Account", class: "btn btn-danger", disabled: true, id: "delete-account-btn-#{account.id}" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+    <script>
+      (function() {
+        var input = document.querySelector('[data-delete-account-input="<%= account.id %>"]');
+        var btn = document.getElementById('delete-account-btn-<%= account.id %>');
+        input.addEventListener('input', function() {
+          btn.disabled = input.value.toLowerCase().trim() !== '<%= account.name.downcase.gsub("'", "\\'") %>'.toLowerCase();
+        });
+      })();
+    </script>
+  </div>
+<% end %>
+
+<div class="card mb-4">
+  <div class="card-header">
+    <h2 class="h5 mb-0">Add Account</h2>
+  </div>
+  <div class="card-body">
+    <%= form_with url: accounts_path, method: :post do |f| %>
+      <div class="row g-2">
+        <div class="col-12 col-md-4">
+          <label class="form-label">Account Name</label>
+          <input type="text" name="account[name]" class="form-control" placeholder="e.g. Home" autofocus>
+        </div>
+        <div class="col-12 col-md-2 d-flex align-items-end">
+          <%= f.submit "Add Account", class: "btn btn-primary w-100" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

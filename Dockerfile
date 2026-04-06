@@ -1,4 +1,4 @@
-FROM ruby:3.4.3-slim
+FROM ruby:4.0.2-slim
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -22,6 +22,6 @@ RUN mkdir -p /data
 ENV RAILS_ENV=production
 ENV PORT=8099
 
-EXPOSE 8099 11114
+EXPOSE 8099
 
 CMD ["bundle", "exec", "puma", "-C", "config/puma.rb"]

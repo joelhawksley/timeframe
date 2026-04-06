@@ -15,10 +15,8 @@
 .DS_Store
 /public/packs
 .env
-config.yml
+config/timeframe.yml
 /coverage/*
 timeframe_development*
 timeframe_test*
 pgdata
-db/*.sqlite3
-db/*.sqlite3-*

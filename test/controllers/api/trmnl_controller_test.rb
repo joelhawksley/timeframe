@@ -4,35 +4,46 @@ require "test_helper"
 
 class Api::TrmnlControllerTest < ActionDispatch::IntegrationTest
   def setup
+    PendingDevice.destroy_all
     Device.where(model: "trmnl_og").destroy_all
   end
 
   # --- /api/setup ---
 
-  test "setup provisions a new device by MAC address" do
+  test "setup creates a pending device" do
     get "/api/setup", headers: {"ID" => "AA:BB:CC:DD:EE:FF"}
 
     assert_response :success
     json = JSON.parse(response.body)
-    assert json["api_key"].present?
+    assert_nil json["api_key"]
     assert json["friendly_id"].present?
-    assert_equal "Welcome to Timeframe", json["message"]
+    assert json["pairing_code"].present?
+    assert_equal "Pending pairing", json["message"]
 
-    device = Device.find_by(mac_address: "AA:BB:CC:DD:EE:FF")
-    assert device.present?
-    assert_equal "trmnl_og", device.model
-    assert_equal json["api_key"], device.api_key
+    pending = PendingDevice.find_by(mac_address: "AA:BB:CC:DD:EE:FF")
+    assert pending.present?
   end
 
-  test "setup returns existing device for duplicate MAC" do
-    get "/api/setup", headers: {"ID" => "AA:BB:CC:DD:EE:FF"}
-    first_key = JSON.parse(response.body)["api_key"]
+  test "setup returns api_key for confirmed device" do
+    device = create_trmnl_device!(mac: "AA:BB:CC:DD:EE:FF")
 
     get "/api/setup", headers: {"ID" => "AA:BB:CC:DD:EE:FF"}
-    second_key = JSON.parse(response.body)["api_key"]
 
-    assert_equal first_key, second_key
-    assert_equal 1, Device.where(mac_address: "AA:BB:CC:DD:EE:FF").count
+    assert_response :success
+    json = JSON.parse(response.body)
+    assert_equal device.api_key, json["api_key"]
+    assert_equal "Welcome to Timeframe", json["message"]
+  end
+
+  test "setup returns existing pending device for duplicate MAC" do
+    get "/api/setup", headers: {"ID" => "AA:BB:CC:DD:EE:FF"}
+    first_id = JSON.parse(response.body)["friendly_id"]
+
+    get "/api/setup", headers: {"ID" => "AA:BB:CC:DD:EE:FF"}
+    second_id = JSON.parse(response.body)["friendly_id"]
+
+    assert_equal first_id, second_id
+    assert_equal 1, PendingDevice.where(mac_address: "AA:BB:CC:DD:EE:FF").count
   end
 
   test "setup returns bad request without MAC address" do
@@ -72,12 +83,9 @@ class Api::TrmnlControllerTest < ActionDispatch::IntegrationTest
     assert_response :unauthorized
   end
 
-  test "display auto-provisions unknown MAC" do
-    ScreenshotService.stub :capture, "fakeimagedatabase64" do
-      get "/api/display", headers: {"ID" => "FF:EE:DD:CC:BB:AA"}
-      assert_response :success
-      assert Device.find_by(mac_address: "FF:EE:DD:CC:BB:AA").present?
-    end
+  test "display returns 401 for unknown MAC" do
+    get "/api/display", headers: {"ID" => "FF:EE:DD:CC:BB:AA"}
+    assert_response :unauthorized
   end
 
   test "display returns image data for valid device" do
@@ -89,7 +97,7 @@ class Api::TrmnlControllerTest < ActionDispatch::IntegrationTest
       assert_response :success
       json = JSON.parse(response.body)
       assert_match(/\Adisplay-.*\.png\z/, json["filename"])
-      assert json["image_url"].include?("/displays/")
+      assert json["image_url"].include?("/signed_screenshot/")
       assert_equal 900, json["refresh_rate"]
       assert_equal "sleep", json["special_function"]
       assert_equal false, json["reset_firmware"]
@@ -150,13 +158,29 @@ class Api::TrmnlControllerTest < ActionDispatch::IntegrationTest
     assert_response :unauthorized
   end
 
+  test "display returns confirmation data for unconfirmed device" do
+    device = Device.create!(location: test_location,
+      name: "Pending TRMNL",
+      model: "trmnl_og",
+      mac_address: "AA:BB:CC:11:22:33",
+      confirmation_code: "ABC123")
+
+    get "/api/display", headers: {"ID" => device.mac_address}
+
+    assert_response :success
+    json = JSON.parse(response.body)
+    assert_match(/confirmation/, json["filename"])
+    assert_equal 30, json["refresh_rate"]
+  end
+
   private
 
   def create_trmnl_device!(mac: "11:22:33:44:55:66")
-    Device.create!(
+    Device.create!(location: test_location,
       name: "Test TRMNL #{mac}",
       model: "trmnl_og",
-      mac_address: mac
-    )
+      mac_address: mac,
+      confirmed_at: Time.current,
+      confirmation_code: nil)
   end
 end

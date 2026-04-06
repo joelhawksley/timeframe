@@ -28,7 +28,7 @@ class DisplayContenttTest < Minitest::Test
       api = new_test_api
       api.stub :calendars_healthy?, false do
         api.stub :calendar_events, [
-          CalendarEvent.new(starts_at: travel_time - 1.hour, ends_at: travel_time + 1.day, summary: "test")
+          DisplayEvent.new(starts_at: travel_time - 1.hour, ends_at: travel_time + 1.day, summary: "test")
         ] do
           api.stub :private_mode?, false do
             result = DisplayContent.new.call(home_assistant_api: api)
@@ -93,7 +93,7 @@ class DisplayContenttTest < Minitest::Test
     travel_to DateTime.new(2023, 8, 27, 20, 15, 0, "-0600") do
       api = new_test_api
       events = [
-        CalendarEvent.new(
+        DisplayEvent.new(
           starts_at: DateTime.new(2023, 8, 27, 19, 0, 0, "-0600"),
           ends_at: DateTime.new(2023, 8, 27, 21, 0, 0, "-0600"),
           summary: "Evening event"
@@ -105,6 +105,61 @@ class DisplayContenttTest < Minitest::Test
             result = DisplayContent.new.call(home_assistant_api: api)
 
             assert_equal 5, result[:day_groups].count
+          end
+        end
+      end
+    end
+  end
+
+  def test_with_weather_kit_api
+    travel_to DateTime.new(2023, 8, 27, 18, 15, 0, "-0600") do
+      ha_api = new_test_api
+
+      wk_api = OpenStruct.new(
+        weather_healthy?: true,
+        hourly_calendar_events: [],
+        daily_calendar_events: [],
+        precip_calendar_events: [],
+        wind_calendar_events: [],
+        weather_alert_events: [],
+        attribution: "Apple Weather",
+        current_temperature: "72°"
+      )
+
+      result = DisplayContent.new.call(home_assistant_api: ha_api, weather_kit_api: wk_api)
+
+      assert_equal "72°", result[:current_temperature]
+      assert_equal "Apple Weather", result[:attribution]
+    end
+  end
+
+  def test_serializes_events_with_icons_and_locations
+    travel_to DateTime.new(2023, 8, 27, 10, 0, 0, "-0600") do
+      api = new_test_api
+      events = [
+        DisplayEvent.new(
+          starts_at: DateTime.new(2023, 8, 27, 0, 0, 0, "-0600"),
+          ends_at: DateTime.new(2023, 8, 28, 0, 0, 0, "-0600"),
+          summary: "All Day",
+          icon: "cake-variant",
+          daily: true
+        ),
+        DisplayEvent.new(
+          starts_at: DateTime.new(2023, 8, 27, 12, 0, 0, "-0600"),
+          ends_at: DateTime.new(2023, 8, 27, 13, 0, 0, "-0600"),
+          summary: "Lunch",
+          icon: "alpha-j",
+          location: "Room A"
+        )
+      ]
+      api.stub :calendars_healthy?, false do
+        api.stub :private_mode?, false do
+          api.stub :calendar_events, events do
+            result = DisplayContent.new.call(home_assistant_api: api)
+
+            today = result[:day_groups].find { |d| d[:day_name] == "Today" }
+            assert today[:daily].any? { |e| e[:summary] == "All Day" && e[:icon_class] == "cake-variant" }
+            assert today[:periodic].any? { |e| e[:summary] == "Lunch" && e[:icon_text] == "J" && e[:location] == "Room A" }
           end
         end
       end

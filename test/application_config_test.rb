@@ -2,41 +2,49 @@
 
 require "test_helper"
 
-class ApplicationConfigTest < Minitest::Test
-  def test_load_config_with_supervisor_token
+class TimeframeConfigTest < Minitest::Test
+  def test_defaults
+    config = TimeframeConfig.new
+    assert_equal "mph", config.speed_unit
+    assert_equal "in", config.precipitation_unit
+    assert_equal "F", config.temperature_unit
+    assert_equal "http://homeassistant.local:8123", config.home_assistant_url
+  end
+
+  def test_home_assistant_predicate
+    config = TimeframeConfig.new(home_assistant_token: "test")
+    assert config.home_assistant?
+  end
+
+  def test_home_assistant_predicate_false
+    config = TimeframeConfig.new(home_assistant_token: nil)
+    refute config.home_assistant?
+  end
+
+  def test_weatherkit_predicate
+    config = TimeframeConfig.new(apple_developer_team_id: "test")
+    assert config.weatherkit?
+  end
+
+  def test_weatherkit_predicate_false
+    config = TimeframeConfig.new(apple_developer_team_id: nil)
+    refute config.weatherkit?
+  end
+
+  def test_overrides
+    config = TimeframeConfig.new(speed_unit: "kph", temperature_unit: "C", precipitation_unit: "mm")
+    assert_equal "kph", config.speed_unit
+    assert_equal "C", config.temperature_unit
+    assert_equal "mm", config.precipitation_unit
+  end
+
+  def test_supervisor_token_sets_home_assistant
     ENV["SUPERVISOR_TOKEN"] = "test_token"
-    config = Timeframe::Application.load_config
-    assert_equal "test_token", config["home_assistant_token"]
-    assert_equal "http://supervisor/core", config["home_assistant_url"]
+    config = TimeframeConfig.new(home_assistant_token: nil)
+    assert_equal "test_token", config.home_assistant_token
+    assert_equal "http://supervisor/core", config.home_assistant_url
+    assert config.home_assistant?
   ensure
     ENV.delete("SUPERVISOR_TOKEN")
-  end
-
-  def test_load_config_with_supervisor_token_and_addon_options
-    ENV["SUPERVISOR_TOKEN"] = "test_token"
-    options = {}.to_json
-
-    File.stub :exist?, ->(path) { path == "/data/options.json" } do
-      File.stub :read, options, ["/data/options.json"] do
-        config = Timeframe::Application.load_config
-        assert_equal "test_token", config["home_assistant_token"]
-      end
-    end
-  ensure
-    ENV.delete("SUPERVISOR_TOKEN")
-  end
-
-  def test_load_config_with_config_yml
-    ENV.delete("SUPERVISOR_TOKEN")
-    config = Timeframe::Application.load_config
-    assert config.key?("home_assistant_token")
-  end
-
-  def test_load_config_without_anything
-    ENV.delete("SUPERVISOR_TOKEN")
-    File.stub :exist?, false do
-      config = Timeframe::Application.load_config
-      assert_equal({}, config)
-    end
   end
 end

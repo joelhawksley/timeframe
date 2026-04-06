@@ -5,6 +5,7 @@ require "test_helper"
 class DeviceTest < Minitest::Test
   def setup
     # Clean up all test-created devices to avoid uniqueness conflicts across tests
+    PendingDevice.where.not(claimed_device_id: nil).update_all(claimed_device_id: nil)
     Device.where("name LIKE 'test_%' OR name LIKE 'Visionect %'").destroy_all
   end
 
@@ -32,7 +33,7 @@ class DeviceTest < Minitest::Test
   end
 
   def test_find_or_create_by_visionect_serial_returns_existing_device
-    existing = Device.create!(name: "Visionect ABC123", model: "visionect_13", visionect_serial: "ABC123")
+    existing = Device.create!(location: test_location, name: "Visionect ABC123", model: "visionect_13", visionect_serial: "ABC123")
 
     device = Device.find_or_create_by_visionect_serial("ABC123")
 
@@ -40,7 +41,7 @@ class DeviceTest < Minitest::Test
   end
 
   def test_find_or_create_by_visionect_serial_handles_race_condition
-    existing = Device.create!(name: "Visionect RACE1", model: "visionect_13", visionect_serial: "RACE1")
+    existing = Device.create!(location: test_location, name: "Visionect RACE1", model: "visionect_13", visionect_serial: "RACE1")
 
     # Simulate race: find_by returns nil first time, then create! hits unique constraint,
     # then find_by succeeds in the rescue block
@@ -59,7 +60,7 @@ class DeviceTest < Minitest::Test
   end
 
   def test_record_visionect_connection
-    device = Device.create!(name: "test_conn", model: "visionect_13", visionect_serial: "CONN1")
+    device = Device.create!(location: test_location, name: "test_conn", model: "visionect_13", visionect_serial: "CONN1")
 
     assert_nil device.last_connection_at
 
@@ -70,7 +71,7 @@ class DeviceTest < Minitest::Test
   end
 
   def test_encode_visionect_image_stores_4bpp_data
-    device = Device.create!(name: "test_encode", model: "visionect_13", visionect_serial: "ENC1")
+    device = Device.create!(location: test_location, name: "test_encode", model: "visionect_13", visionect_serial: "ENC1")
     # Create a small white PNG via ImageMagick
     png = generate_test_png
     device.update!(cached_image: Base64.strict_encode64(png))
@@ -82,21 +83,21 @@ class DeviceTest < Minitest::Test
   end
 
   def test_encode_visionect_image_skips_non_visionect
-    device = Device.create!(name: "test_trmnl", model: "trmnl_og", mac_address: "AA:BB:CC:DD:EE:FF")
+    device = Device.create!(location: test_location, name: "test_trmnl", model: "trmnl_og", mac_address: "FF:EE:DD:CC:BB:AA")
     device.encode_visionect_image!
 
     assert_nil VisionectProtocol::Server.fetch_image(device.id)
   end
 
   def test_encode_visionect_image_skips_without_cached_image
-    device = Device.create!(name: "test_nocache", model: "visionect_13", visionect_serial: "NC1")
+    device = Device.create!(location: test_location, name: "test_nocache", model: "visionect_13", visionect_serial: "NC1")
     device.encode_visionect_image!
 
     assert_nil VisionectProtocol::Server.fetch_image(device.id)
   end
 
   def test_refresh_all_screenshots_calls_refresh_on_each_device
-    Device.create!(name: "test_refresh_all", model: "visionect_13", visionect_serial: "RA1")
+    Device.create!(location: test_location, name: "test_refresh_all", model: "visionect_13", visionect_serial: "RA1")
     refreshed_ids = []
 
     original_method = Device.instance_method(:refresh_screenshot!)
@@ -109,7 +110,7 @@ class DeviceTest < Minitest::Test
   end
 
   def test_refresh_all_screenshots_handles_errors_gracefully
-    Device.create!(name: "test_error", model: "visionect_13", visionect_serial: "ERR1")
+    Device.create!(location: test_location, name: "test_error", model: "visionect_13", visionect_serial: "ERR1")
 
     original_method = Device.instance_method(:refresh_screenshot!)
     Device.define_method(:refresh_screenshot!) { |*| raise "test error" }
@@ -121,13 +122,38 @@ class DeviceTest < Minitest::Test
     Device.define_method(:refresh_screenshot!, original_method)
   end
 
+  def test_confirm_sets_location_and_confirmed_at
+    device = Device.create!(name: "test_confirm_#{SecureRandom.hex(4)}", model: "trmnl_og", mac_address: "AA:BB:#{SecureRandom.hex(4).scan(/../).join(":").upcase}", api_key: SecureRandom.hex(16), friendly_id: SecureRandom.alphanumeric(6).upcase)
+    assert device.pending_confirmation?
+
+    device.confirm!(test_location)
+    device.reload
+
+    assert device.confirmed?
+    refute device.pending_confirmation?
+    assert_equal test_location, device.location
+    assert_nil device.confirmation_code
+  end
+
+  def test_confirm_with_name_updates_name
+    device = Device.create!(name: "test_confirm_name_#{SecureRandom.hex(4)}", model: "trmnl_og", mac_address: "BB:CC:#{SecureRandom.hex(4).scan(/../).join(":").upcase}", api_key: SecureRandom.hex(16), friendly_id: SecureRandom.alphanumeric(6).upcase)
+    new_name = "Renamed #{SecureRandom.hex(4)}"
+    device.confirm!(test_location, name: new_name)
+    device.reload
+
+    assert_equal new_name, device.name
+  end
+
   private
 
   def generate_test_png
     require "mini_magick"
     img = MiniMagick::Image.create(".png") do |f|
-      system("magick", "-size", "1600x1200", "xc:white", f.path,
-        out: File::NULL, err: File::NULL)
+      MiniMagick.convert do |c|
+        c.size "1600x1200"
+        c << "xc:white"
+        c << f.path
+      end
     end
     img.to_blob
   end

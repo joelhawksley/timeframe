@@ -1,0 +1,160 @@
+<div style="min-width: 300px;">
+  <div class="card h-100">
+    <div class="card-header">
+      <h5 class="mb-0"><%= device.name %></h5>
+    </div>
+    <div class="card-body p-0">
+      <% preview_url = device.visionect? ? device.token_display_url(host: request.base_url) : account_display_path(account, device) %>
+      <% aspect_ratio = (device.display_height.to_f / device.display_width * 100).round(2) %>
+      <div style="position: relative; width: 100%; padding-bottom: <%= aspect_ratio %>%; overflow: hidden;">
+        <iframe
+          src="<%= preview_url %>"
+          width="<%= device.display_width %>"
+          height="<%= device.display_height %>"
+          scrolling="no"
+          style="border: none; position: absolute; top: 0; left: 0; width: <%= device.display_width %>px; height: <%= device.display_height %>px; transform-origin: top left;"
+          onload="this.style.transform='scale('+this.parentElement.offsetWidth/<%= device.display_width %>+')';"
+        ></iframe>
+      </div>
+    </div>
+    <% if device.model == "boox_mira_pro" && device.disconnected? %>
+      <div class="card-body py-2 border-top bg-warning-subtle">
+        <div class="d-flex align-items-center justify-content-between">
+          <small class="text-warning-emphasis"><i class="mdi mdi-alert-circle"></i> Disconnected</small>
+          <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#repair-device-<%= device.id %>">Re-pair</button>
+        </div>
+      </div>
+    <% end %>
+    <div class="card-footer d-flex justify-content-between align-items-center">
+      <span class="text-body-tertiary" style="font-size: 0.75rem;"><%= device.model_name_label %></span>
+      <div class="dropdown">
+        <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+          &#x2026;
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <% if device.trmnl? %>
+            <li><a class="dropdown-item" href="<%= screenshot_account_display_path(account, device) %>">Screenshot</a></li>
+            <li><hr class="dropdown-divider"></li>
+          <% end %>
+          <li>
+            <%= form_with url: account_location_device_path(account, location, device), method: :patch do %>
+              <%= submit_tag(device.demo_mode_enabled? ? "Disable Demo Mode" : "Enable Demo Mode", class: "dropdown-item", style: "border: none; background: none; width: 100%; text-align: left; cursor: pointer;") %>
+            <% end %>
+          </li>
+          <% if device.visionect? && device.display_key.present? %>
+            <li>
+              <button type="button" class="dropdown-item" onclick="navigator.clipboard.writeText('<%= device.token_display_url(host: request.base_url) %>'); alert('Token URL copied!')">Copy Token URL</button>
+            </li>
+            <li>
+              <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#regen-device-<%= device.id %>">Regenerate URL</button>
+            </li>
+          <% end %>
+          <% if device.model == "boox_mira_pro" %>
+            <li>
+              <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#repair-device-<%= device.id %>">Re-pair</button>
+            </li>
+          <% end %>
+          <li><hr class="dropdown-divider"></li>
+          <li>
+            <button type="button" class="dropdown-item text-danger" data-bs-toggle="modal" data-bs-target="#delete-device-<%= device.id %>">Delete</button>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <% if device.visionect? %>
+      <div class="modal fade" id="regen-device-<%= device.id %>" tabindex="-1" aria-labelledby="regen-device-label-<%= device.id %>" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="regen-device-label-<%= device.id %>">Regenerate URL for "<%= device.name %>"</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <%= form_with url: regenerate_tokens_account_location_device_path(account, location, device), method: :post do %>
+              <div class="modal-body">
+                <p>This will invalidate the current token URL. Type <strong><%= device.name %></strong> to confirm.</p>
+                <input type="text" name="name_confirmation" class="form-control" placeholder="<%= device.name %>" autocomplete="off" data-regen-input="<%= device.id %>">
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <%= submit_tag "Regenerate URL", class: "btn btn-warning", disabled: true, id: "regen-btn-#{device.id}" %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+      <script>
+        (function() {
+          var input = document.querySelector('[data-regen-input="<%= device.id %>"]');
+          var btn = document.getElementById('regen-btn-<%= device.id %>');
+          input.addEventListener('input', function() {
+            btn.disabled = input.value.toLowerCase().trim() !== '<%= device.name.downcase.gsub("'", "\\'") %>'.toLowerCase();
+          });
+        })();
+      </script>
+    <% end %>
+
+    <% if device.model == "boox_mira_pro" %>
+      <div class="modal fade" id="repair-device-<%= device.id %>" tabindex="-1" aria-labelledby="repair-device-label-<%= device.id %>" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="repair-device-label-<%= device.id %>">Re-pair "<%= device.name %>"</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <%= form_with url: repair_account_location_device_path(account, location, device), method: :post do %>
+              <div class="modal-body">
+                <p>On your Boox device, visit <code><%= request.base_url %>/setup</code> to get a new pairing code.</p>
+                <label class="form-label">Pairing Code</label>
+                <input type="text" name="pairing_code" class="form-control" placeholder="e.g. 123456" autocomplete="off" inputmode="numeric" minlength="6" maxlength="6" pattern="[0-9]{6}" data-repair-input="<%= device.id %>">
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <%= submit_tag "Re-pair Device", class: "btn btn-primary", disabled: true, id: "repair-btn-#{device.id}" %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+      <script>
+        (function() {
+          var input = document.querySelector('[data-repair-input="<%= device.id %>"]');
+          var btn = document.getElementById('repair-btn-<%= device.id %>');
+          input.addEventListener('input', function() {
+            btn.disabled = !/^[0-9]{6}$/.test(input.value);
+          });
+        })();
+      </script>
+    <% end %>
+
+    <div class="modal fade" id="delete-device-<%= device.id %>" tabindex="-1" aria-labelledby="delete-device-label-<%= device.id %>" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="delete-device-label-<%= device.id %>">Delete "<%= device.name %>"</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <%= form_with url: account_location_device_path(account, location, device), method: :delete do |f| %>
+            <div class="modal-body">
+              <p>Type <strong><%= device.name %></strong> to confirm deletion.</p>
+              <input type="text" name="name_confirmation" class="form-control" placeholder="<%= device.name %>" autocomplete="off" data-delete-input="<%= device.id %>">
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+              <%= submit_tag "Delete Device", class: "btn btn-danger", disabled: true, id: "delete-btn-#{device.id}" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+    <script>
+      (function() {
+        var input = document.querySelector('[data-delete-input="<%= device.id %>"]');
+        var btn = document.getElementById('delete-btn-<%= device.id %>');
+        input.addEventListener('input', function() {
+          btn.disabled = input.value.toLowerCase().trim() !== '<%= device.name.downcase.gsub("'", "\\'") %>'.toLowerCase();
+        });
+      })();
+    </script>
+  </div>
+</div>

@@ -5,13 +5,13 @@ require "test_helper"
 class CalendarFeedTest < Minitest::Test
   include ActiveSupport::Testing::TimeHelpers
 
-  # CalendarEvents coming from the DB look different than those
+  # DisplayEvents coming from the DB look different than those
   # constructed on the fly. DB events have string keys, for example.
   # This is not ideal and we should probably move to a standard value
   # object that has a consistent API.
   def test_events_for_stringified_key_from_db
     calendar_events = [
-      CalendarEvent.new(
+      DisplayEvent.new(
         id: "foo",
         starts_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),
         ends_at: DateTime.new(2023, 8, 27, 23, 0, 0, "-0600"),
@@ -30,14 +30,14 @@ class CalendarFeedTest < Minitest::Test
 
   def test_events_for_duplicate_plus
     calendar_events = [
-      CalendarEvent.new(
+      DisplayEvent.new(
         id: "foo",
         starts_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),
         ends_at: DateTime.new(2023, 8, 27, 23, 0, 0, "-0600"),
         summary: "dupe",
         icon: "plus"
       ),
-      CalendarEvent.new(
+      DisplayEvent.new(
         id: "foo",
         starts_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),
         ends_at: DateTime.new(2023, 8, 27, 23, 0, 0, "-0600"),
@@ -60,14 +60,14 @@ class CalendarFeedTest < Minitest::Test
 
   def test_events_for_duplicate_same_icon
     calendar_events = [
-      CalendarEvent.new(
+      DisplayEvent.new(
         id: "foo",
         starts_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),
         ends_at: DateTime.new(2023, 8, 27, 23, 0, 0, "-0600"),
         summary: "dupe",
         icon: "alpha-j"
       ),
-      CalendarEvent.new(
+      DisplayEvent.new(
         id: "foo",
         starts_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),
         ends_at: DateTime.new(2023, 8, 27, 23, 0, 0, "-0600"),
@@ -90,14 +90,14 @@ class CalendarFeedTest < Minitest::Test
 
   def test_events_for_duplicate_same_icon_diff_id
     calendar_events = [
-      CalendarEvent.new(
+      DisplayEvent.new(
         id: "foo2",
         starts_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),
         ends_at: DateTime.new(2023, 8, 27, 23, 0, 0, "-0600"),
         summary: "dupe",
         icon: "alpha-j"
       ),
-      CalendarEvent.new(
+      DisplayEvent.new(
         id: "foo",
         starts_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),
         ends_at: DateTime.new(2023, 8, 27, 23, 0, 0, "-0600"),
@@ -120,14 +120,14 @@ class CalendarFeedTest < Minitest::Test
 
   def test_events_for_duplicate_different_icon
     calendar_events = [
-      CalendarEvent.new(
+      DisplayEvent.new(
         id: "foo",
         starts_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),
         ends_at: DateTime.new(2023, 8, 27, 23, 0, 0, "-0600"),
         summary: "dupe",
         icon: "alpha-c"
       ),
-      CalendarEvent.new(
+      DisplayEvent.new(
         id: "foo",
         starts_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),
         ends_at: DateTime.new(2023, 8, 27, 23, 0, 0, "-0600"),
@@ -152,7 +152,7 @@ class CalendarFeedTest < Minitest::Test
   # returned due to a bug in range overlap comparison
   def test_filtering_moments
     calendar_events = [
-      CalendarEvent.new(
+      DisplayEvent.new(
         id: "foo",
         starts_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),
         ends_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),
@@ -171,7 +171,7 @@ class CalendarFeedTest < Minitest::Test
 
   def test_filtering_daily
     calendar_events = [
-      CalendarEvent.new(
+      DisplayEvent.new(
         id: "foo",
         starts_at: DateTime.new(2023, 8, 27, 0, 0, 0, "-0600"),
         ends_at: DateTime.new(2023, 8, 28, 0, 0, 0, "-0600"),
@@ -195,7 +195,7 @@ class CalendarFeedTest < Minitest::Test
 
   def test_filtering_multi_day_periodic_events
     calendar_events = [
-      CalendarEvent.new(
+      DisplayEvent.new(
         id: "foo",
         starts_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),
         ends_at: DateTime.new(2023, 8, 29, 22, 20, 0, "-0600"),
@@ -214,20 +214,20 @@ class CalendarFeedTest < Minitest::Test
 
   def test_filtering_private_events
     calendar_events = [
-      CalendarEvent.new(
+      DisplayEvent.new(
         id: "foo",
         starts_at: DateTime.new(2023, 8, 27, 15, 20, 0, "-0600"),
         ends_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),
         summary: "timeframe-private"
       ),
-      CalendarEvent.new(
+      DisplayEvent.new(
         id: "bar",
         starts_at: DateTime.new(2023, 8, 27, 15, 20, 0, "-0600"),
         ends_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),
         summary: "doctor",
         description: "timeframe-private"
       ),
-      CalendarEvent.new(
+      DisplayEvent.new(
         id: "bar",
         starts_at: DateTime.new(2023, 8, 27, 0, 0, 0, "-0600"),
         ends_at: DateTime.new(2023, 8, 28, 0, 0, 0, "-0600"),
@@ -246,7 +246,7 @@ class CalendarFeedTest < Minitest::Test
 
   def test_excludes_omit
     calendar_events = [
-      CalendarEvent.new(
+      DisplayEvent.new(
         id: "foo",
         starts_at: DateTime.new(2023, 8, 27, 15, 20, 0, "-0600"),
         ends_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),
@@ -265,7 +265,7 @@ class CalendarFeedTest < Minitest::Test
 
   def test_excludes_omit_with_other_details
     calendar_events = [
-      CalendarEvent.new(
+      DisplayEvent.new(
         id: "foo",
         starts_at: DateTime.new(2023, 8, 27, 15, 20, 0, "-0600"),
         ends_at: DateTime.new(2023, 8, 27, 20, 20, 0, "-0600"),

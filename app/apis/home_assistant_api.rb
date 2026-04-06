@@ -1,6 +1,5 @@
 class HomeAssistantApi
   MDI_CSS = File.read(Rails.root.join("public/css/mdi/materialdesignicons.css")).freeze
-  DEFAULT_HOME_ASSISTANT_URL = "http://homeassistant.local:8123"
 
   CONDITION_ICONS = {
     "cloudy" => "cloud",
@@ -25,18 +24,18 @@ class HomeAssistantApi
   CALENDAR_DOMAIN = "home_assistant_calendar_api"
   WEATHER_DOMAIN = "home_assistant_weather_api"
 
-  def initialize(config = Timeframe::Application.config.local, store: Rails.cache)
+  def initialize(config = TimeframeConfig.new, store: Rails.cache)
     @config = config
     @store = store
   end
 
   def home_assistant_base_url
-    @config&.fetch("home_assistant_url", nil) || DEFAULT_HOME_ASSISTANT_URL
+    @config.home_assistant_url
   end
 
   def headers
     {
-      Authorization: "Bearer #{@config["home_assistant_token"]}",
+      Authorization: "Bearer #{@config.home_assistant_token}",
       "content-type": "application/json"
     }
   end
@@ -47,6 +46,23 @@ class HomeAssistantApi
     response = HTTParty.get("#{home_assistant_base_url}/api/states", headers: headers)
     return if response.code != 200
     save_domain(STATES_DOMAIN, JSON.parse(response.body))
+  end
+
+  def update_entity_state(entity_id, new_state)
+    current_states = domain_data(STATES_DOMAIN)
+    return unless current_states.is_a?(Array)
+
+    updated = false
+    current_states.each_with_index do |state, i|
+      if state[:entity_id] == entity_id || state["entity_id"] == entity_id
+        current_states[i] = new_state.deep_symbolize_keys
+        updated = true
+        break
+      end
+    end
+
+    current_states << new_state.deep_symbolize_keys unless updated
+    save_domain(STATES_DOMAIN, current_states)
   end
 
   def states_healthy?
@@ -107,7 +123,7 @@ class HomeAssistantApi
         parts = it[:state].split(",").map(&:strip)
         next if parts.length < 2
 
-        CalendarEvent.new(
+        DisplayEvent.new(
           id: "_daily_event_#{it[:entity_id]}",
           starts_at: today.to_time,
           ends_at: (today + 1.day).to_time,
@@ -150,7 +166,7 @@ class HomeAssistantApi
 
   def feels_like_temperature
     ha_unit = ha_temperature_unit
-    display_unit = @config["temperature_unit"] || "F"
+    display_unit = @config.temperature_unit
 
     override = data.find { it[:entity_id].end_with?("timeframe_weather_feels_like_entity_id") }
 
@@ -185,6 +201,7 @@ class HomeAssistantApi
   end
 
   def config_data
+    fetch_config unless config_last_fetched_at
     domain_data(CONFIG_DOMAIN)
   end
 
@@ -270,7 +287,7 @@ class HomeAssistantApi
   end
 
   def calendar_events
-    @calendar_events ||= (domain_value(CALENDAR_DOMAIN)[:response] || []).map { CalendarEvent.new(**it.symbolize_keys!) }
+    @calendar_events ||= (domain_value(CALENDAR_DOMAIN)[:response] || []).map { DisplayEvent.new(**it.symbolize_keys!) }
   end
 
   def fetch_calendar_list
@@ -362,15 +379,15 @@ class HomeAssistantApi
   end
 
   def speed_unit
-    @config["speed_unit"] || "mph"
+    @config.speed_unit
   end
 
   def precipitation_unit
-    @config["precipitation_unit"] || "in"
+    @config.precipitation_unit
   end
 
   def temperature_unit
-    @config["temperature_unit"] || "F"
+    @config.temperature_unit
   end
 
   def convert_speed(value)
@@ -432,7 +449,7 @@ class HomeAssistantApi
 
         next unless weather_hour.present?
 
-        CalendarEvent.new(
+        DisplayEvent.new(
           id: "_ha_weather_hour_#{hour.to_i}",
           starts_at: hour,
           ends_at: hour,
@@ -451,7 +468,7 @@ class HomeAssistantApi
     days.map do |day|
       dt = DateTime.parse(day[:datetime])
 
-      CalendarEvent.new(
+      DisplayEvent.new(
         id: "_ha_weather_day_#{dt.to_i}",
         starts_at: dt.to_i,
         ends_at: (dt + 1.day).to_i,
@@ -512,7 +529,7 @@ class HomeAssistantApi
         it[:precipitation_type].capitalize
       end
 
-      CalendarEvent.new(
+      DisplayEvent.new(
         id: "#{it[:start_i]}_ha_precip",
         starts_at: it[:start_i],
         ends_at: it[:end_i],
@@ -557,7 +574,7 @@ class HomeAssistantApi
       avg_y = radians.sum { |r| Math.sin(r) } / radians.size
       avg_wind_direction = (Math.atan2(avg_y, avg_x) * 180 / Math::PI).round
 
-      CalendarEvent.new(
+      DisplayEvent.new(
         id: "#{it[:start_i]}_ha_wind",
         starts_at: it[:start_i],
         ends_at: it[:end_i],

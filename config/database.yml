@@ -1,16 +1,21 @@
 default: &default
-  adapter: sqlite3
+  adapter: postgresql
+  encoding: unicode
   pool: 5
-  timeout: 5000
+  host: <%= ENV.fetch("POSTGRES_HOST", "localhost") %>
+  port: <%= ENV.fetch("POSTGRES_PORT", 5432) %>
+  username: <%= ENV["POSTGRES_USER"] %>
+  password: <%= ENV["POSTGRES_PASSWORD"] %>
 
 development:
   <<: *default
-  database: db/development.sqlite3
+  database: timeframe_development
 
 test:
   <<: *default
-  database: db/test.sqlite3
+  database: timeframe_test
 
 production:
   <<: *default
-  database: <%= ENV["SUPERVISOR_TOKEN"] ? "/data/timeframe.sqlite3" : "db/production.sqlite3" %>
+  url: <%= ENV["DATABASE_URL"] %>
+  database: timeframe_production

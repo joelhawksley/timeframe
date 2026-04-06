@@ -8,19 +8,19 @@ class HomeAssistantApiTest < Minitest::Test
   # --- Infrastructure ---
 
   def test_headers
-    api = HomeAssistantApi.new({"home_assistant_token" => "test_token"})
+    api = HomeAssistantApi.new(TimeframeConfig.new(home_assistant_token: "test_token"))
     headers = api.headers
     assert_equal "Bearer test_token", headers[:Authorization]
     assert_equal "application/json", headers[:"content-type"]
   end
 
   def test_home_assistant_base_url_without_config
-    api = HomeAssistantApi.new({})
+    api = HomeAssistantApi.new(TimeframeConfig.new)
     assert_equal "http://homeassistant.local:8123", api.home_assistant_base_url
   end
 
-  def test_home_assistant_base_url_nil_config
-    api = HomeAssistantApi.new(nil)
+  def test_home_assistant_base_url_default
+    api = HomeAssistantApi.new
     assert_equal "http://homeassistant.local:8123", api.home_assistant_base_url
   end
 
@@ -71,8 +71,7 @@ class HomeAssistantApiTest < Minitest::Test
   end
 
   def test_feels_like_temperature_converts_c_to_f
-    config = Timeframe::Application.config.local.dup
-    config["temperature_unit"] = "F"
+    config = TimeframeConfig.new(temperature_unit: "F")
     api = new_test_api(config)
     api.seed_config(time_zone: "America/Chicago", unit_system: {temperature: "°C", wind_speed: "km/h", accumulated_precipitation: "mm"})
     api.stub :data, [
@@ -83,8 +82,7 @@ class HomeAssistantApiTest < Minitest::Test
   end
 
   def test_feels_like_temperature_converts_f_to_c
-    config = Timeframe::Application.config.local.dup
-    config["temperature_unit"] = "C"
+    config = TimeframeConfig.new(temperature_unit: "C")
     api = HomeAssistantApi.new(config)
     api.stub :data, [
       {entity_id: "sensor.timeframe_weather_feels_like_entity_id", state: "sensor.feels_like"},
@@ -669,7 +667,7 @@ class HomeAssistantApiTest < Minitest::Test
     assert_equal(false, api.private_mode?)
 
     data = [
-      CalendarEvent.new(
+      DisplayEvent.new(
         starts_at: DateTime.new(2024, 9, 5, 12, 0, 0, "-0600"),
         ends_at: DateTime.new(2024, 9, 5, 16, 0, 0, "-0600"),
         summary: "timeframe-private"
@@ -934,8 +932,7 @@ class HomeAssistantApiTest < Minitest::Test
   def test_precip_rain_converts_in_to_mm
     future_time = (Time.now + 1.hour).utc.beginning_of_hour.iso8601
 
-    config = Timeframe::Application.config.local.dup
-    config["precipitation_unit"] = "mm"
+    config = TimeframeConfig.new(precipitation_unit: "mm")
     api = HomeAssistantApi.new(config)
     api.stub :hourly_forecast, [
       {datetime: future_time, condition: "rainy", precipitation_probability: 80, precipitation: 1.0}
@@ -949,8 +946,7 @@ class HomeAssistantApiTest < Minitest::Test
   def test_precip_snow_converts_in_to_cm
     future_time = (Time.now + 1.hour).utc.beginning_of_hour.iso8601
 
-    config = Timeframe::Application.config.local.dup
-    config["precipitation_unit"] = "mm"
+    config = TimeframeConfig.new(precipitation_unit: "mm")
     api = HomeAssistantApi.new(config)
     api.stub :hourly_forecast, [
       {datetime: future_time, condition: "snowy", precipitation_probability: 80, precipitation: 1.0}
@@ -964,8 +960,7 @@ class HomeAssistantApiTest < Minitest::Test
   def test_precip_rain_from_mm_ha
     future_time = (Time.now + 1.hour).utc.beginning_of_hour.iso8601
 
-    config = Timeframe::Application.config.local.dup
-    config["precipitation_unit"] = "mm"
+    config = TimeframeConfig.new(precipitation_unit: "mm")
     api = new_test_api(config)
     api.seed_config(time_zone: "America/Chicago", unit_system: {temperature: "°C", wind_speed: "km/h", accumulated_precipitation: "mm"})
     api.stub :hourly_forecast, [
@@ -980,8 +975,7 @@ class HomeAssistantApiTest < Minitest::Test
   def test_precip_snow_from_mm_ha
     future_time = (Time.now + 1.hour).utc.beginning_of_hour.iso8601
 
-    config = Timeframe::Application.config.local.dup
-    config["precipitation_unit"] = "mm"
+    config = TimeframeConfig.new(precipitation_unit: "mm")
     api = new_test_api(config)
     api.seed_config(time_zone: "America/Chicago", unit_system: {temperature: "°C", wind_speed: "km/h", accumulated_precipitation: "mm"})
     api.stub :hourly_forecast, [
@@ -996,8 +990,7 @@ class HomeAssistantApiTest < Minitest::Test
   def test_precip_snow_from_cm_ha
     future_time = (Time.now + 1.hour).utc.beginning_of_hour.iso8601
 
-    config = Timeframe::Application.config.local.dup
-    config["precipitation_unit"] = "mm"
+    config = TimeframeConfig.new(precipitation_unit: "mm")
     api = new_test_api(config)
     api.seed_config(time_zone: "America/Chicago", unit_system: {temperature: "°C", wind_speed: "km/h", accumulated_precipitation: "cm"})
     api.stub :hourly_forecast, [
@@ -1012,8 +1005,7 @@ class HomeAssistantApiTest < Minitest::Test
   def test_precip_rain_from_cm_ha
     future_time = (Time.now + 1.hour).utc.beginning_of_hour.iso8601
 
-    config = Timeframe::Application.config.local.dup
-    config["precipitation_unit"] = "mm"
+    config = TimeframeConfig.new(precipitation_unit: "mm")
     api = new_test_api(config)
     api.seed_config(time_zone: "America/Chicago", unit_system: {temperature: "°C", wind_speed: "km/h", accumulated_precipitation: "cm"})
     api.stub :hourly_forecast, [
@@ -1121,8 +1113,7 @@ class HomeAssistantApiTest < Minitest::Test
   def test_wind_calendar_events_with_kph_unit
     future_time = (Time.now + 1.hour).utc.beginning_of_hour.iso8601
 
-    config = Timeframe::Application.config.local.dup
-    config["speed_unit"] = "kph"
+    config = TimeframeConfig.new(speed_unit: "kph")
     api = HomeAssistantApi.new(config)
     api.stub :hourly_forecast, [
       {datetime: future_time, wind_gust_speed: 40.0, wind_bearing: 180}
@@ -1136,8 +1127,7 @@ class HomeAssistantApiTest < Minitest::Test
   def test_wind_calendar_events_kph_threshold
     future_time = (Time.now + 1.hour).utc.beginning_of_hour.iso8601
 
-    config = Timeframe::Application.config.local.dup
-    config["speed_unit"] = "kph"
+    config = TimeframeConfig.new(speed_unit: "kph")
     api = HomeAssistantApi.new(config)
     api.stub :hourly_forecast, [
       {datetime: future_time, wind_gust_speed: 15.0, wind_bearing: 180}
@@ -1161,8 +1151,7 @@ class HomeAssistantApiTest < Minitest::Test
   def test_convert_speed_mph_to_kph
     future_time = (Time.now + 1.hour).utc.beginning_of_hour.iso8601
 
-    config = Timeframe::Application.config.local.dup
-    config["speed_unit"] = "kph"
+    config = TimeframeConfig.new(speed_unit: "kph")
     api = HomeAssistantApi.new(config)
     api.stub :hourly_forecast, [
       {datetime: future_time, wind_gust_speed: 25.0, wind_bearing: 180}
@@ -1176,8 +1165,7 @@ class HomeAssistantApiTest < Minitest::Test
   def test_convert_speed_kph_to_mph
     future_time = (Time.now + 1.hour).utc.beginning_of_hour.iso8601
 
-    config = Timeframe::Application.config.local.dup
-    config["speed_unit"] = "mph"
+    config = TimeframeConfig.new(speed_unit: "mph")
     api = new_test_api(config)
     api.seed_config(time_zone: "America/Chicago", unit_system: {temperature: "°C", wind_speed: "km/h", accumulated_precipitation: "mm"})
     api.stub :hourly_forecast, [
@@ -1200,8 +1188,7 @@ class HomeAssistantApiTest < Minitest::Test
   end
 
   def test_convert_temperature_f_to_c
-    config = Timeframe::Application.config.local.dup
-    config["temperature_unit"] = "C"
+    config = TimeframeConfig.new(temperature_unit: "C")
     api = HomeAssistantApi.new(config)
 
     api.stub :daily_forecast, [
@@ -1213,8 +1200,7 @@ class HomeAssistantApiTest < Minitest::Test
   end
 
   def test_convert_temperature_c_to_f
-    config = Timeframe::Application.config.local.dup
-    config["temperature_unit"] = "F"
+    config = TimeframeConfig.new(temperature_unit: "F")
     api = new_test_api(config)
     api.seed_config(time_zone: "America/Chicago", unit_system: {temperature: "°C", wind_speed: "km/h", accumulated_precipitation: "mm"})
 
@@ -1288,5 +1274,41 @@ class HomeAssistantApiTest < Minitest::Test
     api.stub :weather_data, {} do
       assert_nil api.attribution
     end
+  end
+
+  # --- WebSocket State Updates ---
+
+  def test_update_entity_state_updates_existing_entity
+    api = new_test_api
+    api.send(:save_domain, HomeAssistantApi::STATES_DOMAIN, [
+      {"entity_id" => "sensor.test", "state" => "old"}
+    ])
+
+    api.update_entity_state("sensor.test", {"entity_id" => "sensor.test", "state" => "new"})
+
+    states = api.send(:domain_data, HomeAssistantApi::STATES_DOMAIN)
+    entity = states.find { |s| s[:entity_id] == "sensor.test" }
+    assert_equal "new", entity[:state]
+  end
+
+  def test_update_entity_state_adds_new_entity
+    api = new_test_api
+    api.send(:save_domain, HomeAssistantApi::STATES_DOMAIN, [
+      {"entity_id" => "sensor.existing", "state" => "ok"}
+    ])
+
+    api.update_entity_state("sensor.new_one", {"entity_id" => "sensor.new_one", "state" => "hello"})
+
+    states = api.send(:domain_data, HomeAssistantApi::STATES_DOMAIN)
+    assert_equal 2, states.length
+    new_entity = states.find { |s| s[:entity_id] == "sensor.new_one" }
+    assert_equal "hello", new_entity[:state]
+  end
+
+  def test_update_entity_state_does_nothing_when_no_states_cached
+    api = new_test_api
+    # No states cached — domain_data returns {}
+    api.update_entity_state("sensor.test", {"entity_id" => "sensor.test", "state" => "x"})
+    # Should not raise
   end
 end
