@@ -495,7 +495,7 @@ DEPENDENCIES
   websocket-client-simple
 
 RUBY VERSION
-   ruby 3.4.3p32
+   ruby 4.0.2p0
 
 BUNDLED WITH
    2.5.11

@@ -5,6 +5,7 @@ timeframe_config = TimeframeConfig.new
 if timeframe_config.home_assistant?
   api = HomeAssistantApi.new
   api.fetch_config
+  api.fetch_states
   api.fetch_calendars
   api.fetch_weather
 
