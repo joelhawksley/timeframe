@@ -96,8 +96,11 @@ class VisionectProtocol::ImageEncoderTest < Minitest::Test
   def generate_test_png(width, height, color: "gray50")
     require "mini_magick"
     img = MiniMagick::Image.create(".png") do |f|
-      system("magick", "-size", "#{width}x#{height}", "xc:#{color}", f.path,
-        out: File::NULL, err: File::NULL)
+      MiniMagick.convert do |c|
+        c.size "#{width}x#{height}"
+        c << "xc:#{color}"
+        c << f.path
+      end
     end
     img.to_blob
   end

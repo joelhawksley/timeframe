@@ -149,8 +149,11 @@ class DeviceTest < Minitest::Test
   def generate_test_png
     require "mini_magick"
     img = MiniMagick::Image.create(".png") do |f|
-      system("magick", "-size", "1600x1200", "xc:white", f.path,
-        out: File::NULL, err: File::NULL)
+      MiniMagick.convert do |c|
+        c.size "1600x1200"
+        c << "xc:white"
+        c << f.path
+      end
     end
     img.to_blob
   end
