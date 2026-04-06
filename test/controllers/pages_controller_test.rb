@@ -3,15 +3,13 @@
 require "test_helper"
 
 class PagesControllerTest < ActionDispatch::IntegrationTest
-  test "privacy page is publicly accessible" do
+  test "privacy page returns not found in single-tenant mode" do
     get "/privacy"
-    assert_response :success
-    assert_includes response.body, "Privacy Policy"
+    assert_response :not_found
   end
 
-  test "terms page is publicly accessible" do
+  test "terms page returns not found in single-tenant mode" do
     get "/terms"
-    assert_response :success
-    assert_includes response.body, "Terms of Service"
+    assert_response :not_found
   end
 end

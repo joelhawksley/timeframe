@@ -34,7 +34,6 @@ Rails.application.routes.draw do
     resources :google_accounts, only: [:destroy]
     resources :displays, only: [:show] do
       member do
-        get :preview
         get :screenshot
       end
     end

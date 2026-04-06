@@ -29,7 +29,7 @@ plugin :"rufus-scheduler"
 #
 # Normal mode: runs the custom protocol server (when VISIONECT_PROXY_TARGET is unset).
 after_booted do
-  start_visionect_server
+  start_visionect_server if ENV["VISIONECT_SERVER"] == "true"
 end
 
 def start_visionect_server

@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+CONFIG="config.json"
+CHANGELOG="CHANGELOG.md"
+
+# Read current version
+version=$(ruby -rjson -e "puts JSON.parse(File.read('$CONFIG'))['version']")
+
+echo "Publishing v$version"
+echo ""
+
+# Verify changelog entry exists
+if ! grep -q "## \[$version\]" "$CHANGELOG"; then
+  echo "✗ No changelog entry found for $version"
+  echo "  Run script/release first to create one."
+  exit 1
+fi
+
+# Run tests
+echo "Running tests..."
+if ! bin/rails test; then
+  echo ""
+  echo "✗ Tests failed. Fix before publishing."
+  exit 1
+fi
+echo "✓ Tests passed"
+echo ""
+
+# Check for uncommitted changes
+if [[ -n $(git status --porcelain) ]]; then
+  echo "Uncommitted changes:"
+  git status --short
+  echo ""
+  read -rp "Commit all changes as v$version? [y/N] " confirm
+  if [[ "$confirm" != "y" && "$confirm" != "Y" ]]; then
+    echo "Aborted."
+    exit 1
+  fi
+fi
+
+# Commit, tag, push
+git add -A
+git commit -m "Release v$version"
+git tag "v$version"
+git push
+git push --tags
+
+echo ""
+echo "✓ Published v$version"
+echo "  https://github.com/joelhawksley/timeframe/releases/tag/v$version"

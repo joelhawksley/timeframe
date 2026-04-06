@@ -145,18 +145,24 @@
   <% if @refresh %>
     // Action Cable: subscribe to display updates
     var knownDeployTime = '<%= DEPLOY_TIME %>';
+    var displayUrl = '<%= account_display_path(account_id: params[:account_id], id: @device.id) %>';
     var cable = ActionCable.createConsumer();
     cable.subscriptions.create(
       { channel: 'DisplayChannel', device_id: '<%= @device.id %>' },
       {
         received: function(data) {
-          if (data.deploy_time && data.deploy_time !== knownDeployTime) {
+          if (data.deploy_time && data.deploy_time.toString() !== knownDeployTime) {
             window.location.reload();
             return;
           }
-          if (data.html) {
-            document.body.innerHTML = data.html;
-            window.initMiraClock();
+          if (data.action === 'refresh') {
+            fetch(displayUrl + '?layout=false')
+              .then(function(r) { return r.text(); })
+              .then(function(html) {
+                document.body.innerHTML = html;
+                window.initMiraClock();
+              })
+              .catch(function(e) { console.error('[Timeframe] Refresh failed:', e); });
           }
         }
       }

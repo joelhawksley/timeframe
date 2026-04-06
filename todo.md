@@ -1,6 +1,5 @@
 HA addon re-launch
 
-release automation
 
 support for boox 13"
 scale down TRMNL a little bit to fit more

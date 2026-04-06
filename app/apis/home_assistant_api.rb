@@ -48,6 +48,23 @@ class HomeAssistantApi
     save_domain(STATES_DOMAIN, JSON.parse(response.body))
   end
 
+  def update_entity_state(entity_id, new_state)
+    current_states = domain_data(STATES_DOMAIN)
+    return unless current_states.is_a?(Array)
+
+    updated = false
+    current_states.each_with_index do |state, i|
+      if state[:entity_id] == entity_id || state["entity_id"] == entity_id
+        current_states[i] = new_state.deep_symbolize_keys
+        updated = true
+        break
+      end
+    end
+
+    current_states << new_state.deep_symbolize_keys unless updated
+    save_domain(STATES_DOMAIN, current_states)
+  end
+
   def states_healthy?
     fetched = states_last_fetched_at
     return false unless fetched

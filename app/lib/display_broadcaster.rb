@@ -20,12 +20,7 @@ class DisplayBroadcaster
       end
 
       if should_broadcast
-        html = ApplicationController.renderer.render(
-          template: "displays/mira",
-          layout: false,
-          locals: {view_object: data}
-        )
-        DisplayChannel.broadcast_to(device, {html: html, deploy_time: DEPLOY_TIME})
+        DisplayChannel.broadcast_to(device, {action: "refresh", deploy_time: DEPLOY_TIME})
         Rails.logger.info "[DisplayBroadcaster] Content pushed to #{device.name}"
       end
     end

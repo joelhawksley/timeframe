@@ -1275,4 +1275,40 @@ class HomeAssistantApiTest < Minitest::Test
       assert_nil api.attribution
     end
   end
+
+  # --- WebSocket State Updates ---
+
+  def test_update_entity_state_updates_existing_entity
+    api = new_test_api
+    api.send(:save_domain, HomeAssistantApi::STATES_DOMAIN, [
+      {"entity_id" => "sensor.test", "state" => "old"}
+    ])
+
+    api.update_entity_state("sensor.test", {"entity_id" => "sensor.test", "state" => "new"})
+
+    states = api.send(:domain_data, HomeAssistantApi::STATES_DOMAIN)
+    entity = states.find { |s| s[:entity_id] == "sensor.test" }
+    assert_equal "new", entity[:state]
+  end
+
+  def test_update_entity_state_adds_new_entity
+    api = new_test_api
+    api.send(:save_domain, HomeAssistantApi::STATES_DOMAIN, [
+      {"entity_id" => "sensor.existing", "state" => "ok"}
+    ])
+
+    api.update_entity_state("sensor.new_one", {"entity_id" => "sensor.new_one", "state" => "hello"})
+
+    states = api.send(:domain_data, HomeAssistantApi::STATES_DOMAIN)
+    assert_equal 2, states.length
+    new_entity = states.find { |s| s[:entity_id] == "sensor.new_one" }
+    assert_equal "hello", new_entity[:state]
+  end
+
+  def test_update_entity_state_does_nothing_when_no_states_cached
+    api = new_test_api
+    # No states cached — domain_data returns {}
+    api.update_entity_state("sensor.test", {"entity_id" => "sensor.test", "state" => "x"})
+    # Should not raise
+  end
 end

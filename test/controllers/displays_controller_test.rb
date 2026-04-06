@@ -91,17 +91,6 @@ class DisplaysControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "Tomorrow"
   end
 
-  test "preview returns device preview page" do
-    get "/accounts/#{@account.id}/displays/#{@thirteen.id}/preview"
-    assert_response :success
-    assert_includes response.body, @thirteen.id.to_s
-  end
-
-  test "preview returns 404 for unknown device" do
-    get "/accounts/#{@account.id}/displays/nonexistent/preview"
-    assert_response :not_found
-  end
-
   test "screenshot returns image for device with cached image" do
     @thirteen.update!(cached_image: Base64.strict_encode64("fake png data"), cached_image_at: Time.current)
     get "/accounts/#{@account.id}/displays/#{@thirteen.id}/screenshot"

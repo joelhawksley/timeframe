@@ -10,7 +10,7 @@ class DisplaysController < ApplicationController
       return
     end
 
-    @device.update_column(:last_connection_at, Time.current)
+    @device.update_column(:last_connection_at, Time.current) if session[:device_session_token].present?
 
     template = Device::SUPPORTED_MODELS.dig(@device.model, :template)
 
@@ -21,13 +21,6 @@ class DisplaysController < ApplicationController
     render template, locals: {view_object: view_object}, layout: params[:layout] != "false"
   rescue => e
     render "error", locals: {klass: e.class.to_s, message: e.message, backtrace: e.backtrace}
-  end
-
-  def preview
-    @width = @device.display_width
-    @height = @device.display_height
-    @display_url = account_display_path(account_id: params[:account_id], id: @device.id)
-    render layout: false
   end
 
   def screenshot

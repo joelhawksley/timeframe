@@ -4,14 +4,23 @@ timeframe_config = TimeframeConfig.new
 
 if timeframe_config.home_assistant?
   api = HomeAssistantApi.new
-  api.fetch_states
   api.fetch_config
   api.fetch_calendars
   api.fetch_weather
 
-  scheduler.every "2s" do
-    HomeAssistantApi.new.fetch_states
-    DisplayBroadcaster.broadcast_all_mira_displays
+  # Start WebSocket client for real-time state updates (replaces 2s polling)
+  Thread.new do
+    HomeAssistantWebSocket.new.start
+  rescue => e
+    Rails.logger.error "[HA WebSocket] Thread error: #{e.message}"
+  end
+
+  scheduler.every "30s" do
+    api = HomeAssistantApi.new
+    unless api.states_healthy?
+      api.fetch_states
+      DisplayBroadcaster.broadcast_all_mira_displays
+    end
   end
 
   scheduler.every "5m" do

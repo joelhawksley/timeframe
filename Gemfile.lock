@@ -127,6 +127,7 @@ GEM
     erubi (1.13.1)
     et-orbi (1.4.0)
       tzinfo
+    event_emitter (0.2.6)
     extlz4 (0.3.5)
     faraday (2.14.1)
       faraday-net_http (>= 2.0, < 3.5)
@@ -232,6 +233,7 @@ GEM
     multi_json (1.19.1)
     multi_xml (0.8.1)
       bigdecimal (>= 3.1, < 5)
+    mutex_m (0.3.0)
     net-http (0.9.1)
       uri (>= 0.11.1)
     net-imap (0.6.3)
@@ -438,6 +440,12 @@ GEM
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
     webrick (1.9.2)
+    websocket (1.2.11)
+    websocket-client-simple (0.9.0)
+      base64
+      event_emitter
+      mutex_m
+      websocket
     websocket-driver (0.8.0)
       base64
       websocket-extensions (>= 0.1.0)
@@ -484,6 +492,7 @@ DEPENDENCIES
   timezone_finder
   vcr
   webmock
+  websocket-client-simple
 
 RUBY VERSION
    ruby 3.4.3p32

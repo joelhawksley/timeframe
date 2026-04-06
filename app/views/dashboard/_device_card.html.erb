@@ -32,12 +32,10 @@
           &#x2026;
         </button>
         <ul class="dropdown-menu dropdown-menu-end">
-          <li><a class="dropdown-item" href="<%= account_display_path(account, device) %>">Open</a></li>
-          <li><a class="dropdown-item" href="<%= preview_account_display_path(account, device) %>">Preview</a></li>
           <% if device.trmnl? %>
             <li><a class="dropdown-item" href="<%= screenshot_account_display_path(account, device) %>">Screenshot</a></li>
+            <li><hr class="dropdown-divider"></li>
           <% end %>
-          <li><hr class="dropdown-divider"></li>
           <li>
             <%= form_with url: account_location_device_path(account, location, device), method: :patch do %>
               <%= submit_tag(device.demo_mode_enabled? ? "Disable Demo Mode" : "Enable Demo Mode", class: "dropdown-item", style: "border: none; background: none; width: 100%; text-align: left; cursor: pointer;") %>
