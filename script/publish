@@ -48,4 +48,4 @@ git push --tags
 
 echo ""
 echo "✓ Published v$version"
-echo "  https://github.com/joelhawksley/timeframe/releases/tag/v$version"
+echo "  https://github.com/timeframe/timeframe/releases/tag/v$version"

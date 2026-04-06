@@ -3,7 +3,7 @@
   "version": "2.0.0",
   "slug": "timeframe",
   "description": "An e-paper calendar, weather, and smart home family dashboard",
-  "url": "https://github.com/joelhawksley/timeframe",
+  "url": "https://github.com/timeframe/timeframe",
   "arch": ["aarch64", "amd64"],
   "homeassistant_api": true,
   "hassio_role": "default",

@@ -14,7 +14,7 @@ An e-paper calendar, weather, and smart home family dashboard
 
 1. In Home Assistant, go to **Settings → Add-ons → Add-on Store**
 2. Click the three-dot menu (⋮) → **Repositories**
-3. Add this repository URL: `https://github.com/joelhawksley/timeframe`
+3. Add this repository URL: `https://github.com/timeframe/timeframe`
 4. Find **Timeframe** in the add-on store and click **Install**
 5. Click **Start**
 6. Access the app at port 8099 (e.g. `http://homeassistant.local:8099`)
