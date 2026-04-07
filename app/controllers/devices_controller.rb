@@ -1,8 +1,37 @@
 # frozen_string_literal: true
 
 class DevicesController < ApplicationController
-  skip_before_action :authenticate_user!, raise: false, only: [:confirmation_image]
-  before_action :set_account_and_location, except: [:confirmation_image]
+  skip_before_action :authenticate_user!, raise: false, only: [:confirmation_image, :show, :screenshot]
+  before_action :set_account_and_location, except: [:confirmation_image, :show, :screenshot]
+  before_action :authorize_display_access!, only: [:show, :screenshot]
+  layout "display", only: [:show]
+  after_action(only: [:show, :screenshot]) { response.headers["X-Deploy-Time"] = DEPLOY_TIME.to_s }
+
+  def show
+    if @device.pending_confirmation?
+      render "displays/confirmation", locals: {device: @device}, layout: params[:layout] != "false"
+      return
+    end
+
+    @device.update_column(:last_connection_at, Time.current) if session[:device_session_token].present?
+
+    template = Device::SUPPORTED_MODELS.dig(@device.model, :template)
+
+    if template == "mira"
+      @refresh = params[:refresh] != "false"
+    end
+
+    render "displays/#{template}", locals: {view_object: display_view_object}, layout: params[:layout] != "false"
+  rescue => e
+    render "displays/error", locals: {klass: e.class.to_s, message: e.message, backtrace: e.backtrace}
+  end
+
+  def screenshot
+    @device.refresh_screenshot!(request.base_url) if @device.cached_image.blank? || params[:force] == "true"
+    image_data = Base64.strict_decode64(@device.reload.cached_image)
+
+    send_data image_data, type: "image/png", disposition: "inline", filename: "#{@device.id}.png?#{Time.now.to_i}"
+  end
 
   def create
     model = params[:device_model]
@@ -105,5 +134,46 @@ class DevicesController < ApplicationController
   def set_account_and_location
     @account = current_user.accounts.find(params[:account_id])
     @location = @account.locations.find(params[:location_id])
+  end
+
+  def authorize_display_access!
+    if params[:account_id] && params[:location_id]
+      account = Account.find_by(id: params[:account_id])
+      return render(plain: "Account not found", status: :not_found) unless account
+      location = account.locations.find_by(id: params[:location_id])
+      return render(plain: "Location not found", status: :not_found) unless location
+      @device = location.devices.find_by(id: params[:id])
+    # :nocov:
+    elsif current_user
+      @device = current_user.accounts.flat_map(&:devices).find { |d| d.id == params[:id].to_i }
+      # :nocov:
+    end
+
+    return render(plain: "Device not found", status: :not_found) unless @device
+
+    return if current_user&.accounts&.exists?(id: @device.account&.id)
+
+    # :nocov:
+    if session[:device_session_token].present? && @device.session_token.present? &&
+        ActiveSupport::SecurityUtils.secure_compare(@device.session_token, session[:device_session_token])
+      return
+    end
+
+    render plain: "Not authorized", status: :unauthorized
+    # :nocov:
+  end
+
+  def display_view_object
+    if @device.demo_mode_enabled?
+      DemoDisplayContent.new.call
+    else
+      config = TimeframeConfig.new
+      # :nocov:
+      weather_kit = if !config.home_assistant? && config.weatherkit? && @device.location
+        WeatherKitApi.new(location: @device.location)
+      end
+      # :nocov:
+      DisplayContent.new.call(weather_kit_api: weather_kit)
+    end
   end
 end

@@ -24,15 +24,11 @@ Rails.application.routes.draw do
 
   resources :accounts, only: [:create, :destroy] do
     resources :locations, only: [:create, :destroy] do
-      resources :devices, only: [:create, :update, :destroy] do
+      resources :devices, only: [:create, :show, :update, :destroy] do
         get :confirmation_image, on: :member
+        get :screenshot, on: :member
         post :regenerate_tokens, on: :member
         post :repair, on: :member
-      end
-      resources :displays, only: [:show] do
-        member do
-          get :screenshot
-        end
       end
     end
     resources :calendars, only: [:index, :new, :create, :destroy]

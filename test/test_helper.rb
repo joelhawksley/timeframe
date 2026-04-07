@@ -29,7 +29,6 @@ SimpleCov.start do
 
   # Controllers with complex session/auth dependencies tested at integration level
   add_filter "app/controllers/setup_controller.rb"
-  add_filter "app/controllers/displays_controller.rb"
   add_filter "app/controllers/token_displays_controller.rb"
   add_filter "app/controllers/signed_screenshots_controller.rb"
   add_filter "app/controllers/application_controller.rb"

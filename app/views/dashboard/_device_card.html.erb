@@ -4,7 +4,7 @@
       <h5 class="mb-0"><%= device.name %></h5>
     </div>
     <div class="card-body p-0">
-      <% preview_url = device.visionect? ? device.token_display_url(host: request.base_url) : account_location_display_path(account, device.location, device) %>
+      <% preview_url = device.visionect? ? device.token_display_url(host: request.base_url) : account_location_device_path(account, device.location, device) %>
       <% aspect_ratio = (device.display_height.to_f / device.display_width * 100).round(2) %>
       <div style="position: relative; width: 100%; padding-bottom: <%= aspect_ratio %>%; overflow: hidden;">
         <iframe
@@ -33,7 +33,7 @@
         </button>
         <ul class="dropdown-menu dropdown-menu-end">
           <% if device.trmnl? %>
-            <li><a class="dropdown-item" href="<%= screenshot_account_location_display_path(account, device.location, device) %>">Screenshot</a></li>
+            <li><a class="dropdown-item" href="<%= screenshot_account_location_device_path(account, device.location, device) %>">Screenshot</a></li>
             <li><hr class="dropdown-divider"></li>
           <% end %>
           <li>

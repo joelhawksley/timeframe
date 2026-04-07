@@ -268,4 +268,147 @@ class DevicesControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :not_found
   end
+
+  # --- Display (show/screenshot) tests ---
+
+  test "should get mira display with no data" do
+    mira = Device.find_or_create_by!(name: "test-mira", model: "boox_mira_pro") { |d| d.location = @location }
+    mira.update!(demo_mode_enabled: false, confirmed_at: Time.current, confirmation_code: nil)
+    Rails.cache.delete(DEPLOY_TIME.to_s + HomeAssistantApi::WEATHER_DOMAIN)
+
+    get "/accounts/#{@account.id}/locations/#{@location.id}/devices/#{mira.id}"
+
+    assert_includes response.body, "Tomorrow"
+    assert_response :success
+  end
+
+  test "should get thirteen display with no data" do
+    thirteen = Device.find_or_create_by!(name: "test-thirteen", model: "visionect_13") { |d| d.location = @location }
+    thirteen.update!(demo_mode_enabled: false, confirmed_at: Time.current, confirmation_code: nil)
+    Rails.cache.delete(DEPLOY_TIME.to_s + HomeAssistantApi::WEATHER_DOMAIN)
+
+    get "/accounts/#{@account.id}/locations/#{@location.id}/devices/#{thirteen.id}"
+
+    assert_includes response.body, "Tomorrow"
+    assert_response :success
+  end
+
+  test "should handle errors in thirteen display" do
+    thirteen = Device.find_or_create_by!(name: "test-thirteen", model: "visionect_13") { |d| d.location = @location }
+    thirteen.update!(demo_mode_enabled: false, confirmed_at: Time.current, confirmation_code: nil)
+
+    DisplayContent.stub :new, -> {
+      obj = Object.new
+      def obj.call(*)
+        raise StandardError.new("Test error message")
+      end
+      obj
+    } do
+      get "/accounts/#{@account.id}/locations/#{@location.id}/devices/#{thirteen.id}"
+
+      assert_response :success
+      assert_includes response.body, "StandardError"
+      assert_includes response.body, "Test error message"
+    end
+  end
+
+  test "should handle errors in mira display" do
+    mira = Device.find_or_create_by!(name: "test-mira", model: "boox_mira_pro") { |d| d.location = @location }
+    mira.update!(demo_mode_enabled: false, confirmed_at: Time.current, confirmation_code: nil)
+
+    DisplayContent.stub :new, -> {
+      obj = Object.new
+      def obj.call(*)
+        raise StandardError.new("Test error message")
+      end
+      obj
+    } do
+      get "/accounts/#{@account.id}/locations/#{@location.id}/devices/#{mira.id}"
+
+      assert_response :success
+      assert_includes response.body, "StandardError"
+      assert_includes response.body, "Test error message"
+    end
+  end
+
+  test "display returns 404 for unknown device" do
+    get "/accounts/#{@account.id}/locations/#{@location.id}/devices/nonexistent"
+    assert_response :not_found
+  end
+
+  test "should get mira display in demo mode" do
+    mira = Device.find_or_create_by!(name: "test-mira", model: "boox_mira_pro") { |d| d.location = @location }
+    mira.update!(demo_mode_enabled: true, confirmed_at: Time.current, confirmation_code: nil)
+
+    get "/accounts/#{@account.id}/locations/#{@location.id}/devices/#{mira.id}"
+
+    assert_response :success
+    assert_includes response.body, "Spotted Towhee"
+    assert_includes response.body, "Tycho"
+    assert_includes response.body, "Tomorrow"
+  end
+
+  test "should get thirteen display in demo mode" do
+    thirteen = Device.find_or_create_by!(name: "test-thirteen", model: "visionect_13") { |d| d.location = @location }
+    thirteen.update!(demo_mode_enabled: true, confirmed_at: Time.current, confirmation_code: nil)
+
+    get "/accounts/#{@account.id}/locations/#{@location.id}/devices/#{thirteen.id}"
+
+    assert_response :success
+    assert_includes response.body, "Spotted Towhee"
+    assert_includes response.body, "Tomorrow"
+  end
+
+  test "screenshot returns image for device with cached image" do
+    thirteen = Device.find_or_create_by!(name: "test-thirteen", model: "visionect_13") { |d| d.location = @location }
+    thirteen.update!(confirmed_at: Time.current, confirmation_code: nil, cached_image: Base64.strict_encode64("fake png data"), cached_image_at: Time.current)
+
+    get "/accounts/#{@account.id}/locations/#{@location.id}/devices/#{thirteen.id}/screenshot"
+    assert_response :success
+    assert_equal "image/png", response.media_type
+  end
+
+  test "screenshot refreshes and returns image when no cache" do
+    thirteen = Device.find_or_create_by!(name: "test-thirteen", model: "visionect_13") { |d| d.location = @location }
+    thirteen.update!(confirmed_at: Time.current, confirmation_code: nil, cached_image: nil, cached_image_at: nil)
+    fake_b64 = Base64.strict_encode64("fake png data")
+
+    ScreenshotService.stub :capture, fake_b64 do
+      get "/accounts/#{@account.id}/locations/#{@location.id}/devices/#{thirteen.id}/screenshot"
+      assert_response :success
+      assert_equal "image/png", response.media_type
+    end
+  end
+
+  test "screenshot returns 404 for unknown device" do
+    get "/accounts/#{@account.id}/locations/#{@location.id}/devices/nonexistent/screenshot"
+    assert_response :not_found
+  end
+
+  test "mira display sets refresh parameter" do
+    mira = Device.find_or_create_by!(name: "test-mira", model: "boox_mira_pro") { |d| d.location = @location }
+    mira.update!(demo_mode_enabled: false, confirmed_at: Time.current, confirmation_code: nil)
+
+    get "/accounts/#{@account.id}/locations/#{@location.id}/devices/#{mira.id}?refresh=false"
+    assert_response :success
+  end
+
+  test "show renders confirmation for unconfirmed device" do
+    device = Device.create!(name: "unconfirmed-#{SecureRandom.hex(4)}", model: "trmnl_og", location: @location, mac_address: "CC:DD:#{SecureRandom.hex(4).scan(/../).join(":").upcase}", api_key: SecureRandom.hex(16), friendly_id: SecureRandom.alphanumeric(6).upcase)
+    assert device.pending_confirmation?
+
+    get "/accounts/#{@account.id}/locations/#{@location.id}/devices/#{device.id}"
+    assert_response :success
+    assert_includes response.body, device.confirmation_code
+  end
+
+  test "show returns not found for invalid account" do
+    get "/accounts/999999/locations/#{@location.id}/devices/1"
+    assert_response :not_found
+  end
+
+  test "show returns not found for invalid location" do
+    get "/accounts/#{@account.id}/locations/999999/devices/1"
+    assert_response :not_found
+  end
 end
