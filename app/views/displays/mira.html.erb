@@ -145,7 +145,7 @@
   <% if @refresh %>
     // Action Cable: subscribe to display updates
     var knownDeployTime = '<%= DEPLOY_TIME %>';
-    var displayUrl = '<%= account_display_path(account_id: params[:account_id], id: @device.id) %>';
+    var displayUrl = '<%= account_location_display_path(account_id: params[:account_id], location_id: params[:location_id], id: @device.id) %>';
     var cable = ActionCable.createConsumer();
     cable.subscriptions.create(
       { channel: 'DisplayChannel', device_id: '<%= @device.id %>' },

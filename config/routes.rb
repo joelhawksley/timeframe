@@ -29,14 +29,14 @@ Rails.application.routes.draw do
         post :regenerate_tokens, on: :member
         post :repair, on: :member
       end
+      resources :displays, only: [:show] do
+        member do
+          get :screenshot
+        end
+      end
     end
     resources :calendars, only: [:index, :new, :create, :destroy]
     resources :google_accounts, only: [:destroy]
-    resources :displays, only: [:show] do
-      member do
-        get :screenshot
-      end
-    end
   end
 
   # Token-authenticated display routes for sessionless devices

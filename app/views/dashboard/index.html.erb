@@ -23,7 +23,7 @@
                     <% preview_scale = [200.0 / device.display_width, 300.0 / device.display_height].min %>
                     <div class="mb-2" style="background: #f8f9fa; border-radius: 4px; overflow: hidden; width: <%= (device.display_width * preview_scale).round %>px; height: <%= (device.display_height * preview_scale).round %>px;">
                       <iframe
-                        src="<%= account_display_path(account, device) %>"
+                        src="<%= account_location_display_path(account, device.location, device) %>"
                         width="<%= device.display_width %>"
                         height="<%= device.display_height %>"
                         scrolling="no"
@@ -39,10 +39,9 @@
                     <% end %>
 
                     <div class="d-flex flex-wrap gap-1 mb-2">
-                      <a href="<%= account_display_path(account, device) %>" class="btn btn-outline-primary btn-sm">Open</a>
-                      <a href="<%= preview_account_display_path(account, device) %>" class="btn btn-outline-primary btn-sm">Preview</a>
+                      <a href="<%= account_location_display_path(account, device.location, device) %>" class="btn btn-outline-primary btn-sm">Open</a>
                       <% if device.trmnl? %>
-                        <a href="<%= screenshot_account_display_path(account, device) %>" class="btn btn-outline-primary btn-sm">Screenshot</a>
+                        <a href="<%= screenshot_account_location_display_path(account, device.location, device) %>" class="btn btn-outline-primary btn-sm">Screenshot</a>
                       <% end %>
                       <%= form_with url: account_location_device_path(account, location, device), method: :patch, class: "d-inline" do %>
                         <%= submit_tag(device.demo_mode_enabled? ? "Demo Off" : "Demo On", class: "btn btn-outline-secondary btn-sm") %>

@@ -93,7 +93,7 @@ class Device < ActiveRecord::Base
     url = if visionect?
       token_display_url(host: base_url)
     else
-      account_display_url(account_id: account.id, id: id, host: base_url)
+      account_location_display_url(account_id: account.id, location_id: location.id, id: id, host: base_url)
     end
 
     self.cached_image = if visionect?

@@ -45,10 +45,12 @@ class DisplaysController < ApplicationController
   end
 
   def authorize_display_access!
-    if params[:account_id]
+    if params[:account_id] && params[:location_id]
       account = Account.find_by(id: params[:account_id])
       return render(plain: "Account not found", status: :not_found) unless account
-      @device = account.devices.find_by(id: params[:id])
+      location = account.locations.find_by(id: params[:location_id])
+      return render(plain: "Location not found", status: :not_found) unless location
+      @device = location.devices.find_by(id: params[:id])
     elsif current_user
       @device = current_user.accounts.flat_map(&:devices).find { |d| d.id == params[:id].to_i }
     end

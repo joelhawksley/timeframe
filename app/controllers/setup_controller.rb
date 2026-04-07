@@ -11,7 +11,7 @@ class SetupController < ApplicationController
     if session[:claimed_device_id] && session[:device_session_token]
       @device = Device.find_by(id: session[:claimed_device_id])
       if @device
-        return redirect_to account_display_path(@device.account, @device)
+        return redirect_to account_location_display_path(@device.account, @device.location, @device)
       else
         session.delete(:claimed_device_id)
         session.delete(:device_session_token)
@@ -31,7 +31,7 @@ class SetupController < ApplicationController
       session.delete(:pending_device_id)
       @pending_device.destroy!
 
-      return redirect_to account_display_path(@device.account, @device)
+      return redirect_to account_location_display_path(@device.account, @device.location, @device)
     end
 
     unless @pending_device
