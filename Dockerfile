@@ -20,6 +20,10 @@ RUN bundle config set --local without 'development test' && \
 COPY . .
 
 RUN mkdir -p /data
+RUN SECRET_KEY_BASE=precompile \
+    TIMEFRAME_HOME_ASSISTANT_TOKEN=precompile \
+    RAILS_ENV=production \
+    bundle exec rails assets:precompile
 
 ENV RAILS_ENV=production
 ENV PORT=8099

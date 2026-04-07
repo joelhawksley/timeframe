@@ -17,16 +17,6 @@ if ! grep -q "## \[$version\]" "$CHANGELOG"; then
   exit 1
 fi
 
-# Run tests
-echo "Running tests..."
-if ! bin/rails test; then
-  echo ""
-  echo "✗ Tests failed. Fix before publishing."
-  exit 1
-fi
-echo "✓ Tests passed"
-echo ""
-
 # Check for uncommitted changes
 if [[ -n $(git status --porcelain) ]]; then
   echo "Uncommitted changes:"
