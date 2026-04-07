@@ -13,3 +13,5 @@ move repo to new org
 logo
 eshelf labels?
 log out button
+remove heading from changelog
+improved test coverage, lots of excludes
