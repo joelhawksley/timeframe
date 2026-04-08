@@ -1,3 +1,8 @@
+## [2.3.0] - 2026-04-07
+
+### Fixed
+- Fix bug where weather and calendar data was marked unhealthy and thus hidden before refresh interval.
+
 ## [2.2.0] - 2026-04-07
 
 ### Changed
