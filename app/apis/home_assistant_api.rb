@@ -279,7 +279,7 @@ class HomeAssistantApi
   def calendars_healthy?
     fetched = calendars_last_fetched_at
     return false unless fetched
-    fetched > DateTime.now - 10.minutes
+    fetched > DateTime.now - 20.minutes
   end
 
   def calendars_last_fetched_at
@@ -351,7 +351,7 @@ class HomeAssistantApi
   def weather_healthy?
     fetched = weather_last_fetched_at
     return false unless fetched
-    fetched > DateTime.now - 10.minutes
+    fetched > DateTime.now - 20.minutes
   end
 
   def weather_last_fetched_at
