@@ -39,13 +39,13 @@ module Timeframe
     config.hosts.clear
 
     config.action_mailer.default_url_options = {host: ENV.fetch("APP_HOST", "localhost"), port: ENV.fetch("PORT", 3000)}
-    config.action_mailer.delivery_method = ENV.fetch("SMTP_ADDRESS", nil) ? :smtp : :log
-    if ENV["SMTP_ADDRESS"]
+    config.action_mailer.delivery_method = ENV["MAILGUN_SMTP_SERVER"] ? :smtp : :test
+    if ENV["MAILGUN_SMTP_SERVER"]
       config.action_mailer.smtp_settings = {
-        address: ENV["SMTP_ADDRESS"],
-        port: ENV.fetch("SMTP_PORT", 587).to_i,
-        user_name: ENV["SMTP_USERNAME"],
-        password: ENV["SMTP_PASSWORD"],
+        address: ENV["MAILGUN_SMTP_SERVER"],
+        port: ENV.fetch("MAILGUN_SMTP_PORT", 587).to_i,
+        user_name: ENV["MAILGUN_SMTP_LOGIN"],
+        password: ENV["MAILGUN_SMTP_PASSWORD"],
         authentication: :plain,
         enable_starttls_auto: true
       }
