@@ -1,3 +1,16 @@
 .DS_Store
 pgdata
 _to_delete
+.bundle
+log/*
+!log/.keep
+tmp/*
+!tmp/.keep
+.byebug_history
+public/packs
+.env
+config/timeframe.yml
+coverage/*
+timeframe_ha_development*
+/.ruby-lsp
+Gemfile.lock

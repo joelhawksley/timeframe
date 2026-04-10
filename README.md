@@ -14,7 +14,7 @@ An e-paper calendar, weather, and smart home family dashboard
 
 1. In Home Assistant, go to **Settings → Add-ons → Add-on Store**
 2. Click the three-dot menu (⋮) → **Repositories**
-3. Add this repository URL: `https://github.com/timeframe/timeframe`
+3. Add this repository URL: `https://github.com/timeframe/ha-addon`
 4. Find **Timeframe** in the add-on store and click **Install**
 5. Click **Start**
 6. Access the app at port 8099 (e.g. `http://homeassistant.local:8099`)
@@ -43,12 +43,6 @@ A calendar event with the description `timeframe-private` will activate private 
 
 To hide a specific event, include `timeframe-omit` in the description.
 
-## Operational modes
-
-The application runs in two modes: single tenant inside home assistant and multi-tenant on at https://www.timeframe.app (coming soon).
-
-_Note: Timeframe is licensed under the [O'Saasy License](https://osaasy.dev/)._
-
 ## Local development
 
 ### Configuration:
@@ -73,4 +67,4 @@ Create `config/timeframe.yml` from `config/timeframe.yml.example with your setti
 
 ## License
 
-This project is licensed under the [O'Saasy License](https://osaasy.dev/) — see [LICENSE.md](LICENSE.md) for details.
+This project is licensed under the [PolyForm Noncommercial License 1.0.0](https://polyformproject.org/licenses/noncommercial/1.0.0/) — see [LICENSE.md](LICENSE.md) for details.
