@@ -1,3 +1,4 @@
+better segment out cloud from single tenant
 trmnl doesn't work
 support for boox 13"
 scale down TRMNL a little bit to fit more

@@ -1,0 +1,65 @@
+{
+  "tests": {
+    "coverage": {
+      "/Users/joel/joelhawksley/timeframe/config/environment.rb": {
+        "lines": [
+          null,
+          null,
+          null,
+          1,
+          null,
+          null,
+          1
+        ],
+        "branches": {}
+      },
+      "/Users/joel/joelhawksley/timeframe/config/environments/test.rb": {
+        "lines": [
+          null,
+          null,
+          1,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          1,
+          null,
+          1,
+          1,
+          null,
+          null,
+          null,
+          null,
+          1,
+          null,
+          null,
+          1,
+          1,
+          null,
+          null,
+          null,
+          null,
+          1,
+          1,
+          null,
+          null,
+          1,
+          null,
+          null,
+          1,
+          null,
+          null,
+          1,
+          null,
+          null,
+          null,
+          null
+        ],
+        "branches": {}
+      }
+    },
+    "timestamp": 1775841653
+  }
+}

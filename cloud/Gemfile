@@ -1,0 +1,45 @@
+# frozen_string_literal: true
+
+source "https://rubygems.org"
+ruby "4.0.2"
+
+gem "timeframe-core", path: "../core"
+
+gem "anyway_config"
+gem "csv"
+gem "devise"
+gem "devise-passwordless"
+gem "extlz4"
+gem "ferrum"
+gem "geocoder"
+gem "good_job"
+gem "google-apis-calendar_v3"
+gem "httparty"
+gem "icalendar"
+gem "mini_magick"
+gem "omniauth-google-oauth2"
+gem "pg"
+gem "propshaft"
+gem "puma"
+gem "rack-attack"
+gem "rails", "~> 8"
+gem "tenkit"
+gem "timezone_finder"
+gem "bootstrap", "~> 5.3"
+gem "dartsass-rails"
+
+group :development, :test do
+  gem "overcommit"
+  gem "m"
+  gem "minitest"
+  gem "minitest-mock"
+  gem "standard"
+end
+
+group :test do
+  gem "capybara"
+  gem "cuprite"
+  gem "simplecov", require: false
+  gem "vcr"
+  gem "webmock"
+end

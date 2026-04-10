@@ -1,0 +1,22 @@
+# frozen_string_literal: true
+
+Gem::Specification.new do |spec|
+  spec.name = "timeframe-core"
+  spec.version = "0.1.0"
+  spec.authors = ["Joel Hawksley"]
+  spec.summary = "Shared engine for Timeframe e-ink display apps"
+
+  spec.files = Dir["{app,config,db,lib,public}/**/*", "LICENSE.md"]
+  spec.require_paths = ["lib"]
+
+  spec.required_ruby_version = ">= 4.0"
+
+  spec.add_dependency "rails", "~> 8"
+  spec.add_dependency "pg"
+  spec.add_dependency "propshaft"
+  spec.add_dependency "bootstrap", "~> 5.3"
+  spec.add_dependency "dartsass-rails"
+  spec.add_dependency "ferrum"
+  spec.add_dependency "mini_magick"
+  spec.add_dependency "extlz4"
+end

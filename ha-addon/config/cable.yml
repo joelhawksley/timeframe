@@ -1,0 +1,8 @@
+development:
+  adapter: postgresql
+
+test:
+  adapter: test
+
+production:
+  adapter: postgresql

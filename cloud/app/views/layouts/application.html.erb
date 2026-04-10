@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Timeframe</title>
+    <%= stylesheet_link_tag "application" %>
+    <link rel="stylesheet" href="/css/mdi/materialdesignicons.css">
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark mb-3">
+      <div class="container">
+        <a class="navbar-brand" href="/">Timeframe</a>
+        <% if current_user %>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+              <li class="nav-item">
+                <span class="nav-link text-light"><%= current_user.email %></span>
+              </li>
+              <li class="nav-item">
+                <%= link_to "Sign out", destroy_user_session_path, method: :delete, class: "nav-link" %>
+              </li>
+              <li class="nav-item">
+                <button type="button" class="nav-link text-danger" data-bs-toggle="modal" data-bs-target="#delete-user-modal" style="border: none; background: none; cursor: pointer;">Delete Account</button>
+              </li>
+            </ul>
+          </div>
+        <% end %>
+      </div>
+    </nav>
+
+    <% if current_user %>
+      <div class="modal fade" id="delete-user-modal" tabindex="-1" aria-labelledby="delete-user-label" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="delete-user-label">Delete your account</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <%= form_with url: delete_user_account_path, method: :delete do %>
+              <div class="modal-body">
+                <p>This will permanently delete your user account and all associated data.</p>
+                <p>Type <strong><%= current_user.email %></strong> to confirm.</p>
+                <input type="text" name="email_confirmation" class="form-control" placeholder="<%= current_user.email %>" autocomplete="off" id="delete-user-input">
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <%= submit_tag "Delete Account", class: "btn btn-danger", disabled: true, id: "delete-user-btn" %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+      <script>
+        (function() {
+          var input = document.getElementById('delete-user-input');
+          var btn = document.getElementById('delete-user-btn');
+          input.addEventListener('input', function() {
+            btn.disabled = input.value.toLowerCase().trim() !== '<%= current_user.email.downcase.gsub("'", "\\'") %>'.toLowerCase();
+          });
+        })();
+      </script>
+    <% end %>
+
+    <div class="container">
+      <% flash.each do |key, value| %>
+        <div class="alert alert-<%= key == 'notice' ? 'success' : 'danger' %> alert-dismissible fade show" role="alert">
+          <%= value %>
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      <% end %>
+
+      <%= yield %>
+    </div>
+
+    <footer class="container mt-4 mb-3 text-center text-muted small">
+      &copy; 2016-<%= Time.current.year %> Joel Hawksley &middot;
+      <a href="https://github.com/timeframe/timeframe" class="text-muted" target="_blank">GitHub</a>
+      &middot; <a href="/privacy" class="text-muted">Privacy</a> &middot;
+      <a href="/terms" class="text-muted">Terms</a>
+    </footer>
+
+    <%= javascript_include_tag "popper.min" %>
+    <%= javascript_include_tag "bootstrap.min" %>
+  </body>
+</html>
