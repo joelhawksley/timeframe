@@ -14,6 +14,7 @@ class HomeAssistantWebSocket
     @reconnect_delay = RECONNECT_BASE_DELAY
     @message_id = 0
     @mutex = Mutex.new
+    @subscribed_entity_ids = []
   end
 
   def start
@@ -39,6 +40,30 @@ class HomeAssistantWebSocket
     @ws&.close
   end
 
+  def refresh_entities!
+    return unless @ws
+
+    entity_ids = Rails.application.executor.wrap do
+      HomeAssistantApi.new(@config, store: @store).watched_entity_ids
+    end
+
+    return if entity_ids.empty? || entity_ids.sort == @subscribed_entity_ids.sort
+
+    Rails.logger.info "[HA WebSocket] Entity list changed (#{@subscribed_entity_ids.size} → #{entity_ids.size}), re-subscribing"
+
+    # Unsubscribe current subscription
+    if @subscribe_id
+      send_message(id: next_id, type: "unsubscribe_events", subscription: @subscribe_id)
+    end
+
+    # Re-subscribe with updated list
+    @entities = {}
+    @subscribe_id = next_id
+    @subscribed_entity_ids = entity_ids
+    send_message(id: @subscribe_id, type: "subscribe_entities", entity_ids: entity_ids)
+    Rails.logger.info "[HA WebSocket] Re-subscribed to #{entity_ids.size} entities"
+  end
+
   private
 
   def next_id
@@ -55,11 +80,13 @@ class HomeAssistantWebSocket
     ready = Queue.new
     handler = self
     url = websocket_url
+    @entities = {}
 
     @ws = WebSocket::Client::Simple.connect(url)
     ws = @ws
 
     ws.on :message do |msg|
+      next if msg.data.nil? || msg.data.empty?
       handler.send(:handle_message, JSON.parse(msg.data))
     rescue => e
       Rails.logger.error "[HA WebSocket] Message error: #{e.message}"
@@ -91,41 +118,116 @@ class HomeAssistantWebSocket
       Rails.logger.info "[HA WebSocket] Authenticated"
       @reconnect_delay = RECONNECT_BASE_DELAY
 
-      # Fetch full initial state via HTTP, then subscribe to changes
-      begin
-        Rails.application.executor.wrap do
-          HomeAssistantApi.new(@config, store: @store).fetch_states
-          DisplayBroadcaster.broadcast_all_mira_displays
-        end
-      rescue => e
-        Rails.logger.error "[HA WebSocket] Initial state fetch failed: #{e.message}"
+      entity_ids = Rails.application.executor.wrap do
+        HomeAssistantApi.new(@config, store: @store).watched_entity_ids
       end
 
-      send_message(id: next_id, type: "subscribe_events", event_type: "state_changed")
-      Rails.logger.info "[HA WebSocket] Subscribed to state_changed events"
+      @subscribe_id = next_id
+      @subscribed_entity_ids = entity_ids
+
+      if entity_ids.any?
+        send_message(id: @subscribe_id, type: "subscribe_entities", entity_ids: entity_ids)
+        Rails.logger.info "[HA WebSocket] Subscribed to #{entity_ids.size} entities"
+      else
+        send_message(id: @subscribe_id, type: "subscribe_entities")
+        Rails.logger.info "[HA WebSocket] Subscribed to all entities (no filter available)"
+      end
 
     when "auth_invalid"
       Rails.logger.error "[HA WebSocket] Authentication failed: #{data["message"]}"
       @running = false
 
     when "event"
-      handle_state_changed(data["event"]) if data.dig("event", "event_type") == "state_changed"
+      handle_entity_event(data["event"]) if data["id"] == @subscribe_id
 
     when "result"
       # Subscription confirmation, ignore
     end
   end
 
-  def handle_state_changed(event)
-    new_state = event.dig("data", "new_state")
-    return unless new_state
+  def handle_entity_event(event)
+    changed = false
 
-    entity_id = new_state["entity_id"]
+    # "a" = additions (initial dump or new entities) — full compressed state
+    if (additions = event["a"])
+      additions.each do |entity_id, compressed|
+        @entities[entity_id] = expand_entity(entity_id, compressed)
+      end
+      changed = true
+    end
 
-    # Update the cached states array with the new entity state
+    # "c" = changes — partial updates with "+" (added/changed) and "-" (removed) keys
+    if (changes = event["c"])
+      changes.each do |entity_id, diff|
+        existing = @entities[entity_id]
+        next unless existing
+
+        apply_diff(existing, diff)
+      end
+      changed = true
+    end
+
+    # "r" = removals — array of entity IDs
+    if (removals = event["r"])
+      removals.each { |entity_id| @entities.delete(entity_id) }
+      changed = true
+    end
+
+    return unless changed
+
+    persist_states
+    broadcast
+  end
+
+  # Convert compressed entity format to the full state format the app expects:
+  #   s = state, a = attributes, c = context, lc = last_changed, lu = last_updated
+  def expand_entity(entity_id, compressed)
+    {
+      "entity_id" => entity_id,
+      "state" => compressed["s"],
+      "attributes" => compressed["a"] || {},
+      "last_changed" => compressed["lc"],
+      "last_updated" => compressed["lu"],
+      "context" => compressed["c"] || {}
+    }
+  end
+
+  # Apply a diff to an existing expanded entity.
+  # diff has "+" for added/changed fields and "-" for removed fields.
+  def apply_diff(entity, diff)
+    if (added = diff["+"])
+      entity["state"] = added["s"] if added.key?("s")
+      entity["last_changed"] = added["lc"] if added.key?("lc")
+      entity["last_updated"] = added["lu"] if added.key?("lu")
+
+      if added.key?("a")
+        entity["attributes"] ||= {}
+        entity["attributes"].merge!(added["a"])
+      end
+
+      if added.key?("c")
+        entity["context"] ||= {}
+        entity["context"].merge!(added["c"])
+      end
+    end
+
+    if (removed = diff["-"])
+      if removed.key?("a")
+        Array(removed["a"]).each { |key| entity["attributes"]&.delete(key) }
+      end
+
+      if removed.key?("c")
+        Array(removed["c"]).each { |key| entity["context"]&.delete(key) }
+      end
+    end
+  end
+
+  def persist_states
     api = HomeAssistantApi.new(@config, store: @store)
-    api.update_entity_state(entity_id, new_state)
+    api.save_states(@entities.values)
+  end
 
+  def broadcast
     begin
       Rails.application.executor.wrap do
         DisplayBroadcaster.broadcast_all_mira_displays

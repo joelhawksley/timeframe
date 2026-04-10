@@ -12,20 +12,16 @@ class TimeframeConfig < Anyway::Config
 
   # Support Home Assistant add-on SUPERVISOR_TOKEN
   on_load do
-    if ENV["SUPERVISOR_TOKEN"].present? && home_assistant_token.nil?
+    if home_assistant_token.nil?
       self.home_assistant_token = ENV["SUPERVISOR_TOKEN"]
       self.home_assistant_url = "http://supervisor/core"
     end
 
-    if ENV["SUPERVISOR_TOKEN"].present? && File.exist?("/data/options.json")
+    if File.exist?("/data/options.json")
       options = JSON.parse(File.read("/data/options.json"))
       self.speed_unit = options["speed_unit"] if options["speed_unit"]
       self.precipitation_unit = options["precipitation_unit"] if options["precipitation_unit"]
       self.temperature_unit = options["temperature_unit"] if options["temperature_unit"]
     end
-  end
-
-  def home_assistant?
-    home_assistant_token.present?
   end
 end

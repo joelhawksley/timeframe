@@ -42,33 +42,23 @@ class HomeAssistantApi
 
   # --- States ---
 
-  def fetch_states
+  WATCHED_PREFIXES = %w[sensor.timeframe_ media_player. weather.].freeze
+
+  def watched_entity_ids
     response = HTTParty.get("#{home_assistant_base_url}/api/states", headers: headers)
-    return if response.code != 200
-    save_domain(STATES_DOMAIN, JSON.parse(response.body))
+    return [] if response.code != 200
+
+    JSON.parse(response.body)
+      .map { it["entity_id"] }
+      .select { |eid| WATCHED_PREFIXES.any? { |prefix| eid.start_with?(prefix) } }
   end
 
-  def update_entity_state(entity_id, new_state)
-    current_states = domain_data(STATES_DOMAIN)
-    return unless current_states.is_a?(Array)
-
-    updated = false
-    current_states.each_with_index do |state, i|
-      if state[:entity_id] == entity_id || state["entity_id"] == entity_id
-        current_states[i] = new_state.deep_symbolize_keys
-        updated = true
-        break
-      end
-    end
-
-    current_states << new_state.deep_symbolize_keys unless updated
-    save_domain(STATES_DOMAIN, current_states)
+  def save_states(states)
+    save_domain(STATES_DOMAIN, states)
   end
 
   def states_healthy?
-    fetched = states_last_fetched_at
-    return false unless fetched
-    fetched > DateTime.now - 1.minute
+    states_last_fetched_at.present?
   end
 
   def states_last_fetched_at
@@ -462,16 +452,19 @@ class HomeAssistantApi
 
   def daily_calendar_events
     days = daily_forecast
+    tz = time_zone
 
     return [] unless days.present?
 
     days.map do |day|
-      dt = DateTime.parse(day[:datetime])
+      date = Date.parse(day[:datetime])
+      starts = ActiveSupport::TimeZone[tz].local(date.year, date.month, date.day)
 
       DisplayEvent.new(
-        id: "_ha_weather_day_#{dt.to_i}",
-        starts_at: dt.to_i,
-        ends_at: (dt + 1.day).to_i,
+        id: "_ha_weather_day_#{starts.to_i}",
+        starts_at: starts.to_i,
+        ends_at: (starts + 1.day).to_i,
+        timezone: tz,
         icon: icon_for(day[:condition]),
         summary: "#{convert_temperature(day[:temperature])}° / #{convert_temperature(day[:templow])}°"
       )
