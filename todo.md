@@ -1,4 +1,4 @@
-release script runs tests twice
+trmnl doesn't work
 support for boox 13"
 scale down TRMNL a little bit to fit more
 rack attack for pairing
@@ -15,3 +15,8 @@ eshelf labels?
 log out button
 remove heading from changelog
 improved test coverage, lots of excludes
+enabling demo mode doesn't toggle immediately on mira displays
+Weather events come first in tiebreak
+Web socket health check
+route display traffic through cloudfront to avoid downtime?
+disallow + in email addresses

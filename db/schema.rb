@@ -146,6 +146,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_05_193454) do
 
   create_table "good_job_processes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.integer "lock_type", limit: 2
     t.jsonb "state"
     t.datetime "updated_at", null: false
   end
