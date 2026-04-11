@@ -1,0 +1,52 @@
+# frozen_string_literal: true
+
+require_relative "../system_test_helper"
+
+class VisionectDisplayFlowTest < ApplicationSystemTestCase
+  def setup
+    super
+    PendingDevice.destroy_all
+    Device.destroy_all
+  end
+
+  test "add Visionect device, enable demo mode, and view display via token URL" do
+    # Step 1: Visit dashboard — auto-login in single-tenant mode
+    visit "/"
+    assert_text "Timeframe"
+    assert_text "Add Device"
+
+    # Step 2: Add a Visionect device
+    device_name = "System Test Visionect #{SecureRandom.hex(4)}"
+    fill_in "device_name", with: device_name
+    select "Visionect Place & Play 13\"", from: "device_model"
+    click_button "Add Device"
+
+    # Should redirect back to dashboard with the new device
+    assert_text device_name
+
+    # Step 3: Enable demo mode via the dropdown menu
+    device = Device.find_by(name: device_name)
+    assert device.present?, "Device should have been created"
+    assert device.confirmed?, "Visionect device should be auto-confirmed"
+    assert device.display_key.present?, "Visionect device should have a display key"
+
+    # Find the device card and open its dropdown
+    card = find("h5", text: device_name).ancestor(".card")
+    within(card) do
+      click_button "…"
+      click_button "Enable Demo Mode"
+    end
+
+    # Should redirect back, device now in demo mode
+    device.reload
+    assert device.demo_mode_enabled?, "Device should be in demo mode"
+
+    # Step 4: Visit the token URL directly — should see demo content
+    token_url = device.token_display_url(host: Capybara.current_session.server.base_url)
+    visit token_url
+
+    # Demo content includes "Spotted Towhee" (bird species) and "Tomorrow"
+    assert_text "Spotted Towhee"
+    assert_text "Tomorrow"
+  end
+end
