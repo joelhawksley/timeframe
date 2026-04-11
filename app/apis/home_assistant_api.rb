@@ -53,12 +53,25 @@ class HomeAssistantApi
       .select { |eid| WATCHED_PREFIXES.any? { |prefix| eid.start_with?(prefix) } }
   end
 
+  def fetch_states
+    response = HTTParty.get("#{home_assistant_base_url}/api/states", headers: headers)
+    return unless response.code == 200
+
+    states = JSON.parse(response.body)
+      .select { |s| WATCHED_PREFIXES.any? { |prefix| s["entity_id"].start_with?(prefix) } }
+    return if states.empty?
+
+    save_domain(STATES_DOMAIN, states)
+  end
+
   def save_states(states)
     save_domain(STATES_DOMAIN, states)
   end
 
   def states_healthy?
-    states_last_fetched_at.present?
+    fetched = states_last_fetched_at
+    return false unless fetched
+    fetched > DateTime.now - 2.minutes
   end
 
   def states_last_fetched_at
@@ -277,7 +290,7 @@ class HomeAssistantApi
   end
 
   def calendar_events
-    @calendar_events ||= (domain_value(CALENDAR_DOMAIN)[:response] || []).map { DisplayEvent.new(**it.symbolize_keys!) }
+    @calendar_events ||= (domain_value(CALENDAR_DOMAIN)[:response] || []).map { DisplayEvent.new(**it.symbolize_keys!, timezone: time_zone) }
   end
 
   def fetch_calendar_list
@@ -443,6 +456,7 @@ class HomeAssistantApi
           id: "_ha_weather_hour_#{hour.to_i}",
           starts_at: hour,
           ends_at: hour,
+          timezone: time_zone,
           icon: icon_for(weather_hour[:condition]),
           summary: "#{convert_temperature(weather_hour[:temperature])}°"
         )
@@ -526,6 +540,7 @@ class HomeAssistantApi
         id: "#{it[:start_i]}_ha_precip",
         starts_at: it[:start_i],
         ends_at: it[:end_i],
+        timezone: time_zone,
         icon: icon,
         summary: label
       )
@@ -571,6 +586,7 @@ class HomeAssistantApi
         id: "#{it[:start_i]}_ha_wind",
         starts_at: it[:start_i],
         ends_at: it[:end_i],
+        timezone: time_zone,
         icon: "arrow-up",
         icon_rotation: avg_wind_direction,
         summary: "Gusts up to #{it[:wind_max].round}#{speed_unit}"

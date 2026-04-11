@@ -1,7 +1,5 @@
 scheduler = Rufus::Scheduler.new
 
-timeframe_config = TimeframeConfig.new
-
 api = HomeAssistantApi.new
 api.fetch_config
 
@@ -18,6 +16,12 @@ scheduler.in "5s" do
   api = HomeAssistantApi.new
   api.fetch_calendars
   api.fetch_weather
+  DisplayBroadcaster.broadcast_all_mira_displays
+end
+
+scheduler.every "1m" do
+  api = HomeAssistantApi.new
+  api.fetch_states
   DisplayBroadcaster.broadcast_all_mira_displays
 end
 

@@ -1,0 +1,29 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://homeassistant.local:8123/api/states/calendar.birthdays
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+    body:
+      encoding: UTF-8
+      string: '{"entity_id":"calendar.birthdays","state":"off","attributes":{"icon":"mdi:calendar"}}'
+  recorded_at: Fri, 06 Sep 2024 01:54:38 GMT
+recorded_with: VCR 6.2.0

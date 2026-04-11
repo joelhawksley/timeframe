@@ -228,13 +228,11 @@ class HomeAssistantWebSocket
   end
 
   def broadcast
-    begin
-      Rails.application.executor.wrap do
-        DisplayBroadcaster.broadcast_all_mira_displays
-      end
-    rescue => e
-      Rails.logger.error "[HA WebSocket] Broadcast failed: #{e.message}"
+    Rails.application.executor.wrap do
+      DisplayBroadcaster.broadcast_all_mira_displays
     end
+  rescue => e
+    Rails.logger.error "[HA WebSocket] Broadcast failed: #{e.message}"
   end
 
   def send_message(data)
