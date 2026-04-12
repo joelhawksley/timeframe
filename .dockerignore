@@ -1,4 +1,6 @@
 .git
+.bundle
+Gemfile.lock
 tmp
 log
 coverage

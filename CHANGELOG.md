@@ -1,3 +1,8 @@
+## [2.6.0] - 2026-04-12
+
+### Fixed
+- Fixed broken docker build
+
 ## [2.5.0] - 2026-04-12
 
 ### Fixed

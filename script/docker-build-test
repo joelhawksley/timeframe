@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+cd "$(dirname "$0")/.."
+
+echo "Building Docker image..."
+docker build -t timeframe-test .
+
+echo ""
+echo "Build succeeded!"
+echo "Run with: docker run --rm -p 8099:8099 timeframe-test"
