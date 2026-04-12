@@ -13,3 +13,4 @@ config/timeframe.yml
 coverage/*
 timeframe_ha_development*
 /.ruby-lsp
+Gemfile.lock
