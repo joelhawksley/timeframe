@@ -1,3 +1,8 @@
+## [2.4.0] - 2026-04-12
+
+### Changed
+- Split up repository to only include single-tenant functionality.
+
 ## [2.3.0] - 2026-04-07
 
 ### Fixed
