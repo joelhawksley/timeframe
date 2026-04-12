@@ -7,5 +7,35 @@ echo "Building Docker image..."
 docker build -t timeframe-test .
 
 echo ""
-echo "Build succeeded!"
-echo "Run with: docker run --rm -p 8099:8099 timeframe-test"
+echo "Build succeeded! Starting container..."
+
+# Run container in background
+CONTAINER_ID=$(docker run -d --rm -p 8099:8099 \
+  -e TIMEFRAME_HOME_ASSISTANT_TOKEN=test \
+  -e TIMEFRAME_HOME_ASSISTANT_URL=http://localhost:8123 \
+  -e SECRET_KEY_BASE=test \
+  timeframe-test)
+
+cleanup() {
+  echo "Stopping container..."
+  docker stop "$CONTAINER_ID" >/dev/null 2>&1 || true
+}
+trap cleanup EXIT
+
+# Wait for the server to be ready
+echo "Waiting for server to start..."
+for i in $(seq 1 60); do
+  if curl -sf http://localhost:8099/ >/dev/null 2>&1; then
+    echo "Server is up! (took ${i}s)"
+    echo ""
+    echo "Container is running at http://localhost:8099"
+    echo "Press Ctrl+C to stop."
+    docker logs -f "$CONTAINER_ID"
+    exit 0
+  fi
+  sleep 1
+done
+
+echo "Server failed to start within 60s. Container logs:"
+docker logs "$CONTAINER_ID"
+exit 1
