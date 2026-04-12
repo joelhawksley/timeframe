@@ -13,7 +13,9 @@ RUN apt-get update && \
 
 WORKDIR /app
 
-COPY Gemfile Gemfile.lock ./
+ENV RAILS_ENV=production
+
+COPY Gemfile ./
 RUN bundle config set --local without 'development test' && \
     bundle install --jobs 4
 
@@ -25,7 +27,6 @@ RUN SECRET_KEY_BASE=precompile \
     RAILS_ENV=production \
     bundle exec rails assets:precompile
 
-ENV RAILS_ENV=production
 ENV PORT=8099
 
 EXPOSE 8099
