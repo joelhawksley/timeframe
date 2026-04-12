@@ -35,8 +35,7 @@ pg_ctlcluster $PG_VERSION $PG_CLUSTER start -- -w
 su postgres -c "createdb timeframe_production" 2>/dev/null || true
 
 # Run migrations
-export POSTGRES_HOST=localhost
-export POSTGRES_USER=postgres
+export DATABASE_URL="postgres://postgres@localhost/timeframe_production"
 bundle exec rails db:migrate
 
 # Start Puma
