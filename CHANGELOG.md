@@ -1,3 +1,8 @@
+## [2.7.0] - 2026-04-12
+
+### Fixed
+- Fix Postgres misconfiguration
+
 ## [2.6.0] - 2026-04-12
 
 ### Fixed
