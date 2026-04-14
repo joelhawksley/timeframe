@@ -365,7 +365,7 @@ class HomeAssistantApiTest < Minitest::Test
 
     api = HomeAssistantApi.new({})
     api.stub :data, data do
-      assert_equal([], api.top_left)
+      assert_equal([{icon: "onlyicon"}], api.top_left)
     end
   end
 
@@ -423,7 +423,7 @@ class HomeAssistantApiTest < Minitest::Test
 
     api = HomeAssistantApi.new({})
     api.stub :data, data do
-      assert_equal([], api.top_right)
+      assert_equal([{icon: "onlyicon"}], api.top_right)
     end
   end
 
@@ -481,7 +481,7 @@ class HomeAssistantApiTest < Minitest::Test
 
     api = HomeAssistantApi.new({})
     api.stub :data, data do
-      assert_equal([], api.weather_status)
+      assert_equal([{icon: "onlyicon"}], api.weather_status)
     end
   end
 
@@ -572,8 +572,13 @@ class HomeAssistantApiTest < Minitest::Test
     data = [{entity_id: "sensor.timeframe_daily_event_test", state: "just-an-icon"}]
 
     api = HomeAssistantApi.new({})
-    api.stub :data, data do
-      assert_equal([], api.daily_events)
+    travel_to DateTime.new(2023, 8, 27, 12, 0, 0, "-0600") do
+      api.stub :data, data do
+        events = api.daily_events
+        assert_equal(1, events.length)
+        assert_equal("just-an-icon", events.first.icon)
+        assert_equal("", events.first.summary)
+      end
     end
   end
 
