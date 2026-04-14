@@ -1,3 +1,8 @@
+## [2.8.0] - 2026-04-14
+
+### Added
+- Support label-less icons
+
 ## [2.7.0] - 2026-04-12
 
 ### Fixed
