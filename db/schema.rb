@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 1) do
+ActiveRecord::Schema[8.1].define(version: 2) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -61,6 +61,82 @@ ActiveRecord::Schema[8.1].define(version: 1) do
     t.index ["mac_address"], name: "index_devices_on_mac_address", unique: true
     t.index ["session_token"], name: "index_devices_on_session_token", unique: true
     t.index ["visionect_serial"], name: "index_devices_on_visionect_serial", unique: true
+  end
+
+  create_table "good_job_batches", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.integer "callback_priority"
+    t.text "callback_queue_name"
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.datetime "discarded_at"
+    t.datetime "enqueued_at"
+    t.datetime "finished_at"
+    t.text "on_discard"
+    t.text "on_finish"
+    t.text "on_success"
+    t.jsonb "serialized_properties"
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "good_job_executions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "active_job_id", null: false
+    t.datetime "created_at", null: false
+    t.interval "duration"
+    t.text "error"
+    t.integer "error_event", limit: 2
+    t.datetime "finished_at"
+    t.text "job_class"
+    t.uuid "process_id"
+    t.text "queue_name"
+    t.datetime "scheduled_at"
+    t.jsonb "serialized_params"
+    t.datetime "updated_at", null: false
+    t.index ["active_job_id"], name: "index_good_job_executions_on_active_job_id"
+  end
+
+  create_table "good_job_processes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "lock_type", limit: 2
+    t.jsonb "state"
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "good_job_settings", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.text "key"
+    t.datetime "updated_at", null: false
+    t.jsonb "value"
+    t.index ["key"], name: "index_good_job_settings_on_key", unique: true
+  end
+
+  create_table "good_jobs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "active_job_id"
+    t.uuid "batch_callback_id"
+    t.uuid "batch_id"
+    t.text "concurrency_key"
+    t.datetime "created_at", null: false
+    t.datetime "cron_at"
+    t.text "cron_key"
+    t.text "error"
+    t.integer "error_event", limit: 2
+    t.integer "executions_count"
+    t.datetime "finished_at"
+    t.boolean "is_discrete"
+    t.text "job_class"
+    t.text "labels", array: true
+    t.datetime "locked_at"
+    t.uuid "locked_by_id"
+    t.datetime "performed_at"
+    t.integer "priority"
+    t.text "queue_name"
+    t.uuid "retried_good_job_id"
+    t.datetime "scheduled_at"
+    t.jsonb "serialized_params"
+    t.datetime "updated_at", null: false
+    t.index ["active_job_id"], name: "index_good_jobs_on_active_job_id"
+    t.index ["cron_key"], name: "index_good_jobs_on_cron_key"
+    t.index ["queue_name", "scheduled_at"], name: "index_good_jobs_on_queue_name_scheduled_at", where: "(finished_at IS NULL)"
+    t.index ["scheduled_at"], name: "index_good_jobs_on_scheduled_at", where: "(finished_at IS NULL)"
   end
 
   create_table "locations", force: :cascade do |t|

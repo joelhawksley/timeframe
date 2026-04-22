@@ -41,14 +41,6 @@ scheduler.every "15m" do
   DisplayBroadcaster.broadcast_all_mira_displays
 end
 
-scheduler.every "15m" do
-  Device.refresh_all_screenshots!
-end
-
-scheduler.in "30s" do
-  Device.refresh_all_screenshots!
-end
-
 # This will attach scheduler thread to Puma's background thread.
 # Dont forget to add this line!
 scheduler.join

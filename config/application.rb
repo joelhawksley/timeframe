@@ -26,6 +26,17 @@ module HaAddon
 
     config.hosts.clear
 
+    config.active_job.queue_adapter = :good_job
+    config.good_job.execution_mode = :async
+
+    config.after_initialize do
+      if defined?(GoodJob)
+        Device.enqueue_screenshot_refresh_jobs!
+      end
+    rescue ActiveRecord::StatementInvalid
+      # GoodJob tables not yet created; will work after migration
+    end
+
     # Warden middleware for session-based auth (auto-sign-in)
     config.middleware.use Warden::Manager do |manager|
       manager.default_strategies :none
