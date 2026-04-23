@@ -26,6 +26,8 @@ Rails.application.routes.draw do
   # Signed, expiring screenshot URLs for TRMNL devices
   get "signed_screenshot/:sgid", to: "signed_screenshots#show", as: :signed_screenshot
 
+  mount GoodJob::Engine => "/good_job"
+
   namespace :api, defaults: {format: :json} do
     get :setup, to: "trmnl#setup"
     get :display, to: "trmnl#display"
