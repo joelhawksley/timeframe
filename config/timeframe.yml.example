@@ -1,47 +1,10 @@
 # Timeframe Configuration
-# =============================================================================
-# Single-tenant mode (Home Assistant)
-# =============================================================================
 # Copy this file to config/timeframe.yml and fill in your values.
-# Setting home_assistant_token enables single-tenant mode.
 # Timeframe will auto-create a user and pull location/calendar data from HA.
 # home_assistant_token: your_long_lived_access_token
 # home_assistant_url: "http://homeassistant.local:8123"  # default
-
 # These options can also be set in the Home Assistant App Configuration UI
-
 # speed_unit: "mph"           # or "kph"
 # temperature_unit: "F"       # or "C"
 # precipitation_unit: "in"    # or "mm" or "cm"
 
-# =============================================================================
-# Multi-tenant mode (Cloud)
-# =============================================================================
-# When home_assistant_token is NOT set, Timeframe runs in multi-tenant mode.
-# Users sign in via magic link email and manage their own accounts.
-#
-# Required environment variables for multi-tenant mode:
-#
-#   SECRET_KEY_BASE=<random 128-char hex>
-#   APP_HOST=https://your-domain.com
-#
-#   # Database
-#   DATABASE_URL=postgres://user:pass@host:5432/timeframe
-#
-#   # Active Record Encryption
-#   ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY=<32-char hex>
-#   ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY=<32-char hex>
-#   ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT=<32-char hex>
-#
-#   # Google OAuth (for Google Calendar sync)
-#   GOOGLE_CLIENT_ID=your_client_id.apps.googleusercontent.com
-#   GOOGLE_CLIENT_SECRET=your_client_secret
-#
-#   # Google Maps Geocoding (for address-based location creation)
-#   GOOGLE_MAPS_API_KEY=your_maps_api_key
-#
-#   # Email (for magic link authentication via AWS SES)
-#   SES_SMTP_ADDRESS=email-smtp.us-east-1.amazonaws.com
-#   SES_SMTP_PORT=587
-#   SES_SMTP_USERNAME=your_ses_smtp_username
-#   SES_SMTP_PASSWORD=your_ses_smtp_password
