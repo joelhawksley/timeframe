@@ -18,7 +18,6 @@ SimpleCov.start do
   add_filter "config/initializers/"
   add_filter "config/application.rb"
   add_filter "app/lib/display_broadcaster.rb"
-  add_filter "app/lib/home_assistant_web_socket.rb"
   add_filter "app/channels/"
   add_filter "app/models/account_user.rb"
 

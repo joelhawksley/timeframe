@@ -20,7 +20,6 @@ gem "rack-attack"
 gem "rails", "~> 8"
 gem "rufus-scheduler"
 gem "warden"
-gem "websocket-client-simple"
 gem "bootstrap", "~> 5.3"
 gem "dartsass-rails"
 
