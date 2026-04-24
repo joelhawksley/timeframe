@@ -8,6 +8,8 @@ Rails.application.routes.draw do
   get "status", to: "status#index"
   post "claim_device", to: "dashboard#claim_device", as: :claim_device
 
+  get "test_sign_in", to: "test_sessions#sign_in" if Rails.env.test?
+
   resources :accounts, only: [:create, :destroy] do
     resources :locations, only: [:create, :destroy] do
       resources :devices, only: [:create, :show, :update, :destroy] do
