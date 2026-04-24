@@ -57,8 +57,9 @@ Create `config/timeframe.yml` from `config/timeframe.yml.example with your setti
 
 ### Setup
 
-1) `bundle install`
-2) `rails s`
+1) `bundle config set local.timeframe-core ../core`
+2) `bundle install`
+3) `rails s`
 3) Visit [http://localhost:3000](http://localhost:3000)
 
 ### Testing

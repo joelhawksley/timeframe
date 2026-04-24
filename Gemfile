@@ -3,11 +3,7 @@
 source "https://rubygems.org"
 ruby "4.0.2"
 
-if ENV["RAILS_ENV"] == "production" || ENV["CI"]
-  gem "timeframe-core", git: "https://github.com/timeframe/core", require: "timeframe_core"
-else
-  gem "timeframe-core", path: "../core", require: "timeframe_core"
-end
+gem "timeframe-core", git: "https://github.com/timeframe/core", branch: "main", require: "timeframe_core"
 
 gem "anyway_config"
 gem "csv"
