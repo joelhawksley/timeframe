@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-class TokenDisplaysController < ApplicationController
+class TokenDevicesController < ApplicationController
   skip_before_action :auto_sign_in_default_user!, raise: false
   skip_before_action :authenticate_user!, raise: false
   before_action :authorize_via_tokens!
-  layout "display"
+  layout "device"
 
   after_action do
     response.headers["X-Deploy-Time"] = DEPLOY_TIME.to_s
@@ -13,19 +13,21 @@ class TokenDisplaysController < ApplicationController
 
   def show
     if @device.pending_confirmation?
-      render "displays/confirmation", locals: {device: @device}, layout: params[:layout] != "false"
+      render "devices/confirmation", locals: {device: @device}, layout: params[:layout] != "false"
       return
     end
 
-    template = Device::SUPPORTED_MODELS.dig(@device.model, :template)
+    template = @device.active_template
 
     if template == "mira"
       @refresh = params[:refresh] != "false"
     end
 
-    render "displays/#{template}", locals: {view_object: display_view_object}, layout: params[:layout] != "false"
+    view_object = @device.device_content
+
+    render "devices/#{template}", locals: {view_object: view_object}, layout: params[:layout] != "false"
   rescue => e
-    render "displays/error", locals: {klass: e.class.to_s, message: e.message, backtrace: e.backtrace}
+    render "devices/error", locals: {klass: e.class.to_s, message: e.message, backtrace: e.backtrace}
   end
 
   def screenshot
@@ -36,14 +38,6 @@ class TokenDisplaysController < ApplicationController
   end
 
   private
-
-  def display_view_object
-    if @device.demo_mode_enabled?
-      DemoDisplayContent.new.call(timezone: HomeAssistantApi.new.time_zone)
-    else
-      DisplayContent.new.call
-    end
-  end
 
   def authorize_via_tokens!
     @device = Device.find_by(id: params[:id])

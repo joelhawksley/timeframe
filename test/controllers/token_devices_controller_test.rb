@@ -2,7 +2,7 @@
 
 require "test_helper"
 
-class TokenDisplaysControllerTest < ActionDispatch::IntegrationTest
+class TokenDevicesControllerTest < ActionDispatch::IntegrationTest
   def setup
     Rails.cache.delete(DEPLOY_TIME.to_s + HomeAssistantApi::WEATHER_DOMAIN)
     @account = test_user.accounts.first

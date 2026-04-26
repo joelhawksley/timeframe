@@ -17,13 +17,13 @@ SimpleCov.start do
   # Infrastructure code that requires external services or hardware
   add_filter "config/initializers/"
   add_filter "config/application.rb"
-  add_filter "app/lib/display_broadcaster.rb"
+  add_filter "app/lib/device_broadcaster.rb"
   add_filter "app/channels/"
   add_filter "app/models/account_user.rb"
 
   # Controllers with complex session/auth dependencies tested at integration level
   add_filter "app/controllers/setup_controller.rb"
-  add_filter "app/controllers/token_displays_controller.rb"
+  add_filter "app/controllers/token_devices_controller.rb"
   add_filter "app/controllers/signed_screenshots_controller.rb"
   add_filter "app/controllers/application_controller.rb"
   add_filter "app/controllers/devices_controller.rb"

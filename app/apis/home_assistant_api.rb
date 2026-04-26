@@ -98,7 +98,7 @@ class HomeAssistantApi
     today = current_time.to_date
 
     sensor_parts("sensor.timeframe_daily_event").filter_map do |entity_id, parts|
-      DisplayEvent.new(
+      DeviceEvent.new(
         id: "_daily_event_#{entity_id}",
         starts_at: today.to_time,
         ends_at: (today + 1.day).to_time,
@@ -262,7 +262,7 @@ class HomeAssistantApi
   end
 
   def calendar_events
-    @calendar_events ||= (domain_value(CALENDAR_DOMAIN)[:response] || []).map { DisplayEvent.new(**it.symbolize_keys!, timezone: time_zone) }
+    @calendar_events ||= (domain_value(CALENDAR_DOMAIN)[:response] || []).map { DeviceEvent.new(**it.symbolize_keys!, timezone: time_zone) }
   end
 
   def fetch_calendar_list
@@ -424,7 +424,7 @@ class HomeAssistantApi
 
         next unless weather_hour.present?
 
-        DisplayEvent.new(
+        DeviceEvent.new(
           id: "_ha_weather_hour_#{hour.to_i}",
           starts_at: hour,
           ends_at: hour,
@@ -446,7 +446,7 @@ class HomeAssistantApi
       date = Date.parse(day[:datetime])
       starts = ActiveSupport::TimeZone[tz].local(date.year, date.month, date.day)
 
-      DisplayEvent.new(
+      DeviceEvent.new(
         id: "_ha_weather_day_#{starts.to_i}",
         starts_at: starts.to_i,
         ends_at: (starts + 1.day).to_i,
@@ -508,7 +508,7 @@ class HomeAssistantApi
         it[:precipitation_type].capitalize
       end
 
-      DisplayEvent.new(
+      DeviceEvent.new(
         id: "#{it[:start_i]}_ha_precip",
         starts_at: it[:start_i],
         ends_at: it[:end_i],
@@ -554,7 +554,7 @@ class HomeAssistantApi
       avg_y = radians.sum { |r| Math.sin(r) } / radians.size
       avg_wind_direction = (Math.atan2(avg_y, avg_x) * 180 / Math::PI).round
 
-      DisplayEvent.new(
+      DeviceEvent.new(
         id: "#{it[:start_i]}_ha_wind",
         starts_at: it[:start_i],
         ends_at: it[:end_i],

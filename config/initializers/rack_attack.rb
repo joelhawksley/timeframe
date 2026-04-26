@@ -2,13 +2,13 @@
 
 class Rack::Attack
   unless Rails.env.test?
-    throttle("token_displays/device", limit: 5, period: 60) do |req|
+    throttle("token_devices/device", limit: 5, period: 60) do |req|
       if req.path.start_with?("/d/")
         req.path.split("/")[2]
       end
     end
 
-    throttle("token_displays/ip", limit: 30, period: 60) do |req|
+    throttle("token_devices/ip", limit: 30, period: 60) do |req|
       req.ip if req.path.start_with?("/d/")
     end
 

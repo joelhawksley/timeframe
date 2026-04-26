@@ -2,12 +2,12 @@
 
 require "test_helper"
 
-class DisplayContenttTest < Minitest::Test
+class DeviceContenttTest < Minitest::Test
   include ActiveSupport::Testing::TimeHelpers
 
   def test_no_data
     travel_to DateTime.new(2023, 8, 27, 18, 15, 0, "-0600") do
-      result = DisplayContent.new.call(home_assistant_api: new_test_api)
+      result = DeviceContent.new.call(home_assistant_api: new_test_api)
 
       assert_nil(result[:current_temperature])
       assert_equal(result[:day_groups].count, 5)
@@ -16,7 +16,7 @@ class DisplayContenttTest < Minitest::Test
 
   def test_hide_events_after_cutoff
     travel_to DateTime.new(2023, 8, 27, 20, 15, 0, "-0600") do
-      result = DisplayContent.new.call(home_assistant_api: new_test_api)
+      result = DeviceContent.new.call(home_assistant_api: new_test_api)
 
       assert_equal(result[:day_groups].count, 4)
     end
@@ -28,10 +28,10 @@ class DisplayContenttTest < Minitest::Test
       api = new_test_api
       api.stub :calendars_healthy?, false do
         api.stub :calendar_events, [
-          DisplayEvent.new(starts_at: travel_time - 1.hour, ends_at: travel_time + 1.day, summary: "test")
+          DeviceEvent.new(starts_at: travel_time - 1.hour, ends_at: travel_time + 1.day, summary: "test")
         ] do
           api.stub :private_mode?, false do
-            result = DisplayContent.new.call(home_assistant_api: api)
+            result = DeviceContent.new.call(home_assistant_api: api)
 
             assert_equal(result[:day_groups].count, 4)
           end
@@ -50,7 +50,7 @@ class DisplayContenttTest < Minitest::Test
               ha_api.stub :top_left, [] do
                 ha_api.stub :weather_status, [] do
                   ha_api.stub :daily_events, [] do
-                    result = DisplayContent.new.call(home_assistant_api: ha_api)
+                    result = DeviceContent.new.call(home_assistant_api: ha_api)
 
                     assert_equal("72°", result[:current_temperature])
                   end
@@ -69,7 +69,7 @@ class DisplayContenttTest < Minitest::Test
       api.stub :calendars_healthy?, true do
         api.stub :private_mode?, true do
           api.stub :calendar_events, [] do
-            result = DisplayContent.new.call(home_assistant_api: api)
+            result = DeviceContent.new.call(home_assistant_api: api)
 
             assert result[:top_left].any? { it[:label] == "Private mode" }
           end
@@ -82,7 +82,7 @@ class DisplayContenttTest < Minitest::Test
     travel_to DateTime.new(2023, 8, 27, 18, 15, 0, "-0600") do
       api = new_test_api
       api.stub :weather_healthy?, true do
-        result = DisplayContent.new.call(home_assistant_api: api)
+        result = DeviceContent.new.call(home_assistant_api: api)
 
         assert_equal 5, result[:day_groups].count
       end
@@ -93,7 +93,7 @@ class DisplayContenttTest < Minitest::Test
     travel_to DateTime.new(2023, 8, 27, 20, 15, 0, "-0600") do
       api = new_test_api
       events = [
-        DisplayEvent.new(
+        DeviceEvent.new(
           starts_at: DateTime.new(2023, 8, 27, 19, 0, 0, "-0600"),
           ends_at: DateTime.new(2023, 8, 27, 21, 0, 0, "-0600"),
           summary: "Evening event"
@@ -102,7 +102,7 @@ class DisplayContenttTest < Minitest::Test
       api.stub :calendars_healthy?, false do
         api.stub :private_mode?, false do
           api.stub :calendar_events, events do
-            result = DisplayContent.new.call(home_assistant_api: api)
+            result = DeviceContent.new.call(home_assistant_api: api)
 
             assert_equal 5, result[:day_groups].count
           end
@@ -115,14 +115,14 @@ class DisplayContenttTest < Minitest::Test
     travel_to DateTime.new(2023, 8, 27, 10, 0, 0, "-0600") do
       api = new_test_api
       events = [
-        DisplayEvent.new(
+        DeviceEvent.new(
           starts_at: DateTime.new(2023, 8, 27, 0, 0, 0, "-0600"),
           ends_at: DateTime.new(2023, 8, 28, 0, 0, 0, "-0600"),
           summary: "All Day",
           icon: "cake-variant",
           daily: true
         ),
-        DisplayEvent.new(
+        DeviceEvent.new(
           starts_at: DateTime.new(2023, 8, 27, 12, 0, 0, "-0600"),
           ends_at: DateTime.new(2023, 8, 27, 13, 0, 0, "-0600"),
           summary: "Lunch",
@@ -133,7 +133,7 @@ class DisplayContenttTest < Minitest::Test
       api.stub :calendars_healthy?, false do
         api.stub :private_mode?, false do
           api.stub :calendar_events, events do
-            result = DisplayContent.new.call(home_assistant_api: api)
+            result = DeviceContent.new.call(home_assistant_api: api)
 
             today = result[:day_groups].find { |d| d[:day_name] == "Today" }
             assert today[:daily].any? { |e| e[:summary] == "All Day" && e[:icon_class] == "cake-variant" }

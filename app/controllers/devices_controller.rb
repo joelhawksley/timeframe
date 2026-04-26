@@ -4,27 +4,29 @@ class DevicesController < ApplicationController
   skip_before_action :authenticate_user!, raise: false, only: [:confirmation_image, :show, :screenshot]
   skip_before_action :auto_sign_in_default_user!, raise: false, only: [:confirmation_image]
   before_action :set_account_and_location, except: [:confirmation_image, :show, :screenshot]
-  before_action :authorize_display_access!, only: [:show, :screenshot]
-  layout "display", only: [:show]
+  before_action :authorize_device_access!, only: [:show, :screenshot]
+  layout "device", only: [:show]
   after_action(only: [:show, :screenshot]) { response.headers["X-Deploy-Time"] = DEPLOY_TIME.to_s }
 
   def show
     if @device.pending_confirmation?
-      render "displays/confirmation", locals: {device: @device}, layout: params[:layout] != "false"
+      render "devices/confirmation", locals: {device: @device}, layout: params[:layout] != "false"
       return
     end
 
     @device.update_column(:last_connection_at, Time.current) if session[:device_session_token].present?
 
-    template = Device::SUPPORTED_MODELS.dig(@device.model, :template)
+    template = @device.active_template
 
     if template == "mira"
       @refresh = params[:refresh] != "false"
     end
 
-    render "displays/#{template}", locals: {view_object: display_view_object}, layout: params[:layout] != "false"
+    view_object = @device.device_content
+
+    render "devices/#{template}", locals: {view_object: view_object}, layout: params[:layout] != "false"
   rescue => e
-    render "displays/error", locals: {klass: e.class.to_s, message: e.message, backtrace: e.backtrace}
+    render "devices/error", locals: {klass: e.class.to_s, message: e.message, backtrace: e.backtrace}
   end
 
   def screenshot
@@ -59,6 +61,12 @@ class DevicesController < ApplicationController
   def update
     device = @location.devices.find(params[:id])
     device.update!(demo_mode_enabled: !device.demo_mode_enabled?)
+    redirect_to root_path
+  end
+
+  def update_template
+    device = @location.devices.find(params[:id])
+    device.update!(display_template: params[:display_template])
     redirect_to root_path
   end
 
@@ -137,7 +145,7 @@ class DevicesController < ApplicationController
     @location = @account.locations.find(params[:location_id])
   end
 
-  def authorize_display_access!
+  def authorize_device_access!
     if params[:account_id] && params[:location_id]
       account = Account.find_by(id: params[:account_id])
       return render(plain: "Account not found", status: :not_found) unless account
@@ -158,13 +166,5 @@ class DevicesController < ApplicationController
     end
 
     render plain: "Not authorized", status: :unauthorized
-  end
-
-  def display_view_object
-    if @device.demo_mode_enabled?
-      DemoDisplayContent.new.call(timezone: HomeAssistantApi.new.time_zone)
-    else
-      DisplayContent.new.call
-    end
   end
 end

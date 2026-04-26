@@ -15,6 +15,7 @@ Rails.application.routes.draw do
       resources :devices, only: [:create, :show, :update, :destroy] do
         get :confirmation_image, on: :member
         get :screenshot, on: :member
+        patch :update_template, on: :member
         post :regenerate_tokens, on: :member
         post :repair, on: :member
       end
@@ -22,8 +23,8 @@ Rails.application.routes.draw do
   end
 
   # Token-authenticated display routes for sessionless devices
-  get "d/:id", to: "token_displays#show", as: :token_display
-  get "d/:id/screenshot", to: "token_displays#screenshot", as: :token_display_screenshot
+  get "d/:id", to: "token_devices#show", as: :token_device
+  get "d/:id/screenshot", to: "token_devices#screenshot", as: :token_device_screenshot
 
   # Signed, expiring screenshot URLs for TRMNL devices
   get "signed_screenshot/:sgid", to: "signed_screenshots#show", as: :signed_screenshot

@@ -1,8 +1,13 @@
-class DisplayContent
+class DeviceContent
   def call(
+    device: nil,
     home_assistant_api: HomeAssistantApi.new,
     calendar_feed: CalendarFeed.new,
-    current_time: nil
+    timezone: nil,
+    current_time: nil,
+    days: 5,
+    include_precip: true,
+    include_wind: true
   )
     current_time ||= Time.now.utc.in_time_zone(home_assistant_api.time_zone)
 
@@ -29,8 +34,8 @@ class DisplayContent
     if home_assistant_api.weather_healthy?
       raw_events << home_assistant_api.hourly_calendar_events
       raw_events << home_assistant_api.daily_calendar_events
-      raw_events << home_assistant_api.precip_calendar_events
-      raw_events << home_assistant_api.wind_calendar_events
+      raw_events << home_assistant_api.precip_calendar_events if include_precip
+      raw_events << home_assistant_api.wind_calendar_events if include_wind
       out[:attribution] = home_assistant_api.attribution
     end
 
@@ -49,7 +54,7 @@ class DisplayContent
     raw_events << home_assistant_api.calendar_events
 
     out[:day_groups] =
-      (0...5).to_a.map do |day_index|
+      (0...days).to_a.map do |day_index|
         date = current_time + day_index.day
 
         day_name =

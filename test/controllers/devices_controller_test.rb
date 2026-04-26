@@ -297,7 +297,7 @@ class DevicesControllerTest < ActionDispatch::IntegrationTest
     thirteen = Device.find_or_create_by!(name: "test-thirteen", model: "visionect_13") { |d| d.location = @location }
     thirteen.update!(demo_mode_enabled: false, confirmed_at: Time.current, confirmation_code: nil)
 
-    DisplayContent.stub :new, -> {
+    DeviceContent.stub :new, -> {
       obj = Object.new
       def obj.call(*)
         raise StandardError.new("Test error message")
@@ -316,7 +316,7 @@ class DevicesControllerTest < ActionDispatch::IntegrationTest
     mira = Device.find_or_create_by!(name: "test-mira", model: "boox_mira_pro") { |d| d.location = @location }
     mira.update!(demo_mode_enabled: false, confirmed_at: Time.current, confirmation_code: nil)
 
-    DisplayContent.stub :new, -> {
+    DeviceContent.stub :new, -> {
       obj = Object.new
       def obj.call(*)
         raise StandardError.new("Test error message")
