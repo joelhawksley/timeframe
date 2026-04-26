@@ -1,0 +1,11 @@
+*.gem
+*.rbc
+/.bundle
+/vendor/bundle
+/log
+/tmp
+/coverage
+/.ruby-lsp
+.DS_Store
+Gemfile.lock
+test/dummy/log/

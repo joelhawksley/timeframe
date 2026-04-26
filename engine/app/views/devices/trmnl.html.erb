@@ -1,0 +1,10 @@
+<% unless view_object[:private_mode] %>
+  <style>
+    html { font-size: 16px; }
+  </style>
+  <%= render "devices/timeline", view_object: view_object %>
+<% end %>
+
+<div class="timestamp" style="position: absolute; bottom: 4px; right: 4px; font-family: 'Lato', sans-serif; font-size: 9px; z-index: 10; writing-mode: vertical-rl; text-orientation: mixed;">
+  <%= view_object[:attribution] if view_object[:attribution].present? %> <%= view_object[:timestamp] %>
+</div>

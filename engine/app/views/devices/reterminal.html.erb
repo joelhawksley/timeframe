@@ -1,0 +1,34 @@
+<style>html { font-size: 38px; }</style>
+<div class="fade-bottom"></div>
+<div class="timestamp" style="position: absolute; bottom: .25rem; right: .25rem; font-size: .35rem; color: #777; z-index: 10; writing-mode: vertical-rl; text-orientation: mixed;">
+  <%= view_object[:attribution] if view_object[:attribution].present? %> <%= view_object[:timestamp] %>
+</div>
+<% if view_object[:top_left].any? || view_object[:top_right].any? || view_object[:weather_status].any? %>
+<div style="clear: both; line-height: .7; margin-bottom: 1rem;">
+  <div style="float: left;">
+<%- (view_object[:top_left] + view_object[:weather_status]).each do |top_left| -%>
+<span style="margin-right: .5rem;"><i class="mdi mdi-<%= top_left[:icon] %>" style="margin-right: .1rem;<%= " display: inline-block; transform: rotate(#{top_left[:rotation]}deg);" if top_left[:rotation] %>"></i><%= top_left[:label] %></span>
+<%- end -%>
+  </div>
+  <div style="float: right; text-align: right;">
+<%- view_object[:top_right].each do |top_right| -%>
+<span><i class="mdi mdi-<%= top_right[:icon] %>" style="margin-right: .1rem;"></i><%= top_right[:label] %></span>
+<%- end -%>
+  </div>
+  <div>&nbsp;</div>
+</div>
+<hr style="margin: 1rem 0 1rem; border: none; background-color: #ccc; color: #ccc; height: 2px;">
+<% end %>
+<div style="clear: both; line-height: .7; margin-bottom: 1rem; padding-bottom: .5rem; font-size: 2.5rem;">
+  <div style="float: left;">
+    <%= DateTime.now.strftime("%A, %b. %-d") %>
+  </div>
+  <div style="float: right; text-align: right;">
+    <%= view_object[:current_temperature] %>
+  </div>
+  <div>&nbsp;</div>
+</div>
+<% unless view_object[:private_mode] %>
+  <hr style="margin: 1rem 0 1rem; border: none; background-color: #ccc; color: #ccc; height: 2px;">
+  <%= render "devices/timeline", view_object: view_object %>
+<% end %>

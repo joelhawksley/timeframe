@@ -1,0 +1,69 @@
+<style>
+  html { font-size: 16px; }
+  .three-day-columns { display: flex; height: 28rem; }
+  .three-day-col { flex: 1; padding: 0 .5rem; overflow: hidden; }
+  .three-day-col + .three-day-col { border-left: 2px solid #ccc; }
+  .three-day-header { font-weight: 700; font-size: 1.5rem; line-height: 1; margin-bottom: .15rem; }
+  .three-day-date { font-size: 2.5rem; font-weight: 700; line-height: 1; margin-bottom: .25rem; }
+  .three-day-events { font-size: .7rem; }
+  .three-day-events table { width: 100%; }
+  .three-day-events td { padding: .05rem 0; }
+  .three-day-event-icon { width: 1rem; text-align: center; font-size: .85rem; font-weight: bold; }
+  .three-day-event-summary { text-overflow: ellipsis; white-space: nowrap; overflow: hidden; max-width: 0; }
+</style>
+
+<% unless view_object[:private_mode] %>
+  <div class="three-day-columns">
+    <% view_object[:day_groups].each do |day| %>
+      <div class="three-day-col">
+        <div class="three-day-header"><%= day[:day_name] %></div>
+        <div class="three-day-date"><%= day[:date].day %></div>
+
+        <% if day[:show_daily] && day[:daily].any? %>
+          <div class="three-day-events">
+            <table>
+              <% day[:daily].each do |event| %>
+                <tr>
+                  <td class="three-day-event-icon">
+                    <% if event[:icon_text] %>
+                      <span><%= event[:icon_text] %></span>
+                    <% else %>
+                      <i class="mdi mdi-<%= event[:icon_class] %>"<%= " style=\"#{event[:icon_style]}\"".html_safe if event[:icon_style] %>></i>
+                    <% end %>
+                  </td>
+                  <td class="three-day-event-summary"><%= event[:summary] %></td>
+                </tr>
+              <% end %>
+            </table>
+          </div>
+        <% end %>
+
+        <% if day[:periodic].any? %>
+          <div class="three-day-events">
+            <table>
+              <% day[:periodic].each do |event| %>
+                <tr>
+                  <td class="three-day-event-icon">
+                    <% if event[:icon_text] %>
+                      <span><%= event[:icon_text] %></span>
+                    <% else %>
+                      <i class="mdi mdi-<%= event[:icon_class] %>"<%= " style=\"#{event[:icon_style]}\"".html_safe if event[:icon_style] %>></i>
+                    <% end %>
+                  </td>
+                  <td style="white-space: nowrap; font-size: .6rem; padding: 0 .15rem; width: 4rem;">
+                    <%= event[:time_html].html_safe %>
+                  </td>
+                  <td class="three-day-event-summary"><%= event[:summary] %></td>
+                </tr>
+              <% end %>
+            </table>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+<% end %>
+
+<div class="timestamp" style="position: absolute; bottom: 4px; right: 4px; font-family: 'Lato', sans-serif; font-size: 9px; z-index: 10; writing-mode: vertical-rl; text-orientation: mixed;">
+  <%= view_object[:attribution] if view_object[:attribution].present? %> <%= view_object[:timestamp] %>
+</div>

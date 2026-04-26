@@ -1,0 +1,10 @@
+PreCommit:
+  StandardRB:
+    enabled: true
+    command: ['bundle', 'exec', 'standardrb']
+  RailsTest:
+    enabled: true
+    command: ['bundle', 'exec', 'rake', 'test']
+  VerifyConsumers:
+    enabled: true
+    command: ['script/verify-consumers']

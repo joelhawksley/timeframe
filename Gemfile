@@ -3,7 +3,7 @@
 source "https://rubygems.org"
 ruby "4.0.2"
 
-gem "timeframe-core", git: "https://github.com/timeframe/core", branch: "main", require: "timeframe_core"
+gem "timeframe-core", path: "engine", require: "timeframe_core"
 
 gem "anyway_config"
 gem "csv"
