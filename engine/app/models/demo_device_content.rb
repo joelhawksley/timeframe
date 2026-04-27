@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 class DemoDeviceContent
-  def call(timezone: "UTC", current_time: nil, days: 5, include_precip: true, include_wind: true)
+  def call(timezone: "UTC", current_time: nil, days: 5, include_precip: true, include_wind: true,
+    use_day_names: false, include_daily_weather: true, weather_row: false, start_time_only: false)
     current_time ||= Time.now.utc.in_time_zone(timezone)
 
     out = {}
@@ -55,14 +56,16 @@ class DemoDeviceContent
     out[:attribution] = nil
     out[:private_mode] = false
 
-    out[:day_groups] = build_day_groups(current_time, timezone, days: days, include_wind: include_wind)
+    out[:day_groups] = build_day_groups(current_time, timezone, days: days, include_wind: include_wind,
+      use_day_names: use_day_names, weather_row: weather_row)
+    out[:start_time_only] = start_time_only
 
     out
   end
 
   private
 
-  def build_day_groups(current_time, timezone, days: 5, include_wind: true)
+  def build_day_groups(current_time, timezone, days: 5, include_wind: true, use_day_names: false, weather_row: false)
     today = current_time.to_date
     vacation = DeviceEvent.new(
       starts_at: (today - 2.days).beginning_of_day,
@@ -76,21 +79,35 @@ class DemoDeviceContent
     (0...days).map do |day_index|
       date = current_time + day_index.days
 
-      day_name = case day_index
-      when 0 then "Today"
-      when 1 then "Tomorrow"
-      else date.strftime("%A")
+      day_name = if use_day_names
+        date.strftime("%A")
+      else
+        case day_index
+        when 0 then "Today"
+        when 1 then "Tomorrow"
+        else date.strftime("%A")
+        end
       end
 
       show_daily = (day_index.zero? && current_time.hour < 20) || !day_index.zero?
       events = events_for_day(day_index, date, current_time, vacation, timezone, include_wind: include_wind)
+
+      periodic_events = events[:periodic]
+      weather_row_data = nil
+
+      if weather_row
+        weather_events, periodic_events = periodic_events.partition(&:weather?)
+        weather_events = weather_events.select { |e| e.weather_hourly? && [8, 12, 16].include?(e.starts_at.hour) }
+        weather_row_data = weather_events.map { |e| e.as_json(date: date.to_date) }
+      end
 
       {
         day_name: day_name,
         date: date.to_date,
         show_daily: show_daily,
         daily: events[:daily].map { |e| e.as_json(date: date.to_date) },
-        periodic: events[:periodic].map { |e| e.as_json(date: date.to_date) }
+        periodic: periodic_events.map { |e| e.as_json(date: date.to_date) },
+        weather_row: weather_row_data
       }
     end
   end
@@ -132,6 +149,7 @@ class DemoDeviceContent
       )
 
       periodic << DeviceEvent.new(
+        id: "_ha_weather_hour_#{date.change(hour: 12).to_i}",
         starts_at: date.change(hour: 12),
         ends_at: date.change(hour: 12),
         summary: "68°",
@@ -140,6 +158,7 @@ class DemoDeviceContent
       )
 
       periodic << DeviceEvent.new(
+        id: "_ha_weather_hour_#{date.change(hour: 16).to_i}",
         starts_at: date.change(hour: 16),
         ends_at: date.change(hour: 16),
         summary: "74°",
@@ -157,6 +176,7 @@ class DemoDeviceContent
       )
 
       periodic << DeviceEvent.new(
+        id: "_ha_weather_hour_#{date.change(hour: 20).to_i}",
         starts_at: date.change(hour: 20),
         ends_at: date.change(hour: 20),
         summary: "64°",
@@ -186,6 +206,7 @@ class DemoDeviceContent
       )
 
       periodic << DeviceEvent.new(
+        id: "_ha_weather_hour_#{date.change(hour: 8).to_i}",
         starts_at: date.change(hour: 8),
         ends_at: date.change(hour: 8),
         summary: "55°",
@@ -203,6 +224,7 @@ class DemoDeviceContent
       )
 
       periodic << DeviceEvent.new(
+        id: "_ha_weather_hour_#{date.change(hour: 12).to_i}",
         starts_at: date.change(hour: 12),
         ends_at: date.change(hour: 12),
         summary: "70°",
@@ -231,6 +253,7 @@ class DemoDeviceContent
       end
 
       periodic << DeviceEvent.new(
+        id: "_ha_weather_hour_#{date.change(hour: 20).to_i}",
         starts_at: date.change(hour: 20),
         ends_at: date.change(hour: 20),
         summary: "48°",
@@ -242,6 +265,7 @@ class DemoDeviceContent
       daily << vacation
 
       periodic << DeviceEvent.new(
+        id: "_ha_weather_hour_#{date.change(hour: 8).to_i}",
         starts_at: date.change(hour: 8),
         ends_at: date.change(hour: 8),
         summary: "62°",
@@ -259,6 +283,7 @@ class DemoDeviceContent
       )
 
       periodic << DeviceEvent.new(
+        id: "_ha_weather_hour_#{date.change(hour: 12).to_i}",
         starts_at: date.change(hour: 12),
         ends_at: date.change(hour: 12),
         summary: "67°",
@@ -284,6 +309,7 @@ class DemoDeviceContent
       )
 
       periodic << DeviceEvent.new(
+        id: "_ha_weather_hour_#{date.change(hour: 20).to_i}",
         starts_at: date.change(hour: 20),
         ends_at: date.change(hour: 20),
         summary: "55°",
@@ -295,6 +321,7 @@ class DemoDeviceContent
       daily << vacation
 
       periodic << DeviceEvent.new(
+        id: "_ha_weather_hour_#{date.change(hour: 8).to_i}",
         starts_at: date.change(hour: 8),
         ends_at: date.change(hour: 8),
         summary: "58°",
@@ -303,6 +330,7 @@ class DemoDeviceContent
       )
 
       periodic << DeviceEvent.new(
+        id: "_ha_weather_hour_#{date.change(hour: 12).to_i}",
         starts_at: date.change(hour: 12),
         ends_at: date.change(hour: 12),
         summary: "75°",
@@ -320,6 +348,7 @@ class DemoDeviceContent
       )
 
       periodic << DeviceEvent.new(
+        id: "_ha_weather_hour_#{date.change(hour: 20).to_i}",
         starts_at: date.change(hour: 20),
         ends_at: date.change(hour: 20),
         summary: "62°",
@@ -340,6 +369,7 @@ class DemoDeviceContent
       )
 
       periodic << DeviceEvent.new(
+        id: "_ha_weather_hour_#{date.change(hour: 8).to_i}",
         starts_at: date.change(hour: 8),
         ends_at: date.change(hour: 8),
         summary: "60°",
@@ -348,6 +378,7 @@ class DemoDeviceContent
       )
 
       periodic << DeviceEvent.new(
+        id: "_ha_weather_hour_#{date.change(hour: 12).to_i}",
         starts_at: date.change(hour: 12),
         ends_at: date.change(hour: 12),
         summary: "72°",
@@ -356,6 +387,7 @@ class DemoDeviceContent
       )
 
       periodic << DeviceEvent.new(
+        id: "_ha_weather_hour_#{date.change(hour: 20).to_i}",
         starts_at: date.change(hour: 20),
         ends_at: date.change(hour: 20),
         summary: "58°",

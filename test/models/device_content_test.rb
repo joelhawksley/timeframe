@@ -143,4 +143,58 @@ class DeviceContenttTest < Minitest::Test
       end
     end
   end
+
+  def test_use_day_names_option
+    travel_to DateTime.new(2023, 8, 27, 10, 0, 0, "-0600") do
+      result = DeviceContent.new.call(home_assistant_api: new_test_api, use_day_names: true)
+
+      assert_equal "Sunday", result[:day_groups][0][:day_name]
+      assert_equal "Monday", result[:day_groups][1][:day_name]
+    end
+  end
+
+  def test_weather_row_extracts_hourly_weather
+    travel_to DateTime.new(2023, 8, 27, 7, 0, 0, "-0600") do
+      api = new_test_api
+      weather_events = [
+        DeviceEvent.new(id: "_ha_weather_hour_1", starts_at: DateTime.new(2023, 8, 27, 8, 0, 0, "-0600"), ends_at: DateTime.new(2023, 8, 27, 8, 0, 0, "-0600"), summary: "65°", icon: "weather-sunny", timezone: "America/Chicago"),
+        DeviceEvent.new(id: "_ha_weather_hour_2", starts_at: DateTime.new(2023, 8, 27, 12, 0, 0, "-0600"), ends_at: DateTime.new(2023, 8, 27, 12, 0, 0, "-0600"), summary: "72°", icon: "weather-sunny", timezone: "America/Chicago"),
+        DeviceEvent.new(id: "_ha_weather_hour_3", starts_at: DateTime.new(2023, 8, 27, 16, 0, 0, "-0600"), ends_at: DateTime.new(2023, 8, 27, 16, 0, 0, "-0600"), summary: "74°", icon: "weather-sunny", timezone: "America/Chicago"),
+        DeviceEvent.new(id: "_ha_weather_hour_4", starts_at: DateTime.new(2023, 8, 27, 20, 0, 0, "-0600"), ends_at: DateTime.new(2023, 8, 27, 20, 0, 0, "-0600"), summary: "60°", icon: "weather-night", timezone: "America/Chicago")
+      ]
+      api.stub :calendars_healthy?, false do
+        api.stub :private_mode?, false do
+          api.stub :calendar_events, weather_events do
+            result = DeviceContent.new.call(home_assistant_api: api, weather_row: true)
+
+            today = result[:day_groups].find { |d| d[:day_name] == "Today" }
+            assert_equal 3, today[:weather_row].length
+            assert today[:weather_row].any? { |w| w[:summary] == "65°" }
+            assert today[:weather_row].any? { |w| w[:summary] == "72°" }
+            assert today[:weather_row].any? { |w| w[:summary] == "74°" }
+            assert today[:periodic].none? { |e| e[:summary] == "65°" }
+          end
+        end
+      end
+    end
+  end
+
+  def test_include_daily_weather_false_skips_daily_weather
+    travel_to DateTime.new(2023, 8, 27, 10, 0, 0, "-0600") do
+      api = new_test_api
+      api.stub :weather_healthy?, true do
+        result = DeviceContent.new.call(home_assistant_api: api, include_daily_weather: false)
+
+        assert_equal 5, result[:day_groups].count
+      end
+    end
+  end
+
+  def test_start_time_only_flag
+    travel_to DateTime.new(2023, 8, 27, 10, 0, 0, "-0600") do
+      result = DeviceContent.new.call(home_assistant_api: new_test_api, start_time_only: true)
+
+      assert result[:start_time_only]
+    end
+  end
 end

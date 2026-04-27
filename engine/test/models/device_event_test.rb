@@ -239,4 +239,107 @@ class DeviceEventTest < Minitest::Test
 
     assert(event.omit?)
   end
+
+  def test_weather_hourly_true
+    event = DeviceEvent.new(
+      id: "_ha_weather_hour_1675123200",
+      starts_at: 1675123200,
+      ends_at: 1675123200,
+      summary: "72°",
+      icon: "weather-sunny"
+    )
+
+    assert(event.weather_hourly?)
+  end
+
+  def test_weather_hourly_true_for_wk
+    event = DeviceEvent.new(
+      id: "_wk_weather_hour_1675123200",
+      starts_at: 1675123200,
+      ends_at: 1675123200,
+      summary: "72°",
+      icon: "cloud"
+    )
+
+    assert(event.weather_hourly?)
+  end
+
+  def test_weather_hourly_false_for_non_weather
+    event = DeviceEvent.new(
+      starts_at: 1675123200,
+      ends_at: 1675123200,
+      summary: "foo",
+      icon: "alpha-j"
+    )
+
+    refute(event.weather_hourly?)
+  end
+
+  def test_weather_hourly_false_for_ranged_event
+    event = DeviceEvent.new(
+      id: "_ha_weather_hour_1675123200",
+      starts_at: 1675123200,
+      ends_at: 1675126800,
+      summary: "72°",
+      icon: "weather-sunny"
+    )
+
+    refute(event.weather_hourly?)
+  end
+
+  def test_weather_true_for_ha_weather
+    event = DeviceEvent.new(
+      id: "_ha_weather_day_1675123200",
+      starts_at: 1675123200,
+      ends_at: 1675209600,
+      summary: "72° / 55°",
+      icon: "weather-sunny"
+    )
+
+    assert(event.weather?)
+  end
+
+  def test_weather_false_for_calendar_event
+    event = DeviceEvent.new(
+      starts_at: 1675123200,
+      ends_at: 1675126800,
+      summary: "Meeting",
+      icon: "alpha-j"
+    )
+
+    refute(event.weather?)
+  end
+
+  def test_start_time
+    event = DeviceEvent.new(
+      starts_at: 1621288800,
+      ends_at: 1621292400,
+      summary: "foo",
+      timezone: "America/Chicago"
+    )
+
+    assert_equal("5p", event.start_time)
+  end
+
+  def test_start_time_with_minutes
+    event = DeviceEvent.new(
+      starts_at: 1621288860,
+      ends_at: 1621292400,
+      summary: "foo",
+      timezone: "America/Chicago"
+    )
+
+    assert_equal("5:01p", event.start_time)
+  end
+
+  def test_as_json_includes_start_time
+    event = DeviceEvent.new(
+      starts_at: 1621288800,
+      ends_at: 1621292400,
+      summary: "foo",
+      timezone: "America/Chicago"
+    )
+
+    assert_equal("5p", event.as_json[:start_time])
+  end
 end

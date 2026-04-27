@@ -198,4 +198,32 @@ class DemoDeviceContentTest < Minitest::Test
       assert_nil wind_event, "Wind events should be excluded"
     end
   end
+
+  def test_use_day_names_option
+    travel_to DateTime.new(2026, 3, 19, 8, 0, 0, "-0500") do
+      result = DemoDeviceContent.new.call(timezone: "America/Chicago", use_day_names: true)
+
+      assert_equal "Thursday", result[:day_groups][0][:day_name]
+      assert_equal "Friday", result[:day_groups][1][:day_name]
+    end
+  end
+
+  def test_weather_row_extracts_weather_events
+    travel_to DateTime.new(2026, 3, 19, 8, 0, 0, "-0500") do
+      result = DemoDeviceContent.new.call(timezone: "America/Chicago", weather_row: true)
+
+      today = result[:day_groups][0]
+      assert today[:weather_row].is_a?(Array)
+      assert today[:weather_row].any?, "Expected weather row items"
+      assert today[:periodic].none? { |e| e[:icon_class]&.start_with?("weather-") && e[:summary]&.end_with?("°") && e[:time_html] == e[:start_time] }
+    end
+  end
+
+  def test_start_time_only_flag
+    travel_to DateTime.new(2026, 3, 19, 8, 0, 0, "-0500") do
+      result = DemoDeviceContent.new.call(timezone: "America/Chicago", start_time_only: true)
+
+      assert result[:start_time_only]
+    end
+  end
 end

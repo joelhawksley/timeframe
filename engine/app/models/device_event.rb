@@ -71,6 +71,21 @@ class DeviceEvent
     end
   end
 
+  def weather?
+    id.to_s.match?(/\A_(?:ha|wk)_weather_/)
+  end
+
+  def weather_hourly?
+    start_i == end_i && weather?
+  end
+
+  def start_time
+    start = Time.at(start_i).in_time_zone(@timezone)
+    label = start.min.positive? ? start.strftime("%-l:%M") : start.strftime("%-l")
+    suffix = start.strftime("%p").gsub("AM", "a").gsub("PM", "p")
+    "#{label}#{suffix}"
+  end
+
   def time
     @time ||= begin
       start = Time.at(start_i).in_time_zone(@timezone)
@@ -131,7 +146,8 @@ class DeviceEvent
       icon_style: icon_rotation ? "display: inline-block; transform: rotate(#{icon_rotation + 180}deg); " : nil,
       summary: summary(date),
       location: location,
-      time_html: time.to_s
+      time_html: time.to_s,
+      start_time: start_time
     }
   end
 end

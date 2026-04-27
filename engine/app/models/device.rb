@@ -128,7 +128,9 @@ class Device < ActiveRecord::Base
   def device_content(timezone: nil)
     tz = timezone || location&.time_zone || "UTC"
     three_day = active_template == "three_day"
-    args = {days: three_day ? 3 : 5, include_precip: !three_day, include_wind: !three_day}
+    args = {days: three_day ? 3 : 5, include_precip: !three_day, include_wind: !three_day,
+            use_day_names: three_day, include_daily_weather: !three_day,
+            weather_row: three_day, start_time_only: three_day}
 
     if demo_mode_enabled?
       DemoDeviceContent.new.call(timezone: tz, **args)

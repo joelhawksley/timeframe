@@ -5,7 +5,11 @@
   .three-day-col + .three-day-col { border-left: 2px solid #ccc; }
   .three-day-header { font-weight: 700; font-size: 1.5rem; line-height: 1; margin-bottom: .15rem; }
   .three-day-date { font-size: 2.5rem; font-weight: 700; line-height: 1; margin-bottom: .25rem; }
-  .three-day-events { font-size: .7rem; }
+  .three-day-weather-row { display: flex; gap: .35rem; font-size: .65rem; margin-bottom: .25rem; }
+  .three-day-weather-item { display: flex; align-items: center; gap: .1rem; }
+  .three-day-weather-item i { font-size: .85rem; }
+  .three-day-weather-time { font-size: .5rem; opacity: .7; }
+  .three-day-events { font-size: .8rem; }
   .three-day-events table { width: 100%; }
   .three-day-events td { padding: .05rem 0; }
   .three-day-event-icon { width: 1rem; text-align: center; font-size: .85rem; font-weight: bold; }
@@ -18,6 +22,17 @@
       <div class="three-day-col">
         <div class="three-day-header"><%= day[:day_name] %></div>
         <div class="three-day-date"><%= day[:date].day %></div>
+
+        <% if day[:weather_row]&.any? %>
+          <div class="three-day-weather-row">
+            <% day[:weather_row].each do |w| %>
+              <span class="three-day-weather-item">
+                <span class="three-day-weather-time"><%= w[:start_time] %></span>
+                <i class="mdi mdi-<%= w[:icon_class] %>"></i> <%= w[:summary] %>
+              </span>
+            <% end %>
+          </div>
+        <% end %>
 
         <% if day[:show_daily] && day[:daily].any? %>
           <div class="three-day-events">
@@ -50,8 +65,8 @@
                       <i class="mdi mdi-<%= event[:icon_class] %>"<%= " style=\"#{event[:icon_style]}\"".html_safe if event[:icon_style] %>></i>
                     <% end %>
                   </td>
-                  <td style="white-space: nowrap; font-size: .6rem; padding: 0 .15rem; width: 4rem;">
-                    <%= event[:time_html].html_safe %>
+                  <td style="white-space: nowrap; font-size: .6rem; padding: 0 .15rem; width: 2.5rem;">
+                    <%= view_object[:start_time_only] ? event[:start_time] : event[:time_html].html_safe %>
                   </td>
                   <td class="three-day-event-summary"><%= event[:summary] %></td>
                 </tr>
