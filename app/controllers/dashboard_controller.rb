@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-class DashboardController < ApplicationController
+require_dependency TimeframeCore::Engine.root.join("app", "controllers", "dashboard_controller")
+
+class DashboardController
   HA_DOMAIN_CHECKS = [
     {name: "States", healthy: :states_healthy?, last_fetched_at: :states_last_fetched_at, icon: "mdi-list-status"},
     {name: "Calendars", healthy: :calendars_healthy?, last_fetched_at: :calendars_last_fetched_at, icon: "mdi-calendar"},
@@ -8,37 +10,9 @@ class DashboardController < ApplicationController
     {name: "Weather", healthy: :weather_healthy?, last_fetched_at: :weather_last_fetched_at, icon: "mdi-weather-partly-cloudy"}
   ].freeze
 
-  def index
-    @accounts = current_user.accounts.includes(locations: :devices)
-    @account = @accounts.first
-    @location = @account&.locations&.first
-    @devices = @location&.devices&.order(:name) || Device.none
+  private
 
-    render "dashboard/single_tenant"
-  end
-
-  def claim_device
-    pairing_code = params[:pairing_code].to_s.strip.upcase
-    pending_device = PendingDevice.find_active_by_code(pairing_code)
-
-    unless pending_device
-      return redirect_to root_path, alert: "Invalid or expired pairing code."
-    end
-
-    name = params[:device_name].to_s.strip
-    model = params[:device_model]
-    location_id = params[:location_id]
-
-    unless name.present? && Device::SUPPORTED_MODELS.key?(model) && location_id.present?
-      return redirect_to root_path, alert: "Name, model, and location are required."
-    end
-
-    location = current_user.accounts.flat_map(&:locations).find { |l| l.id == location_id.to_i }
-    unless location
-      return redirect_to root_path, alert: "Location not found."
-    end
-
-    pending_device.claim!(location: location, name: name, model: model)
-    redirect_to root_path, notice: "Device \"#{name}\" paired successfully."
+  def dashboard_template
+    "dashboard/single_tenant"
   end
 end

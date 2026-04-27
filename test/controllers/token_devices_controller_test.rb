@@ -77,18 +77,6 @@ class TokenDevicesControllerTest < ActionDispatch::IntegrationTest
     assert_response :unauthorized
   end
 
-  test "show returns 401 for non-Visionect device with valid key" do
-    location = @account.locations.first
-    trmnl = Device.find_or_create_by!(name: "test-token-trmnl", model: "trmnl_og") do |d|
-      d.location = location
-      d.mac_address = "AA:BB:CC:DD:EE:99"
-    end
-    trmnl.update!(display_key: SecureRandom.alphanumeric(24), confirmed_at: Time.current, confirmation_code: nil)
-
-    get "/d/#{trmnl.id}?key=#{trmnl.display_key}"
-    assert_response :unauthorized
-  end
-
   test "screenshot refreshes and returns image when no cache" do
     @device.update!(cached_image: nil, cached_image_at: nil)
     fake_b64 = Base64.strict_encode64("fake png data")

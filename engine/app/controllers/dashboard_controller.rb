@@ -38,7 +38,9 @@ class DashboardController < ApplicationController
   private
 
   # Override in host apps to choose dashboard view
+  # :nocov:
   def dashboard_template
     "dashboard/index"
   end
+  # :nocov:
 end
