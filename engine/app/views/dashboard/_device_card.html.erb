@@ -48,8 +48,8 @@
             <% device.template_options.each do |tmpl| %>
               <li>
                 <%= form_with url: update_template_account_location_device_path(account, location, device), method: :patch do %>
-                  <input type="hidden" name="display_template" value="<%= tmpl %>">
-                  <%= submit_tag((device.active_template == tmpl ? "\u2713 " : "   ") + Device::TEMPLATE_LABELS[tmpl], class: "dropdown-item", style: "border: none; background: none; width: 100%; text-align: left; cursor: pointer;#{" font-weight: bold;" if device.active_template == tmpl}") %>
+                  <input type="hidden" name="display_template" value="<%= tmpl[:name] %>">
+                  <%= submit_tag((device.active_template == tmpl[:name] ? "\u2713 " : "   ") + tmpl[:label], class: "dropdown-item", style: "border: none; background: none; width: 100%; text-align: left; cursor: pointer;#{" font-weight: bold;" if device.active_template == tmpl[:name]}") %>
                 <% end %>
               </li>
             <% end %>
@@ -68,7 +68,7 @@
               <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#regen-device-<%= device.id %>">Regenerate URL</button>
             </li>
           <% end %>
-          <% if device.model == "boox_mira_pro" || device.reterminal_e1003? %>
+          <% if device.pairing_code_device? %>
             <li>
               <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#repair-device-<%= device.id %>">Re-pair</button>
             </li>
@@ -113,7 +113,7 @@
       </script>
     <% end %>
 
-    <% if device.model == "boox_mira_pro" || device.reterminal_e1003? %>
+    <% if device.pairing_code_device? %>
       <div class="modal fade" id="repair-device-<%= device.id %>" tabindex="-1" aria-labelledby="repair-device-label-<%= device.id %>" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">

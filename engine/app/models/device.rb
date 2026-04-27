@@ -7,18 +7,15 @@ class Device < ActiveRecord::Base
 
   SUPPORTED_MODELS = {
     "visionect_13" => {name: "Visionect Place & Play 13\"", template: "thirteen", width: 1200, height: 1600},
-    "boox_mira_pro" => {name: "Boox Mira Pro 25.3\"", template: "mira", width: 1800, height: 3200},
-    "trmnl_og" => {name: "TRMNL (OG)", template: "trmnl", width: 800, height: 480, templates: ["trmnl", "three_day"]},
-    "reterminal_e1001" => {name: "reTerminal E1001 7.5\"", template: "trmnl", width: 800, height: 480, templates: ["trmnl", "three_day"]},
-    "reterminal_e1003" => {name: "reTerminal E1003 10.3\"", template: "reterminal", width: 1404, height: 1872}
+    "boox_mira_pro" => {name: "Boox Mira Pro 25.3\"", template: "mira", width: 1800, height: 3200, realtime: true},
+    "boox_mira" => {name: "Boox Mira 13.3\"", template: "boox_mira", width: 1650, height: 2200, realtime: true},
+    "trmnl_og" => {name: "TRMNL (OG)", template: "trmnl", width: 800, height: 480, templates: [{name: "trmnl", label: "Landscape Timeline"}, {name: "three_day", label: "3-Day"}], screenshotted: true},
+    "reterminal_e1001" => {name: "reTerminal E1001 7.5\"", template: "trmnl", width: 800, height: 480, templates: [{name: "trmnl", label: "Landscape Timeline"}, {name: "three_day", label: "3-Day"}], screenshotted: true},
+    "reterminal_e1003" => {name: "reTerminal E1003 10.3\"", template: "reterminal", width: 1404, height: 1872, screenshotted: true}
   }.freeze
 
-  TEMPLATE_LABELS = {
-    "trmnl" => "Landscape Timeline",
-    "three_day" => "3-Day"
-  }.freeze
-
-  SCREENSHOTTED_MODELS = %w[trmnl_og reterminal_e1001 reterminal_e1003].freeze
+  REALTIME_MODELS = SUPPORTED_MODELS.select { |_, v| v[:realtime] }.keys.freeze
+  SCREENSHOTTED_MODELS = SUPPORTED_MODELS.select { |_, v| v[:screenshotted] }.keys.freeze
 
   belongs_to :location, optional: true
 
@@ -35,7 +32,7 @@ class Device < ActiveRecord::Base
   validates :model, presence: true, inclusion: {in: SUPPORTED_MODELS.keys}
   validates :mac_address, uniqueness: true, allow_nil: true
   validates :mac_address, presence: true, if: :screenshotted?
-  validates :display_template, inclusion: {in: ->(device) { ["default"] + (SUPPORTED_MODELS.dig(device.model, :templates) || []) }}
+  validates :display_template, inclusion: {in: ->(device) { ["default"] + (SUPPORTED_MODELS.dig(device.model, :templates)&.map { |t| t[:name] } || []) }}
   validates :visionect_serial, uniqueness: true, allow_nil: true
 
   before_create :generate_api_key, if: :screenshotted?
@@ -101,6 +98,18 @@ class Device < ActiveRecord::Base
     attrs = {location: location, confirmed_at: Time.current, confirmation_code: nil}
     attrs[:name] = name if name.present?
     update!(attrs)
+  end
+
+  def boox_mira?
+    model == "boox_mira"
+  end
+
+  def realtime_display?
+    REALTIME_MODELS.include?(model)
+  end
+
+  def pairing_code_device?
+    !visionect?
   end
 
   def visionect?

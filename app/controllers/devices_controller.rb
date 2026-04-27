@@ -18,7 +18,7 @@ class DevicesController < ApplicationController
 
     template = @device.active_template
 
-    if template == "mira"
+    if @device.realtime_display?
       @refresh = params[:refresh] != "false"
     end
 

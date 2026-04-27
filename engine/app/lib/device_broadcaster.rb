@@ -26,7 +26,7 @@ class DeviceBroadcaster
     end
 
     def broadcast_all_mira_devices
-      Device.where(model: "boox_mira_pro").find_each do |device|
+      Device.where(model: Device::REALTIME_MODELS).find_each do |device|
         broadcast_if_changed(device)
       rescue => e
         Rails.logger.error "[DeviceBroadcaster] Failed for #{device.name}: #{e.message}"

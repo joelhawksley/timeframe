@@ -45,14 +45,14 @@
   var btn = document.getElementById('add-device-btn');
 
   function needsPairing() {
-    return modelSelect.value === 'trmnl_og' || modelSelect.value === 'boox_mira_pro' || modelSelect.value === 'reterminal_e1001' || modelSelect.value === 'reterminal_e1003';
+    return modelSelect.value !== '' && modelSelect.value !== 'visionect_13';
   }
 
   function updateState() {
     var showPairing = needsPairing();
     pairingWrap.style.display = showPairing ? '' : 'none';
     pairingInput.required = showPairing;
-    setupNote.style.display = modelSelect.value === 'boox_mira_pro' ? '' : 'none';
+    setupNote.style.display = (modelSelect.value === 'boox_mira_pro' || modelSelect.value === 'boox_mira') ? '' : 'none';
     trmnlNote.style.display = modelSelect.value === 'trmnl_og' ? '' : 'none';
     reterminalNote.style.display = modelSelect.value === 'reterminal_e1003' ? '' : 'none';
     reterminalE1001Note.style.display = modelSelect.value === 'reterminal_e1001' ? '' : 'none';

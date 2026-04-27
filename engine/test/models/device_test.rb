@@ -211,6 +211,82 @@ class DeviceTest < Minitest::Test
     assert_equal 1872, device.display_height
   end
 
+  def test_boox_mira_model_name_label
+    device = Device.new(name: "test", model: "boox_mira")
+    assert_equal "Boox Mira 13.3\"", device.model_name_label
+  end
+
+  def test_boox_mira_display_dimensions
+    device = Device.new(name: "test", model: "boox_mira")
+    assert_equal 1650, device.display_width
+    assert_equal 2200, device.display_height
+  end
+
+  def test_boox_mira_predicate
+    assert Device.new(model: "boox_mira").boox_mira?
+    refute Device.new(model: "visionect_13").boox_mira?
+  end
+
+  def test_trmnl_predicate
+    assert Device.new(model: "trmnl_og").trmnl?
+    refute Device.new(model: "visionect_13").trmnl?
+  end
+
+  def test_reterminal_e1001_predicate
+    assert Device.new(model: "reterminal_e1001").reterminal_e1001?
+    refute Device.new(model: "visionect_13").reterminal_e1001?
+  end
+
+  def test_realtime_display
+    assert Device.new(model: "boox_mira_pro").realtime_display?
+    assert Device.new(model: "boox_mira").realtime_display?
+    refute Device.new(model: "visionect_13").realtime_display?
+    refute Device.new(model: "trmnl_og").realtime_display?
+  end
+
+  def test_pairing_code_device
+    assert Device.new(model: "boox_mira_pro").pairing_code_device?
+    assert Device.new(model: "boox_mira").pairing_code_device?
+    assert Device.new(model: "trmnl_og").pairing_code_device?
+    assert Device.new(model: "reterminal_e1003").pairing_code_device?
+    refute Device.new(model: "visionect_13").pairing_code_device?
+  end
+
+  def test_screenshotted_models_derived_from_supported_models
+    assert_includes Device::SCREENSHOTTED_MODELS, "trmnl_og"
+    assert_includes Device::SCREENSHOTTED_MODELS, "reterminal_e1001"
+    assert_includes Device::SCREENSHOTTED_MODELS, "reterminal_e1003"
+    refute_includes Device::SCREENSHOTTED_MODELS, "visionect_13"
+    refute_includes Device::SCREENSHOTTED_MODELS, "boox_mira_pro"
+    refute_includes Device::SCREENSHOTTED_MODELS, "boox_mira"
+  end
+
+  def test_realtime_models_derived_from_supported_models
+    assert_includes Device::REALTIME_MODELS, "boox_mira_pro"
+    assert_includes Device::REALTIME_MODELS, "boox_mira"
+    refute_includes Device::REALTIME_MODELS, "visionect_13"
+    refute_includes Device::REALTIME_MODELS, "trmnl_og"
+  end
+
+  def test_active_template_for_boox_mira
+    device = Device.new(model: "boox_mira", display_template: "default")
+    assert_equal "boox_mira", device.active_template
+  end
+
+  def test_template_options_returns_hashes
+    device = Device.new(model: "trmnl_og")
+    options = device.template_options
+    assert_kind_of Array, options
+    assert options.all? { |t| t.key?(:name) && t.key?(:label) }
+    assert_equal "trmnl", options.first[:name]
+    assert_equal "Landscape Timeline", options.first[:label]
+  end
+
+  def test_template_options_nil_for_single_template_device
+    assert_nil Device.new(model: "boox_mira").template_options
+    assert_nil Device.new(model: "visionect_13").template_options
+  end
+
   def test_reterminal_e1003_predicate
     device = Device.new(name: "test", model: "reterminal_e1003")
     assert device.reterminal_e1003?
@@ -234,13 +310,6 @@ class DeviceTest < Minitest::Test
     device = Device.new(name: "test_rt_no_mac", model: "reterminal_e1003")
     refute device.valid?
     assert device.errors[:mac_address].any?
-  end
-
-  def test_reterminal_e1001_predicate
-    device = Device.new(name: "test", model: "reterminal_e1001")
-    assert device.reterminal_e1001?
-    refute device.trmnl?
-    refute device.visionect?
   end
 
   def test_active_template_returns_custom_when_set
