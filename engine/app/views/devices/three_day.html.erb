@@ -1,16 +1,17 @@
 <style>
-  html { font-size: 16px; }
-  .three-day-columns { display: flex; height: 28rem; }
-  .three-day-col { flex: 1; padding: 0 .5rem; overflow: hidden; }
-  .three-day-col + .three-day-col { border-left: 2px solid #ccc; }
-  .three-day-header { font-weight: 700; font-size: 1.5rem; line-height: 1; margin-bottom: .15rem; }
-  .three-day-date { font-size: 2.5rem; font-weight: 700; line-height: 1; margin-bottom: .25rem; }
-  .three-day-weather-row { display: flex; gap: .35rem; font-size: .65rem; margin-bottom: .25rem; }
-  .three-day-weather-item { display: flex; align-items: center; gap: .1rem; }
-  .three-day-weather-item i { font-size: .85rem; }
-  .three-day-weather-time { font-size: .5rem; opacity: .7; }
-  .three-day-events { font-size: .8rem; }
-  .three-day-events table { width: 100%; }
+  html, body { margin: 0; padding: 0; font-size: 16px; }
+  .three-day-columns { display: flex; height: 100vh; gap: .35rem; padding: 1.5rem; box-sizing: border-box; }
+  .three-day-col { flex: 1; padding: .35rem .5rem; overflow: hidden; border: 2px solid #000; border-radius: .35rem; align-self: stretch; }
+  .three-day-col-other { border-color: rgba(204, 204, 204, .5); }
+  .three-day-header { text-align: center; font-weight: 700; font-size: 1.875rem; line-height: 1.2; margin-bottom: .25rem; }
+  .three-day-date { font-size: 1.5rem; font-weight: 400; line-height: 1.2; }
+  .three-day-weather-row { display: flex; justify-content: space-between; margin-bottom: .25rem; }
+  .three-day-weather-item { display: flex; flex-direction: column; align-items: center; flex: 1 1 0; border: 1px solid #ccc; border-radius: .25rem; padding: .2rem .1rem; margin: 0 .1rem; min-width: 0; }
+  .three-day-weather-item i { font-size: 1.5rem; }
+  .three-day-weather-time { font-size: .75rem; }
+  .three-day-weather-temp { font-size: 1rem; }
+  .three-day-events { font-size: 1.25rem; }
+  .three-day-events table { width: 100%; border-collapse: collapse; }
   .three-day-events td { padding: .05rem 0; }
   .three-day-event-icon { width: 1rem; text-align: center; font-size: .85rem; font-weight: bold; }
   .three-day-event-summary { text-overflow: ellipsis; white-space: nowrap; overflow: hidden; max-width: 0; }
@@ -19,16 +20,19 @@
 <% unless view_object[:private_mode] %>
   <div class="three-day-columns">
     <% view_object[:day_groups].each do |day| %>
-      <div class="three-day-col">
-        <div class="three-day-header"><%= day[:day_name] %></div>
-        <div class="three-day-date"><%= day[:date].day %></div>
+      <div class="three-day-col<%= ' three-day-col-other' unless day[:date].to_date == Date.current %>">
+        <div class="three-day-header">
+          <div><%= day[:day_name] %></div>
+          <div class="three-day-date"><%= day[:date].strftime("%B %-d") %></div>
+        </div>
 
         <% if day[:weather_row]&.any? %>
           <div class="three-day-weather-row">
             <% day[:weather_row].each do |w| %>
               <span class="three-day-weather-item">
                 <span class="three-day-weather-time"><%= w[:start_time] %></span>
-                <i class="mdi mdi-<%= w[:icon_class] %>"></i> <%= w[:summary] %>
+                <i class="mdi mdi-<%= w[:icon_class] %>"></i>
+                <span class="three-day-weather-temp"><%= w[:summary] %></span>
               </span>
             <% end %>
           </div>
@@ -58,14 +62,7 @@
             <table>
               <% day[:periodic].each do |event| %>
                 <tr>
-                  <td class="three-day-event-icon">
-                    <% if event[:icon_text] %>
-                      <span><%= event[:icon_text] %></span>
-                    <% else %>
-                      <i class="mdi mdi-<%= event[:icon_class] %>"<%= " style=\"#{event[:icon_style]}\"".html_safe if event[:icon_style] %>></i>
-                    <% end %>
-                  </td>
-                  <td style="white-space: nowrap; font-size: .6rem; padding: 0 .15rem; width: 2.5rem;">
+                  <td style="white-space: nowrap; font-size: .9375rem; padding: 0 .15rem 0 0; width: 2.5rem;">
                     <%= view_object[:start_time_only] ? event[:start_time] : event[:time_html].html_safe %>
                   </td>
                   <td class="three-day-event-summary"><%= event[:summary] %></td>

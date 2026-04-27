@@ -94,7 +94,18 @@ class DeviceContent
         weather_row_data = nil
 
         if weather_row
-          weather_events, periodic_events = periodic_events.partition(&:weather?)
+          if day_index.zero?
+            all_day_events = calendar_feed.events_for(
+              date.beginning_of_day.utc,
+              date.end_of_day.utc,
+              raw_events.flatten,
+              false
+            )
+            weather_events = all_day_events[:periodic].select(&:weather?)
+          else
+            weather_events, _ = periodic_events.partition(&:weather?)
+          end
+          periodic_events = periodic_events.reject(&:weather?)
           weather_events = weather_events.select { |e| e.weather_hourly? && [8, 12, 16].include?(e.starts_at.hour) }
           weather_row_data = weather_events.map { |e| e.as_json(date: date.to_date) }
         end
