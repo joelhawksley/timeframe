@@ -66,6 +66,7 @@ class DevicesController < ApplicationController
   def update_template
     device = @location.devices.find(params[:id])
     device.update!(display_template: params[:display_template])
+    RefreshDeviceScreenshotJob.perform_later(device.id) if device.screenshotted?
     redirect_back fallback_location: root_path
   end
 

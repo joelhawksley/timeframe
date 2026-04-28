@@ -1,0 +1,64 @@
+<style>
+  html, body { margin: 0; padding: 0; font-size: 16px; }
+  .two-day-columns { display: flex; width: 100vw; height: 100vh; gap: .35rem; padding: 1rem; box-sizing: border-box; }
+  .two-day-col { flex: 1; padding: .5rem; overflow: hidden; border: 2px solid #000; border-radius: .35rem; display: flex; flex-direction: column; }
+  .two-day-col-other { border-color: rgba(204, 204, 204, .5); }
+  .two-day-header { text-align: center; font-weight: 700; font-size: 1.875rem; line-height: 1.2; margin-bottom: .35rem; }
+  .two-day-date { font-size: 1.5rem; font-weight: 400; line-height: 1.2; }
+  .two-day-weather-row { display: flex; justify-content: space-between; margin-bottom: .35rem; }
+  .two-day-weather-item { display: flex; flex-direction: column; align-items: center; flex: 1 1 0; border: 1px solid #ccc; border-radius: .25rem; padding: .2rem .1rem; margin: 0 .1rem; min-width: 0; }
+  .two-day-weather-item i { font-size: 1.5rem; }
+  .two-day-weather-time { font-size: .75rem; }
+  .two-day-weather-temp { font-size: 1rem; }
+  .two-day-events { font-size: 1.25rem; flex: 1; overflow: hidden; }
+  .two-day-events table { width: 100%; border-collapse: collapse; }
+  .two-day-events td { padding: .05rem 0; }
+  .two-day-event-icon { width: 1rem; text-align: center; font-size: .85rem; font-weight: bold; }
+  .two-day-event-summary { text-overflow: ellipsis; white-space: nowrap; overflow: hidden; max-width: 0; }
+</style>
+
+<% unless view_object[:private_mode] %>
+  <div class="two-day-columns">
+    <% view_object[:day_groups].each do |day| %>
+      <div class="two-day-col<%= ' two-day-col-other' unless day[:date].to_date == Date.current %>">
+        <div class="two-day-header">
+          <div><%= day[:day_name] %></div>
+          <div class="two-day-date"><%= day[:date].strftime("%B %-d") %></div>
+        </div>
+
+        <% if day[:weather_row]&.any? %>
+          <div class="two-day-weather-row">
+            <% day[:weather_row].each do |w| %>
+              <span class="two-day-weather-item">
+                <span class="two-day-weather-time"><%= w[:start_time] %></span>
+                <i class="mdi mdi-<%= w[:icon_class] %>"></i>
+                <span class="two-day-weather-temp"><%= w[:summary] %></span>
+              </span>
+            <% end %>
+          </div>
+        <% end %>
+
+        <% if day[:show_daily] && day[:daily].any? %>
+          <div class="two-day-events">
+            <% day[:daily].select { |e| e[:attachment_image] }.each do |event| %>
+              <img src="<%= event[:attachment_image] %>" style="width: 100%; display: block; margin-bottom: .25rem; border-radius: .25rem;">
+            <% end %>
+          </div>
+        <% end %>
+
+        <% image_periodic = day[:periodic].select { |e| e[:attachment_image] } %>
+        <% if image_periodic.any? %>
+          <div class="two-day-events">
+            <% image_periodic.each do |event| %>
+              <img src="<%= event[:attachment_image] %>" style="width: 100%; display: block; margin-bottom: .25rem; border-radius: .25rem;">
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+<% end %>
+
+<div class="timestamp" style="position: absolute; bottom: 1px; right: 1px; font-family: 'Lato', sans-serif; font-size: 9px; z-index: 10; writing-mode: vertical-rl; text-orientation: mixed;">
+  <%= view_object[:attribution] if view_object[:attribution].present? %> <%= view_object[:timestamp] %>
+</div>

@@ -11,7 +11,8 @@ class DeviceContent
     use_day_names: false,
     include_daily_weather: true,
     weather_row: false,
-    start_time_only: false
+    start_time_only: false,
+    always_show_today: false
   )
     current_time ||= Time.now.utc.in_time_zone(home_assistant_api.time_zone)
 
@@ -83,12 +84,12 @@ class DeviceContent
         )
 
         # Attempt to hide Today if it's after 8pm and there are no events
-        if day_index.zero? && current_time.hour >= 20
+        if day_index.zero? && current_time.hour >= 20 && !always_show_today
           next if events[:periodic].empty? ||
             events[:periodic].all? { it.ends_at > date.end_of_day.utc }
         end
 
-        show_daily = (day_index.zero? && current_time.hour < 20) || !day_index.zero?
+        show_daily = (day_index.zero? && (current_time.hour < 20 || always_show_today)) || !day_index.zero?
 
         periodic_events = events[:periodic]
         weather_row_data = nil

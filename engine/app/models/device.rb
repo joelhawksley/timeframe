@@ -9,8 +9,8 @@ class Device < ActiveRecord::Base
     "visionect_13" => {name: "Visionect Place & Play 13\"", template: "thirteen", width: 1200, height: 1600},
     "boox_mira_pro" => {name: "Boox Mira Pro 25.3\"", template: "mira", width: 1800, height: 3200, realtime: true},
     "boox_mira" => {name: "Boox Mira 13.3\"", template: "boox_mira", width: 1650, height: 2200, realtime: true},
-    "trmnl_og" => {name: "TRMNL (OG)", template: "trmnl", width: 800, height: 480, templates: [{name: "trmnl", label: "Landscape Timeline"}, {name: "three_day", label: "3-Day"}], screenshotted: true},
-    "reterminal_e1001" => {name: "reTerminal E1001 7.5\"", template: "trmnl", width: 800, height: 480, templates: [{name: "trmnl", label: "Landscape Timeline"}, {name: "three_day", label: "3-Day"}], screenshotted: true},
+    "trmnl_og" => {name: "TRMNL (OG)", template: "trmnl", width: 800, height: 480, templates: [{name: "trmnl", label: "Landscape Timeline"}, {name: "three_day", label: "3-Day"}, {name: "two_day", label: "2-Day Portrait"}], screenshotted: true},
+    "reterminal_e1001" => {name: "reTerminal E1001 7.5\"", template: "trmnl", width: 800, height: 480, templates: [{name: "trmnl", label: "Landscape Timeline"}, {name: "three_day", label: "3-Day"}, {name: "two_day", label: "2-Day Portrait"}], screenshotted: true},
     "reterminal_e1003" => {name: "reTerminal E1003 10.3\"", template: "reterminal", width: 1404, height: 1872, screenshotted: true}
   }.freeze
 
@@ -46,11 +46,11 @@ class Device < ActiveRecord::Base
   end
 
   def display_width
-    SUPPORTED_MODELS.dig(model, :width)
+    portrait? ? SUPPORTED_MODELS.dig(model, :height) : SUPPORTED_MODELS.dig(model, :width)
   end
 
   def display_height
-    SUPPORTED_MODELS.dig(model, :height)
+    portrait? ? SUPPORTED_MODELS.dig(model, :width) : SUPPORTED_MODELS.dig(model, :height)
   end
 
   # :nocov:
@@ -120,6 +120,10 @@ class Device < ActiveRecord::Base
     (display_template == "default") ? SUPPORTED_MODELS.dig(model, :template) : display_template
   end
 
+  def portrait?
+    active_template == "two_day"
+  end
+
   def template_options
     SUPPORTED_MODELS.dig(model, :templates)
   end
@@ -127,11 +131,20 @@ class Device < ActiveRecord::Base
   # :nocov:
   def device_content(timezone: nil)
     tz = timezone || location&.time_zone || "UTC"
-    three_day = active_template == "three_day"
-    args = {days: three_day ? 3 : 5, include_precip: !three_day, include_wind: !three_day,
-            use_day_names: three_day, include_daily_weather: !three_day,
-            weather_row: three_day, start_time_only: three_day}
-
+    compact_view = %w[three_day two_day].include?(active_template)
+    two_day = active_template == "two_day"
+    args = {
+      days:
+        if two_day
+          2
+        else
+          (compact_view ? 3 : 5)
+        end,
+      include_precip: !compact_view, include_wind: !compact_view,
+      use_day_names: compact_view, include_daily_weather: !compact_view,
+      weather_row: compact_view, start_time_only: compact_view,
+      always_show_today: two_day
+    }
     if demo_mode_enabled?
       DemoDeviceContent.new.call(timezone: tz, **args)
     else
