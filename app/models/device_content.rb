@@ -77,7 +77,7 @@ class DeviceContent
           end
 
         events = calendar_feed.events_for(
-          (day_index.zero? ? current_time : date.beginning_of_day).utc,
+          ((day_index.zero? && !always_show_today) ? current_time : date.beginning_of_day).utc,
           date.end_of_day.utc,
           raw_events.flatten,
           private_mode
