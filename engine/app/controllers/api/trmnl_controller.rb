@@ -18,10 +18,12 @@ module Api
 
       device = Device.find_by(mac_address: mac_address)
       if device
+        update_device_from_headers(device)
         render json: {
           status: 200,
           api_key: device.api_key,
           friendly_id: device.friendly_id,
+          image_url: nil,
           message: "Welcome to Timeframe"
         }
         return
@@ -36,6 +38,7 @@ module Api
         status: 200,
         api_key: pending.api_key,
         friendly_id: pending.pairing_code,
+        image_url: nil,
         message: "Enter this code at timeframe.app"
       }
     end
@@ -52,16 +55,21 @@ module Api
 
       if @device.pending_confirmation?
         render json: {
+          status: 0,
           filename: "confirmation-#{@device.id}.png",
           image_url: confirmation_image_account_location_device_url(@device.account, @device.location, @device, host: request.base_url),
           image_url_timeout: 0,
           refresh_rate: 30,
           reset_firmware: false,
           special_function: "sleep",
-          update_firmware: false
+          update_firmware: false,
+          firmware_url: nil,
+          temperature_profile: "default"
         }
         return
       end
+
+      update_device_from_headers(@device)
 
       @device.refresh_screenshot!(request.base_url) if @device.cached_image.blank? || params[:force].present?
       @device.update_column(:last_connection_at, Time.current)
@@ -69,23 +77,34 @@ module Api
       RefreshDeviceScreenshotJob.set(wait: (@device.refresh_rate - 60).seconds).perform_later(@device.id)
 
       render json: {
+        status: 0,
         filename: "display-#{@device.cached_image_at}.png",
         image_url: @device.signed_screenshot_url(host: request.base_url),
         image_url_timeout: 0,
         refresh_rate: @device.refresh_rate,
         reset_firmware: false,
         special_function: "sleep",
-        update_firmware: false
+        update_firmware: false,
+        firmware_url: nil,
+        temperature_profile: "default"
       }
     end
 
     # POST /api/log
     def log
-      Rails.logger.info("[API Log] mac=#{request.headers["ID"]}")
+      Rails.logger.info("[API Log] mac=#{request.headers["ID"]} body=#{request.raw_post.truncate(1000)}")
       head :no_content
     end
 
     private
+
+    def update_device_from_headers(device)
+      attrs = {}
+      attrs[:firmware_version] = request.headers["FW-Version"] if request.headers["FW-Version"].present?
+      attrs[:battery_level] = request.headers["Battery-Voltage"].to_f if request.headers["Battery-Voltage"].present?
+      attrs[:rssi] = request.headers["RSSI"].to_i if request.headers["RSSI"].present?
+      device.update_columns(attrs) if attrs.any?
+    end
 
     def log_response_status
       Rails.logger.info("[API Response] action=#{action_name} status=#{response.status}")

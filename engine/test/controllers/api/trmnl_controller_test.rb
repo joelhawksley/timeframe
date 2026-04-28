@@ -18,6 +18,7 @@ class Api::TrmnlControllerTest < ActionDispatch::IntegrationTest
     assert_equal 200, json["status"]
     assert json["api_key"].present?
     assert json["friendly_id"].present?
+    assert_nil json["image_url"]
     assert_match(/Enter this code/, json["message"])
 
     pending = PendingDevice.find_by(mac_address: "AA:BB:CC:DD:EE:FF")
@@ -33,6 +34,8 @@ class Api::TrmnlControllerTest < ActionDispatch::IntegrationTest
     json = JSON.parse(response.body)
     assert_equal 200, json["status"]
     assert_equal device.api_key, json["api_key"]
+    assert_equal device.friendly_id, json["friendly_id"]
+    assert_nil json["image_url"]
     assert_equal "Welcome to Timeframe", json["message"]
   end
 
@@ -45,6 +48,16 @@ class Api::TrmnlControllerTest < ActionDispatch::IntegrationTest
 
     assert_equal first_id, second_id
     assert_equal 1, PendingDevice.where(mac_address: "AA:BB:CC:DD:EE:FF").count
+  end
+
+  test "setup updates firmware_version from headers for confirmed device" do
+    device = create_trmnl_device!(mac: "AA:BB:CC:DD:EE:FF")
+
+    get "/api/setup", headers: {"ID" => "AA:BB:CC:DD:EE:FF", "FW-Version" => "1.8.1"}
+
+    assert_response :success
+    device.reload
+    assert_equal "1.8.1", device.firmware_version
   end
 
   test "setup returns bad request without MAC address" do
@@ -103,19 +116,32 @@ class Api::TrmnlControllerTest < ActionDispatch::IntegrationTest
     device = create_trmnl_device!
 
     ScreenshotService.stub :capture, "fakeimagedatabase64" do
-      get "/api/display", headers: {"ID" => device.mac_address, "ACCESS_TOKEN" => device.api_key}
+      get "/api/display", headers: {
+        "ID" => device.mac_address,
+        "ACCESS_TOKEN" => device.api_key,
+        "Battery-Voltage" => "4.1",
+        "FW-Version" => "1.8.1",
+        "RSSI" => "-69"
+      }
 
       assert_response :success
       json = JSON.parse(response.body)
+      assert_equal 0, json["status"]
       assert_match(/\Adisplay-.*\.png\z/, json["filename"])
       assert json["image_url"].include?("/signed_screenshot/")
+      assert_equal 0, json["image_url_timeout"]
       assert_equal 900, json["refresh_rate"]
       assert_equal "sleep", json["special_function"]
       assert_equal false, json["reset_firmware"]
       assert_equal false, json["update_firmware"]
+      assert_nil json["firmware_url"]
+      assert_equal "default", json["temperature_profile"]
 
       device.reload
-      assert device.last_connection_at.present?, "last_connection_at should be set after display request"
+      assert device.last_connection_at.present?
+      assert_equal 4.1, device.battery_level
+      assert_equal "1.8.1", device.firmware_version
+      assert_equal(-69, device.rssi)
     end
   end
 
@@ -183,8 +209,13 @@ class Api::TrmnlControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     json = JSON.parse(response.body)
+    assert_equal 0, json["status"]
     assert_match(/confirmation/, json["filename"])
     assert_equal 30, json["refresh_rate"]
+    assert_equal false, json["reset_firmware"]
+    assert_equal false, json["update_firmware"]
+    assert_nil json["firmware_url"]
+    assert_equal "default", json["temperature_profile"]
   end
 
   private
