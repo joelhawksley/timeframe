@@ -9,7 +9,7 @@ class ScreenshotService
     def capture(url, width: VIEWPORT_WIDTH, height: VIEWPORT_HEIGHT, grayscale_depth: 2, rotate: true, raw: false, dither: true, grayscale_only: false)
       begin
         png_base64 = capture_screenshot(url, width: width, height: height)
-      rescue Ferrum::DeadBrowserError, Ferrum::NoSuchWindowError => e
+      rescue Ferrum::DeadBrowserError, Ferrum::NoSuchPageError => e
         Rails.logger.warn "[ScreenshotService] Browser dead, resetting and retrying: #{e.message}"
         reset!
         png_base64 = capture_screenshot(url, width: width, height: height)
