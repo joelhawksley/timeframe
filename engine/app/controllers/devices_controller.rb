@@ -41,32 +41,32 @@ class DevicesController < ApplicationController
 
     if model == "visionect_13"
       @location.devices.create!(name: name, model: model)
-      redirect_to root_path, notice: "Device \"#{name}\" added."
+      redirect_back fallback_location: root_path, notice: "Device \"#{name}\" added."
     else
       pairing_code = params[:pairing_code].to_s.strip
       pending_device = PendingDevice.find_active_by_code(pairing_code)
 
       unless pending_device
-        return redirect_to root_path, alert: "Invalid or expired pairing code."
+        return redirect_back fallback_location: root_path, alert: "Invalid or expired pairing code."
       end
 
       pending_device.claim!(location: @location, name: name, model: model)
-      redirect_to root_path, notice: "Device \"#{name}\" paired successfully."
+      redirect_back fallback_location: root_path, notice: "Device \"#{name}\" paired successfully."
     end
   rescue ActiveRecord::RecordInvalid => e
-    redirect_to root_path, alert: e.message
+    redirect_back fallback_location: root_path, alert: e.message
   end
 
   def update
     device = @location.devices.find(params[:id])
     device.update!(demo_mode_enabled: !device.demo_mode_enabled?)
-    redirect_to root_path
+    redirect_back fallback_location: root_path
   end
 
   def update_template
     device = @location.devices.find(params[:id])
     device.update!(display_template: params[:display_template])
-    redirect_to root_path
+    redirect_back fallback_location: root_path
   end
 
   def destroy
@@ -76,7 +76,7 @@ class DevicesController < ApplicationController
       device.destroy
     end
 
-    redirect_to root_path
+    redirect_back fallback_location: root_path
   end
 
   def regenerate_tokens
@@ -86,7 +86,7 @@ class DevicesController < ApplicationController
       device.regenerate_display_key!
     end
 
-    redirect_to root_path
+    redirect_back fallback_location: root_path
   end
 
   def repair
@@ -95,12 +95,12 @@ class DevicesController < ApplicationController
     pending_device = PendingDevice.find_active_by_code(pairing_code)
 
     unless pending_device
-      return redirect_to root_path, alert: "Invalid or expired pairing code."
+      return redirect_back fallback_location: root_path, alert: "Invalid or expired pairing code."
     end
 
     pending_device.update!(claimed_device: device)
     device.rotate_session_token!
-    redirect_to root_path, notice: "\"#{device.name}\" re-paired successfully."
+    redirect_back fallback_location: root_path, notice: "\"#{device.name}\" re-paired successfully."
   end
 
   def confirmation_image
@@ -140,7 +140,11 @@ class DevicesController < ApplicationController
   private
 
   def set_account_and_location
-    @account = current_user.accounts.find(params[:account_id])
+    @account = if current_user.respond_to?(:is_admin?) && current_user.is_admin?
+      Account.find(params[:account_id])
+    else
+      current_user.accounts.find(params[:account_id])
+    end
     @location = @account.locations.find(params[:location_id])
   end
 
