@@ -29,7 +29,15 @@ class DevicesController < ApplicationController
   end
 
   def screenshot
-    @device.refresh_screenshot!(request.base_url) if @device.cached_image.blank? || params[:force] == "true"
+    if @device.cached_image.blank? || params[:force] == "true"
+      begin
+        @device.refresh_screenshot!(request.base_url)
+      rescue Ferrum::BinaryNotFoundError => e
+        Rails.logger.error("[Screenshot] Browser not available: #{e.message}")
+        return render plain: "Screenshot service unavailable", status: :service_unavailable if @device.cached_image.blank?
+      end
+    end
+
     image_data = Base64.strict_decode64(@device.reload.cached_image)
 
     send_data image_data, type: "image/png", disposition: "inline", filename: "#{@device.id}.png?#{Time.now.to_i}"

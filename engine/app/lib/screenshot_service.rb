@@ -84,13 +84,16 @@ class ScreenshotService
     end
 
     def find_browser_path
-      [
-        "/usr/bin/chromium",
-        "/usr/bin/chromium-browser",
-        "/usr/bin/google-chrome",
-        "/usr/bin/google-chrome-stable",
-        "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
-      ].find { |path| File.exist?(path) }
+      ENV["BROWSER_PATH"].presence ||
+        ENV["GOOGLE_CHROME_BIN"].presence ||
+        ENV["CHROME_BIN"].presence ||
+        [
+          "/usr/bin/chromium",
+          "/usr/bin/chromium-browser",
+          "/usr/bin/google-chrome",
+          "/usr/bin/google-chrome-stable",
+          "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+        ].find { |path| File.exist?(path) }
     end
   end
 end
