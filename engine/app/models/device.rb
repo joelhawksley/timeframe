@@ -184,7 +184,7 @@ class Device < ActiveRecord::Base
         grayscale_only: true
       )
     elsif trmnl? || reterminal_e1001?
-      ScreenshotService.capture(url, width: display_width, height: display_height, rotate: false)
+      ScreenshotService.capture(url, width: display_width, height: display_height, rotate: portrait?)
     else
       ScreenshotService.capture(url, width: display_width, height: display_height)
     end
