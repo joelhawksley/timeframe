@@ -162,6 +162,7 @@ class DevicesController < ApplicationController
 
     return render(plain: "Device not found", status: :not_found) unless @device
 
+    return if current_user&.respond_to?(:is_admin?) && current_user.is_admin?
     return if current_user&.accounts&.exists?(id: @device.account&.id)
 
     if session[:device_session_token].present? && @device.session_token.present? &&
