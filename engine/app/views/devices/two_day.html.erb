@@ -20,7 +20,7 @@
 <% unless view_object[:private_mode] %>
   <div class="two-day-columns">
     <% view_object[:day_groups].each do |day| %>
-      <div class="two-day-col<%= ' two-day-col-other' unless day[:date].to_date == Date.current %>">
+      <div class="two-day-col<%= ' two-day-col-other' unless day[:date].to_date == view_object[:current_time].to_date %>">
         <div class="two-day-header">
           <div><%= day[:day_name] %></div>
           <div class="two-day-date"><%= day[:date].strftime("%B %-d") %></div>
