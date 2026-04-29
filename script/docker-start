@@ -34,10 +34,26 @@ pg_ctlcluster $PG_VERSION $PG_CLUSTER start -- -w
 # Create database if it doesn't exist
 su postgres -c "createdb timeframe_production" 2>/dev/null || true
 
-# Run migrations (or load schema for fresh/outdated databases)
+# Migrate database
 export DATABASE_URL="postgres://postgres@localhost/timeframe_production"
 export RAILS_LOG_TO_STDOUT=1
-bundle exec rails db:prepare
+
+SCHEMA_VERSION=$(grep 'define(version:' db/schema.rb | grep -o '[0-9]*')
+VERSION_FILE="/data/.schema_version"
+CURRENT_VERSION=$(cat "$VERSION_FILE" 2>/dev/null || echo "0")
+
+if [ "$CURRENT_VERSION" != "$SCHEMA_VERSION" ]; then
+  echo "Schema version changed ($CURRENT_VERSION -> $SCHEMA_VERSION), rebuilding database structure..."
+  # Dump existing data, reload schema, restore data
+  su postgres -c "pg_dump -Fc --data-only timeframe_production" > /tmp/data.dump 2>/dev/null || true
+  bundle exec rails db:schema:load
+  su postgres -c "pg_restore --data-only --disable-triggers -d timeframe_production" < /tmp/data.dump 2>/dev/null || true
+  rm -f /tmp/data.dump
+  echo "$SCHEMA_VERSION" > "$VERSION_FILE"
+  echo "Schema rebuild complete."
+else
+  bundle exec rails db:prepare
+fi
 
 # Start Puma
 exec bundle exec puma -C config/puma.rb
