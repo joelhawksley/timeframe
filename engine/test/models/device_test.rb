@@ -14,6 +14,24 @@ class DeviceTest < Minitest::Test
     assert_equal "Visionect Place & Play 13\"", device.model_name_label
   end
 
+  def test_name_uniqueness_scoped_to_location
+    loc1 = test_location
+    loc2 = Account.find_or_create_by!(name: "Test2").locations.find_or_create_by!(name: "Other Location") do |l|
+      l.latitude = 40.0
+      l.longitude = -100.0
+      l.time_zone = "America/Chicago"
+    end
+
+    Device.create!(location: loc1, name: "test_same_name", model: "visionect_13")
+    # Same name, different location — should be valid
+    d2 = Device.new(location: loc2, name: "test_same_name", model: "visionect_13")
+    assert d2.valid?, "Device with same name in different location should be valid"
+
+    # Same name, same location — should be invalid
+    d3 = Device.new(location: loc1, name: "test_same_name", model: "visionect_13")
+    refute d3.valid?, "Device with same name in same location should be invalid"
+  end
+
   def test_display_width
     device = Device.new(name: "test", model: "visionect_13")
     assert_equal 1200, device.display_width

@@ -29,7 +29,7 @@ class Device < ActiveRecord::Base
   encrypts :session_token, deterministic: true
   encrypts :cached_image
 
-  validates :name, presence: true, uniqueness: true
+  validates :name, presence: true, uniqueness: {scope: :location_id}
   validates :model, presence: true, inclusion: {in: SUPPORTED_MODELS.keys}
   validates :mac_address, uniqueness: true, allow_nil: true
   validates :mac_address, presence: true, if: :screenshotted?
