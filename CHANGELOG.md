@@ -1,3 +1,8 @@
+## [2.9.3] - 2026-04-29
+
+### Fixed
+- Enable rails logging to aid in debugging
+
 ## [2.9.2] - 2026-04-29
 
 ### Fixed
