@@ -1,3 +1,15 @@
+## [2.9.0] - 2026-04-29
+
+### Added
+- Two-day portrait display template for TRMNL and reTerminal E1001
+- TRMNL API: capture device telemetry (firmware version, battery, RSSI) from request headers
+- TRMNL API: added missing response fields (status, firmware_url, temperature_profile)
+- Boox Mira 13.3" device support
+
+### Fixed
+- Fixed timezone handling in display templates (Date.current → timezone-aware)
+- Deleting a device now destroys associated pending devices
+
 ## [2.8.0] - 2026-04-14
 
 ### Added
