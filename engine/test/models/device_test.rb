@@ -345,6 +345,13 @@ class DeviceTest < Minitest::Test
     refute PendingDevice.exists?(pending.id)
   end
 
+  def test_enqueue_screenshot_refresh_jobs_handles_connection_error
+    Device.stub(:where, ->(*) { raise ActiveRecord::ConnectionNotEstablished }) do
+      Device.enqueue_screenshot_refresh_jobs!
+    end
+    pass
+  end
+
   private
 
   def generate_test_png

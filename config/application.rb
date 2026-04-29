@@ -33,8 +33,8 @@ module HaAddon
       if defined?(GoodJob)
         Device.enqueue_screenshot_refresh_jobs!
       end
-    rescue ActiveRecord::StatementInvalid
-      # GoodJob tables not yet created; will work after migration
+    rescue ActiveRecord::ConnectionNotEstablished, ActiveRecord::StatementInvalid
+      # DB not available (e.g. during asset precompilation) or tables not yet created
     end
 
     # Warden middleware for session-based auth (auto-sign-in)

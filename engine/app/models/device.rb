@@ -221,6 +221,8 @@ class Device < ActiveRecord::Base
     where(model: SCREENSHOTTED_MODELS).find_each do |device|
       RefreshDeviceScreenshotJob.perform_later(device.id)
     end
+  rescue ActiveRecord::ConnectionNotEstablished, ActiveRecord::StatementInvalid
+    # DB not available (e.g. during asset precompilation) or tables not yet created
   end
   # :nocov:
 

@@ -1,0 +1,13 @@
+#!/bin/bash
+set -e
+
+cd "$(dirname "$0")/.."
+
+echo "Building Docker image..."
+docker build -t timeframe-test-build --no-cache . 2>&1
+
+echo ""
+echo "Docker build succeeded."
+
+# Clean up the test image
+docker rmi timeframe-test-build > /dev/null 2>&1 || true
