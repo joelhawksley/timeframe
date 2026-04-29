@@ -34,10 +34,10 @@ pg_ctlcluster $PG_VERSION $PG_CLUSTER start -- -w
 # Create database if it doesn't exist
 su postgres -c "createdb timeframe_production" 2>/dev/null || true
 
-# Run migrations
+# Run migrations (or load schema for fresh/outdated databases)
 export DATABASE_URL="postgres://postgres@localhost/timeframe_production"
 export RAILS_LOG_TO_STDOUT=1
-bundle exec rails db:migrate
+bundle exec rails db:prepare
 
 # Start Puma
 exec bundle exec puma -C config/puma.rb
