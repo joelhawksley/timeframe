@@ -20,6 +20,7 @@ class Device < ActiveRecord::Base
   belongs_to :location, optional: true
 
   has_one :account, through: :location
+  has_one :pending_device, foreign_key: :claimed_device_id, dependent: :destroy
 
   encrypts :mac_address, deterministic: true
   encrypts :api_key, deterministic: true

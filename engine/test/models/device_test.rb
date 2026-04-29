@@ -317,6 +317,16 @@ class DeviceTest < Minitest::Test
     assert_equal "three_day", device.active_template
   end
 
+  def test_destroying_device_destroys_associated_pending_device
+    device = Device.create!(location: test_location, name: "test_destroy_pending", model: "trmnl_og",
+      mac_address: "DE:ST:RO:YP:EN:D1", confirmed_at: Time.current)
+    pending = PendingDevice.create!(mac_address: "DE:ST:RO:YP:EN:D1", claimed_device: device)
+
+    assert PendingDevice.exists?(pending.id)
+    device.destroy!
+    refute PendingDevice.exists?(pending.id)
+  end
+
   private
 
   def generate_test_png
