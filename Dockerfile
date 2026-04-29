@@ -16,6 +16,7 @@ WORKDIR /app
 ENV RAILS_ENV=production
 
 COPY Gemfile ./
+COPY engine/timeframe-core.gemspec engine/
 RUN bundle config set --local without 'development test' && \
     bundle install --jobs 4
 
