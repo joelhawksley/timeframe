@@ -13,7 +13,16 @@ class SignedScreenshotsController < ApplicationController
     @device.refresh_screenshot!(request.base_url) if @device.cached_image.blank? || params[:force] == "true"
     @device.reload
     image_data = Base64.strict_decode64(@device.cached_image)
+    record_image_request
 
     send_data image_data, type: "image/png", disposition: "inline", filename: "#{@device.id}.png?#{Time.now.to_i}"
+  end
+
+  private
+
+  def record_image_request
+    DeviceMetricBucket.record_update!(device: @device)
+  rescue => e
+    Rails.logger.warn("[Metrics] Failed to record image request for device #{@device.id}: #{e.message}")
   end
 end

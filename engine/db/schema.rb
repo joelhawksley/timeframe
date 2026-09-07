@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 57) do
+ActiveRecord::Schema[8.1].define(version: 58) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -149,6 +149,25 @@ ActiveRecord::Schema[8.1].define(version: 57) do
     t.index ["google_account_id", "external_id"], name: "index_calendars_on_google_account_id_and_external_id", unique: true
     t.index ["google_account_id"], name: "index_calendars_on_google_account_id"
     t.index ["microsoft_account_id"], name: "index_calendars_on_microsoft_account_id"
+  end
+
+  create_table "device_metric_buckets", force: :cascade do |t|
+    t.float "battery_percent_last"
+    t.float "battery_percent_max"
+    t.float "battery_percent_min"
+    t.integer "battery_sample_count", default: 0, null: false
+    t.float "battery_voltage_last"
+    t.float "battery_voltage_max"
+    t.float "battery_voltage_min"
+    t.datetime "bucket_at", null: false
+    t.boolean "charging"
+    t.datetime "created_at", null: false
+    t.bigint "device_id", null: false
+    t.integer "poll_no_update_count", default: 0, null: false
+    t.integer "poll_update_count", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.index ["device_id", "bucket_at"], name: "index_device_metric_buckets_on_device_id_and_bucket_at", unique: true
+    t.index ["device_id"], name: "index_device_metric_buckets_on_device_id"
   end
 
   create_table "devices", force: :cascade do |t|
@@ -486,6 +505,7 @@ ActiveRecord::Schema[8.1].define(version: 57) do
   add_foreign_key "calendars", "apple_accounts"
   add_foreign_key "calendars", "google_accounts"
   add_foreign_key "calendars", "microsoft_accounts"
+  add_foreign_key "device_metric_buckets", "devices", on_delete: :cascade
   add_foreign_key "devices", "locations"
   add_foreign_key "google_accounts", "accounts"
   add_foreign_key "ha_syncs", "locations"

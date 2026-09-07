@@ -71,6 +71,10 @@ class MdiIconMatcherTest < Minitest::Test
     assert_equal "swim", MdiIconMatcher.match("Pool party")
   end
 
+  def test_match_custom_mapping_parade
+    assert_equal "flag-variant", MdiIconMatcher.match("Labor Day Parade")
+  end
+
   def test_match_climbing_and_mountain_custom_mapping
     assert_equal "image-filter-hdr", MdiIconMatcher.match("Rock climbing")
     assert_equal "image-filter-hdr", MdiIconMatcher.match("Mountain summit")

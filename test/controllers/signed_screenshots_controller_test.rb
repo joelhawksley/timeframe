@@ -4,6 +4,7 @@ require "test_helper"
 
 class SignedScreenshotsControllerTest < ActionDispatch::IntegrationTest
   def setup
+    DeviceMetricBucket.delete_all
     @account = test_user.accounts.first
     location = @account.locations.first
     @device = Device.find_or_create_by!(name: "test-signed-screenshot", model: "trmnl_og") do |d|
@@ -23,6 +24,7 @@ class SignedScreenshotsControllerTest < ActionDispatch::IntegrationTest
     get "/signed_screenshot/#{sgid}"
     assert_response :success
     assert_equal "image/png", response.media_type
+    assert_equal 1, @device.device_metric_buckets.first!.poll_update_count
   end
 
   test "returns 401 with invalid signed URL" do

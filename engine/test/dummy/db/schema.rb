@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 52) do
+ActiveRecord::Schema[8.1].define(version: 58) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -39,6 +39,7 @@ ActiveRecord::Schema[8.1].define(version: 52) do
     t.boolean "subscription_cancel_at_period_end", default: false, null: false
     t.datetime "subscription_current_period_end"
     t.datetime "subscription_grace_until"
+    t.datetime "subscription_renewal_reminded_for"
     t.string "subscription_status"
     t.datetime "support_access_at"
     t.string "temperature_unit", default: "F", null: false
@@ -150,6 +151,25 @@ ActiveRecord::Schema[8.1].define(version: 52) do
     t.index ["microsoft_account_id"], name: "index_calendars_on_microsoft_account_id"
   end
 
+  create_table "device_metric_buckets", force: :cascade do |t|
+    t.float "battery_percent_last"
+    t.float "battery_percent_max"
+    t.float "battery_percent_min"
+    t.integer "battery_sample_count", default: 0, null: false
+    t.float "battery_voltage_last"
+    t.float "battery_voltage_max"
+    t.float "battery_voltage_min"
+    t.datetime "bucket_at", null: false
+    t.boolean "charging"
+    t.datetime "created_at", null: false
+    t.bigint "device_id", null: false
+    t.integer "poll_no_update_count", default: 0, null: false
+    t.integer "poll_update_count", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.index ["device_id", "bucket_at"], name: "index_device_metric_buckets_on_device_id_and_bucket_at", unique: true
+    t.index ["device_id"], name: "index_device_metric_buckets_on_device_id"
+  end
+
   create_table "devices", force: :cascade do |t|
     t.text "api_key"
     t.float "battery_level"
@@ -167,9 +187,11 @@ ActiveRecord::Schema[8.1].define(version: 52) do
     t.bigint "display_state_crc"
     t.string "display_template", default: "default", null: false
     t.string "excluded_calendar_identifiers", default: [], null: false, array: true
+    t.string "firmware_commit"
     t.string "firmware_version"
     t.string "friendly_id"
     t.datetime "last_connection_at"
+    t.datetime "last_generated_at"
     t.bigint "location_id"
     t.boolean "low_battery_warning", default: false, null: false
     t.text "mac_address"
@@ -279,6 +301,9 @@ ActiveRecord::Schema[8.1].define(version: 52) do
     t.text "google_uid", null: false
     t.text "refresh_token", null: false
     t.text "scopes"
+    t.datetime "sync_disabled_at"
+    t.datetime "sync_disabled_notified_at"
+    t.string "sync_disabled_reason"
     t.datetime "token_expires_at"
     t.datetime "updated_at", null: false
     t.index ["account_id", "google_uid"], name: "index_google_accounts_on_account_id_and_google_uid", unique: true
@@ -293,6 +318,17 @@ ActiveRecord::Schema[8.1].define(version: 52) do
     t.datetime "synced_at", null: false
     t.datetime "updated_at", null: false
     t.index ["location_id"], name: "index_ha_syncs_on_location_id", unique: true
+  end
+
+  create_table "health_probes", force: :cascade do |t|
+    t.datetime "checked_at", null: false
+    t.integer "consecutive_failures", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.jsonb "details"
+    t.string "key", null: false
+    t.boolean "successful", default: true, null: false
+    t.datetime "updated_at", null: false
+    t.index ["key"], name: "index_health_probes_on_key", unique: true
   end
 
   create_table "locations", force: :cascade do |t|
@@ -321,6 +357,9 @@ ActiveRecord::Schema[8.1].define(version: 52) do
     t.text "email", null: false
     t.text "microsoft_uid", null: false
     t.text "refresh_token", null: false
+    t.datetime "sync_disabled_at"
+    t.datetime "sync_disabled_notified_at"
+    t.string "sync_disabled_reason"
     t.datetime "token_expires_at"
     t.datetime "updated_at", null: false
     t.index ["account_id", "microsoft_uid"], name: "index_microsoft_accounts_on_account_id_and_microsoft_uid", unique: true
@@ -466,6 +505,7 @@ ActiveRecord::Schema[8.1].define(version: 52) do
   add_foreign_key "calendars", "apple_accounts"
   add_foreign_key "calendars", "google_accounts"
   add_foreign_key "calendars", "microsoft_accounts"
+  add_foreign_key "device_metric_buckets", "devices", on_delete: :cascade
   add_foreign_key "devices", "locations"
   add_foreign_key "google_accounts", "accounts"
   add_foreign_key "ha_syncs", "locations"

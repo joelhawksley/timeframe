@@ -474,6 +474,9 @@
                     class: "tf-btn tf-btn-outline tf-btn-sm"
                   ) %>
                 </div>
+                <% if lookup_context.template_exists?("replace_billed_device", "devices", true) %>
+                  <%= render "devices/replace_billed_device", replacement_device: @device %>
+                <% end %>
               </div>
 
               <%# Battery %>
@@ -510,6 +513,10 @@
                   </div>
                 <% end %>
               </div>
+
+              <% if defined?(current_user) && current_user&.is_admin? && lookup_context.template_exists?("admin_metrics", "devices", true) %>
+                <%= render "devices/admin_metrics", device: @device %>
+              <% end %>
 
               <%# Audit Log %>
               <div class="mt-3">

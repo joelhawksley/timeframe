@@ -97,9 +97,11 @@ module Api
         return
       end
 
-      update_device_from_headers(@device)
+      previous_connection_at = @device.last_connection_at
+      telemetry = update_device_from_headers(@device)
 
       @device.refresh_screenshot!(request.base_url) if @device.cached_image.blank? || params[:force].present?
+      record_device_poll(@device, telemetry, previous_connection_at:)
       # Reconnecting clears any pending "offline for a day" alert so a future
       # outage re-notifies the owner.
       @device.update_columns(last_connection_at: Time.current, device_offline_notified_at: nil)
@@ -176,6 +178,22 @@ module Api
       attrs[:low_battery_warning] = device.battery_warning_for(level: effective_level, charging: effective_charging)
 
       device.update_columns(attrs) if attrs.any?
+      {
+        battery_percent: level,
+        battery_voltage: battery_voltage_from_headers,
+        charging: charging
+      }
+    end
+
+    def battery_voltage_from_headers
+      request.headers["Battery-Voltage"].presence&.to_f
+    end
+
+    def record_device_poll(device, telemetry, previous_connection_at:)
+      no_update = previous_connection_at.present? && device.cached_image_at.present? && device.cached_image_at <= previous_connection_at
+      DeviceMetricBucket.record_poll!(device:, **telemetry, no_update:)
+    rescue => e
+      Rails.logger.warn("[Metrics] Failed to record poll for device #{device.id}: #{e.message}")
     end
 
     # Prefers the firmware's fuel-gauge Percent-Charged reading (TRMNL-X) and

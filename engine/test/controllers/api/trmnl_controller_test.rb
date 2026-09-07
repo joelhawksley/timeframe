@@ -5,6 +5,7 @@ require "test_helper"
 class Api::TrmnlControllerTest < ActionDispatch::IntegrationTest
   def setup
     PendingDevice.destroy_all
+    DeviceMetricBucket.delete_all
     Device.where(model: %w[trmnl_og reterminal_e1003]).destroy_all
   end
 
@@ -221,9 +222,31 @@ class Api::TrmnlControllerTest < ActionDispatch::IntegrationTest
 
   test "display skips refresh when cached image exists" do
     device = create_trmnl_device!
+    cached_at = 5.minutes.ago
+    device.update!(cached_image: "existingbase64", cached_image_at: cached_at, last_connection_at: 1.minute.ago)
+
+    get "/api/display", headers: {
+      "ID" => device.mac_address,
+      "ACCESS_TOKEN" => device.api_key,
+      "Battery-Voltage" => "3.9",
+      "Percent-Charged" => "70",
+      "USB-Connected" => "false"
+    }
+
+    assert_response :success
+    bucket = device.device_metric_buckets.first!
+    assert_equal 70, bucket.battery_percent_last
+    assert_equal 3.9, bucket.battery_voltage_last
+    assert_equal 1, bucket.poll_no_update_count
+  end
+
+  test "display succeeds when poll metrics cannot be recorded" do
+    device = create_trmnl_device!
     device.update!(cached_image: "existingbase64", cached_image_at: Time.current)
 
-    get "/api/display", headers: {"ID" => device.mac_address, "ACCESS_TOKEN" => device.api_key}
+    DeviceMetricBucket.stub :record_poll!, ->(**) { raise ActiveRecord::ConnectionNotEstablished, "metrics unavailable" } do
+      get "/api/display", headers: {"ID" => device.mac_address, "ACCESS_TOKEN" => device.api_key}
+    end
 
     assert_response :success
   end
